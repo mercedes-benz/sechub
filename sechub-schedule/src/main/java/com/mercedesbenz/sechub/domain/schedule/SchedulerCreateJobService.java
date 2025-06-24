@@ -87,19 +87,20 @@ public class SchedulerCreateJobService {
 
         UUID sechubJobUUID = secHubJob.getUUID();
 
-        sendJobCreationEvent(sechubJobUUID, projectId, secHubJob.getCreated());
+        sendJobCreationEvent(sechubJobUUID, projectId, secHubJob.getCreated(), secHubJob.getOwner());
 
         return new SchedulerResult(sechubJobUUID);
     }
 
     @IsSendingAsyncMessage(MessageID.JOB_CREATED)
-    private void sendJobCreationEvent(UUID sechubJobUUID, String projectId, LocalDateTime localDateTime) {
+    private void sendJobCreationEvent(UUID sechubJobUUID, String projectId, LocalDateTime localDateTime, String owner) {
         DomainMessage domainMessage = new DomainMessage(MessageID.JOB_CREATED);
         JobMessage jobData = new JobMessage();
 
         jobData.setJobUUID(sechubJobUUID);
         jobData.setProjectId(projectId);
         jobData.setSince(localDateTime);
+        jobData.setOwner(owner);
 
         domainMessage.set(MessageDataKeys.JOB_CREATED_DATA, jobData);
 

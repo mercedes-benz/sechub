@@ -22,30 +22,66 @@ are among your system’s most critical aspects. Make sure that you completely u
 plantuml::diagrams/diagram_business_context_overview.plantuml[format=svg, title="Overview business context"]
 
 === Technical Context
-plantuml::diagrams/diagram_technical_context_overview.plantuml[format=svg, title="Overview business context"]
 
-==== Web scanner
-A scanner used for automated penetration testing on given sites
+==== Initial concept
+The initial design of SecHub was to directly communicate with any product by a product adapter:
 
-We support currently:
+plantuml::diagrams/diagram_technical_context_overview.plantuml[format=svg, title="Overview technical context (general)"]
 
-- Netsparker
 
-==== Code scanner
-A scanner used for automated static code analysis
+==== PDS (Product delgation server)
+This approach had some caveeats: For every product it was necessary to write java code (adapter, executor etc.).
+Also it was only possible to integrate 3rd party products having a REST or SOAP API. But it was 
+not possible to integrate tools which did only provide a command line interface.
+ 
+To tackle this, the PDS (product delegation server) was introduced but keeping the design as before:
 
-We support currently:
+plantuml::diagrams/diagram_technical_context_overview_with_pds.plantuml[format=svg, title="Overview technical context (with PDS)"]
 
-- Checkmarx
+The PDS product executors are specialized for different scan types. But they use all the same
+PDS adapter (PDS is here the product).
 
-==== Infrastructure scanner
-A scanner used for automated penetration testing on given infrastructure
+[TIP]
+====
+At https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html you can
+find more details about PDS.
+====
 
-We support currently:
+==== Product executors
+A product executor executes a product and knows information about SecHub details and the scan type
+which is provided by the product.
 
-- Nessus
+==== Product adapter
+A product adapter is only a technical vehicle to communicate with a 3rd party product.
+The adapter does not know about SecHub infrastructure but only knows how to start, stop and cancel
+a product and how to retrieve the output.
 
-WARNING: We got the problem that Nessus has terminated their REST API and only supports a REST API when ordering
-         another product. So currently it's difficulat to support NESSUS directly.
+==== Scan types
 
+We provide following scan types
+
+- `codeScan` (SAST) +
+  Does scan code from binaries or source code - depending on used product 
+
+- `iacScan` (IaC) +
+  Scans infrastructure as code, similar to `codeScan` but specialized and
+  can only scan sources
+
+- `infraScan` (Infrastructure scan) +
+  Penetrates and tests infrastructure at runtime
+
+- `licenseScan` (License scan) +
+  Checks for license issues in binaries or source code  - depending on used product
+
+- `secretScan` (Secret scan) +
+  Checks or secrets inside source code or binaries - depending on used product
+ 
+- Web scan (DAST) +
+  Penetrates and tests a web application at runtime
+
+The different solutions can be found at
+https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions
+
+==== User roles
+include::../shared/sechub_user_roles.adoc[]
 

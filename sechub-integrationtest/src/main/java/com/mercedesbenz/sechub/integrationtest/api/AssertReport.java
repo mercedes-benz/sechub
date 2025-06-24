@@ -339,11 +339,10 @@ public class AssertReport {
     }
 
     public AssertReport hasMetaDataLabel(String key, String value) {
-        Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
-        if (metaDataOpt.isEmpty()) {
+        SecHubReportMetaData metaData = report.getMetaData();
+        if (metaData == null) {
             fail("Meta data not found inside report!");
         }
-        SecHubReportMetaData metaData = metaDataOpt.get();
         Map<String, String> labels = metaData.getLabels();
         if (!labels.containsKey(key)) {
             fail("Meta data labels do not contain key:" + key + "\nKeys found:" + labels.keySet());
@@ -359,11 +358,10 @@ public class AssertReport {
         if (scanType == null) {
             throw new IllegalArgumentException("Integration test corrupt: scanType may not be null!");
         }
-        Optional<SecHubReportMetaData> metaDataOpt = report.getMetaData();
-        if (metaDataOpt.isEmpty()) {
+        SecHubReportMetaData metaData = report.getMetaData();
+        if (metaData == null) {
             fail("Meta data not found inside report");
         }
-        SecHubReportMetaData metaData = metaDataOpt.get();
         SecHubReportSummary summary = metaData.getSummary();
 
         switch (scanType) {
@@ -375,6 +373,8 @@ public class AssertReport {
             return summary.getLicenseScan();
         case SECRET_SCAN:
             return summary.getSecretScan();
+        case IAC_SCAN:
+            return summary.getIacScan();
         case WEB_SCAN:
             return summary.getWebScan();
         case REPORT:

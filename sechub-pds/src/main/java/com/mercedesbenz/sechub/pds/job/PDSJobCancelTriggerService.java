@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.job;
 
+import static com.mercedesbenz.sechub.pds.usecase.PDSDocumentationScopeConstants.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ public class PDSJobCancelTriggerService {
     @Autowired
     PDSCancelService cancelService;
 
-    @PDSMustBeDocumented(TRIGGER_STEP_MUST_BE_DOCUMENTED)
+    @PDSMustBeDocumented(value = TRIGGER_STEP_MUST_BE_DOCUMENTED, scope = SCOPE_JOB)
     @Scheduled(initialDelayString = TRIGGER_INITIAL_DELAY_STRING, fixedDelayString = TRIGGER_FIXED_DELAY_STRING)
     @UseCaseSystemHandlesJobCancelRequests(@PDSStep(number = 1, name = "Scheduling", description = "Checks for PDS job cancel requests."))
     public void triggerHandleCancelRequests() {

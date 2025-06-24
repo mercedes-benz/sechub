@@ -6,6 +6,8 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -41,6 +43,7 @@ import com.mercedesbenz.sechub.commons.mapping.MappingEntry;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
+import com.mercedesbenz.sechub.domain.administration.job.JobInformation;
 import com.mercedesbenz.sechub.domain.scan.admin.FullScanData;
 import com.mercedesbenz.sechub.domain.scan.project.ScanProjectConfig;
 import com.mercedesbenz.sechub.integrationtest.internal.DefaultTestExecutionProfile;
@@ -650,6 +653,10 @@ public class TestAPI {
         return newToken;
     }
 
+    public static void updateEmailByOneTimeTokenLink(URI uri) {
+        as(ANONYMOUS).sendGetRequestToURI(uri);
+    }
+
     /**
      * Returns link to fetch a new api token, after a signup was acepted. Will use
      * last sent mail body to determine the token.
@@ -662,13 +669,7 @@ public class TestAPI {
         LOG.debug("Get link to fetch new api token after signup accepted for for user:{}", user.getUserId());
         MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(user, "SecHub user account created");
         String text = mail.text.trim(); // remove last \n if existing...
-        String[] lines = text.split("\n");
-
-        String linkOfOneApiToken = lines[lines.length - 1];
-        if (linkOfOneApiToken.isEmpty()) {
-            fail("empty link line, origin text mail was:\n" + text);
-        }
-        return linkOfOneApiToken;
+        return getLinkFromMail(text);
     }
 
     /**
@@ -683,6 +684,30 @@ public class TestAPI {
         LOG.debug("Get link to fetch new api token after change requested for user:{}", user.getUserId());
         MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(user, "Your request for a new SecHub API token");
         String text = mail.text.trim(); // remove last \n if existing...
+        return getLinkFromMail(text);
+    }
+
+    public static URI assertAndFetchLinkToVerifyEmailAddressAfterChangeRequest(String newMailAddress, TestUser user) {
+        URI result = null;
+
+        MockEmailEntry mail = IntegrationTestContext.get().emailAccess().findMailOrFail(newMailAddress, "Verify new SecHub account email address");
+        String text = mail.text.trim();
+        String link = getLinkFromMail(text);
+
+        if (link == null || link.isBlank()) {
+            fail("No verify link sent to mail address:" + newMailAddress);
+        }
+
+        try {
+            result = new URI(link);
+        } catch (URISyntaxException e) {
+            fail("Link sent to " + newMailAddress + " was not an an URI:" + link + "\n" + e.getMessage());
+        }
+
+        return result;
+    }
+
+    private static String getLinkFromMail(String text) {
         String[] lines = text.split("\n");
 
         String linkOfOneApiToken = lines[lines.length - 1];
@@ -1718,4 +1743,93 @@ public class TestAPI {
         getSuperAdminRestHelper().post(url);
 
     }
+
+    public static List<JobInformation> fetchAllJobInformationEntriesFromAdministration() {
+        String url = getURLBuilder().buildIntegrationTestFetchAllJobInformationEntriesFromAdministration();
+        String json = getSuperAdminRestHelper().getJSON(url);
+
+        ObjectMapper mapper = TestJSONHelper.get().getMapper();
+        ObjectReader readerForListOf = mapper.readerForListOf(JobInformation.class);
+        try {
+            return readerForListOf.readValue(json);
+        } catch (Exception e) {
+            throw new IllegalStateException("was not able to fetch security logs", e);
+        }
+    }
+
+    public static void initOpaqueTokenTestCache() {
+        String url = getURLBuilder().buildIntegrationTestOpaqueTokenInitTestCaching();
+        getSuperAdminRestHelper().post(url);
+    }
+
+    public static TestOAuth2AuthenticatedPrincipal introspectOpaqueTokenTestCache(String opaqueToken) {
+        String url = getURLBuilder().buildIntegrationTestOpaqueTokenIntrospectTestCaching(opaqueToken);
+        String json = getSuperAdminRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSON(TestOAuth2AuthenticatedPrincipal.class, json);
+    }
+
+    public static void shutdownOpaqueTokenTestCache() {
+
+        String url = getURLBuilder().buildIntegrationTestOpaqueTokenShutdownTestCaching();
+        getSuperAdminRestHelper().post(url);
+    }
+
+    public static class TestOAuth2AuthenticatedPrincipal {
+        private String name;
+        private String username;
+        private String issuedAt;
+        private String expiresAt;
+        private boolean active;
+
+        private Map<String, Object> attributes;
+
+        public void setActive(Boolean active) {
+            this.active = active;
+        }
+
+        public Boolean isActive() {
+            return active;
+        }
+
+        public void setExpiresAt(String expiresAt) {
+            this.expiresAt = expiresAt;
+        }
+
+        public String getExpiresAt() {
+            return expiresAt;
+        }
+
+        public void setIssuedAt(String issuedAt) {
+            this.issuedAt = issuedAt;
+        }
+
+        public String getIssuedAt() {
+            return issuedAt;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setAttributes(Map<String, Object> attributes) {
+            this.attributes = attributes;
+        }
+
+        public Map<String, Object> getAttributes() {
+            return attributes;
+        }
+    }
+
 }

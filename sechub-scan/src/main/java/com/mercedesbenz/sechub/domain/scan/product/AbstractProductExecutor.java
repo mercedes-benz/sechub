@@ -54,15 +54,15 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
     private int version;
 
-    protected AbstractProductExecutor(ProductIdentifier productIdentifier, int version, ScanType scanType) {
-        if (scanType == null) {
-            throw new IllegalArgumentException("Scan type may not be null!");
-        }
+    protected AbstractProductExecutor(ProductIdentifier productIdentifier, int version) {
         if (productIdentifier == null) {
             throw new IllegalArgumentException("Product identifier may not be null!");
         }
-        this.scanType = scanType;
+        if (productIdentifier.getType() == null) {
+            throw new IllegalArgumentException("Scan type for product identifier may not be null - but was for " + productIdentifier + " !");
+        }
         this.productIdentifier = productIdentifier;
+        this.scanType = productIdentifier.getType();
         this.version = version;
 
         /*
@@ -133,6 +133,7 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
     private List<ProductResult> startExecution(ProductExecutorData data) throws SecHubExecutionException {
 
         LOG.debug("Executing {}", data.traceLogId);
+
         try {
             List<ProductResult> targetResults = new ArrayList<>();
 
@@ -231,6 +232,10 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
 
         List<ProductResult> productResults = executeByAdapter(data);
 
+        /* remember public scan type */
+        ScanType scanType = productIdentifier.getType();
+        data.getSechubExecutionContext().rememberIfPublicScanType(scanType);
+
         /* product execution has been done, so remove from history */
         context.forget(historyElement);
 
@@ -258,6 +263,8 @@ public abstract class AbstractProductExecutor implements ProductExecutor {
             return config.getLicenseScan().isPresent();
         case SECRET_SCAN:
             return config.getSecretScan().isPresent();
+        case IAC_SCAN:
+            return config.getIacScan().isPresent();
         case ANALYTICS:
             // will be handled inisde isExecutionNecessary() of executor implementation
             return true;

@@ -9,6 +9,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
+
 public class SecHubConfigurationModelSupport {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubConfigurationModelSupport.class);
@@ -59,6 +61,8 @@ public class SecHubConfigurationModelSupport {
             return isDataTypeContainedOrReferenced(dataType, model, model.getLicenseScan(), SecHubLicenseScanConfiguration.class);
         case SECRET_SCAN:
             return isDataTypeContainedOrReferenced(dataType, model, model.getSecretScan(), SecHubSecretScanConfiguration.class);
+        case IAC_SCAN:
+            return isDataTypeContainedOrReferenced(dataType, model, model.getIacScan(), SecHubIacScanConfiguration.class);
         case REPORT:
             return false;
         case ANALYTICS:
@@ -129,28 +133,48 @@ public class SecHubConfigurationModelSupport {
                 }
             }
         }
+        Set<String> names = usageByName.getNamesOfUsedDataConfigurationObjects();
+        if (names.isEmpty()) {
+            LOG.debug("No names for data usages defined, so datatype {} not contained", dataType);
+            return false;
+        }
+
+        /* check for archive root references */
+        switch (dataType) {
+        case SOURCE:
+            if (names.contains(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)) {
+                return true;
+            }
+            break;
+        case BINARY:
+            if (names.contains(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)) {
+                return true;
+            }
+            break;
+        case NONE:
+            return false;
+        default:
+            LOG.error("Datatype {} unknown, so never contained", dataType);
+            return false;
+        }
+
+        /* check for references to data section */
         Optional<SecHubDataConfiguration> dataOpt = model.getData();
         if (!dataOpt.isPresent()) {
             /* no data, no reference possible */
             LOG.debug("No data element found, so datatype {} not contained", dataType);
             return false;
         }
-        Set<String> names = usageByName.getNamesOfUsedDataConfigurationObjects();
-        if (names.isEmpty()) {
-            LOG.debug("No names for data usages defined, so datatype {} not contained", dataType);
-            return false;
-        }
         SecHubDataConfiguration data = dataOpt.get();
         switch (dataType) {
-        case BINARY:
-            return atLeastOneNameReferencesOneElementInGivenDataConfiguration(names, data.getBinaries(), dataType);
         case SOURCE:
-            return atLeastOneNameReferencesOneElementInGivenDataConfiguration(names, data.getSources(), dataType);
-        case NONE:
-            return false;
+            return names.contains(CommonConstants.SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)
+                    || atLeastOneNameReferencesOneElementInGivenDataConfiguration(names, data.getSources(), dataType);
+        case BINARY:
+            return names.contains(CommonConstants.BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER)
+                    || atLeastOneNameReferencesOneElementInGivenDataConfiguration(names, data.getBinaries(), dataType);
         default:
-            LOG.error("Datatype {} unknown, so never contained", dataType);
-            return false;
+            throw new IllegalStateException("This code segment may not be reached: At this point all other data types must be already treated.");
 
         }
     }
@@ -194,6 +218,9 @@ public class SecHubConfigurationModelSupport {
         }
         if (model.getSecretScan().isPresent()) {
             result.add(ScanType.SECRET_SCAN);
+        }
+        if (model.getIacScan().isPresent()) {
+            result.add(ScanType.IAC_SCAN);
         }
         return result;
     }

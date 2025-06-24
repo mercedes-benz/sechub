@@ -575,7 +575,8 @@ public class IntegrationTestDefaultProfiles {
             IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED);
 
     /**
-     * The profile enables a PDS prepare. Simulated preparation is successful
+     * <h3>Profile 27</h3> The profile enables a PDS prepare. Simulated preparation
+     * is successful
      *
      * <h5>Used inside scenarios:</h5>
      * <ul>
@@ -586,8 +587,8 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_28_PDS_PREPARE_MOCKED_SUCCESS = defineProfile28();
 
     /**
-     * The profile enables a PDS prepare. Simulated preparation is failing - exit
-     * code 0, but no result file
+     * <h3>Profile 28</h3> The profile enables a PDS prepare. Simulated preparation
+     * is failing - exit code 0, but no result file
      *
      * <h5>Used inside scenarios:</h5>
      * <ul>
@@ -598,8 +599,8 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_29_PDS_PREPARE_FAILING = defineProfile29();
 
     /**
-     * The profile enables a PDS prepare. Simulated preparation is failing with exit
-     * code 5
+     * <h3>Profile 29</h3> The profile enables a PDS prepare. Simulated preparation
+     * is failing with exit code 5
      *
      * <h5>Used inside scenarios:</h5>
      * <ul>
@@ -610,8 +611,8 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_30_PDS_PREPARE_EXIT_5 = defineProfile30();
 
     /**
-     * The profile enables a PDS prepare. PDS is tested for receiving defined sechub
-     * scan configuration.
+     * <h3>Profile 30</h3> The profile enables a PDS prepare. PDS is tested for
+     * receiving defined sechub scan configuration.
      *
      * <h5>Used inside scenarios:</h5>
      * <ul>
@@ -622,8 +623,8 @@ public class IntegrationTestDefaultProfiles {
     public static final DefaultTestExecutionProfile PROFILE_31_PDS_PREPARE_SCAN_CONFIG_SUCCESS = defineProfile31();
 
     /**
-     * The profile enables a PDS prepare. PDS is tested for running PDS prepare in
-     * integration test mode. This profile uses
+     * <h3>Profile 32</h3> The profile enables a PDS prepare. PDS is tested for
+     * running PDS prepare in integration test mode. This profile uses
      * {@link IntegrationTestDefaultExecutorConfigurations#PDS_PREPARE_VARIANT_E}
      * executor configuration which has script log combination to PDS log enabled.
      *
@@ -634,6 +635,23 @@ public class IntegrationTestDefaultProfiles {
      *
      */
     public static final DefaultTestExecutionProfile PROFILE_32_PDS_PREPARE_SCAN_CONFIG_SUCCESS = defineProfile32();
+
+    /**
+     * <h3>Profile 33</h3>
+     * <h4>Short description</h4>PDS scan profile for PDS solution mock iac scan
+     * (kics)
+     *
+     * <h4>Overview</h4> For an overview over all scenarios, look at
+     * {@link com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestDataOverview
+     * Overview}
+     *
+     * <h4>Details</h4><br>
+     * <h5>Used inside scenarios:</h5>
+     * <ul>
+     * <li>{@link Scenario21}</li>
+     * </ul>
+     */
+    public static final DefaultTestExecutionProfile PROFILE_33_PDS_SOLUTION_KICS_MOCKED = defineProfile33();
 
     /**
      * @return all default profiles
@@ -864,7 +882,17 @@ public class IntegrationTestDefaultProfiles {
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PREPARE_INTEGRATIONTEST_VARIANT_E);
         profile.id = "inttest-p32-pds-prepare";
-        profile.description = "Profile 31: PDS prepare, reused storage, dynamic text results, variant e - test prepare wrapper application in integration test mode";
+        profile.description = "Profile 32: PDS prepare, reused storage, dynamic text results, variant e - test prepare wrapper application in integration test mode";
+        profile.enabled = true;
+        return profile;
+    }
+
+    private static DefaultTestExecutionProfile defineProfile33() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_KICS_MOCKED);
+        profile.id = "inttest-p33-pds-iac-kics";
+        profile.description = "Profile 33: PDS iac scan using kics";
         profile.enabled = true;
         return profile;
     }

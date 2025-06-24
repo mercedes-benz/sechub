@@ -3,6 +3,8 @@
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue';
 import { ChevronDownIcon } from '@heroicons/vue/20/solid';
 
+provideHeadlessUseId(() => useId());
+
 const links = [
   {
     name: 'Client',
@@ -37,16 +39,6 @@ const links = [
         <Menu as="div" class="relative mt-8 inline-block text-left">
           <div>
             <MenuButton class="button">
-              <a href="https://mercedes-benz.github.io/sechub/index-old.html">
-                Downloads
-              </a>
-            </MenuButton>
-          </div>
-        </Menu>
-        <!-- Re-enable this block once issue #3744 is solved
-        <Menu as="div" class="relative mt-8 inline-block text-left">
-          <div>
-            <MenuButton class="button">
               Download
               <ChevronDownIcon class="-mr-1 ml-2 h-5 w-5 text-white hover:text-fern-100" aria-hidden="true" />
             </MenuButton>
@@ -75,7 +67,7 @@ const links = [
             </MenuItems>
           </transition>
         </Menu>
-        -->
+
       </div>
     </div>
   </section>

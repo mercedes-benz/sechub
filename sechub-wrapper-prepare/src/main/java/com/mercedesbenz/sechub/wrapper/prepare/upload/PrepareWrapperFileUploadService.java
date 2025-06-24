@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.util.StringInputStream;
@@ -23,8 +22,11 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 public class PrepareWrapperFileUploadService {
     private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperFileUploadService.class);
 
-    @Autowired
-    PrepareWrapperStorageService storageService;
+    private final PrepareWrapperStorageService storageService;
+
+    public PrepareWrapperFileUploadService(PrepareWrapperStorageService storageService) {
+        this.storageService = storageService;
+    }
 
     public void uploadFile(String projectId, UUID jobUUID, File file, String checkSum) {
         assertUploadParams(projectId, jobUUID, file, checkSum);

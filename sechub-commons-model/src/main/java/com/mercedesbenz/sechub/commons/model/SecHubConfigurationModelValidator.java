@@ -19,10 +19,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.core.util.SimpleNetworkUtils;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginTOTPConfiguration;
+import com.mercedesbenz.sechub.commons.model.login.WebLoginVerificationConfiguration;
 
 public class SecHubConfigurationModelValidator {
 
@@ -93,7 +95,12 @@ public class SecHubConfigurationModelValidator {
     private class InternalValidationContext {
         private Set<String> wellknownObjectNames = new HashSet<>();
         private SecHubConfigurationModelValidationResult result;
-        private SecHubConfigurationModel model;;
+        private SecHubConfigurationModel model;
+
+        private InternalValidationContext() {
+            wellknownObjectNames.addAll(CommonConstants.getAllRootArchiveReferenceIdentifiers());
+        }
+
     }
 
     private void handleMetaDataLabels(Map<String, String> labels, SecHubConfigurationModelValidationResult result) {
@@ -216,6 +223,7 @@ public class SecHubConfigurationModelValidator {
         handleInfraScanConfiguration(context);
         handleLicenseScanConfiguration(context);
         handleSecretScanConfiguration(context);
+        handleIacScanConfiguration(context);
 
     }
 
@@ -225,13 +233,9 @@ public class SecHubConfigurationModelValidator {
         if (licenseScanOpt.isEmpty()) {
             return;
         }
-        SecHubDataConfigurationUsageByName licenseScan = licenseScanOpt.get();
+        SecHubDataConfigurationUsageByName usageByName = licenseScanOpt.get();
 
-        if (licenseScan.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
-            context.result.addError(NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
-        }
-
-        handleUsages(context, licenseScan);
+        assertUsagesExistsAndAreValid("license scan", context, usageByName);
     }
 
     private void handleSecretScanConfiguration(InternalValidationContext context) {
@@ -240,13 +244,21 @@ public class SecHubConfigurationModelValidator {
         if (secretScanOpt.isEmpty()) {
             return;
         }
-        SecHubDataConfigurationUsageByName secretScan = secretScanOpt.get();
+        SecHubDataConfigurationUsageByName usageByName = secretScanOpt.get();
 
-        if (secretScan.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
-            context.result.addError(NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        assertUsagesExistsAndAreValid("secret scan", context, usageByName);
+    }
+
+    private void handleIacScanConfiguration(InternalValidationContext context) {
+        Optional<SecHubIacScanConfiguration> iacScanOpt = context.model.getIacScan();
+
+        if (iacScanOpt.isEmpty()) {
+            return;
         }
+        SecHubDataConfigurationUsageByName usageByname = iacScanOpt.get();
 
-        handleUsages(context, secretScan);
+        validateUsagesExistsAndAreValid("iac scan", context, usageByname, true, false); // binaries are forbidden for IaC - makes no sense
+
     }
 
     private void handleCodeScanConfiguration(InternalValidationContext context) {
@@ -254,18 +266,87 @@ public class SecHubConfigurationModelValidator {
         if (codeScanOpt.isEmpty()) {
             return;
         }
-        SecHubDataConfigurationUsageByName codeScan = codeScanOpt.get();
-        handleUsages(context, codeScan);
+        SecHubDataConfigurationUsageByName usageByName = codeScanOpt.get();
+        validateUsages("code scan", context, usageByName, true, true);
 
     }
 
-    private void handleUsages(InternalValidationContext context, SecHubDataConfigurationUsageByName usageByName) {
-        Set<String> names = usageByName.getNamesOfUsedDataConfigurationObjects();
-        for (String name : names) {
-            if (!context.wellknownObjectNames.contains(name)) {
-                context.result.addError(REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING,
-                        "The referenced name: '" + SimpleStringUtils.truncateWhenTooLong(name, MAX_NAME_LENGTH) + "' is not found in model");
+    private void validateUsages(String usageType, InternalValidationContext context, SecHubDataConfigurationUsageByName usageByName, boolean sourceAllowed,
+            boolean binariesAlowed) {
+        validateReferencedNameExists(usageType, context, usageByName);
+        validateUsageTypeIsAccepted(usageType, context, usageByName, sourceAllowed, binariesAlowed);
+    }
+
+    private void assertUsagesExistsAndAreValid(String usageType, InternalValidationContext context, SecHubDataConfigurationUsageByName usageByName) {
+        validateUsagesExistsAndAreValid(usageType, context, usageByName, true, true);
+    }
+
+    private void validateUsagesExistsAndAreValid(String usageType, InternalValidationContext context, SecHubDataConfigurationUsageByName usageByName,
+            boolean sourceAllowed, boolean binariesAlowed) {
+        if (usageByName.getNamesOfUsedDataConfigurationObjects().isEmpty()) {
+            context.result.addError(NO_DATA_CONFIG_SPECIFIED_FOR_SCAN);
+        }
+
+        validateUsages(usageType, context, usageByName, sourceAllowed, binariesAlowed);
+    }
+
+    private void validateReferencedNameExists(String usageType, InternalValidationContext context, SecHubDataConfigurationUsageByName usageByName) {
+        Set<String> usedNames = usageByName.getNamesOfUsedDataConfigurationObjects();
+
+        for (String usedName : usedNames) {
+            if (!context.wellknownObjectNames.contains(usedName)) {
+                context.result.addError(REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING, "The referenced name: '"
+                        + SimpleStringUtils.truncateWhenTooLong(usedName, MAX_NAME_LENGTH) + "' is not found in model for " + usageType);
             }
+        }
+    }
+
+    private void validateUsageTypeIsAccepted(String usageType, InternalValidationContext context, SecHubDataConfigurationUsageByName usageByName,
+            boolean sourceAllowed, boolean binariesAlowed) {
+        if (sourceAllowed && binariesAlowed) {
+            // everything accepted, nothing to check
+            return;
+        }
+
+        if (!sourceAllowed) {
+            validateConfigurationTypeNotUsed(SecHubDataConfigurationType.SOURCE, usageByName, usageType, context);
+        }
+        if (!binariesAlowed) {
+            validateConfigurationTypeNotUsed(SecHubDataConfigurationType.BINARY, usageByName, usageType, context);
+        }
+
+    }
+
+    private void validateConfigurationTypeNotUsed(SecHubDataConfigurationType configurationType, SecHubDataConfigurationUsageByName usageByName,
+            String usageType, InternalValidationContext context) {
+
+        Optional<SecHubDataConfiguration> optData = context.model.getData();
+        if (optData.isEmpty()) {
+            return;
+        }
+
+        Set<String> namesOfUsedDataConfigurations = usageByName.getNamesOfUsedDataConfigurationObjects();
+
+        SecHubDataConfiguration data = optData.get();
+
+        SecHubConfigurationModelValidationError error = switch (configurationType) {
+        case SOURCE -> ILLEGAL_SOURCE_DATA_REFERENCE;
+        case BINARY -> ILLEGAL_BINARY_DATA_REFERENCE;
+        default -> throw new IllegalArgumentException("Not implemented for " + configurationType);
+        };
+
+        List<? extends SecHubDataConfigurationObject> configList = switch (configurationType) {
+        case SOURCE -> data.getSources();
+        case BINARY -> data.getBinaries();
+        default -> throw new IllegalArgumentException("Not implemented for " + configurationType);
+        };
+
+        List<String> dataConfigurationNamesOfGivenType = new ArrayList<>();
+        configList.forEach((config) -> dataConfigurationNamesOfGivenType.add(config.getUniqueName()));
+
+        boolean noElementsFound = Collections.disjoint(namesOfUsedDataConfigurations, dataConfigurationNamesOfGivenType);
+        if (!noElementsFound) {
+            context.result.addError(error, "Not allowed for " + usageType);
         }
     }
 
@@ -294,6 +375,7 @@ public class SecHubConfigurationModelValidator {
         handleApi(context, webScan);
         handleHTTPHeaders(context, webScan);
         handleLoginData(context, webScan);
+        handleLogout(context, webScan);
 
     }
 
@@ -319,7 +401,7 @@ public class SecHubConfigurationModelValidator {
         }
 
         SecHubWebScanApiConfiguration openApi = apiOpt.get();
-        handleUsages(context, openApi);
+        validateUsages("web scan api config", context, openApi, true, false); // API configuration with binaries makes no sense
     }
 
     private void handleHTTPHeaders(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
@@ -506,7 +588,25 @@ public class SecHubConfigurationModelValidator {
         }
         WebLoginConfiguration login = loginOpt.get();
         handleTOTP(context, login);
+        handleLoginVerification(context, login);
 
+    }
+
+    private void handleLogout(InternalValidationContext context, SecHubWebScanConfiguration webScan) {
+        WebLogoutConfiguration logout = webScan.getLogout();
+        if (logout == null) {
+            return;
+        }
+
+        if (logout.getXpath() == null) {
+            context.result.addError(WEB_SCAN_LOGOUT_CONFIGURATION_INVALID,
+                    "The logout '" + WebLogoutConfiguration.PROPERTY_XPATH + "' must be present if logout was configured!");
+        }
+
+        if (logout.getHtmlElement() == null) {
+            context.result.addError(WEB_SCAN_LOGOUT_CONFIGURATION_INVALID,
+                    "The logout '" + WebLogoutConfiguration.PROPERTY_HTML_ELEMENT + "' must be present if logout was configured!");
+        }
     }
 
     private void handleTOTP(InternalValidationContext context, WebLoginConfiguration login) {
@@ -525,6 +625,20 @@ public class SecHubConfigurationModelValidator {
         }
         if (totp.getHashAlgorithm() == null) {
             context.result.addError(WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID, "The TOTP 'hashAlgorithm' must never be null if TOTP shall be used!");
+        }
+    }
+
+    private void handleLoginVerification(InternalValidationContext context, WebLoginConfiguration login) {
+        WebLoginVerificationConfiguration verification = login.getVerification();
+        if (verification == null) {
+            return;
+        }
+        if (verification.getUrl() == null) {
+            context.result.addError(WEB_SCAN_LOGIN_VERIFICATION_CONFIGURATION_INVALID,
+                    "The verification 'url' must never be null if verification shall be used!");
+        }
+        if (verification.getResponseCode() < 199 || verification.getResponseCode() > 399) {
+            context.result.addError(WEB_SCAN_LOGIN_VERIFICATION_CONFIGURATION_INVALID, "The verification 'responseCode' must be between 199 and 399!");
         }
     }
 
@@ -566,6 +680,11 @@ public class SecHubConfigurationModelValidator {
             String uniqueName = configurationObject.getUniqueName();
             if (uniqueName == null) {
                 result.addError(DATA_CONFIG_OBJECT_NAME_IS_NULL);
+                continue;
+            }
+            if (CommonConstants.getAllRootArchiveReferenceIdentifiers().contains(uniqueName)) {
+                result.addError(RESERVED_REFERENCE_ID_MUST_NOT_BE_USED_IN_DATA_SECTION,
+                        "The reference id '" + uniqueName + "' is a reserved one and may not be used inside a data section!");
                 continue;
             }
             if (!hasStandardAsciiLettersDigitsOrAdditionalAllowedCharacters(uniqueName, '-', '_')) {
@@ -695,6 +814,7 @@ public class SecHubConfigurationModelValidator {
         atLeastOne = atLeastOne || model.getWebScan().isPresent();
         atLeastOne = atLeastOne || model.getLicenseScan().isPresent();
         atLeastOne = atLeastOne || model.getSecretScan().isPresent();
+        atLeastOne = atLeastOne || model.getIacScan().isPresent();
 
         return atLeastOne;
     }

@@ -29,6 +29,8 @@ public class PDSExecutionFutureTask extends FutureTask<PDSExecutionResult> {
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
 
+        LOG.debug("Task starts cancellation of PDS job: {}, ", execCallable.getPdsJobUUID());
+
         boolean processHasTerminated = execCallable.prepareForCancel(mayInterruptIfRunning);
         boolean superImplementation = super.cancel(mayInterruptIfRunning);
 

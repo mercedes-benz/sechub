@@ -71,9 +71,6 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminC
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
@@ -97,9 +94,6 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
     @MockBean
     ProjectCreationService creationService;
-
-    @MockBean
-    ProjectChangeOwnerService assignOwnerService;
 
     @MockBean
     ProjectAssignUserService assignUserService;
@@ -130,6 +124,9 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
 
     @MockBean
     ProjectTemplateService projectTemplateService;
+
+    @MockBean
+    ProjectChangeOwnerService assignOwnerService;
 
     @Before
     public void before() {
@@ -249,37 +246,6 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseAdminChangesProjectOwner.class)
-    public void restdoc_change_project_owner() throws Exception {
-        /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminChangesProjectOwnerUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseAdminChangesProjectOwner.class;
-
-        /* execute + test @formatter:off */
-        mockMvc.perform(
-                post(apiEndpoint, "projectId1", "userId1").
-	                contentType(MediaType.APPLICATION_JSON_VALUE).
-	                header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
-                ).
-        andExpect(status().isOk()).
-        andDo(defineRestService().
-                with().
-                    useCaseData(useCase).
-                    tag(RestDocFactory.extractTag(apiEndpoint)).
-                and().
-                document(
-	                		requestHeaders(
-
-	                		),
-                            pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
-                                    parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project as the owner")
-                            )
-                ));
-        /* @formatter:on */
-    }
-
-    @Test
     @UseCaseRestDoc(useCase = UseCaseAdminChangesProjectAccessLevel.class)
     public void restdoc_change_project_access_level() throws Exception {
 
@@ -326,70 +292,6 @@ public class ProjectAdministrationRestControllerRestDocTest implements TestIsNec
                 ));
 
         /* @formatter:on */
-    }
-
-    @Test
-    @UseCaseRestDoc(useCase = UseCaseAdminAssignsUserToProject.class)
-    public void restdoc_assign_user2project() throws Exception {
-        /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminAssignsUserToProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseAdminAssignsUserToProject.class;
-
-        /* execute + test @formatter:off */
-		mockMvc.perform(
-				post(apiEndpoint, "projectId1", "userId1").
-					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
-				).
-		andExpect(status().isOk()).
-		andDo(defineRestService().
-                with().
-                    useCaseData(useCase).
-                    tag(RestDocFactory.extractTag(apiEndpoint)).
-                and().
-                document(
-	                		requestHeaders(
-
-	                		),
-                            pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
-                                    parameterWithName(USER_ID.paramName()).description("The user id of the user to assign to project")
-                            )
-				));
-
-		/* @formatter:on */
-    }
-
-    @Test
-    @UseCaseRestDoc(useCase = UseCaseAdminUnassignsUserFromProject.class)
-    public void restdoc_unassign_userFromProject() throws Exception {
-        /* prepare */
-        String apiEndpoint = https(PORT_USED).buildAdminUnassignsUserFromProjectUrl(PROJECT_ID.pathElement(), USER_ID.pathElement());
-        Class<? extends Annotation> useCase = UseCaseAdminUnassignsUserFromProject.class;
-
-        /* execute + test @formatter:off */
-		mockMvc.perform(
-				delete(apiEndpoint,"userId1", "projectId1").
-					contentType(MediaType.APPLICATION_JSON_VALUE).
-					header(TestAuthenticationHelper.HEADER_NAME, TestAuthenticationHelper.getHeaderValue())
-				).
-		andExpect(status().isOk()).
-		andDo(defineRestService().
-                with().
-                    useCaseData(useCase).
-                    tag(RestDocFactory.extractTag(apiEndpoint)).
-                and().
-                document(
-	                		requestHeaders(
-
-	                		),
-                            pathParameters(
-                                    parameterWithName(PROJECT_ID.paramName()).description("The project id"),
-                                    parameterWithName(USER_ID.paramName()).description("The user id of the user to unassign from project")
-                            )
-				));
-
-		/* @formatter:on */
     }
 
     @Test

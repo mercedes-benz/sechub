@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 2.5.0</span>
+<span id="revnumber"> Server 2.11.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -715,10 +715,10 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <p><strong>About SecHub</strong></p>
 </div>
 <div class="paragraph">
-<p>SecHub is an acronym for <code>Security Hub</code> and is first of
-all <strong>one API to scan for different security problems</strong>. Users of SecHub do not
-care about which exact product is doing the real scan on server side, but only
-configure their wanted aim.</p>
+<p>SecHub stands for "Security Hub" and serves as an unified API
+to scan for various security issues.
+With SecHub, users don&#8217;t need to worry about the specific scanning product
+used on the server side; they simply configure their desired security goals.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -728,19 +728,18 @@ configure their wanted aim.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>SecHub does <strong>NOT</strong> provide a security infrastructure but does orchestrate
-different security products/tools.</p>
+<p>The SecHub server alone does <strong>NOT</strong> provide a security infrastructure but orchestrates different security products/tools.</p>
 </div>
 <div class="paragraph">
-<p>So <strong>you still need an existing security infrastructure</strong> behind SecHub !</p>
+<p>Please check our ready to use security open source tools: <strong><a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions">PDS solutions</a></strong> for integration with SecHub server.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>It was designed to be very easy to integrate into any existing
-build pipeline / contionus integration (CI) and helps to provide
+<p>It was designed to be very easy to integrate into existing
+build / contionus integration (CI) pipelines and helps to provide
 <strong>SecDevOps</strong>.</p>
 </div>
 <div class="admonitionblock tip">
@@ -751,7 +750,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can get more information about from <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a>  .</p>
+<p>You can get more documentation from the <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a>  .</p>
 </div>
 <div class="paragraph">
 <p>The project is hosted at <a href="https://github.com/mercedes-benz/sechub" class="bare">https://github.com/mercedes-benz/sechub</a></p>
@@ -788,7 +787,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.5.0 - Build date: 2025-02-14 15:17 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.11.1 - Build date: 2025-06-20 13:10 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -869,8 +868,30 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <div class="paragraph">
 <p>The next text blocks describe the keys available on SecHub:</p>
 </div>
+<table id="section-gen-configuration-scope-api_token" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Scope 'API token'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.user.onetimetoken.outdated.millis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">86400000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time until the one time token expires</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-configuration-scope-administration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. Scope 'administration'</caption>
+<caption class="title">Table 2. Scope 'Administration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -890,83 +911,6 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrators can turn on this mode to allow product links in json and HTML output</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.scheduler.startup.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, administrators will be informed by notification when new scheduler instances are started. Those notifications will also contain information about potential zombie jobs.</p>
-<p class="tableblock"> When disabled, incoming events will be ignored and no notification sent.</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-anonymous" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Scope 'anonymous'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.user.onetimetoken.outdated.millis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">86400000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">One time token time when outdating</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-checkmarx" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Scope 'checkmarx'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.scanresultcheck.period.minutes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter check operation is called next. When -1 value is 1 minutes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.scanresultcheck.timeout.minutes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.trustall</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Turns off certification checks for this product only. Should only be used in test or development environments!</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-initial" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Scope 'initial'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.initialadmin.apitoken</p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An apitoken for initial admin, will only be used in DEV and INTEGRATIONTEST profiles and is optional!</p></td>
@@ -981,10 +925,361 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Userid of initial administrator</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.baseurl</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Base url of SecHub server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a></p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-development_only" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. Scope 'Development only'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.mock.cache.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When email mock shall cache the mails this must be configured to true, per default disabled!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.debug</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When debug flag is set, rest call reponse error messages do also contain stacktraces.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-email_validation" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. Scope 'Email validation'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.email.rule.allowed-domains</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The allowed domains for email addresses of SecHub users. A comma separated list of strings like: 'example.com,company.org'. If nothing is specified all domains are allowed.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-encryption" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. Scope 'Encryption'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.schedule.encryption.refresh.accept-outdated.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1800000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum amount of milliseconds an outdated encryption pool is still accepted in refresh phase</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-job" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Scope 'Job'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.healthcheck.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled each trigger will do an health check by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay for next job execution trigger after last executed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.initialdelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define initial delay for next job execution trigger. Interesting inside a cluster - just define this value different inside your instances (e.g. random value). This avoids write operations at same time.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.maxwaitretry</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">300</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When retry mechanism is enabled by <code>sechub.config.trigger.nextjob.retries</code>, and a retry is necessary, this value is used to define the maximum time period in millis which will be waited before retry. Why max value? Because cluster instances seems to be created often on exact same time by kubernetes. So having here a max value will result in a randomized wait time: means cluster members will do fetch operations time shifted and this automatically reduces collisions!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inside a cluster the next job fetching can lead to concurrent access. When this happens a retry can be done for the 'looser'. This value defines the amount of *tries*If you do not want any retries set the value to a value lower than 2. 2 Means after one execution failed there is one retry. Values lower than 2 will lead to one try of execution only.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.page.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.size.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum limit for job information list entries per page</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.schedule.nextjob.suspend.miniumum-duration.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The scheduler automatically restarts the next suspended jobs, regardless of the defined schedule strategy.
+This is done to get suspended jobs of another shut down instance back up and running as quickly as possible.</p>
+<p class="tableblock">To avoid suspended jobs being restarted too quickly, you can use this value to set the minimum time that must pass
+before the next suspended job can be restarted. The value is defined in milliseconds.</p>
+<p class="tableblock">The (previous) end date of the suspended job is used. For example, this value is important for
+K8s redeployment, because the servers that have not yet been updated should not immediately continue with the
+suspended jobs - they will also be shut down soon and would suspend the restarted jobs again&#8230;&#8203;</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.scheduler.strategy.id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the scheduler strategy by given identifier. This strategy determines the next job which shall be executed by job scheduler. Possible values are:first-come-first-serve,only-one-scan-per-project-at-a-time and only-one-scan-per-project-and-module-group</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.checksum</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> source code checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.zip</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> ZIP validation on sechub server side is disabled. ZIP validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.upload.binaries.maximum.bytes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">52428800</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the maximum amount of bytes accepted for uploading <code>binaries.tar</code>. The default when not set is 52428800 (50 MiB)</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-login_and_resource_server" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Scope 'Login and resource server'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.encryption</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.encryption.secret-key</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The secret key for encryption (used for cookies etc.). Must be an exactly 256 bit long string</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.classic-auth</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration for classic mode, only relevant when login modes contain 'classic'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.classic-auth.cookie-age-seconds</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cookie age in seconds.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.enabled</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines if login enabled or not</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.login-page</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The login page which can be used by external client (like WebUI)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.modes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The login modes to use as a comma separated list. Possible values are 'oauth2' and 'classic'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration for oauth2, only relevant when login modes contain 'oauth2'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.authorization-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI that identifies the Authorization Server. For example: <a href="https://idp.example.org/oauth2/v2/auth" class="bare">https://idp.example.org/oauth2/v2/auth</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.client-id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The client id used for oauth2 login handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.client-secret</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The client secret used for oauth2 login handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.issuer-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI that identifies the issuer. For example: <a href="https://idp.example.org" class="bare">https://idp.example.org</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.jwk-set-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI for jwk. For example: <a href="https://idp.example.org/oauth2/v3/certs" class="bare">https://idp.example.org/oauth2/v3/certs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.provider</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the oauth2 provider. For example 'keycloak'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.redirect-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is the callback URI where the IDP will redirect the user after successful login; 'https://&lt;sechub-server-host&gt;/login/oauth2/code/&lt;provider&gt;'. For most IDPs this URI has to be configured inside the IDP client</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.token-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents the URI for the token endpoint. For example: <a href="https://idp.example.org/oauth2/v4/token" class="bare">https://idp.example.org/oauth2/v4/token</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.oauth2.user-info-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI for user information. For example: <a href="https://idp.example.org/oauth2/v3/userinfo" class="bare">https://idp.example.org/oauth2/v3/userinfo</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.login.redirect-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The redirect URI after a succesful login is done</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.minimum-token-validity</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The minimum token expiration time, used as a minimum for cookie ages and token validity. If set higher than the default values it will always overwrite the default values. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.modes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The server modes to use as a comma separated list. Possible values are 'oauth2' and 'classic'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.jwt</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.jwt.jwk-set-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URI for jwk. For example: <a href="https://idp.example.com/oauth2/v3/certs" class="bare">https://idp.example.com/oauth2/v3/certs</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.mode</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The oauth2 mode to use. Can be either 'jwt' or 'opaque-token'</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.client-id</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Client id for oauth2 client being used for opaque token handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.client-secret</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The secret for the oauth2 client being used for opaque token handling</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.cluster-cache-clear-period</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The period until the in cluster cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.default-token-expires-in</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default token expiration time. Is used as fallback when IDP does not provide an expiration time. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.inmemory-cache-clear-period</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The period until the in memory cache will trigger a cleanup which removes expired values. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.introspection-uri</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Introspection URI of the identify provider, will be used to check if the given opaque token from login is valid.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.max-cache-duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum cache duration. To avoid that the IDP is always asked again about the validity of an opaquetoken, the acceptance is cached. When this time exceeds,the introspection will be done and cached again. Uses standard java duration syntax. For example '60m' means sixty minutes, '1d' means one day.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.server.oauth2.opaque-token.pre-cache-duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The pre cache duration: If a cluster wide cache is provided by the application, the in memory cache is acting as a precache to avoid too many cluster checks. In this case the in memory cache will not use the IDP expiration as cache timeout, but this one. If a value is no longer found in the short cache it will be retrieved by cluster cache. Uses standard java duration syntax. For example '10s' means 10 seconds, '1m' means one minute.</p></td>
+</tr>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Scope 'migration'</caption>
+<caption class="title">Table 8. Scope 'Migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1005,8 +1300,8 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-mock" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Scope 'mock'</caption>
+<table id="section-gen-configuration-scope-monitoring" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Scope 'Monitoring'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1021,14 +1316,24 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.email.mock.cache.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When email mock shall cache the mails this must be configured to true, per default disabled!</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.accepted.cpu.average.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum CPU load average accepted by sechub system. Value is calculated by measured system load average divided by available processors. A value above 1.0 usually means that a processor is very heavily loaded.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.accepted.memory.usage.max</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">90.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum memory usage percentage accepted by sechub system. Can be a value from 50 up to 100 for 100%</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.cache.time.millis</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds monitoring fetch results are cached before fetching again</p></td>
 </tr>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-nessus" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Scope 'nessus'</caption>
+<caption class="title">Table 10. Scope 'Nessus'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1105,7 +1410,7 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-netsparker" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Scope 'netsparker'</caption>
+<caption class="title">Table 11. Scope 'Netsparker'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1176,30 +1481,8 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-new" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Scope 'new'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.user.onetimetoken.outdated.millis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">86400000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time until the one time token expires</p></td>
-</tr>
-</tbody>
-</table>
 <table id="section-gen-configuration-scope-notification" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 'notification'</caption>
+<caption class="title">Table 12. Scope 'Notification'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1228,79 +1511,41 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Address used for reply when email was sent by sechub system</p></td>
 </tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-oauth2-jwt" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'oauth2-jwt'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
 <tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.jwt.jwk-set-uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The URI to the JWK set of the identity provider. Required in 'JWT' mode.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.scheduler.startup.enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled, administrators will be informed by notification when new scheduler instances are started. Those notifications will also contain information about potential zombie jobs.</p>
+<p class="tableblock"> When disabled, incoming events will be ignored and no notification sent.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.mode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The OAuth2 mode to use for authentication. Must be either 'JWT' or 'OPAQUE_TOKEN'.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.config</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false,mail.transport.protocol=smtp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: <code>mail.smtp.auth=false,mail.smtp.timeout=4000</code>. See <a href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html" class="bare">https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html</a> for configuration mapping</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.opaque-token.client-id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client ID to use when authenticating against the identity provider. Required in 'OPAQUE_TOKEN' mode.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.password</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password on SMPTP server, empty value means no password</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.opaque-token.client-secret</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Client secret to use when authenticating against the identity provider. Required in 'OPAQUE_TOKEN' mode.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.username</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username on SMPTP server, empty value means no username</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.security.oauth2.opaque-token.introspection-uri</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">null</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Opaque token introspection endpoint of the identity provider. Required in 'OPAQUE_TOKEN' mode.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.hostname</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hostname of SMPTP server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Port of SMPTP server, per default:25</p></td>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-pdsinstall" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 'pdsinstall'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.check.timetowait.milliseconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds when adapter check operation is called next. When -1 value is 60000 minutes</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.timeout.minutes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-pdsresilience" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Scope 'pdsresilience'</caption>
+<table id="section-gen-configuration-scope-pds" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. Scope 'PDS'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1335,6 +1580,16 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.check.timetowait.milliseconds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">30000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds when adapter check operation is called next. When -1 value is 60000 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.default.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">240</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.pds.resilience.encryption-out-of-sync.retry.max</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Amount of retries done when a PDS encryption out of sync problem happens</p></td>
@@ -1346,135 +1601,8 @@ is e.g. more suitable for a <code>kubernetes</code> cluster deployment.</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-scan" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'scan'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.check.canceljob.delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancellation check will be executed.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay (in milliseconds) for next job execution trigger after last executed.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.initialdelay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define initial delay (in milliseconds) for scan config refresh check operation.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.report.sensitivedata.max.nonobfuscated.characters</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define the amount of visible characters which are NOT obfuscated.</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-schedule" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'schedule'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.schedule.nextjob.suspend.miniumum-duration.milliseconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The scheduler automatically restarts the next suspended jobs, regardless of the defined schedule strategy.
-This is done to get suspended jobs of another shut down instance back up and running as quickly as possible.</p>
-<p class="tableblock">To avoid suspended jobs being restarted too quickly, you can use this value to set the minimum time that must pass
-before the next suspended job can be restarted. The value is defined in milliseconds.</p>
-<p class="tableblock">The (previous) end date of the suspended job is used. For example, this value is important for
-K8s redeployment, because the servers that have not yet been updated should not immediately continue with the
-suspended jobs - they will also be shut down soon and would suspend the restarted jobs again&#8230;&#8203;</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Scope 'scheduler'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.healthcheck.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When enabled each trigger will do an health check by monitoring service. If system has too much CPU load or uses too much memory, the trigger will not execute until memory and CPU load is at normal level!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.delay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay for next job execution trigger after last executed.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.initialdelay</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define initial delay for next job execution trigger. Interesting inside a cluster - just define this value different inside your instances (e.g. random value). This avoids write operations at same time.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.maxwaitretry</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">300</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When retry mechanism is enabled by <code>sechub.config.trigger.nextjob.retries</code>, and a retry is necessary, this value is used to define the maximum time period in millis which will be waited before retry. Why max value? Because cluster instances seems to be created often on exact same time by kubernetes. So having here a max value will result in a randomized wait time: means cluster members will do fetch operations time shifted and this automatically reduces collisions!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.trigger.nextjob.retries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inside a cluster the next job fetching can lead to concurrent access. When this happens a retry can be done for the 'looser'. This value defines the amount of *tries*If you do not want any retries set the value to a value lower than 2. 2 Means after one execution failed there is one retry. Values lower than 2 will lead to one try of execution only.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.scheduler.strategy.id</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define the scheduler strategy by given identifier. This strategy determines the next job which shall be executed by job scheduler. Possible values are:first-come-first-serve,only-one-scan-per-project-at-a-time and only-one-scan-per-project-and-module-group</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.checksum</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> source code checksum validation (sha256) on sechub server side is disabled. Sha256 validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.upload.validate.zip</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>false</code> ZIP validation on sechub server side is disabled. ZIP validation must be done by the delegated security products! You should disable the validation only for testing security product behaviours!</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.upload.binaries.maximum.bytes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">52428800</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define the maximum amount of bytes accepted for uploading <code>binaries.tar</code>. The default when not set is 52428800 (50 MiB)</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-sec" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Scope 'sec'</caption>
+<table id="section-gen-configuration-scope-product_checkmarx" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 14. Scope 'Product Checkmarx'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1519,29 +1647,73 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 <td class="tableblock halign-left valign-top"><p class="tableblock">Time to wait until retry is done when a 500 server internal error happened on Checkmarx server</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.page.max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.scanresultcheck.period.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter check operation is called next. When -1 value is 1 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.scanresultcheck.timeout.minutes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in minutes when adapter result check will automatically time out and adapter stops execution automatically. When -1 timeout is 7200 minutes</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.adapter.checkmarx.trustall</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Turns off certification checks for this product only. Should only be used in test or development environments!</p></td>
+</tr>
+</tbody>
+</table>
+<table id="section-gen-configuration-scope-scan" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. Scope 'Scan'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.check.canceljob.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay in milliseconds, for before next job cancellation check will be executed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.delay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define delay (in milliseconds) for next job execution trigger after last executed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.config.scan.scanconfig.refresh.initialdelay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define initial delay (in milliseconds) for scan config refresh check operation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.report.sensitivedata.max.nonobfuscated.characters</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the amount of visible characters which are NOT obfuscated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.ip</p></td>
 <td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given IP.</strong><br>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-ip-pattern' is supported as strategy. Inside this strategy,it is possible to define IPv4 or IPv6 adresses (wildcards are also possible). For example: <code>intranet-ip-pattern:192.168.178.*,2001:db8:85a3:0:0:8a2e:370:*</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.project.joblist.size.max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum limit for job information list entries per page</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.schedule.encryption.refresh.accept-outdated.milliseconds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1800000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum amount of milliseconds an outdated encryption pool is still accepted in refresh phase</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.baseurl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.uri</p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Base url of SecHub server - e.g. <a href="https://sechub.example.org" class="bare">https://sechub.example.org</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>One ore more strategies to decide target types by given URI.</strong><br>
+Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' and 'intranet-hostname-starts-with' are supported as strategies. For example: <code>intranet-hostname-ends-with:intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored. You can define multiple strategies at same time by using a pipe symbol to separate them. As an example: `intranet-hostname-ends-with:intranet.example.org,intx.example.com</p></td>
 </tr>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Scope 'security'</caption>
+<caption class="title">Table 16. Scope 'Security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1562,72 +1734,8 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-server" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Scope 'server'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.server.debug</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When debug flag is set, rest call reponse error messages do also contain stacktraces.</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-smtpserver" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Scope 'smtpserver'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.config</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mail.smtp.auth=false,mail.transport.protocol=smtp</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SMTP configuration map. You can setup all java mail smtp settings here in comma separate form with key=value. For Example: <code>mail.smtp.auth=false,mail.smtp.timeout=4000</code>. See <a href="https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html" class="bare">https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html</a> for configuration mapping</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.password</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Password on SMPTP server, empty value means no password</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.credential.username</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Username on SMPTP server, empty value means no username</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.hostname</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Hostname of SMPTP server</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.notification.smtp.port</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Port of SMPTP server, per default:25</p></td>
-</tr>
-</tbody>
-</table>
 <table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Scope 'storage'</caption>
+<caption class="title">Table 17. Scope 'Storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1713,72 +1821,11 @@ suspended jobs - they will also be shut down soon and would suspend the restarte
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-system" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Scope 'system'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.accepted.cpu.average.max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2.0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum CPU load average accepted by sechub system. Value is calculated by measured system load average divided by available processors. A value above 1.0 usually means that a processor is very heavily loaded.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.accepted.memory.usage.max</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">90.0</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum memory usage percentage accepted by sechub system. Can be a value from 50 up to 100 for 100%</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.monitoring.cache.time.millis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in milliseconds monitoring fetch results are cached before fetching again</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-target" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Scope 'target'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.ip</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Strategy to decide target types by given IP.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-ip-pattern' is supported as strategy. Inside this strategy,it is possible to define IPv4 or IPv6 adresses (wildcards are also possible). For example: <code>intranet-ip-pattern:192.168.178.*,2001:db8:85a3:0:0:8a2e:370:*</code>. Other IPs are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.target.resolve.strategy.uri</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>One ore more strategies to decide target types by given URI.</strong><br>
-Starts always with strategy-identifer, colon and value(s). Values are comma separated. Currently only 'intranet-hostname-ends-with' and 'intranet-hostname-starts-with' are supported as strategies. For example: <code>intranet-hostname-ends-with:intranet.example.org,intx.example.com</code>. Other hostnames are interpreted as being inside INTERNET. But no matter if strategy is defined or not: loopback addresses are always illegal and so ignored. You can define multiple strategies at same time by using a pipe symbol to separate them. As an example: `intranet-hostname-ends-with:intranet.example.org,intx.example.com</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect3">
 <h4 id="scheduling-definitions">2.2.3. Scheduling definitions</h4>
 <table id="link-gen-scheduling" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. Scope 'administration'</caption>
+<caption class="title">Table 18. Scope 'Auto cleanup'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1800,7 +1847,7 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. Scope 'scan'</caption>
+<caption class="title">Table 19. Scope 'Encryption'</caption>
 <colgroup>
 <col style="width: 7.6923%;">
 <col style="width: 46.1538%;">
@@ -1814,42 +1861,32 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 </tr>
 </thead>
 <tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.autoclean.initialdelay:5000} fixed delay:${sechub.config.trigger.autoclean.delay:86400000}</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. As initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 26. Scope 'schedule'</caption>
-<colgroup>
-<col style="width: 7.6923%;">
-<col style="width: 46.1538%;">
-<col style="width: 46.1539%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Definition</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.autoclean.initialdelay:5000} fixed delay:${sechub.config.trigger.autoclean.delay:86400000}</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Auto cleanup is triggered by a cron job operation - default is one day to delay after last execution. As initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.nextjob.initialdelay:5000} fixed delay:${sechub.config.trigger.nextjob.delay:10000}</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. For initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
-</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.schedule.encryption.refresh.initialdelay:5000} fixed delay:${sechub.schedule.encryption.refresh.delay:300000}</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the initial and also the fixed delay for the refresh interval. These values are also used for calculation of remaining run time of outdated encrytion pools (when refresh fails)</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 20. Scope 'Job'</caption>
+<colgroup>
+<col style="width: 7.6923%;">
+<col style="width: 46.1538%;">
+<col style="width: 46.1539%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Definition</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">initial delay:${sechub.config.trigger.nextjob.initialdelay:5000} fixed delay:${sechub.config.trigger.nextjob.delay:10000}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Job scheduling is triggered by a cron job operation - default is 10 seconds to delay after last execution. For initial delay 5000 milliseconds are defined. It can be configured differently. This is useful when you need to startup a cluster. Simply change the initial delay values in to allow the cluster to startup.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1944,11 +1981,47 @@ Next lines will show java launcher properties which MUST be set because
 <pre>-Dspring.profiles.active=dev,postgres,real_products
 -Dsechub.initialadmin.email=value
 -Dsechub.initialadmin.userid=value
+-Dsechub.server.baseurl=value
+-Dsechub.email.rule.allowed-domains=value
+-Dsechub.security.encryption=value
+-Dsechub.security.encryption.secret-key=value
+-Dsechub.security.login=value
+-Dsechub.security.login.classic-auth=value
+-Dsechub.security.login.classic-auth.cookie-age-seconds=value
+-Dsechub.security.login.enabled=value
+-Dsechub.security.login.login-page=value
+-Dsechub.security.login.modes=value
+-Dsechub.security.login.oauth2=value
+-Dsechub.security.login.oauth2.authorization-uri=value
+-Dsechub.security.login.oauth2.client-id=value
+-Dsechub.security.login.oauth2.client-secret=value
+-Dsechub.security.login.oauth2.issuer-uri=value
+-Dsechub.security.login.oauth2.jwk-set-uri=value
+-Dsechub.security.login.oauth2.provider=value
+-Dsechub.security.login.oauth2.redirect-uri=value
+-Dsechub.security.login.oauth2.token-uri=value
+-Dsechub.security.login.oauth2.user-info-uri=value
+-Dsechub.security.login.redirect-uri=value
+-Dsechub.security.minimum-token-validity=value
+-Dsechub.security.server=value
+-Dsechub.security.server.modes=value
+-Dsechub.security.server.oauth2=value
+-Dsechub.security.server.oauth2.jwt=value
+-Dsechub.security.server.oauth2.jwt.jwk-set-uri=value
+-Dsechub.security.server.oauth2.mode=value
+-Dsechub.security.server.oauth2.opaque-token=value
+-Dsechub.security.server.oauth2.opaque-token.client-id=value
+-Dsechub.security.server.oauth2.opaque-token.client-secret=value
+-Dsechub.security.server.oauth2.opaque-token.cluster-cache-clear-period=value
+-Dsechub.security.server.oauth2.opaque-token.default-token-expires-in=value
+-Dsechub.security.server.oauth2.opaque-token.inmemory-cache-clear-period=value
+-Dsechub.security.server.oauth2.opaque-token.introspection-uri=value
+-Dsechub.security.server.oauth2.opaque-token.max-cache-duration=value
+-Dsechub.security.server.oauth2.opaque-token.pre-cache-duration=value
 -Dsechub.notification.email.administrators=value
 -Dsechub.notification.email.from=value
--Dsechub.server.baseurl=value
--Dsechub.security.diffiehellman.length=value
--Dsechub.notification.smtp.hostname=value</pre>
+-Dsechub.notification.smtp.hostname=value
+-Dsechub.security.diffiehellman.length=value</pre>
 </div>
 </div>
 <div class="admonitionblock tip">
@@ -1969,11 +2042,47 @@ Instead of java system properties you can also define environment entries
 <pre>export SPRING_PROFILES_ACTIVE=dev,postgres,real_products
 export SECHUB_INITIALADMIN_EMAIL=value
 export SECHUB_INITIALADMIN_USERID=value
+export SECHUB_SERVER_BASEURL=value
+export SECHUB_EMAIL_RULE_ALLOWEDDOMAINS=value
+export SECHUB_SECURITY_ENCRYPTION=value
+export SECHUB_SECURITY_ENCRYPTION_SECRETKEY=value
+export SECHUB_SECURITY_LOGIN=value
+export SECHUB_SECURITY_LOGIN_CLASSICAUTH=value
+export SECHUB_SECURITY_LOGIN_CLASSICAUTH_COOKIEAGESECONDS=value
+export SECHUB_SECURITY_LOGIN_ENABLED=value
+export SECHUB_SECURITY_LOGIN_LOGINPAGE=value
+export SECHUB_SECURITY_LOGIN_MODES=value
+export SECHUB_SECURITY_LOGIN_OAUTH2=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_AUTHORIZATIONURI=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_CLIENTID=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_CLIENTSECRET=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_ISSUERURI=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_JWKSETURI=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_PROVIDER=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_REDIRECTURI=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_TOKENURI=value
+export SECHUB_SECURITY_LOGIN_OAUTH2_USERINFOURI=value
+export SECHUB_SECURITY_LOGIN_REDIRECTURI=value
+export SECHUB_SECURITY_MINIMUMTOKENVALIDITY=value
+export SECHUB_SECURITY_SERVER=value
+export SECHUB_SECURITY_SERVER_MODES=value
+export SECHUB_SECURITY_SERVER_OAUTH2=value
+export SECHUB_SECURITY_SERVER_OAUTH2_JWT=value
+export SECHUB_SECURITY_SERVER_OAUTH2_JWT_JWKSETURI=value
+export SECHUB_SECURITY_SERVER_OAUTH2_MODE=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTID=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTSECRET=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLUSTERCACHECLEARPERIOD=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_DEFAULTTOKENEXPIRESIN=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INMEMORYCACHECLEARPERIOD=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INTROSPECTIONURI=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_MAXCACHEDURATION=value
+export SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_PRECACHEDURATION=value
 export SECHUB_NOTIFICATION_EMAIL_ADMINISTRATORS=value
 export SECHUB_NOTIFICATION_EMAIL_FROM=value
-export SECHUB_SERVER_BASEURL=value
-export SECHUB_SECURITY_DIFFIEHELLMAN_LENGTH=value
-export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value</pre>
+export SECHUB_NOTIFICATION_SMTP_HOSTNAME=value
+export SECHUB_SECURITY_DIFFIEHELLMAN_LENGTH=value</pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -2488,7 +2597,7 @@ In this case the user cannot define them in the executor configuration, but they
 are listed here for the sake of completeness.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. PDS executor configuration parameters</caption>
+<caption class="title">Table 21. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3863,7 +3972,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.5.0<br>
+ Server 2.11.1<br>
 </div>
 </div>
 </body>

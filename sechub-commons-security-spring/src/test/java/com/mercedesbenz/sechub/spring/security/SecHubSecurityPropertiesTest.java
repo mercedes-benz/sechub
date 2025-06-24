@@ -17,6 +17,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -75,18 +77,22 @@ class SecHubSecurityPropertiesTest {
         SecHubSecurityProperties.EncryptionProperties encryption = properties.getEncryptionProperties();
         assertThat(encryption).isNotNull();
         assertThat(encryption.getSecretKey()).isEqualTo("test-test-test-test-test-test-32");
+
+        Duration minimumTokenValidity = properties.getMinimumTokenValidity();
+        Duration expectedMinimumTokenValidity = Duration.ofHours(10);
+        assertThat(expectedMinimumTokenValidity).isEqualTo(minimumTokenValidity);
     }
 
     @Test
     void construct_security_properties_with_null_server_is_ok() {
         /* execute + test */
-        assertDoesNotThrow(() -> new SecHubSecurityProperties(null, null, null));
+        assertDoesNotThrow(() -> new SecHubSecurityProperties(null, null, null, null));
     }
 
     @Test
     void construct_security_properties_with_null_login_is_ok() {
         /* execute + test */
-        assertDoesNotThrow(() -> new SecHubSecurityProperties(mock(), null, null));
+        assertDoesNotThrow(() -> new SecHubSecurityProperties(mock(), null, null, null));
     }
 
     @Test
@@ -97,7 +103,7 @@ class SecHubSecurityPropertiesTest {
 
         /* execute + test */
         /* @formatter:off */
-        assertThatThrownBy(() -> new SecHubSecurityProperties(mock(), loginMock, null))
+        assertThatThrownBy(() -> new SecHubSecurityProperties(mock(), loginMock, null, null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining("The property 'sechub.security.encryption' must not be null");
         /* @formatter:on */
@@ -106,33 +112,23 @@ class SecHubSecurityPropertiesTest {
     @Test
     void construct_server_properties_with_valid_arguments_succeeds() {
         /* prepare */
-        Set<String> modes = Set.of("oauth2", "classic");
+        String modes = "oauth2, classic";
         SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties oAuth2 = mock();
 
         /* execute */
         SecHubSecurityProperties.ResourceServerProperties server = new SecHubSecurityProperties.ResourceServerProperties(modes, oAuth2);
 
         /* test */
-        assertThat(server.getModes()).isEqualTo(modes);
+        assertThat(server.getModes()).isEqualTo(Set.of("oauth2", "classic"));
         assertThat(server.isOAuth2ModeEnabled()).isTrue();
         assertThat(server.isClassicModeEnabled()).isTrue();
         assertThat(server.getOAuth2Properties()).isEqualTo(oAuth2);
     }
 
-    @Test
-    void construct_server_properties_with_null_modes_fails() {
-        /* execute + test */
-        /* @formatter:off */
-        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties(null, mock()))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("The property 'sechub.security.server.modes' must not be null");
-        /* @formatter:on */
-    }
-
-    @Test
-    void construct_server_properties_with_empty_modes_fails() {
-        /* prepare */
-        Set<String> modes = Set.of();
+    @ParameterizedTest
+    @EmptySource
+    @NullSource
+    void construct_server_properties_with_non_existing_modes_fails(String modes) {
 
         /* execute + test */
         /* @formatter:off */
@@ -145,7 +141,7 @@ class SecHubSecurityPropertiesTest {
     @Test
     void construct_server_properties_with_invalid_modes_fails() {
         /* prepare */
-        Set<String> modes = Set.of("invalid");
+        String modes = "invalid";
 
         /* execute + test */
         /* @formatter:off */
@@ -243,11 +239,26 @@ class SecHubSecurityPropertiesTest {
         Duration defaultTokenExpiresIn = Duration.ofDays(1);
         Duration maxCacheDuration = Duration.ofDays(30);
 
-        /* execute */
-        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueToken = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(
-                introspectionUri, clientId, clientSecret, defaultTokenExpiresIn, maxCacheDuration);
+        Duration preCacheDuration = Duration.ofDays(30);
+        Duration inMemoryCacheClearPeriod = Duration.ofDays(30);
+        Duration clusterCacheClearPeriod = Duration.ofDays(30);
 
-        /* test */
+        /* execute - @formatter:off*/
+        SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties opaqueToken = new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(
+
+                introspectionUri,
+                clientId,
+                clientSecret,
+                defaultTokenExpiresIn,
+                maxCacheDuration,
+
+                preCacheDuration,
+
+                inMemoryCacheClearPeriod,
+                clusterCacheClearPeriod
+                );
+
+        /* test - @formatter:on*/
         assertThat(opaqueToken.getIntrospectionUri()).isEqualTo(introspectionUri);
         assertThat(opaqueToken.getClientId()).isEqualTo(clientId);
         assertThat(opaqueToken.getClientSecret()).isEqualTo(clientSecret);
@@ -261,6 +272,9 @@ class SecHubSecurityPropertiesTest {
                                                                      String clientId,
                                                                      String clientSecret,
                                                                      Duration maxCacheDuration,
+                                                                     Duration preCacheDuration,
+                                                                     Duration inMemoryCacheClearPeriod,
+                                                                     Duration clusterCacheClearPeriod,
                                                                      String errMsg) {
         /* prepare */
 
@@ -268,7 +282,18 @@ class SecHubSecurityPropertiesTest {
         Duration defaultTokenExpiresIn = null;
 
         /* execute + test */
-        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(introspectionUri, clientId, clientSecret, defaultTokenExpiresIn, maxCacheDuration))
+        assertThatThrownBy(() -> new SecHubSecurityProperties.ResourceServerProperties.OAuth2Properties.OpaqueTokenProperties(
+                introspectionUri,
+                clientId,
+                clientSecret,
+                defaultTokenExpiresIn,
+                maxCacheDuration,
+
+                preCacheDuration,
+                inMemoryCacheClearPeriod,
+                clusterCacheClearPeriod
+
+                ))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
@@ -280,7 +305,7 @@ class SecHubSecurityPropertiesTest {
         boolean enabled = true;
         String loginPage = "/login";
         String redirectUri = "example.org/redirect-uri";
-        Set<String> modes = Set.of("oauth2", "classic");
+        String modes = "oauth2, classic";
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = mock();
         SecHubSecurityProperties.LoginProperties.ClassicAuthProperties classicAuth = mock();
 
@@ -292,7 +317,7 @@ class SecHubSecurityPropertiesTest {
         assertThat(login.isEnabled()).isEqualTo(enabled);
         assertThat(login.getLoginPage()).isEqualTo(loginPage);
         assertThat(login.getRedirectUri()).isEqualTo(redirectUri);
-        assertThat(login.getModes()).isEqualTo(modes);
+        assertThat(login.getModes()).isEqualTo(Set.of("oauth2", "classic"));
         assertThat(login.getOAuth2Properties()).isEqualTo(oAuth2);
         assertThat(login.getClassicAuthProperties()).isEqualTo(classicAuth);
     }
@@ -303,8 +328,9 @@ class SecHubSecurityPropertiesTest {
     void construct_login_properties_with_null_property_fails(Boolean enabled,
                                                              String loginPage,
                                                              String redirectUri,
-                                                             Set<String> modes,
+                                                             String modes,
                                                              SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2,
+                                                             Class<? extends Exception> exceptionClazz,
                                                              String errMsg) {
         /* prepare */
         /* classic auth properties are nullable therefore not tested here */
@@ -312,7 +338,7 @@ class SecHubSecurityPropertiesTest {
 
         /* execute + test */
         assertThatThrownBy(() -> new SecHubSecurityProperties.LoginProperties(enabled, loginPage, redirectUri, modes, oAuth2, classicAuth))
-                .isInstanceOf(NullPointerException.class)
+                .isInstanceOf(exceptionClazz)
                 .hasMessageContaining(errMsg);
         /* @formatter:on */
     }
@@ -323,7 +349,7 @@ class SecHubSecurityPropertiesTest {
         boolean enabled = true;
         String loginPage = "/login";
         String redirectUri = "example.org/redirect-uri";
-        Set<String> modes = Set.of("oauth2", "classic");
+        String modes = "oauth2, classic";
         SecHubSecurityProperties.LoginProperties.OAuth2Properties oAuth2 = mock();
 
         /* execute */
@@ -419,6 +445,27 @@ class SecHubSecurityPropertiesTest {
         /* @formatter:on */
     }
 
+    @Test
+    void construct_minimum_token_validity_with_valid_duration_succeeds() {
+        /* prepare */
+        Duration minimumTokenValidity = Duration.ofHours(10);
+
+        /* execute */
+        SecHubSecurityProperties properties = new SecHubSecurityProperties(null, null, null, minimumTokenValidity);
+
+        /* test */
+        assertThat(properties.getMinimumTokenValidity()).isEqualTo(minimumTokenValidity);
+    }
+
+    @Test
+    void construct_minimum_token_validity_with_null_duration_does_not_fail() {
+        /* execute */
+        SecHubSecurityProperties properties = new SecHubSecurityProperties(null, null, null, null);
+
+        /* test */
+        assertThat(properties.getMinimumTokenValidity()).isNull();
+    }
+
     @Configuration
     @EnableConfigurationProperties(SecHubSecurityProperties.class)
     static class TestConfiguration {
@@ -430,10 +477,13 @@ class SecHubSecurityPropertiesTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                    Arguments.of(null, "example-client-id", "example-client-secret", Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.introspection-uri' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", null, "example-client-secret", Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.client-id' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", "example-client-id", null, Duration.ofDays(30), "The property 'sechub.security.server.oauth2.opaque-token.client-secret' must not be null"),
-                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", null, "The property 'sechub.security.server.oauth2.opaque-token.max-cache-duration' must not be null")
+                    Arguments.of(null, "example-client-id", "example-client-secret", Duration.ofDays(30), Duration.ofDays(1),  Duration.ofDays(2),  Duration.ofDays(3),"The property 'sechub.security.server.oauth2.opaque-token.introspection-uri' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", null, "example-client-secret", Duration.ofDays(30), Duration.ofDays(1),  Duration.ofDays(2), Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.client-id' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", null, Duration.ofDays(30), Duration.ofDays(1),  Duration.ofDays(2), Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.client-secret' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", null, Duration.ofDays(1),  Duration.ofDays(2), Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.max-cache-duration' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", Duration.ofDays(30), null,  Duration.ofDays(2), Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.pre-cache-duration' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", Duration.ofDays(30), Duration.ofDays(1), null, Duration.ofDays(3), "The property 'sechub.security.server.oauth2.opaque-token.in-memory-cache-clear-period' must not be null"),
+                    Arguments.of("https://example.org/introspection-uri", "example-client-id", "example-client-secret", Duration.ofDays(30), Duration.ofDays(1), Duration.ofDays(2), null, "The property 'sechub.security.server.oauth2.opaque-token.cluster-cache-clear-period' must not be null")
             );
         }
         /* @formatter:on */
@@ -444,11 +494,11 @@ class SecHubSecurityPropertiesTest {
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext context) throws Exception {
             return Stream.of(
-                    Arguments.of(null, "/login", "example.org/redirect-uri", Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.enabled' must not be null"),
-                    Arguments.of(true, null, "example.org/redirect-uri", Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.login-page' must not be null"),
-                    Arguments.of(true, "/login", null, Set.of("oauth2", "classic"), mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.redirect-uri' must not be null"),
-                    Arguments.of(true, "/login", "example.org/redirect-uri", null, mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), "The property 'sechub.security.login.modes' must not be null"),
-                    Arguments.of(true, "/login", "example.org/redirect-uri", Set.of("oauth2", "classic"), null, "The property 'sechub.security.login.oauth2' must not be null")
+                    Arguments.of(null, "/login", "example.org/redirect-uri", "oauth2,classic", mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), NullPointerException.class,"The property 'sechub.security.login.enabled' must not be null"),
+                    Arguments.of(true, null, "example.org/redirect-uri","oauth2,classic", mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class),  NullPointerException.class, "The property 'sechub.security.login.login-page' must not be null"),
+                    Arguments.of(true, "/login", null, "oauth2, classic", mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class), NullPointerException.class, "The property 'sechub.security.login.redirect-uri' must not be null"),
+                    Arguments.of(true, "/login", "example.org/redirect-uri", null, mock(SecHubSecurityProperties.LoginProperties.OAuth2Properties.class),  IllegalArgumentException.class, "The property 'sechub.security.login.modes' must not be empty or null"),
+                    Arguments.of(true, "/login", "example.org/redirect-uri", "oauth2,classic", null,  NullPointerException.class,"The property 'sechub.security.login.oauth2' must not be null")
             );
         }
         /* @formatter:on */

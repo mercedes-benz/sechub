@@ -38,7 +38,7 @@ RUN cd "${WEB_UI_BUILD_FOLDER}" && \
     chmod 755 clone.sh && \
     ./clone.sh "$GIT_URL" "$GIT_BRANCH" "$GIT_TAG" && \
     cd "sechub/sechub-web-ui" && \
-    npm install && \
+    npm ci && \
     npm run build && \
     cp -r dist "${WEB_UI_ARTIFACTS}"
 
@@ -97,6 +97,7 @@ ARG WEB_UI_VERSION
 # env vars in container
 ENV UID="4242"
 ENV GID="${UID}"
+ENV LANG="C.UTF-8"
 ENV CERTIFICATE_DIRECTORY="/etc/nginx/certificates"
 ENV LOADBALANCER_START_MODE="server"
 ENV WEB_UI_VERSION="${WEB_UI_VERSION}"

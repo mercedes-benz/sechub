@@ -45,6 +45,8 @@ func Execute() {
 
 	context := InitializeContext()
 
+	initSignalHandler(context)
+
 	switch context.config.action {
 	case scanAction:
 		prepareCreateApproveJob(context)
@@ -54,6 +56,8 @@ func Execute() {
 	case scanAsynchronAction:
 		prepareCreateApproveJob(context)
 		fmt.Println(context.config.secHubJobUUID)
+	case cancelAction:
+		cancelSecHubJob(context)
 	case getStatusAction:
 		jsonData := getSecHubJobStatus(context)
 		fmt.Println(jsonData)
@@ -95,10 +99,39 @@ func Execute() {
  *      code scan parts, do approve
  * --------------------------------------------------*/
 func prepareCreateApproveJob(context *Context) {
+	if ! verifySecHubConfig(context) {
+		os.Exit(ExitCodeInvalidConfigFile)
+	}
 	prepareScan(context)
 	createNewSecHubJob(context)
 	handleUploads(context)
 	approveSecHubJob(context)
+}
+
+func verifySecHubConfig(context *Context) (result bool) {
+	result = true
+
+	// Check all data.sources entries
+	for _, data_source := range context.sechubConfig.Data.Sources {
+		for _, forbidden_name := range forbiddenArchiveDataSectionNames {
+			if data_source.Name == forbidden_name {
+				sechubUtil.LogError("SecHub config file contains reserved name '" + forbidden_name + "'. Please choose another!")
+				result = false
+			}
+		}
+	}
+
+	// Check all data.binaries entries
+	for _, data_binary := range context.sechubConfig.Data.Binaries {
+		for _, forbidden_name := range forbiddenArchiveDataSectionNames {
+			if data_binary.Name == forbidden_name {
+				sechubUtil.LogError("SecHub config file contains reserved name '" + forbidden_name + "'. Please choose another!")
+				result = false
+			}
+		}
+	}
+
+	return result
 }
 
 /* --------------------------------------------------

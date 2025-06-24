@@ -22,7 +22,7 @@ public class SkopeoPrepareInputValidator implements PrepareInputValidator, LogSa
     private static final Pattern SKOPEO_LOCATION_PATTERN = Pattern.compile(SKOPEO_LOCATION_REGEX);
     private static final String SKOPEO_USERNAME_REGEX = "^[a-zA-Z0-9-_\\d](?:[a-zA-Z0-9-_\\d]|(?=[a-zA-Z0-9-_\\d])){0,38}$";
     private static final Pattern SKOPEO_USERNAME_PATTERN = Pattern.compile(SKOPEO_USERNAME_REGEX);
-    private static final String SKOPEO_PASSWORD_REGEX = "^[a-zA-Z0-9-_\\d]{0,80}$";
+    private static final String SKOPEO_PASSWORD_REGEX = "^[A-Za-z0-9-_./+=\\d]{1,120}$";
     private static final Pattern SKOPEO_PASSWORD_PATTERN = Pattern.compile(SKOPEO_PASSWORD_REGEX);
 
     PrepareInputValidationSupport support;

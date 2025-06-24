@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.commons.archive;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -9,6 +10,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.core.CommonConstants;
 import com.mercedesbenz.sechub.commons.model.ClientCertificateConfiguration;
 import com.mercedesbenz.sechub.commons.model.HTTPHeaderConfiguration;
 import com.mercedesbenz.sechub.commons.model.ScanType;
@@ -81,22 +83,31 @@ public class SecHubFileStructureDataProviderBuilder {
         data.setScanType(scanType);
 
         switch (scanType) {
+
         case CODE_SCAN:
-            data.setRootFolderAccepted(true);
+            data.setRootFolderAccepted(true); // for code scan we always accept root folder (legacy acceptance);
             addAllUsages(data, model.getCodeScan(), false);
             break;
+
         case INFRA_SCAN:
             break;
+
         case LICENSE_SCAN:
             addAllUsages(data, model.getLicenseScan(), true);
             break;
         case SECRET_SCAN:
             addAllUsages(data, model.getSecretScan(), true);
+
+        case IAC_SCAN:
+            addAllUsages(data, model.getIacScan(), true);
             break;
+
         case REPORT:
             break;
+
         case UNKNOWN:
             break;
+
         case WEB_SCAN:
             Optional<SecHubWebScanConfiguration> webScanOpt = model.getWebScan();
             if (!webScanOpt.isPresent()) {
@@ -159,7 +170,33 @@ public class SecHubFileStructureDataProviderBuilder {
                 new SecHubRuntimeException("Configuration file problem. For scanType:" + scanType + " at least one data configuration must be referenced");
             }
         }
-        dataProvider.addAcceptedReferenceNames(names);
+        /*
+         * Next lines will handle following scenario:
+         *
+         * When somebody has referenced the archive root explicit via a reserved archive
+         * root identifier, we have to allow the root folder. The
+         * "accepted reference names" are the names of folders which will be extracted
+         * from__data__ section - because we simply allow the root folder for all root
+         * archive reference IDs, we must not add the reserved identifiers additionally
+         * this list.
+         */
+        Set<String> namesWithoutReserved = new HashSet<>(names);
+        boolean rootAccepted = false;
+        for (String reserved : CommonConstants.getAllRootArchiveReferenceIdentifiers()) {
+            rootAccepted = namesWithoutReserved.remove(reserved) || rootAccepted;
+        }
+
+        if (rootAccepted) {
+            /*
+             * Only when root acceptance is calculated, we call "setRootFolderAccepted".
+             * This is important, because there exists other logic which can also set root
+             * folder as accepted - and we do NOT want to overwrite here with "false"!
+             *
+             */
+            dataProvider.setRootFolderAccepted(true);
+        }
+
+        dataProvider.addAcceptedReferenceNames(namesWithoutReserved);
     }
 
 }

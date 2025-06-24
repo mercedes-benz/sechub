@@ -75,7 +75,7 @@ public class AssertProject extends AbstractAssert {
         String projectId = project.getProjectId();
         long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectScanAccess(projectId));
 
-        assertEquals("Scan Access amount for project " + projectId + " is not as expected!", value, expected);
+        assertEquals("Scan Access amount for project " + projectId + " is not as expected!", expected, value);
 
         return this;
 
@@ -91,7 +91,7 @@ public class AssertProject extends AbstractAssert {
         String projectId = project.getProjectId();
         long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectScanAccess(projectId));
 
-        assertEquals("Scan Access amount for project " + projectId + " is not as expected!", value, expected);
+        assertEquals("Scan Access amount for project " + projectId + " is not as expected!", expected, value);
 
         return this;
 
@@ -114,7 +114,7 @@ public class AssertProject extends AbstractAssert {
         String projectId = project.getProjectId();
         long value = getRestHelper().getLongFromURL(getUrlBuilder().buildCountProjectScanReports(projectId));
 
-        assertEquals("Product results amount for project " + projectId + " is not as expected!", value, expected);
+        assertEquals("Product results amount for project " + projectId + " is not as expected!", expected, value);
 
         return this;
     }

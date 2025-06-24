@@ -25,6 +25,15 @@ public class TestWebLoginConfigurationBuilder {
         this.mainBuilder = testWebConfigurationBuilder;
     }
 
+    public TestWebLoginConfigurationBuilder verification(URL url, int responseCode) {
+
+        WebLoginVerificationConfiguration verification = new WebLoginVerificationConfiguration();
+        verification.setUrl(url);
+        verification.setResponseCode(responseCode);
+        loginConfig.setVerification(verification);
+        return this;
+    }
+
     public TestWebConfigurationBuilder basic(String user, String login) {
 
         BasicLoginConfiguration basicLogin = new BasicLoginConfiguration();

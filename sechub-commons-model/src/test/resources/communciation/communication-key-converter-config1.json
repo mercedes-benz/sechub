@@ -1,0 +1,18 @@
+{
+  "send" : {
+    "targetType" : "JSON",
+    "mapping" : {
+      "cweId" : "cwe.id",
+      "language" : "lang",
+      "details" : "cwe.details"
+    }
+  },
+  "receive" : {
+    "sourceType" : "JSON",
+    "mapping" : {
+      "error" : "result.problem",
+      "status" : "result.status.level",
+      "description" : "content"
+    }
+  }
+}

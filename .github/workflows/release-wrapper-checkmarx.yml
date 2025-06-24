@@ -46,9 +46,12 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@94baf225fe0a508e581a564467443d0e2379123b
+        uses: gradle/actions/setup-gradle@8379f6a1328ee0e06e2bb424dadb7b159856a326
         with:
-          cache-read-only: false
+          # To prevent a fill-up of the actions cache:
+          # Only write to the cache for builds on the 'master' branch.
+          # Builds on other branches will only read existing entries from the cache.
+          cache-read-only: ${{ github.ref != 'refs/heads/master' }}
 
       # ----------------------
       # Create a pull request if license headers are missing
@@ -66,7 +69,7 @@ jobs:
       - name: Create a pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -103,7 +106,7 @@ jobs:
 
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
@@ -111,7 +114,7 @@ jobs:
 
       - name: Archive Checkmarx Wrapper libs directory
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-wrapper-checkmarx
           path: sechub-wrapper-checkmarx/build/libs

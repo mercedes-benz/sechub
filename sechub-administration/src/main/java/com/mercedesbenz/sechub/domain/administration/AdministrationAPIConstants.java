@@ -72,6 +72,16 @@ public class AdministrationAPIConstants {
      */
     public static final String API_USER_DETAIL_INFO = API_MANAGEMENT + "user";
 
+    /**
+     * User updates his email address
+     */
+    public static final String API_USER_EMAIL = API_USER_DETAIL_INFO + "/email";
+
+    /**
+     * API anonymous user verifies his new email address.
+     */
+    public static final String API_ANONYMOUS_USER_VERIFY_EMAIL = API_ANONYMOUS + "email/verify";
+
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Users (Admin) ............................+ */
     /* +-----------------------------------------------------------------------+ */
@@ -90,11 +100,14 @@ public class AdministrationAPIConstants {
     // https://developer.github.com/v3/orgs/members/#add-or-update-organization-membership
     private static final String COMMON_API_PROJECT_MEMBERSHIPS = API_ADMINISTRATION + "project/{projectId}/membership/{userId}";
 
-    public static final String API_ASSIGN_OWNER_TO_PROJECT = API_ADMINISTRATION + "project/{projectId}/owner/{userId}";
+    public static final String API_OLD_ASSIGN_OWNER_TO_PROJECT = API_ADMINISTRATION + "project/{projectId}/owner/{userId}";
+    public static final String API_ASSIGN_OWNER_TO_PROJECT = API_MANAGEMENT + "project/{projectId}/owner/{userId}";
 
-    public static final String API_ASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
-    public static final String API_UNASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
+    public static final String OLD_API_ASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
+    public static final String OLD_API_UNASSIGN_USER_TO_PROJECT = COMMON_API_PROJECT_MEMBERSHIPS;
 
+    public static final String API_ASSIGN_USER_TO_PROJECT = API_MANAGEMENT + "project/{projectId}/membership/{userId}";
+    public static final String API_UNASSIGN_USER_TO_PROJECT = API_MANAGEMENT + "project/{projectId}/membership/{userId}";
     public static final String API_GRANT_ADMIN_RIGHTS_TO_USER = API_ADMINISTRATION + "user/{userId}/grant/superadmin";
     public static final String API_REVOKE_ADMIN_RIGHTS_FROM_USER = API_ADMINISTRATION + "user/{userId}/revoke/superadmin";
 
@@ -138,4 +151,5 @@ public class AdministrationAPIConstants {
     /* +............................... Jobs ..................................+ */
     /* +-----------------------------------------------------------------------+ */
     public static final String API_USER_CANCEL_JOB = API_MANAGEMENT + "jobs/{jobUUID}/cancel";
+
 }

@@ -1,0 +1,11 @@
+Copyright 2021
+
+[sechub-plugin-vscode : 0.1.0]
+
+Phase: RELEASED
+Distribution: OPENSOURCE
+
+Components: 
+
+
+Licenses: 

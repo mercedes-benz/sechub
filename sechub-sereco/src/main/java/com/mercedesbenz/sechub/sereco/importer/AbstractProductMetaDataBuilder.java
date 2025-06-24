@@ -9,7 +9,7 @@ import com.mercedesbenz.sechub.sereco.metadata.SerecoMetaData;
 public class AbstractProductMetaDataBuilder<T extends AbstractProductMetaDataBuilder<T>> {
 
     private boolean forSecurityProduct = true;
-    private ImportParameter parameter;
+    ImportParameter parameter;
 
     @SuppressWarnings("unchecked")
     public T forSecurityProduct(boolean forSecurityProduct) {

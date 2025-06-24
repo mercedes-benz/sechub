@@ -295,6 +295,9 @@ public class IntegrationTestDefaultExecutorConfigurations {
     public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_MULTI_BANDIT_MOCKED = definePDSSolutionMockScan(
             PDSIntTestProductIdentifier.PDS_SOLUTION_MULTI_BANDIT_MOCKED, PDS_CODESCAN);
 
+    public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_KICS_MOCKED = definePDSSolutionMockScan(
+            PDSIntTestProductIdentifier.PDS_SOLUTION_KICS_MOCKED, PDS_IACSCAN);
+
     /* @formatter:on */
 
     public static final String PDS_ENV_VARIABLENAME_TECHUSER_ID = "TEST_PDS_TECHUSER_ID";

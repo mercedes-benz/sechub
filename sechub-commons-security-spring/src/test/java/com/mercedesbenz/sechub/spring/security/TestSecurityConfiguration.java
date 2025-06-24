@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AuthorizeH
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.web.client.RestTemplate;
 
+import com.mercedesbenz.sechub.commons.core.cache.CachePersistence;
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
 /* @formatter:off */
@@ -67,5 +68,10 @@ class TestSecurityConfiguration extends AbstractSecurityConfiguration {
                 requestMatchers("/api/anonymous"+ "/**").permitAll().
                 requestMatchers("/**").denyAll();
         /* @formatter:on */
+    }
+
+    @Override
+    protected CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> getOAuth2OpaqueTokenClusterPersistence() {
+        return null;
     }
 }

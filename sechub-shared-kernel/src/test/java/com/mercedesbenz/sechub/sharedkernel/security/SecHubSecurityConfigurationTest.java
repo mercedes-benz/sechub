@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 import com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration;
+import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider;
 
 /**
  * This test class makes sure that the defined API security rules from
@@ -44,7 +45,6 @@ import com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration;
  *
  * @author hamidonos
  */
-@SuppressWarnings("JavadocReference")
 @WebMvcTest
 class SecHubSecurityConfigurationTest {
 
@@ -199,6 +199,11 @@ class SecHubSecurityConfigurationTest {
         @Bean
         TestSecurityController testSecurityController() {
             return new TestSecurityController();
+        }
+
+        @Bean
+        OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessProvider() {
+            return mock();
         }
     }
 }

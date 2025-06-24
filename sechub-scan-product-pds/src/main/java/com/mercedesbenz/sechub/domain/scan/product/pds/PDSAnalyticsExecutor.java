@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSAnalyticsConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSAnalyticsConfigImpl;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
@@ -21,7 +20,7 @@ import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 public class PDSAnalyticsExecutor extends AbstractPDSProductExecutor {
 
     public PDSAnalyticsExecutor() {
-        super(ProductIdentifier.PDS_ANALYTICS, 1, ScanType.ANALYTICS);
+        super(ProductIdentifier.PDS_ANALYTICS, 1);
     }
 
     @Override

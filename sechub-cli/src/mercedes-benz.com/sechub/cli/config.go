@@ -24,6 +24,8 @@ type Config struct {
 	configFileRead                 bool
 	debug                          bool
 	debugHTTP                      bool
+	failOnRed                      bool
+	failOnYellow                   bool
 	file                           string
 	ignoreDefaultExcludes          bool
 	initialWaitIntervalNanoseconds int64
@@ -37,7 +39,6 @@ type Config struct {
 	reportFormat                   string
 	secHubJobUUID                  string
 	server                         string
-	stopOnYellow                   bool
 	tempDir                        string
 	timeOutNanoseconds             int64
 	timeOutSeconds                 int
@@ -60,12 +61,13 @@ var configFromInit Config = Config{
 }
 
 var missingFieldHelpTexts = map[string]string{
-	"server":         "Server URL is missing. Can be defined with option '-server' or in environment variable " + SechubServerEnvVar + " or in config file.",
-	"user":           "User id is missing. Can be defined with option '-user' or in environment variable " + SechubUserIDEnvVar + " or in config file.",
+	"server":         "Server URL is missing. Can be defined with option '-" + serverOption + "' or in environment variable " + SechubServerEnvVar + " or in config file.",
+	"user":           "User id is missing. Can be defined with option '-" + userOption + "' or in environment variable " + SechubUserIDEnvVar + " or in config file.",
 	"apiToken":       "API Token is missing. Can be defined in environment variable " + SechubApitokenEnvVar + ".",
-	"projectID":      "Project id is missing. Can be defined with option '-project' or in environment variable " + SechubProjectEnvVar + " or in config file.",
+	"projectID":      "Project id is missing. Can be defined with option '-" + projectOption + "' or in environment variable " + SechubProjectEnvVar + " or in config file.",
 	"configFileRead": "Unable to read config file (defaults to 'sechub.json'). Config file is mandatory for this action.",
-	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-file'.",
+	"file":           "Input file name is not provided which is mandatory for this action. Can be defined with option '-" + fileOption + "'.",
+	"secHubJobUUID":  "SecHub job-UUID is missing. Please use option '-" + jobUUIDOption + "'.",
 }
 
 // Global Go initialization (is called before main())
@@ -76,7 +78,7 @@ func init() {
 
 func prepareOptionsFromCommandline(config *Config) {
 	flag.BoolVar(&config.addSCMHistory,
-		addSCMHistoryOption, false, "Secrets scan only: Upload SCM directories like `.git` for scanning. Can also be defined in environment variable "+SechubAddSCMHistoryEnvVar+"=true")
+		addSCMHistoryOption, false, "Secrets scan only: Upload SCM directories like .git for scanning. Can also be defined in environment variable "+SechubAddSCMHistoryEnvVar+"=true")
 	flag.StringVar(&config.apiToken,
 		apitokenOption, config.apiToken, "The api token - Mandatory. Please try to avoid '-apitoken' parameter for security reasons. Use environment variable "+SechubApitokenEnvVar+" instead!")
 	flag.StringVar(&config.configFilePath,
@@ -103,8 +105,8 @@ func prepareOptionsFromCommandline(config *Config) {
 		reportformatOption, config.reportFormat, "Output format for reports, supported currently: "+fmt.Sprint(SupportedReportFormats)+".")
 	flag.StringVar(&config.server,
 		serverOption, config.server, "Server url of SecHub server to use - e.g. 'https://sechub.example.com:8443'.\nMandatory, but can also be defined in environment variable "+SechubServerEnvVar+" or in config file")
-	flag.BoolVar(&config.stopOnYellow,
-		stopOnYellowOption, config.stopOnYellow, "Makes a yellow traffic light in the scan also break the build")
+	flag.BoolVar(&config.failOnYellow,
+		failOnYellowOption, config.failOnYellow, "Makes a yellow traffic light in the scan also break the build")
 	flag.StringVar(&config.tempDir,
 		tempDirOption, config.tempDir, "Temporary directory - Temporary files will be placed here. Can also be defined in environment variable "+SechubTempDir)
 	flag.IntVar(&config.timeOutSeconds,
@@ -125,6 +127,11 @@ func parseConfigFromEnvironment(config *Config) {
 		os.Getenv(SechubDebugEnvVar) == "true"
 	config.debugHTTP =
 		os.Getenv(SechubDebugHTTPEnvVar) == "true"
+	if os.Getenv(SechubFailOnRedEnvVar) == "false" {
+		config.failOnRed = false
+	} else {
+		config.failOnRed = true  // default behavior
+	}
 	config.ignoreDefaultExcludes =
 		os.Getenv(SechubIgnoreDefaultExcludesEnvVar) == "true" // make it possible to switch off default excludes
 	config.keepTempFiles =
@@ -226,6 +233,7 @@ func assertValidConfig(context *Context) {
 	checklist := map[string][]string{
 		scanAction:                            {"server", "user", "apiToken", "projectID", "configFileRead"},
 		scanAsynchronAction:                   {"server", "user", "apiToken", "projectID", "configFileRead"},
+		cancelAction:                          {"secHubJobUUID"},
 		getStatusAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getReportAction:                       {"server", "user", "apiToken", "projectID", "secHubJobUUID"},
 		getFalsePositivesAction:               {"server", "user", "apiToken", "projectID"},
@@ -263,8 +271,8 @@ func assertValidConfig(context *Context) {
 	}
 
 	// For convenience: lowercase user id and project id if needed
-	context.config.user = lowercaseOrNotice(context.config.user, "user id")
-	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id")
+	context.config.user = lowercaseOrNotice(context.config.user, "user id", false)
+	context.config.projectID = lowercaseOrNotice(context.config.projectID, "project id", false)
 
 	// Check mandatory fields for the requested action
 	errorsFound := false
@@ -273,6 +281,9 @@ func assertValidConfig(context *Context) {
 			// Try to get latest secHubJobUUID from server if not provided
 			if fieldname == "secHubJobUUID" && context.config.secHubJobUUID == "" {
 				switch context.config.action {
+				case cancelAction:
+					// Do NOT fetch the latest job UUID automatically in case of "cancel" action
+					// So we do nothing here :-)
 				case getReportAction:
 					// Get job UUID from latest ended job
 					context.config.secHubJobUUID = getLatestSecHubJobUUID(context, ExecutionStateEnded)
@@ -342,7 +353,7 @@ func isConfigFieldFilled(configPTR *Config, field string) bool {
 
 // validateRequestedReportFormat issue warning in case of an unknown report format + lowercase if needed
 func validateRequestedReportFormat(config *Config) bool {
-	config.reportFormat = lowercaseOrNotice(config.reportFormat, "requested report format")
+	config.reportFormat = lowercaseOrNotice(config.reportFormat, "requested report format", false)
 
 	if !sechubUtil.StringArrayContains(SupportedReportFormats, config.reportFormat) {
 		sechubUtil.LogWarning("Unsupported report format '" + config.reportFormat + "'. Changing to '" + ReportFormatJSON + "'.")
@@ -514,7 +525,7 @@ func validateMaximumNumberOfCMDLineArgumentsOrCapAndWarning() {
 	}
 }
 
-func validateAddScmHistory(context *Context)  {
+func validateAddScmHistory(context *Context) {
 	if context.config.addSCMHistory && len(context.sechubConfig.SecretScan.Use) == 0 {
 		sechubUtil.LogWarning("You chose to append the SCM history but have configured no secretScan. The SCM history is not uploaded to SecHub.")
 	}

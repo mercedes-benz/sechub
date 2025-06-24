@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 import * as core from '@actions/core';
-import { failAction } from './action-helper';
+import * as fs from 'fs';
+import { failAction, handleError } from './action-helper';
 import { downloadClientRelease } from './client-download';
 import { SecHubConfigurationModelBuilderData } from './configuration-builder';
 import { ContentType, ScanType } from './configuration-model';
@@ -17,6 +18,7 @@ import { defineFalsePositives } from './sechub-cli';
 import { getPlatform, getPlatformDirectory } from './platform-helper';
 import { split } from './input-helper';
 import { getClientVersion } from './client-version-helper';
+
 
 /**
  * Starts the launch process
@@ -62,7 +64,6 @@ export interface LaunchContext {
 
     lastClientExitCode: number;
     workspaceFolder: string;
-    secHubJsonFilePath: string;
 
     secHubReportJsonObject: object | undefined;
     secHubReportJsonFileName: string;
@@ -85,7 +86,6 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
 
     lastClientExitCode: -1,
 
-    secHubJsonFilePath: '',
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
     secHubReportJsonFileName: '',
@@ -93,32 +93,48 @@ export const LAUNCHER_CONTEXT_DEFAULTS: LaunchContext = {
     defineFalsePositivesFile: '',
 };
 
+function resolveClientDownloadFolder(clientVersion: string, gitHubInputData: GitHubInputData): string {
+
+    if (clientVersion == 'build') {
+        const buildDownloadFolder = gitHubInputData.clientBuildFolder + '/go';
+
+        const isDirAndExists = fs.existsSync(buildDownloadFolder) && fs.lstatSync(buildDownloadFolder).isDirectory();
+        if (!isDirAndExists) {
+            handleError(`The client build folder path is not a directory or does not exist: ${buildDownloadFolder}`);
+        }
+        return buildDownloadFolder;
+    }
+    const expression = /\./gi;
+    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
+    return `${getWorkspaceDir()}/.sechub-gha/client/${clientVersionSubFolder}`;
+}
 
 /**
  * Creates the initial launch context
  * @returns launch context
  */
 async function createContext(): Promise<LaunchContext> {
-
     const gitHubInputData = resolveGitHubInputData();
-
     const clientVersion = await getClientVersion(gitHubInputData.sechubCLIVersion);
-    const expression = /\./gi;
-    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
+
     const workspaceFolder = getWorkspaceDir();
-    const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
+    const clientDownloadFolder = resolveClientDownloadFolder(clientVersion, gitHubInputData);
     let clientExecutablePath = `${clientDownloadFolder}/platform/${getPlatformDirectory()}/sechub`;
     if (getPlatform() === 'win32') {
         clientExecutablePath = clientExecutablePath.concat('.exe');
+    }
+
+    if (core.isDebug()) {
+        core.debug('Client executable path set to:' + clientExecutablePath);
     }
 
     const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;
 
     const builderData = createSafeBuilderData(gitHubInputData);
 
-    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
+    initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
 
-    const projectName = projectNameResolver.resolveProjectName(gitHubInputData, configFileLocation);
+    const projectName = projectNameResolver.resolveProjectName(gitHubInputData, generatedSecHubJsonFilePath);
 
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
 
@@ -127,7 +143,7 @@ async function createContext(): Promise<LaunchContext> {
         secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
         secHubReportJsonFileName: '',
 
-        configFileLocation: configFileLocation,
+        configFileLocation: generatedSecHubJsonFilePath,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
         clientVersion: clientVersion,
@@ -138,7 +154,6 @@ async function createContext(): Promise<LaunchContext> {
 
         lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
 
-        secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
         trafficLight: LAUNCHER_CONTEXT_DEFAULTS.trafficLight,
         debug: gitHubInputData.debug == 'true',

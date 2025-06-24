@@ -31,6 +31,8 @@ public enum ZapWrapperExitCode {
 
     UNSUPPORTED_COMMANDLINE_CONFIGURATION(11),
 
+    INVALID_ZAP_RESPONSE(12),
+
     ;
 
     private int exitCode;

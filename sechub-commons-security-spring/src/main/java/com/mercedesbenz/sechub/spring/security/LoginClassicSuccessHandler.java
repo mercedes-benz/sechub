@@ -2,12 +2,13 @@
 package com.mercedesbenz.sechub.spring.security;
 
 import static com.mercedesbenz.sechub.spring.security.AbstractSecurityConfiguration.BASE_PATH;
-import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -30,19 +31,20 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(LoginClassicSuccessHandler.class);
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String BASIC_AUTH_CREDENTIALS_FORMAT = "%s:%s";
     private static final Base64.Encoder encoder = Base64.getEncoder();
 
+    private final String redirectUri;
     private final AES256Encryption aes256Encryption;
     private final Duration cookieAge;
-    private final LoginRedirectHandler loginRedirectHandler;
 
-    LoginClassicSuccessHandler(AES256Encryption aes256Encryption, Duration cookieAge, LoginRedirectHandler loginRedirectHandler) {
-        this.aes256Encryption = requireNonNull(aes256Encryption, "Property aes256Encryption must not be null");
-        this.cookieAge = requireNonNull(cookieAge, "Property cookieAge must not be null");
-        this.loginRedirectHandler = requireNonNull(loginRedirectHandler, "Property loginRedirectHandler must not be null");
+    LoginClassicSuccessHandler(AES256Encryption aes256Encryption, Duration cookieAge, String redirectUri) {
+        this.redirectUri = redirectUri;
+        this.aes256Encryption = aes256Encryption;
+        this.cookieAge = cookieAge;
     }
 
     @Override
@@ -54,7 +56,8 @@ class LoginClassicSuccessHandler implements AuthenticationSuccessHandler {
         String credentialsEncoded = encoder.encodeToString(credentialsEncrypted);
         Cookie cookie = CookieHelper.createCookie(AbstractSecurityConfiguration.CLASSIC_AUTH_COOKIE_NAME, credentialsEncoded, cookieAge, BASE_PATH);
         response.addCookie(cookie);
-        loginRedirectHandler.redirect(request, response);
-    }
 
+        log.debug("Redirecting to {}", redirectUri);
+        response.sendRedirect(redirectUri);
+    }
 }

@@ -281,6 +281,14 @@ class SystemTestRuntimePreparatorTest {
             }
         }
 
+        if (job.getIacScan().isPresent()) {
+            SecHubIacScanConfiguration iacScan = job.getIacScan().get();
+            List<String> iacScanUsageByNames = iacScan.getUse();
+            if (iacScanUsageByNames != null) {
+                assertContainsReference(iacScanUsageByNames, expectedReferenceId);
+            }
+        }
+
         if (job.getLicenseScan().isPresent()) {
             SecHubLicenseScanConfiguration licenseScan = job.getLicenseScan().get();
             List<String> licenseScanUsageByNames = licenseScan.getUse();
@@ -409,6 +417,7 @@ class SystemTestRuntimePreparatorTest {
         LOCAL_SOURCE_UPLOAD__WEB_SCAN(new TestScope(LOCAL, null, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.WEB_SCAN)),
         LOCAL_SOURCE_UPLOAD__INFRA_SCAN(new TestScope(LOCAL, null, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.INFRA_SCAN)),
         LOCAL_SOURCE_UPLOAD__SECRET_SCAN(new TestScope(LOCAL, null, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.SECRET_SCAN)),
+        LOCAL_SOURCE_UPLOAD__IAC_SCAN(new TestScope(LOCAL, null, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.IAC_SCAN)),
 
         REMOTE_BINYARY_UPLOAD__CODE_SCAN(new TestScope(REMOTE, null, NO_SRC_UPLOAD, BIN_UPLOAD, ScanType.CODE_SCAN)),
         REMOTE_BINYARY_UPLOAD__LICENSE_SCAN(new TestScope(REMOTE, null, NO_SRC_UPLOAD, BIN_UPLOAD, ScanType.LICENSE_SCAN)),
@@ -420,6 +429,7 @@ class SystemTestRuntimePreparatorTest {
         REMOTE_SOURCE_UPLOAD__WEB_SCAN(new TestScope(REMOTE, null, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.WEB_SCAN)),
         REMOTE_SOURCE_UPLOAD__INFRA_SCAN(new TestScope(REMOTE, null, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.INFRA_SCAN)),
         REMOTE_SOURCE_UPLOAD__SECRET_SCAN(new TestScope(REMOTE, null, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.SECRET_SCAN)),
+        REMOTE_SOURCE_UPLOAD__IAC_SCAN(new TestScope(REMOTE, null, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.IAC_SCAN)),
 
         /*
          * next data represents upload + scan have a dedicated reference id, which is
@@ -435,6 +445,7 @@ class SystemTestRuntimePreparatorTest {
         DEFINED_REF_ID_LOCAL_SOURCE_UPLOAD__WEB_SCAN(new TestScope(LOCAL, DEFINED_REF_ID, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.WEB_SCAN)),
         DEFINED_REF_ID_LOCAL_SOURCE_UPLOAD__INFRA_SCAN(new TestScope(LOCAL, DEFINED_REF_ID, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.INFRA_SCAN)),
         DEFINED_REF_ID_LOCAL_SOURCE_UPLOAD__SECRET_SCAN(new TestScope(LOCAL, DEFINED_REF_ID, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.SECRET_SCAN)),
+        DEFINED_REF_ID_LOCAL_SOURCE_UPLOAD__IAC_SCAN(new TestScope(LOCAL, DEFINED_REF_ID, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.IAC_SCAN)),
 
         DEFINED_REF_ID_REMOTE_BINYARY_UPLOAD__CODE_SCAN(new TestScope(REMOTE, DEFINED_REF_ID, NO_SRC_UPLOAD, BIN_UPLOAD, ScanType.CODE_SCAN)),
         DEFINED_REF_ID_REMOTE_BINYARY_UPLOAD__LICENSE_SCAN(new TestScope(REMOTE, DEFINED_REF_ID, NO_SRC_UPLOAD, BIN_UPLOAD, ScanType.LICENSE_SCAN)),
@@ -446,6 +457,7 @@ class SystemTestRuntimePreparatorTest {
         DEFINED_REF_ID_REMOTE_SOURCE_UPLOAD__WEB_SCAN(new TestScope(REMOTE, DEFINED_REF_ID, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.WEB_SCAN)),
         DEFINED_REF_ID_REMOTE_SOURCE_UPLOAD__INFRA_SCAN(new TestScope(REMOTE, DEFINED_REF_ID, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.INFRA_SCAN)),
         DEFINED_REF_ID_REMOTE_SOURCE_UPLOAD__SECRET_SCAN(new TestScope(REMOTE, DEFINED_REF_ID, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.SECRET_SCAN)),
+        DEFINED_REF_ID_REMOTE_SOURCE_UPLOAD__IAC_SCAN(new TestScope(REMOTE, DEFINED_REF_ID, SRC_UPLOAD, NO_BIN_UPLOAD, ScanType.IAC_SCAN)),
 
         ;
 

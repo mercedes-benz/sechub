@@ -15105,7 +15105,7 @@ function getEnv(key) {
   return process.env[key.toLowerCase()] || process.env[key.toUpperCase()] || '';
 }
 
-exports.j = getProxyForUrl;
+exports.getProxyForUrl = getProxyForUrl;
 
 
 /***/ }),
@@ -22434,6 +22434,18 @@ module.exports = JSON.parse('{"application/1d-interleaved-parityfec":{"source":"
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__nccwpck_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__nccwpck_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -22490,6 +22502,7 @@ __nccwpck_require__.d(common_utils_namespaceObject, {
   "hasBrowserEnv": () => (hasBrowserEnv),
   "hasStandardBrowserEnv": () => (hasStandardBrowserEnv),
   "hasStandardBrowserWebWorkerEnv": () => (hasStandardBrowserWebWorkerEnv),
+  "navigator": () => (_navigator),
   "origin": () => (origin)
 });
 
@@ -22647,7 +22660,9 @@ __nccwpck_require__.d(forms_namespaceObject, {
 });
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(2186);
+var lib_core = __nccwpck_require__(2186);
+// EXTERNAL MODULE: external "fs"
+var external_fs_ = __nccwpck_require__(7147);
 ;// CONCATENATED MODULE: ./src/action-helper.ts
 // SPDX-License-Identifier: MIT
 
@@ -22656,23 +22671,22 @@ var core = __nccwpck_require__(2186);
  * @param exitCode Exit code returned by the SecHub cli
  */
 function failAction(exitCode) {
-    core.setFailed(`Scan finished with exit code: ${exitCode}. Please check output.`);
+    lib_core.setFailed(`Scan finished with exit code: ${exitCode}. Please check output.`);
 }
 /**
  * Logs the error and sets the action status as failed.
  * @param error Error message that should be logged
  */
 function handleError(error) {
-    core.error(error);
+    lib_core.error(error);
     failAction(1);
 }
 
-// EXTERNAL MODULE: external "fs"
-var external_fs_ = __nccwpck_require__(7147);
-// EXTERNAL MODULE: ./node_modules/shelljs/shell.js
-var shell = __nccwpck_require__(3516);
 // EXTERNAL MODULE: external "path"
 var external_path_ = __nccwpck_require__(1017);
+var external_path_default = /*#__PURE__*/__nccwpck_require__.n(external_path_);
+// EXTERNAL MODULE: ./node_modules/shelljs/shell.js
+var shelljs_shell = __nccwpck_require__(3516);
 // EXTERNAL MODULE: ./node_modules/fs-extra/lib/index.js
 var lib = __nccwpck_require__(5630);
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/helpers/bind.js
@@ -23289,26 +23303,6 @@ const toFiniteNumber = (value, defaultValue) => {
   return value != null && Number.isFinite(value = +value) ? value : defaultValue;
 }
 
-const ALPHA = 'abcdefghijklmnopqrstuvwxyz'
-
-const DIGIT = '0123456789';
-
-const ALPHABET = {
-  DIGIT,
-  ALPHA,
-  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
-}
-
-const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
-  let str = '';
-  const {length} = alphabet;
-  while (size--) {
-    str += alphabet[Math.random() * length|0]
-  }
-
-  return str;
-}
-
 /**
  * If the thing is a FormData object, return true, otherwise return false.
  *
@@ -23436,8 +23430,6 @@ const asap = typeof queueMicrotask !== 'undefined' ?
   findKey,
   global: _global,
   isContextDefined,
-  ALPHABET,
-  generateString,
   isSpecCompliantForm,
   toJSONObject,
   isAsyncFn,
@@ -23476,7 +23468,10 @@ function AxiosError(message, code, config, request, response) {
   code && (this.code = code);
   config && (this.config = config);
   request && (this.request = request);
-  response && (this.response = response);
+  if (response) {
+    this.response = response;
+    this.status = response.status ? response.status : null;
+  }
 }
 
 utils.inherits(AxiosError, Error, {
@@ -23496,7 +23491,7 @@ utils.inherits(AxiosError, Error, {
       // Axios
       config: utils.toJSONObject(this.config),
       code: this.code,
-      status: this.response && this.response.status ? this.response.status : null
+      status: this.status
     };
   }
 });
@@ -23865,7 +23860,7 @@ function buildURL_encode(val) {
  *
  * @param {string} url The base of the url (e.g., http://www.google.com)
  * @param {object} [params] The params to be appended
- * @param {?object} options
+ * @param {?(object|Function)} options
  *
  * @returns {string} The formatted url
  */
@@ -23876,6 +23871,12 @@ function buildURL(url, params, options) {
   }
   
   const _encode = options && options.encode || buildURL_encode;
+
+  if (utils.isFunction(options)) {
+    options = {
+      serialize: options
+    };
+  } 
 
   const serializeFn = options && options.serialize;
 
@@ -23983,6 +23984,8 @@ class InterceptorManager {
   clarifyTimeoutError: false
 });
 
+// EXTERNAL MODULE: external "crypto"
+var external_crypto_ = __nccwpck_require__(6113);
 // EXTERNAL MODULE: external "url"
 var external_url_ = __nccwpck_require__(7310);
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/platform/node/classes/URLSearchParams.js
@@ -23995,6 +23998,30 @@ var external_url_ = __nccwpck_require__(7310);
 
 
 
+
+const ALPHA = 'abcdefghijklmnopqrstuvwxyz'
+
+const DIGIT = '0123456789';
+
+const ALPHABET = {
+  DIGIT,
+  ALPHA,
+  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
+}
+
+const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
+  let str = '';
+  const {length} = alphabet;
+  const randomValues = new Uint32Array(size);
+  external_crypto_.randomFillSync(randomValues);
+  for (let i = 0; i < size; i++) {
+    str += alphabet[randomValues[i] % length];
+  }
+
+  return str;
+}
+
+
 /* harmony default export */ const node = ({
   isNode: true,
   classes: {
@@ -24002,11 +24029,15 @@ var external_url_ = __nccwpck_require__(7310);
     FormData: classes_FormData,
     Blob: typeof Blob !== 'undefined' && Blob || null
   },
+  ALPHABET,
+  generateString,
   protocols: [ 'http', 'https', 'file', 'data' ]
 });
 
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/platform/common/utils.js
 const hasBrowserEnv = typeof window !== 'undefined' && typeof document !== 'undefined';
+
+const _navigator = typeof navigator === 'object' && navigator || undefined;
 
 /**
  * Determine if we're running in a standard browser environment
@@ -24025,10 +24056,8 @@ const hasBrowserEnv = typeof window !== 'undefined' && typeof document !== 'unde
  *
  * @returns {boolean}
  */
-const hasStandardBrowserEnv = (
-  (product) => {
-    return hasBrowserEnv && ['ReactNative', 'NativeScript', 'NS'].indexOf(product) < 0
-  })(typeof navigator !== 'undefined' && navigator.product);
+const hasStandardBrowserEnv = hasBrowserEnv &&
+  (!_navigator || ['ReactNative', 'NativeScript', 'NS'].indexOf(_navigator.product) < 0);
 
 /**
  * Determine if we're running in a standard browser webWorker environment
@@ -24845,8 +24874,9 @@ function combineURLs(baseURL, relativeURL) {
  *
  * @returns {string} The combined full path
  */
-function buildFullPath(baseURL, requestedURL) {
-  if (baseURL && !isAbsoluteURL(requestedURL)) {
+function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
+  let isRelativeUrl = !isAbsoluteURL(requestedURL);
+  if (baseURL && (isRelativeUrl || allowAbsoluteUrls == false)) {
     return combineURLs(baseURL, requestedURL);
   }
   return requestedURL;
@@ -24865,7 +24895,7 @@ var follow_redirects = __nccwpck_require__(7707);
 // EXTERNAL MODULE: external "zlib"
 var external_zlib_ = __nccwpck_require__(9796);
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/env/data.js
-const VERSION = "1.7.4";
+const VERSION = "1.8.4";
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/helpers/parseProtocol.js
 
 
@@ -25101,9 +25131,10 @@ const readBlob = async function* (blob) {
 
 
 
-const BOUNDARY_ALPHABET = utils.ALPHABET.ALPHA_DIGIT + '-_';
 
-const textEncoder = new external_util_.TextEncoder();
+const BOUNDARY_ALPHABET = platform.ALPHABET.ALPHA_DIGIT + '-_';
+
+const textEncoder = typeof TextEncoder === 'function' ? new TextEncoder() : new external_util_.TextEncoder();
 
 const CRLF = '\r\n';
 const CRLF_BYTES = textEncoder.encode(CRLF);
@@ -25161,7 +25192,7 @@ const formDataToStream = (form, headersHandler, options) => {
   const {
     tag = 'form-data-boundary',
     size = 25,
-    boundary = tag + '-' + utils.generateString(size, BOUNDARY_ALPHABET)
+    boundary = tag + '-' + platform.generateString(size, BOUNDARY_ALPHABET)
   } = options || {};
 
   if(!utils.isFormData(form)) {
@@ -25491,7 +25522,7 @@ function dispatchBeforeRedirect(options, responseDetails) {
 function setProxy(options, configProxy, location) {
   let proxy = configProxy;
   if (!proxy && proxy !== false) {
-    const proxyUrl = (0,proxy_from_env/* getProxyForUrl */.j)(location);
+    const proxyUrl = proxy_from_env.getProxyForUrl(location);
     if (proxyUrl) {
       proxy = new URL(proxyUrl);
     }
@@ -25636,8 +25667,8 @@ const buildAddressEntry = (address, family) => resolveFamily(utils.isObject(addr
     }
 
     // Parse url
-    const fullPath = buildFullPath(config.baseURL, config.url);
-    const parsed = new URL(fullPath, utils.hasBrowserEnv ? platform.origin : undefined);
+    const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);
+    const parsed = new URL(fullPath, platform.hasBrowserEnv ? platform.origin : undefined);
     const protocol = parsed.protocol || supportedProtocols[0];
 
     if (protocol === 'data:') {
@@ -25722,7 +25753,7 @@ const buildAddressEntry = (address, family) => resolveFamily(utils.isObject(addr
         } catch (e) {
         }
       }
-    } else if (utils.isBlob(data)) {
+    } else if (utils.isBlob(data) || utils.isFile(data)) {
       data.size && headers.setContentType(data.type || 'application/octet-stream');
       headers.setContentLength(data.size || 0);
       data = external_stream_.Readable.from(helpers_readBlob(data));
@@ -25835,7 +25866,7 @@ const buildAddressEntry = (address, family) => resolveFamily(utils.isObject(addr
     if (config.socketPath) {
       options.socketPath = config.socketPath;
     } else {
-      options.hostname = parsed.hostname;
+      options.hostname = parsed.hostname.startsWith("[") ? parsed.hostname.slice(1, -1) : parsed.hostname;
       options.port = parsed.port;
       setProxy(options, config.proxy, protocol + '//' + parsed.hostname + (parsed.port ? ':' + parsed.port : '') + options.path);
     }
@@ -25977,7 +26008,7 @@ const buildAddressEntry = (address, family) => resolveFamily(utils.isObject(addr
           }
 
           const err = new core_AxiosError(
-            'maxContentLength size of ' + config.maxContentLength + ' exceeded',
+            'stream has been aborted',
             core_AxiosError.ERR_BAD_RESPONSE,
             config,
             lastRequest
@@ -26105,71 +26136,18 @@ const __setProxy = (/* unused pure expression or super */ null && (setProxy));
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/helpers/isURLSameOrigin.js
 
 
+/* harmony default export */ const isURLSameOrigin = (platform.hasStandardBrowserEnv ? ((origin, isMSIE) => (url) => {
+  url = new URL(url, platform.origin);
 
-
-
-/* harmony default export */ const isURLSameOrigin = (platform.hasStandardBrowserEnv ?
-
-// Standard browser envs have full support of the APIs needed to test
-// whether the request URL is of the same origin as current location.
-  (function standardBrowserEnv() {
-    const msie = /(msie|trident)/i.test(navigator.userAgent);
-    const urlParsingNode = document.createElement('a');
-    let originURL;
-
-    /**
-    * Parse a URL to discover its components
-    *
-    * @param {String} url The URL to be parsed
-    * @returns {Object}
-    */
-    function resolveURL(url) {
-      let href = url;
-
-      if (msie) {
-        // IE needs attribute set twice to normalize properties
-        urlParsingNode.setAttribute('href', href);
-        href = urlParsingNode.href;
-      }
-
-      urlParsingNode.setAttribute('href', href);
-
-      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-      return {
-        href: urlParsingNode.href,
-        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-        host: urlParsingNode.host,
-        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-        hostname: urlParsingNode.hostname,
-        port: urlParsingNode.port,
-        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-          urlParsingNode.pathname :
-          '/' + urlParsingNode.pathname
-      };
-    }
-
-    originURL = resolveURL(window.location.href);
-
-    /**
-    * Determine if a URL shares the same origin as the current location
-    *
-    * @param {String} requestURL The URL to test
-    * @returns {boolean} True if URL shares the same origin, otherwise false
-    */
-    return function isURLSameOrigin(requestURL) {
-      const parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-      return (parsed.protocol === originURL.protocol &&
-          parsed.host === originURL.host);
-    };
-  })() :
-
-  // Non standard browser envs (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return function isURLSameOrigin() {
-      return true;
-    };
-  })());
+  return (
+    origin.protocol === url.protocol &&
+    origin.host === url.host &&
+    (isMSIE || origin.port === url.port)
+  );
+})(
+  new URL(platform.origin),
+  platform.navigator && /(msie|trident)/i.test(platform.navigator.userAgent)
+) : () => true);
 
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/helpers/cookies.js
 
@@ -26237,7 +26215,7 @@ function mergeConfig(config1, config2) {
   config2 = config2 || {};
   const config = {};
 
-  function getMergedValue(target, source, caseless) {
+  function getMergedValue(target, source, prop, caseless) {
     if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
       return utils.merge.call({caseless}, target, source);
     } else if (utils.isPlainObject(source)) {
@@ -26249,11 +26227,11 @@ function mergeConfig(config1, config2) {
   }
 
   // eslint-disable-next-line consistent-return
-  function mergeDeepProperties(a, b, caseless) {
+  function mergeDeepProperties(a, b, prop , caseless) {
     if (!utils.isUndefined(b)) {
-      return getMergedValue(a, b, caseless);
+      return getMergedValue(a, b, prop , caseless);
     } else if (!utils.isUndefined(a)) {
-      return getMergedValue(undefined, a, caseless);
+      return getMergedValue(undefined, a, prop , caseless);
     }
   }
 
@@ -26311,7 +26289,7 @@ function mergeConfig(config1, config2) {
     socketPath: defaultToConfig2,
     responseEncoding: defaultToConfig2,
     validateStatus: mergeDirectKeys,
-    headers: (a, b) => mergeDeepProperties(headersToObject(a), headersToObject(b), true)
+    headers: (a, b , prop) => mergeDeepProperties(headersToObject(a), headersToObject(b),prop, true)
   };
 
   utils.forEach(Object.keys(Object.assign({}, config1, config2)), function computeConfigValue(prop) {
@@ -26340,7 +26318,7 @@ function mergeConfig(config1, config2) {
 
   newConfig.headers = headers = core_AxiosHeaders.from(headers);
 
-  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url), config.params, config.paramsSerializer);
+  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url, newConfig.allowAbsoluteUrls), config.params, config.paramsSerializer);
 
   // HTTP basic authentication
   if (auth) {
@@ -26585,46 +26563,48 @@ const isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined';
 
 
 
+
 const composeSignals = (signals, timeout) => {
-  let controller = new AbortController();
+  const {length} = (signals = signals ? signals.filter(Boolean) : []);
 
-  let aborted;
+  if (timeout || length) {
+    let controller = new AbortController();
 
-  const onabort = function (cancel) {
-    if (!aborted) {
-      aborted = true;
-      unsubscribe();
-      const err = cancel instanceof Error ? cancel : this.reason;
-      controller.abort(err instanceof core_AxiosError ? err : new cancel_CanceledError(err instanceof Error ? err.message : err));
+    let aborted;
+
+    const onabort = function (reason) {
+      if (!aborted) {
+        aborted = true;
+        unsubscribe();
+        const err = reason instanceof Error ? reason : this.reason;
+        controller.abort(err instanceof core_AxiosError ? err : new cancel_CanceledError(err instanceof Error ? err.message : err));
+      }
     }
-  }
 
-  let timer = timeout && setTimeout(() => {
-    onabort(new core_AxiosError(`timeout ${timeout} of ms exceeded`, core_AxiosError.ETIMEDOUT))
-  }, timeout)
-
-  const unsubscribe = () => {
-    if (signals) {
-      timer && clearTimeout(timer);
+    let timer = timeout && setTimeout(() => {
       timer = null;
-      signals.forEach(signal => {
-        signal &&
-        (signal.removeEventListener ? signal.removeEventListener('abort', onabort) : signal.unsubscribe(onabort));
-      });
-      signals = null;
+      onabort(new core_AxiosError(`timeout ${timeout} of ms exceeded`, core_AxiosError.ETIMEDOUT))
+    }, timeout)
+
+    const unsubscribe = () => {
+      if (signals) {
+        timer && clearTimeout(timer);
+        timer = null;
+        signals.forEach(signal => {
+          signal.unsubscribe ? signal.unsubscribe(onabort) : signal.removeEventListener('abort', onabort);
+        });
+        signals = null;
+      }
     }
+
+    signals.forEach((signal) => signal.addEventListener('abort', onabort));
+
+    const {signal} = controller;
+
+    signal.unsubscribe = () => utils.asap(unsubscribe);
+
+    return signal;
   }
-
-  signals.forEach((signal) => signal && signal.addEventListener && signal.addEventListener('abort', onabort));
-
-  const {signal} = controller;
-
-  signal.unsubscribe = unsubscribe;
-
-  return [signal, () => {
-    timer && clearTimeout(timer);
-    timer = null;
-  }];
 }
 
 /* harmony default export */ const helpers_composeSignals = (composeSignals);
@@ -26649,14 +26629,34 @@ const streamChunk = function* (chunk, chunkSize) {
   }
 }
 
-const readBytes = async function* (iterable, chunkSize, encode) {
-  for await (const chunk of iterable) {
-    yield* streamChunk(ArrayBuffer.isView(chunk) ? chunk : (await encode(String(chunk))), chunkSize);
+const readBytes = async function* (iterable, chunkSize) {
+  for await (const chunk of readStream(iterable)) {
+    yield* streamChunk(chunk, chunkSize);
   }
 }
 
-const trackStream = (stream, chunkSize, onProgress, onFinish, encode) => {
-  const iterator = readBytes(stream, chunkSize, encode);
+const readStream = async function* (stream) {
+  if (stream[Symbol.asyncIterator]) {
+    yield* stream;
+    return;
+  }
+
+  const reader = stream.getReader();
+  try {
+    for (;;) {
+      const {done, value} = await reader.read();
+      if (done) {
+        break;
+      }
+      yield value;
+    }
+  } finally {
+    await reader.cancel();
+  }
+}
+
+const trackStream = (stream, chunkSize, onProgress, onFinish) => {
+  const iterator = readBytes(stream, chunkSize);
 
   let bytes = 0;
   let done;
@@ -26770,7 +26770,11 @@ const getBodyLength = async (body) => {
   }
 
   if(utils.isSpecCompliantForm(body)) {
-    return (await new Request(body).arrayBuffer()).byteLength;
+    const _request = new Request(platform.origin, {
+      method: 'POST',
+      body,
+    });
+    return (await _request.arrayBuffer()).byteLength;
   }
 
   if(utils.isArrayBufferView(body) || utils.isArrayBuffer(body)) {
@@ -26810,18 +26814,13 @@ const resolveBodyLength = async (headers, body) => {
 
   responseType = responseType ? (responseType + '').toLowerCase() : 'text';
 
-  let [composedSignal, stopTimeout] = (signal || cancelToken || timeout) ?
-    helpers_composeSignals([signal, cancelToken], timeout) : [];
+  let composedSignal = helpers_composeSignals([signal, cancelToken && cancelToken.toAbortSignal()], timeout);
 
-  let finished, request;
+  let request;
 
-  const onFinish = () => {
-    !finished && setTimeout(() => {
-      composedSignal && composedSignal.unsubscribe();
-    });
-
-    finished = true;
-  }
+  const unsubscribe = composedSignal && composedSignal.unsubscribe && (() => {
+      composedSignal.unsubscribe();
+  });
 
   let requestContentLength;
 
@@ -26848,7 +26847,7 @@ const resolveBodyLength = async (headers, body) => {
           progressEventReducer(asyncDecorator(onUploadProgress))
         );
 
-        data = trackStream(_request.body, DEFAULT_CHUNK_SIZE, onProgress, flush, encodeText);
+        data = trackStream(_request.body, DEFAULT_CHUNK_SIZE, onProgress, flush);
       }
     }
 
@@ -26856,6 +26855,9 @@ const resolveBodyLength = async (headers, body) => {
       withCredentials = withCredentials ? 'include' : 'omit';
     }
 
+    // Cloudflare Workers throws when credentials are defined
+    // see https://github.com/cloudflare/workerd/issues/902
+    const isCredentialsSupported = "credentials" in Request.prototype;
     request = new Request(url, {
       ...fetchOptions,
       signal: composedSignal,
@@ -26863,14 +26865,14 @@ const resolveBodyLength = async (headers, body) => {
       headers: headers.normalize().toJSON(),
       body: data,
       duplex: "half",
-      credentials: withCredentials
+      credentials: isCredentialsSupported ? withCredentials : undefined
     });
 
     let response = await fetch(request);
 
     const isStreamResponse = supportsResponseStream && (responseType === 'stream' || responseType === 'response');
 
-    if (supportsResponseStream && (onDownloadProgress || isStreamResponse)) {
+    if (supportsResponseStream && (onDownloadProgress || (isStreamResponse && unsubscribe))) {
       const options = {};
 
       ['status', 'statusText', 'headers'].forEach(prop => {
@@ -26887,8 +26889,8 @@ const resolveBodyLength = async (headers, body) => {
       response = new Response(
         trackStream(response.body, DEFAULT_CHUNK_SIZE, onProgress, () => {
           flush && flush();
-          isStreamResponse && onFinish();
-        }, encodeText),
+          unsubscribe && unsubscribe();
+        }),
         options
       );
     }
@@ -26897,9 +26899,7 @@ const resolveBodyLength = async (headers, body) => {
 
     let responseData = await resolvers[utils.findKey(resolvers, responseType) || 'text'](response, config);
 
-    !isStreamResponse && onFinish();
-
-    stopTimeout && stopTimeout();
+    !isStreamResponse && unsubscribe && unsubscribe();
 
     return await new Promise((resolve, reject) => {
       settle(resolve, reject, {
@@ -26912,7 +26912,7 @@ const resolveBodyLength = async (headers, body) => {
       })
     })
   } catch (err) {
-    onFinish();
+    unsubscribe && unsubscribe();
 
     if (err && err.name === 'TypeError' && /fetch/i.test(err.message)) {
       throw Object.assign(
@@ -27148,6 +27148,14 @@ validators.transitional = function transitional(validator, version, message) {
   };
 };
 
+validators.spelling = function spelling(correctSpelling) {
+  return (value, opt) => {
+    // eslint-disable-next-line no-console
+    console.warn(`${opt} is likely a misspelling of ${correctSpelling}`);
+    return true;
+  }
+};
+
 /**
  * Assert object's properties type
  *
@@ -27229,9 +27237,9 @@ class Axios {
       return await this._request(configOrUrl, config);
     } catch (err) {
       if (err instanceof Error) {
-        let dummy;
+        let dummy = {};
 
-        Error.captureStackTrace ? Error.captureStackTrace(dummy = {}) : (dummy = new Error());
+        Error.captureStackTrace ? Error.captureStackTrace(dummy) : (dummy = new Error());
 
         // slice off the Error: ... line
         const stack = dummy.stack ? dummy.stack.replace(/^.+\n/, '') : '';
@@ -27285,6 +27293,20 @@ class Axios {
         }, true);
       }
     }
+
+    // Set config.allowAbsoluteUrls
+    if (config.allowAbsoluteUrls !== undefined) {
+      // do nothing
+    } else if (this.defaults.allowAbsoluteUrls !== undefined) {
+      config.allowAbsoluteUrls = this.defaults.allowAbsoluteUrls;
+    } else {
+      config.allowAbsoluteUrls = true;
+    }
+
+    validator.assertOptions(config, {
+      baseUrl: Axios_validators.spelling('baseURL'),
+      withXsrfToken: Axios_validators.spelling('withXSRFToken')
+    }, true);
 
     // Set config.method
     config.method = (config.method || this.defaults.method || 'get').toLowerCase();
@@ -27376,7 +27398,7 @@ class Axios {
 
   getUri(config) {
     config = mergeConfig(this.defaults, config);
-    const fullPath = buildFullPath(config.baseURL, config.url);
+    const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);
     return buildURL(fullPath, config.params, config.paramsSerializer);
   }
 }
@@ -27519,6 +27541,20 @@ class CancelToken {
     if (index !== -1) {
       this._listeners.splice(index, 1);
     }
+  }
+
+  toAbortSignal() {
+    const controller = new AbortController();
+
+    const abort = (err) => {
+      controller.abort(err);
+    };
+
+    this.subscribe(abort);
+
+    controller.signal.unsubscribe = () => this.unsubscribe(abort);
+
+    return controller.signal;
   }
 
   /**
@@ -27751,8 +27787,94 @@ axios.default = axios;
 
 // EXTERNAL MODULE: ./node_modules/extract-zip/index.js
 var extract_zip = __nccwpck_require__(460);
+var extract_zip_default = /*#__PURE__*/__nccwpck_require__.n(extract_zip);
+// EXTERNAL MODULE: external "os"
+var external_os_ = __nccwpck_require__(2037);
+;// CONCATENATED MODULE: ./src/input-helper.ts
+// SPDX-License-Identifier: MIT
+
+const COMMA = ',';
+/**
+ * Splits an input string by comma and sanitizes the result by removing leading and trailing whitespaces.
+ * Result will contain non-empty strings only.
+ *
+ * @returns array of comma separated strings
+ */
+function split(input) {
+    if (!input)
+        return [];
+    return input
+        .split(COMMA)
+        .map(item => item.trim())
+        .filter(item => item.length > 0);
+}
+/**
+ * This method checks the default environment variables 'http_proxy' and 'https_proxy' for http/https proxy specification.
+ * The variables are expected to be specified in this format: http_proxy='http://user:password@proxy.example.org:1234'.
+ * This results in an URL object like this:
+ * URL {
+      href: 'http://user:password@proxy.example.org:1234/',
+      origin: 'http://proxy.example.org:1234',
+      protocol: 'http:',
+      username: 'user',
+      password: 'password',
+      host: 'proxy.example.org:1234',
+      hostname: 'proxy.example.org',
+      port: '1234',
+      pathname: '/',
+      search: '',
+      searchParams: URLSearchParams {},
+      hash: ''
+    }
+ * @returns configured AxiosProxyConfig or undefined if no proxy was
+ * @throws error if the proxy URL inside the ENV variable is an invalid URL
+ */
+function resolveProxyConfig() {
+    const httpsProxy = process.env.https_proxy;
+    const httpProxy = process.env.http_proxy;
+    const proxy = httpsProxy || httpProxy;
+    if (!proxy) {
+        return undefined;
+    }
+    try {
+        const proxyUrl = new URL(proxy);
+        const proxyConfig = {
+            protocol: proxyUrl.protocol.replace(':', ''),
+            host: proxyUrl.hostname,
+            port: proxyUrl.port ? parseInt(proxyUrl.port, 10) : getProtocolDefaultPort(proxyUrl.protocol),
+            ...(proxyUrl.username || proxyUrl.password ? {
+                auth: {
+                    username: proxyUrl.username,
+                    password: proxyUrl.password
+                }
+            } : undefined)
+        };
+        lib_core.info(`Proxy found, using proxy host: '${proxyUrl.hostname}'`);
+        return proxyConfig;
+    }
+    catch (error) {
+        throw new Error(`Trying to setup proxy configuration received the error: "${error.message}". Make sure to use the following syntax: http://user:password@proxy.example.org:1234 or without credentials: http://proxy.example.org:1234`);
+    }
+}
+function getProtocolDefaultPort(protocol) {
+    if (!protocol) {
+        throw new Error('No protocol defined!');
+    }
+    if (protocol.startsWith('https')) {
+        return 443;
+    }
+    else if (protocol.startsWith('http')) {
+        return 80;
+    }
+    else {
+        throw new Error('Accepted protocols are "http" and "https"');
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/fs-helper.ts
 // SPDX-License-Identifier: MIT
+
+
 
 
 
@@ -27775,7 +27897,7 @@ function getWorkspaceDir() {
      * For local builds/runs this must be done as well.
      *
      */
-    const workspace = shell.env.GITHUB_WORKSPACE;
+    const workspace = shelljs_shell.env.GITHUB_WORKSPACE;
     if (workspace == null) {
         /* not set, means local,we are inside github-actions/scan */
         return '../..';
@@ -27787,7 +27909,7 @@ function getWorkspaceDir() {
 function ensureDirectorySync(path) {
     try {
         lib.ensureDirSync(path);
-        core.debug(`Ensured directory at path: ${path}`);
+        lib_core.debug(`Ensured directory at path: ${path}`);
     }
     catch (error) {
         throw new Error(`Error ensuring directory at path: ${path} with error: ${error}`);
@@ -27800,15 +27922,19 @@ function ensureDirectorySync(path) {
 function chmodSync(path) {
     try {
         lib.chmodSync(path, 0o755);
-        core.debug(`Grant permissions for file at path: ${path}`);
+        lib_core.debug(`Grant permissions for file at path: ${path}`);
     }
     catch (error) {
         throw new Error(`Error granting permission for file at path: ${path} with error: ${error}`);
     }
 }
 async function downloadFile(url, dest) {
+    let proxyConfig = resolveProxyConfig();
     try {
-        const response = await lib_axios.get(url, { responseType: 'arraybuffer' });
+        const response = await lib_axios.get(url, {
+            responseType: 'arraybuffer',
+            ...(proxyConfig && { proxy: proxyConfig })
+        });
         await writeFile(dest, response.data);
     }
     catch (err) {
@@ -27817,8 +27943,8 @@ async function downloadFile(url, dest) {
 }
 async function unzipFile(zipPath, dest) {
     try {
-        await extract_zip(zipPath, { dir: external_path_.resolve(dest) });
-        core.debug(`Extracted zip file to: ${dest}`);
+        await extract_zip_default()(zipPath, { dir: external_path_.resolve(dest) });
+        lib_core.debug(`Extracted zip file to: ${dest}`);
     }
     catch (err) {
         throw new Error(`Error extracting zip file: ${zipPath} to: ${dest} with error: ${err}`);
@@ -27830,11 +27956,37 @@ async function unzipFile(zipPath, dest) {
  */
 function getFiles(pattern) {
     const reportFiles = [];
-    shell.ls(pattern).forEach(function (file) {
-        core.debug('file: ' + file);
+    shelljs_shell.ls(pattern).forEach(function (file) {
+        lib_core.debug('file: ' + file);
         reportFiles.push(`${file}`);
     });
     return reportFiles;
+}
+/**
+ * Delete a directory, but restore the file to keep.
+ * This means anything but the specified fileToKeep inside the directoryToCleanUp is removed.
+ *
+ * Does nothing if the file to keep is not inside the directory to clean up.
+ *
+ * @param directoryToCleanUp The directory to clean up.
+ * @param fileToKeep The file that must not be deleted.
+ */
+function deleteDirectoryExceptGivenFile(directoryToCleanUp, fileToKeep) {
+    const absoluteFileToKeep = external_path_.resolve(fileToKeep);
+    const absoluteDirectoryToCleanUp = external_path_.resolve(directoryToCleanUp);
+    // check that the file to keep is inside the directory to clean up
+    if (!absoluteFileToKeep.startsWith(absoluteDirectoryToCleanUp)) {
+        return;
+    }
+    const tempFile = `${external_os_.tmpdir()}/${external_path_.basename(absoluteFileToKeep)}`;
+    // Move the file to a temporary location
+    lib.moveSync(absoluteFileToKeep, tempFile);
+    // Remove the entire directory
+    lib.removeSync(absoluteDirectoryToCleanUp);
+    // Recreate the directory
+    lib.ensureDirSync(external_path_.dirname(absoluteFileToKeep));
+    // Move the file back to its original location
+    lib.moveSync(tempFile, absoluteFileToKeep);
 }
 
 ;// CONCATENATED MODULE: ./src/client-download.ts
@@ -27842,25 +27994,39 @@ function getFiles(pattern) {
 
 
 
+
+
 /**
  * Downloads release for the SecHub CLI if not already loaded.
+ * Ensure only the used client version is kept locally.
+ * This way the Github action cache can be kept lean and constant.
  *
  * @param context launch context
  */
 async function downloadClientRelease(context) {
     const clientVersion = context.clientVersion;
     if (external_fs_.existsSync(context.clientExecutablePath)) {
-        core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
+        lib_core.debug(`Client already downloaded - skip download. Path:${context.clientExecutablePath}`);
+        return;
+    }
+    // sanity check - for build this may never be reached, because the client executable path must exist!
+    if (clientVersion == 'build') {
+        handleError('Illegal state - client version is `build` but the client executable path does not exist: `' + context.clientExecutablePath + '`');
+        failAction(4);
         return;
     }
     const secHubZipFilePath = `${context.clientDownloadFolder}/sechub.zip`;
     const zipDownloadUrl = `https://github.com/mercedes-benz/sechub/releases/download/v${clientVersion}-client/sechub-cli-${clientVersion}.zip`;
-    core.debug(`SecHub-Client download URL: ${zipDownloadUrl}`);
-    core.debug(`SecHub-Client download folder: ${context.clientDownloadFolder}`);
+    lib_core.debug(`SecHub-Client download URL: ${zipDownloadUrl}`);
+    lib_core.debug(`SecHub-Client download folder: ${context.clientDownloadFolder}`);
     ensureDirectorySync(context.clientDownloadFolder);
     await downloadFile(zipDownloadUrl, secHubZipFilePath);
     await unzipFile(secHubZipFilePath, context.clientDownloadFolder);
     chmodSync(context.clientExecutablePath);
+    // remove all unused client versions/platforms from Github cache
+    // currently this is only done after a new download was performed
+    const parentDirectory = external_path_.dirname(context.clientDownloadFolder);
+    deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
 }
 
 ;// CONCATENATED MODULE: ./src/configuration-model.ts
@@ -27988,15 +28154,24 @@ class FileSystem {
 /**
  * Creates the sechub.json configuration file with the given user input values.
  *
- * @param secHubJsonFilePath The path where the sechub.json file should be created
+ * @param secHubJsonTargetFilePath The path where the sechub.json file should be created
  * @param data The value to build the json from
  */
-function createSecHubConfigJsonFile(secHubJsonFilePath, data) {
-    core.info('Config-Path was not found. Config will be created at ' + secHubJsonFilePath);
-    const secHubJson = createSecHubConfigurationModel(data);
-    const stringifiedSecHubJson = JSON.stringify(secHubJson);
+function createSecHubConfigJsonFile(secHubJsonTargetFilePath, data) {
+    core.info('Config-Path was not found. Config will be created at ' + secHubJsonTargetFilePath);
+    const stringifiedSecHubJson = createSecHubConfigJsonString(data);
     core.debug('SecHub-Config: ' + stringifiedSecHubJson);
-    shell.ShellString(stringifiedSecHubJson).to(secHubJsonFilePath);
+    shell.ShellString(stringifiedSecHubJson).to(secHubJsonTargetFilePath);
+}
+/**
+ * Creates the SecHub configuration as JSON string.
+ *
+ * @param data The value to build the json from.
+ * @returns  The SecHub configuration as JSON string.
+ */
+function createSecHubConfigJsonString(data) {
+    const secHubJson = createSecHubConfigurationModel(data);
+    return JSON.stringify(secHubJson);
 }
 class SecHubConfigurationModelBuilderData {
     constructor() {
@@ -28062,12 +28237,20 @@ function createSourceOrBinaryDataReference(referenceName, builderData, model) {
  * Sets the necessary environment variables with the user input values.
  */
 function initEnvironmentVariables(data, projectName) {
-    shell.env.SECHUB_USERID = data.user;
-    shell.env.SECHUB_APITOKEN = data.apiToken;
-    shell.env.SECHUB_SERVER = data.url;
-    shell.env.SECHUB_PROJECT = projectName;
-    shell.env.SECHUB_DEBUG = data.debug;
-    shell.env.SECHUB_TRUSTALL = data.trustAll;
+    shelljs_shell.env.SECHUB_USERID = getValueIfNotVariable(data.user);
+    shelljs_shell.env.SECHUB_SERVER = getValueIfNotVariable(data.url);
+    shelljs_shell.env.SECHUB_PROJECT = getValueIfNotVariable(projectName);
+    shelljs_shell.env.SECHUB_APITOKEN = data.apiToken;
+    shelljs_shell.env.SECHUB_DEBUG = data.debug;
+    shelljs_shell.env.SECHUB_TRUSTALL = data.trustAll;
+}
+function getValueIfNotVariable(valueOrEnvName) {
+    if (valueOrEnvName.startsWith('{{')) {
+        return '';
+    }
+    else {
+        return valueOrEnvName;
+    }
 }
 
 ;// CONCATENATED MODULE: ./src/exitcode.ts
@@ -28095,10 +28278,10 @@ exitCodeMap.set(10, 'ERROR - Job has been canceld on SecHub server');
 function logExitCode(code) {
     const message = 'Exit code: ' + code + ' . Description: ' + exitCodeMap.get(code);
     if (code === 0) {
-        core.info(message);
+        lib_core.info(message);
     }
     else {
-        core.error(message);
+        lib_core.error(message);
     }
 }
 
@@ -28121,6 +28304,8 @@ const PARAM_TRUST_ALL = 'trust-all';
 const PARAM_SCAN_TYPES = 'scan-types';
 const PARAM_CONTENT_TYPE = 'content-type';
 const PARAM_DEFINE_FALSE_POSITIVES = 'define-false-positives';
+// special parameter - used only when client version is `build`
+const PARAM_CLIENT_BUILD_FOLDER = 'client-build-folder';
 const INPUT_DATA_DEFAULTS = {
     configPath: '',
     url: '',
@@ -28138,6 +28323,7 @@ const INPUT_DATA_DEFAULTS = {
     scanTypes: '',
     contentType: '',
     defineFalsePositives: '',
+    clientBuildFolder: ''
 };
 function resolveGitHubInputData() {
     return {
@@ -28157,6 +28343,7 @@ function resolveGitHubInputData() {
         scanTypes: getParam(PARAM_SCAN_TYPES),
         contentType: getParam(PARAM_CONTENT_TYPE),
         defineFalsePositives: getParam(PARAM_DEFINE_FALSE_POSITIVES),
+        clientBuildFolder: getParam(PARAM_CLIENT_BUILD_FOLDER),
     };
 }
 /**
@@ -28171,25 +28358,7 @@ function getParam(param) {
     if (envVar && envVar.length > 0) {
         return envVar;
     }
-    return core.getInput(param);
-}
-
-;// CONCATENATED MODULE: ./src/input-helper.ts
-// SPDX-License-Identifier: MIT
-const COMMA = ',';
-/**
- * Splits an input string by comma and sanitizes the result by removing leading and trailing whitespaces.
- * Result will contain non-empty strings only.
- *
- * @returns array of comma separated strings
- */
-function split(input) {
-    if (!input)
-        return [];
-    return input
-        .split(COMMA)
-        .map(item => item.trim())
-        .filter(item => item.length > 0);
+    return lib_core.getInput(param);
 }
 
 ;// CONCATENATED MODULE: ./src/report-formats.ts
@@ -28208,38 +28377,87 @@ function getValidFormatsFromInput(inputFormats) {
     return formats.filter((item) => availableFormats.includes(item));
 }
 
+;// CONCATENATED MODULE: ./src/configuration-model-customizer.ts
+// SPDX-License-Identifier: MIT
+const ADDITIONAL_EXCLUDES = ['**/.sechub-gha/**'];
+/**
+ * Adds additional exclude patterns to the provided JSON data.
+ *
+ * If a 'data' section is present the additional exclude patterns will be added to each entry's 'excludes' array (sources and binaries).
+ * In case the 'data' section is not present, the deprecated 'codeScan.excludes' will be checked instead.
+ * If no sources or binaries are specified at all, no default exclude patterns will be added.
+ *
+ * @param sechubConfigJson - The JSON data to be updated.
+ */
+function addAdditonalExcludes(sechubConfigJson) {
+    handleDataSection(sechubConfigJson.data);
+    handleLegacyCodeScanSection(sechubConfigJson.codeScan);
+}
+function handleDataSection(dataSection) {
+    if (dataSection == undefined) {
+        return;
+    }
+    const processEntries = (entries) => {
+        entries.forEach(entry => {
+            entry.excludes = entry.excludes || [];
+            entry.excludes.push(...ADDITIONAL_EXCLUDES);
+        });
+    };
+    if (dataSection.sources) {
+        processEntries(dataSection.sources);
+    }
+    if (dataSection.binaries) {
+        processEntries(dataSection.binaries);
+    }
+}
+function handleLegacyCodeScanSection(codeScan) {
+    if (codeScan == undefined) {
+        return;
+    }
+    if (codeScan.fileSystem == undefined) {
+        return;
+    }
+    codeScan.excludes = codeScan.excludes || [];
+    codeScan.excludes.push(...ADDITIONAL_EXCLUDES);
+}
+
 ;// CONCATENATED MODULE: ./src/init-scan.ts
 // SPDX-License-Identifier: MIT
 
 
 
 
+
 /**
- * Returns the path to the sechub.json. If no custom config-path is defined, a config file wille be
- * generated from the input parameters and this path will be returned.
+ * Create a SecHub config JSON file at 'secHubJsonTargetFilePath'. If no custom config-path is defined, a config file will be
+ * generated from the input parameters.
  *
+ * @param secHubJsonTargetFilePath The target Sechub config file that will be created for the scan.
  * @param customSecHubConfigFilePath Path to the custom sechub.json (if defined)
  * @param builderData contains builder data which is used when no custom sechub configuration file is defined by user
- *
- * @returns resulting configuration file path
  */
-function initSecHubJson(secHubJsonFilePath, customSecHubConfigFilePath, builderData) {
-    core.startGroup('Set config');
-    let configFilePath = customSecHubConfigFilePath;
-    if (configFilePath) {
-        if (external_fs_.existsSync(configFilePath)) {
-            core.info(`Config-Path was found: ${configFilePath}`);
+function initSecHubJson(secHubJsonTargetFilePath, customSecHubConfigFilePath, builderData) {
+    lib_core.startGroup('Set config');
+    let jsonString = '';
+    if (customSecHubConfigFilePath) {
+        lib_core.info(`Config-Path was found: ${customSecHubConfigFilePath}`);
+        if (external_fs_.existsSync(customSecHubConfigFilePath)) {
+            lib_core.debug('Reading custom config file as json');
+            jsonString = external_fs_.readFileSync(customSecHubConfigFilePath, 'utf8');
         }
         else {
-            throw new Error(`Config-Path was defined, but no file exists at: ${configFilePath}`);
+            throw new Error(`Config-Path was defined, but no file exists at: ${customSecHubConfigFilePath}`);
         }
     }
     else {
-        createSecHubConfigJsonFile(secHubJsonFilePath, builderData);
-        configFilePath = secHubJsonFilePath;
+        jsonString = createSecHubConfigJsonString(builderData);
     }
-    core.endGroup();
-    return configFilePath;
+    /* additional post processing of defined/generated config file :*/
+    lib_core.debug('Additional post processing of SecHub configuration model');
+    const jsonData = JSON.parse(jsonString);
+    addAdditonalExcludes(jsonData);
+    external_fs_.writeFileSync(secHubJsonTargetFilePath, JSON.stringify(jsonData, null, 2));
+    lib_core.endGroup();
 }
 /**
  * Initializes the report formats and ensures there is at least one valid report format selected.
@@ -28302,11 +28520,11 @@ function sanitize(arg) {
     */
     arg = arg.replace(/\s+/g, '');
     if (!SHELL_ARGUMENT_CHARACTER_WHITELIST.test(arg)) {
-        core.error(`Argument has invalid characters: ${arg}`);
+        lib_core.error(`Argument has invalid characters: ${arg}`);
         throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
     }
     if (FULL_WORD.test(arg) && commandExistsSync(arg)) {
-        core.error(`Argument is a command: ${arg}`);
+        lib_core.error(`Argument is a command: ${arg}`);
         throw new CommandInjectionError(`Command injection detected in shell argument: ${arg}`);
     }
     return arg;
@@ -28319,8 +28537,67 @@ class CommandInjectionError extends Error {
     }
 }
 
+// EXTERNAL MODULE: ./node_modules/uuid/dist/index.js
+var dist = __nccwpck_require__(5840);
+;// CONCATENATED MODULE: ./node_modules/uuid/wrapper.mjs
+
+const v1 = dist.v1;
+const v3 = dist.v3;
+const v4 = dist.v4;
+const v5 = dist.v5;
+const NIL = dist.NIL;
+const version = dist.version;
+const validate = dist.validate;
+const stringify = dist.stringify;
+const wrapper_parse = dist.parse;
+
+;// CONCATENATED MODULE: ./src/fs-wrapper.ts
+// SPDX-License-Identifier: MIT
+
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * "fs" seems to be nolonger mockable any more correctly with jest, so this
+ * wrapper class was introduced. We can mock the wrapper without any problems.
+ *
+ * @param filePath
+ * @returns file content as string
+ */
+function readFileSync(filePath, options) {
+    return external_fs_.readFileSync(filePath, options);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ *
+ * @return an integer representing the file descriptor. */
+function openSync(path, flags, mode) {
+    return external_fs_.openSync(path, flags, mode);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * @param fd file descriptor to close
+ */
+function closeSync(fd) {
+    external_fs_.closeSync(fd);
+}
+/**
+ * This is a wrapper function - makes fs parts testable with jest without problems.
+ * For detailed information, see the documentation of the asynchronous version of
+ * this API: {@link fs.mkdtemp}.
+ *
+ * The optional `options` argument can be a string specifying an encoding, or an
+ *  object with an `encoding` property specifying the character encoding to use.
+ * @return the created directory path.
+ */
+function mkdtempSync(prefix, options) {
+    return external_fs_.mkdtempSync(prefix, options);
+}
+
 ;// CONCATENATED MODULE: ./src/sechub-cli.ts
 // SPDX-License-Identifier: MIT
+
+
+
+
 
 
 
@@ -28333,43 +28610,55 @@ function scan(context) {
     const configFileArgValue = sanitize(context.configFileLocation ? context.configFileLocation : '');
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-scan-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'scan output';
     try {
-        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-configfile', configFileArgValue, '-output', outputArgValue, addScmHistoryArg, 'scan'], {
-            env: {
-                SECHUB_SERVER: process.env.SECHUB_SERVER,
-                SECHUB_USERID: process.env.SECHUB_USERID,
-                SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-            },
-            encoding: 'utf-8'
+        (0,external_child_process_.execFileSync)(clientExecutablePath, 
+        /* parameters */
+        [
+            '-configfile', configFileArgValue,
+            '-output', outputArgValue, addScmHistoryArg, 'scan'
+        ], 
+        /* options*/
+        {
+            env: process.env,
+            encoding: 'utf-8',
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
-        core.info('Scan executed successfully');
+        const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
+        lib_core.info('Scan executed successfully');
         context.lastClientExitCode = 0;
         context.jobUUID = extractJobUUID(output);
     }
     catch (error) {
-        core.error(`Error executing scan command: ${error.message}`);
-        core.error(`Standard error: ${error.stderr}`);
+        const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
+        lib_core.error(`Error executing scan command: ${error.message}`);
         context.lastClientExitCode = error.status;
-        context.jobUUID = extractJobUUID(error.stdout);
+        context.jobUUID = extractJobUUID(output);
     }
+}
+function logAndCloseStdOutFile(prefix, stdOutFd, stdOutFile) {
+    closeSync(stdOutFd);
+    const output = readFileSync(stdOutFile, 'utf8');
+    lib_core.info(`${prefix}:\n${output}`);
+    return output;
 }
 function extractJobUUID(output) {
     const jobPrefix = 'job:';
-    core.debug(`Extracting job uuid from scan output: ${output}`);
+    lib_core.debug(`Extracting job uuid from scan output: ${output}`);
     const index1 = output.indexOf(jobPrefix);
     if (index1 > -1) {
         const index2 = output.indexOf('\n', index1);
         if (index2 > -1) {
             const extracted = output.substring(index1 + jobPrefix.length, index2);
             const jobUUID = extracted.trim();
-            core.debug(`Extracted job uuid from scan output: ${jobUUID}`);
+            lib_core.debug(`Extracted job uuid from scan output: ${jobUUID}`);
             return jobUUID;
         }
     }
-    core.debug('extractJobUUID: no job uuid found!');
+    lib_core.debug('extractJobUUID: no job uuid found!');
     return '';
 }
 /**
@@ -28383,24 +28672,23 @@ function getReport(jobUUID, reportFormat, context) {
     const jobUUIDArgValue = sanitize(jobUUID);
     const projectArgValue = sanitize(context.projectName);
     const reportFormatArgValue = sanitize(reportFormat);
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-scan-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'get-report-output';
     try {
         (0,external_child_process_.execFileSync)(clientExecutablePath, ['-jobUUID', jobUUIDArgValue, '-project', projectArgValue, '--reportformat', reportFormatArgValue, 'getReport'], {
-            env: {
-                SECHUB_SERVER: process.env.SECHUB_SERVER,
-                SECHUB_USERID: process.env.SECHUB_USERID,
-                SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-            },
-            encoding: 'utf-8'
+            env: process.env,
+            encoding: 'utf-8',
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
-        core.debug('Get report executed successfully');
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
+        lib_core.debug('Get report executed successfully');
         context.lastClientExitCode = 0;
     }
     catch (error) {
-        core.error(`Error executing getReport command: ${error.message}`);
-        core.error(`Standard error: ${error.stderr}`);
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
+        lib_core.error(`Error executing getReport command: ${error.message}`);
         context.lastClientExitCode = error.status;
     }
 }
@@ -28410,31 +28698,30 @@ function getReport(jobUUID, reportFormat, context) {
  */
 function defineFalsePositives(context) {
     if (!context.defineFalsePositivesFile) {
-        core.info("No define-false-positive file was specified. Skipping step defineFalsePositives...");
+        lib_core.info('No define-false-positive file was specified. Skipping step defineFalsePositives...');
         context.lastClientExitCode = 0;
         return;
     }
     const clientExecutablePath = sanitize(context.clientExecutablePath);
     const projectIdValue = sanitize(context.projectName);
     const defineFalsePositivesFile = sanitize(context.defineFalsePositivesFile);
+    const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-define-false-positives-temp-dir'));
+    const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
+    const stdoutFd = openSync(stdoutFile, 'a');
+    const prefix = 'define-false-positives-output';
     try {
-        const output = (0,external_child_process_.execFileSync)(clientExecutablePath, ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'], {
-            env: {
-                SECHUB_SERVER: process.env.SECHUB_SERVER,
-                SECHUB_USERID: process.env.SECHUB_USERID,
-                SECHUB_APITOKEN: process.env.SECHUB_APITOKEN,
-                SECHUB_PROJECT: process.env.SECHUB_PROJECT,
-                SECHUB_DEBUG: process.env.SECHUB_DEBUG,
-                SECHUB_TRUSTALL: process.env.SECHUB_TRUSTALL,
-            },
-            encoding: 'utf-8'
+        (0,external_child_process_.execFileSync)(clientExecutablePath, ['-project', projectIdValue, '-file', defineFalsePositivesFile, 'defineFalsePositives'], {
+            env: process.env,
+            encoding: 'utf-8',
+            stdio: ['ignore', stdoutFd, stdoutFd],
         });
-        core.info('defineFalsePositives executed successfully');
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
+        lib_core.info('defineFalsePositives executed successfully');
         context.lastClientExitCode = 0;
     }
     catch (error) {
-        core.error(`Error executing defineFalsePositives command: ${error.message}`);
-        core.error(`Standard error: ${error.stderr}`);
+        logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
+        lib_core.error(`Error executing defineFalsePositives command: ${error.message}`);
         context.lastClientExitCode = error.status;
     }
 }
@@ -28459,7 +28746,7 @@ function getFieldFromJson(field, jsonData) {
             currentKey = currentKey[key];
         }
         else {
-            core.warning(`Field "${key}" not found in the JSON report.`);
+            lib_core.warning(`Field "${key}" not found in the JSON report.`);
             return undefined;
         }
     }
@@ -28488,7 +28775,7 @@ function getFieldFromJson(field, jsonData) {
 function storeOutput(field, value) {
     // export the output to an "output" variable (this works)
     const envVarName = `SECHUB_OUTPUT_${field.toUpperCase().replace(/-/g, '_')}`;
-    (0,core.exportVariable)(envVarName, value);
+    (0,lib_core.exportVariable)(envVarName, value);
     if (process.env.ACTIONS_RUNNER_DEBUG === 'true') {
         // Print the environment variable for debugging
         console.log(`Exported environment variable ${envVarName} with value: ${value}`);
@@ -28527,10 +28814,10 @@ const NEW_LINE_SEPARATOR = '\n';
  * Collect all necessary report data, downloads additional report formats (e.g. 'html') if necessary
  */
 function collectReportData(context) {
-    core.startGroup('Collect report data');
+    lib_core.startGroup('Collect report data');
     collectJsonReportData(context);
     downloadOtherReportsThanJson(context);
-    core.endGroup();
+    lib_core.endGroup();
 }
 function collectJsonReportData(context) {
     /* json - already downloaded by client on scan, here we just ensure it exists and fetch the data from the model */
@@ -28538,11 +28825,11 @@ function collectJsonReportData(context) {
     const filePath = `${getWorkspaceDir()}/${fileName}`;
     let text = '';
     try {
-        core.info('Get Report as json');
-        text = external_fs_.readFileSync(filePath, 'utf8');
+        lib_core.info('Get Report as json');
+        text = readFileSync(filePath, 'utf8');
     }
     catch (error) {
-        core.warning(`Error reading JSON file: ${error}`);
+        lib_core.warning(`Error reading JSON file: ${error}`);
         return undefined;
     }
     const jsonObject = asJsonObject(text);
@@ -28553,17 +28840,17 @@ function collectJsonReportData(context) {
 function downloadOtherReportsThanJson(context) {
     if (context.jobUUID) {
         const jobUUID = context.jobUUID;
-        core.debug('JobUUID: ' + jobUUID);
+        lib_core.debug('JobUUID: ' + jobUUID);
         context.reportFormats.forEach((format) => {
             if (format != 'json') { // json is skipped, because already downloaded
-                core.info(`Get Report as ${format}`);
+                lib_core.info(`Get Report as ${format}`);
                 getReport(jobUUID, format, context);
                 logExitCode(context.lastClientExitCode);
             }
         });
     }
     else {
-        core.warning('No job uuid available, cannot download other reports!');
+        lib_core.warning('No job uuid available, cannot download other reports!');
     }
 }
 /**
@@ -28576,7 +28863,7 @@ function asJsonObject(text) {
         return jsonData;
     }
     catch (error) {
-        core.warning(`Error parsing JSON file: ${error}`);
+        lib_core.warning(`Error parsing JSON file: ${error}`);
         return undefined;
     }
 }
@@ -28586,30 +28873,30 @@ function asJsonObject(text) {
  * @param files All files to include into the artifact.
  */
 async function uploadArtifact(context, name, files) {
-    core.startGroup('Upload artifacts');
+    lib_core.startGroup('Upload artifacts');
     try {
         const artifactClient = artifact_client/* create */.U();
         const artifactName = name;
         const options = { continueOnError: true };
         const rootDirectory = sanitize(context.workspaceFolder);
-        core.debug('rootDirectory: ' + rootDirectory);
-        if (core.isDebug()) {
+        lib_core.debug('rootDirectory: ' + rootDirectory);
+        if (lib_core.isDebug()) {
             const filesInWorkspace = (0,external_child_process_.execFileSync)('ls', [rootDirectory], {
                 encoding: 'utf-8'
             }).split(NEW_LINE_SEPARATOR);
             for (const fileName of filesInWorkspace) {
-                core.debug(fileName);
+                lib_core.debug(fileName);
             }
         }
-        core.debug('files: ' + files);
+        lib_core.debug('files: ' + files);
         await artifactClient.uploadArtifact(artifactName, files, rootDirectory, options);
-        core.debug('artifact upload done');
+        lib_core.debug('artifact upload done');
     }
     catch (e) {
         const message = e instanceof Error ? e.message : 'Unknown error';
-        core.error(`ERROR while uploading artifacts: ${message}`);
+        lib_core.error(`ERROR while uploading artifacts: ${message}`);
     }
-    core.endGroup();
+    lib_core.endGroup();
 }
 /**
  * Get the JSON report file name for the scan job from the workspace directory.
@@ -28621,20 +28908,20 @@ function resolveReportNameForScanJob(context) {
         encoding: 'utf-8'
     }).split(NEW_LINE_SEPARATOR);
     if (!context.jobUUID) {
-        core.error('Illegal state: No job uuid resolved - not allowed at this point');
+        lib_core.error('Illegal state: No job uuid resolved - not allowed at this point');
         return '';
     }
     const jobUUID = context.jobUUID;
     const regexString = `sechub_report_.*${jobUUID}.*\\.json$`;
-    core.debug(`resolveReportNameForScanJob: regexString='${regexString}'`);
+    lib_core.debug(`resolveReportNameForScanJob: regexString='${regexString}'`);
     const regex = new RegExp(regexString);
     for (const fileName of filesInWorkspace) {
         if (regex.test(fileName)) {
-            core.debug(`resolveReportNameForScanJob: regexString matched for file: '${fileName}'`);
+            lib_core.debug(`resolveReportNameForScanJob: regexString matched for file: '${fileName}'`);
             return fileName;
         }
     }
-    core.warning('JSON report file not found in the workspace directory.');
+    lib_core.warning('JSON report file not found in the workspace directory.');
     return '';
 }
 /**
@@ -28642,7 +28929,7 @@ function resolveReportNameForScanJob(context) {
  * @returns traffic light
  */
 function reportOutputs(jsonData) {
-    core.startGroup('Reporting outputs to GitHub');
+    lib_core.startGroup('Reporting outputs to GitHub');
     const findings = analyzeFindings(jsonData);
     const trafficLight = getFieldFromJson('trafficLight', jsonData);
     const totalFindings = getFieldFromJson('result.count', jsonData);
@@ -28653,7 +28940,7 @@ function reportOutputs(jsonData) {
     setOutput('scan-findings-medium', findings.mediumCount, 'number');
     setOutput('scan-findings-low', findings.lowCount, 'number');
     setOutput('scan-readable-summary', humanReadableSummary, 'string');
-    core.endGroup();
+    lib_core.endGroup();
     return trafficLight;
 }
 /**
@@ -28665,7 +28952,7 @@ function analyzeFindings(jsonData) {
     const findings = getFieldFromJson('result.findings', jsonData);
     // if no findings were reported.
     if (findings === undefined) {
-        core.debug('No findings reported to be categorized.');
+        lib_core.debug('No findings reported to be categorized.');
         return {
             mediumCount: 0,
             highCount: 0,
@@ -28693,7 +28980,7 @@ function analyzeFindings(jsonData) {
         }
     });
     if (unmapped > 0) {
-        core.debug('Unmapped findings: ${unmapped}');
+        lib_core.debug('Unmapped findings: ${unmapped}');
     }
     return {
         mediumCount,
@@ -28744,7 +29031,7 @@ function buildSummary(trafficLight, totalFindings, findings) {
  */
 function setOutput(field, value, dataFormat) {
     value = value !== null && value !== void 0 ? value : (dataFormat === 'number' ? 0 : 'FAILURE');
-    core.debug(`Output ${field} set to ${value}`);
+    lib_core.debug(`Output ${field} set to ${value}`);
     storeOutput(field, value.toString()); // Ensure value is converted to a string as GitHub Actions expects output variables to be strings.
 }
 
@@ -28761,13 +29048,22 @@ function resolveProjectName(gitHubInputData, configFileLocation) {
     let projectName = '';
     projectName = gitHubInputData.projectName;
     if (!projectName || projectName.length === 0) {
+        if (lib_core.isDebug()) {
+            lib_core.debug('Project name not defined as parameter - so start resolving from config:' + configFileLocation);
+        }
         const secHubConfigurationJson = external_fs_.readFileSync(configFileLocation, 'utf8');
+        if (lib_core.isDebug()) {
+            lib_core.debug('Loaded config file:' + configFileLocation + '\nContent:\n' + secHubConfigurationJson);
+        }
         const jsonObj = projectname_resolver_asJsonObject(secHubConfigurationJson);
         if (jsonObj) {
             const projectData = getFieldFromJson('project', jsonObj);
             if (typeof projectData === 'string') {
                 projectName = projectData;
             }
+        }
+        else {
+            throw new Error('SecHub configuration not available as object!');
         }
     }
     return projectName;
@@ -28777,13 +29073,11 @@ function projectname_resolver_asJsonObject(text) {
         return JSON.parse(text);
     }
     catch (error) {
-        core.warning(`Error parsing JSON file: ${error}`);
+        lib_core.warning(`Error parsing JSON file: ${error}`);
         return undefined;
     }
 }
 
-// EXTERNAL MODULE: external "os"
-var external_os_ = __nccwpck_require__(2037);
 ;// CONCATENATED MODULE: ./src/platform-helper.ts
 // SPDX-License-Identifier: MIT
 
@@ -35818,7 +36112,7 @@ function setCss(el, prop, value, idx) {
         else if (val != null) {
             styles[prop] = val;
         }
-        el.attribs['style'] = stringify(styles);
+        el.attribs['style'] = css_stringify(styles);
     }
     else if (typeof prop === 'object') {
         Object.keys(prop).forEach((k, i) => {
@@ -35852,7 +36146,7 @@ function getCss(el, prop) {
  * @param obj - Object to stringify.
  * @returns The serialized styles.
  */
-function stringify(obj) {
+function css_stringify(obj) {
     return Object.keys(obj).reduce((str, prop) => `${str}${str ? ' ' : ''}${prop}: ${obj[prop]};`, '');
 }
 /**
@@ -46126,6 +46420,9 @@ async function getClientVersion(clientVersion) {
     return clientVersion;
 }
 function isValidVersion(version) {
+    if (version === 'build') {
+        return true; // build is always okay
+    }
     const regex = /^\d+\.\d+\.\d+$|^latest$/;
     return regex.test(version);
 }
@@ -46135,8 +46432,11 @@ async function getRedirectUrl(url) {
     const metaRefreshTag = $('meta[http-equiv="refresh"]');
     if (metaRefreshTag.length > 0) {
         const content = metaRefreshTag.attr('content');
+        if (content == null) {
+            throw new Error('No redirect content found');
+        }
         const redirectUrl = content.split(';')[1].split('=')[1];
-        core.debug(`Redirect URL found: ${redirectUrl}`);
+        lib_core.debug(`Redirect URL found: ${redirectUrl}`);
         return redirectUrl;
     }
     else {
@@ -46146,6 +46446,7 @@ async function getRedirectUrl(url) {
 
 ;// CONCATENATED MODULE: ./src/launcher.ts
 // SPDX-License-Identifier: MIT
+
 
 
 
@@ -46191,13 +46492,25 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
     configFileLocation: null,
     clientExecutablePath: '',
     lastClientExitCode: -1,
-    secHubJsonFilePath: '',
     workspaceFolder: '',
     secHubReportJsonObject: undefined,
     secHubReportJsonFileName: '',
     trafficLight: 'OFF',
     defineFalsePositivesFile: '',
 };
+function resolveClientDownloadFolder(clientVersion, gitHubInputData) {
+    if (clientVersion == 'build') {
+        const buildDownloadFolder = gitHubInputData.clientBuildFolder + '/go';
+        const isDirAndExists = external_fs_.existsSync(buildDownloadFolder) && external_fs_.lstatSync(buildDownloadFolder).isDirectory();
+        if (!isDirAndExists) {
+            handleError(`The client build folder path is not a directory or does not exist: ${buildDownloadFolder}`);
+        }
+        return buildDownloadFolder;
+    }
+    const expression = /\./gi;
+    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
+    return `${getWorkspaceDir()}/.sechub-gha/client/${clientVersionSubFolder}`;
+}
 /**
  * Creates the initial launch context
  * @returns launch context
@@ -46205,24 +46518,25 @@ const LAUNCHER_CONTEXT_DEFAULTS = {
 async function createContext() {
     const gitHubInputData = resolveGitHubInputData();
     const clientVersion = await getClientVersion(gitHubInputData.sechubCLIVersion);
-    const expression = /\./gi;
-    const clientVersionSubFolder = clientVersion.replace(expression, '_'); // avoid . inside path from user input
     const workspaceFolder = getWorkspaceDir();
-    const clientDownloadFolder = `${workspaceFolder}/.sechub-gha/client/${clientVersionSubFolder}`;
+    const clientDownloadFolder = resolveClientDownloadFolder(clientVersion, gitHubInputData);
     let clientExecutablePath = `${clientDownloadFolder}/platform/${getPlatformDirectory()}/sechub`;
     if (getPlatform() === 'win32') {
         clientExecutablePath = clientExecutablePath.concat('.exe');
     }
+    if (lib_core.isDebug()) {
+        lib_core.debug('Client executable path set to:' + clientExecutablePath);
+    }
     const generatedSecHubJsonFilePath = `${workspaceFolder}/generated-sechub.json`;
     const builderData = createSafeBuilderData(gitHubInputData);
-    const configFileLocation = initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
-    const projectName = resolveProjectName(gitHubInputData, configFileLocation);
+    initSecHubJson(generatedSecHubJsonFilePath, gitHubInputData.configPath, builderData);
+    const projectName = resolveProjectName(gitHubInputData, generatedSecHubJsonFilePath);
     const reportFormats = initReportFormats(gitHubInputData.reportFormats);
     return {
         jobUUID: LAUNCHER_CONTEXT_DEFAULTS.jobUUID,
         secHubReportJsonObject: LAUNCHER_CONTEXT_DEFAULTS.secHubReportJsonObject,
         secHubReportJsonFileName: '',
-        configFileLocation: configFileLocation,
+        configFileLocation: generatedSecHubJsonFilePath,
         reportFormats: reportFormats,
         inputData: gitHubInputData,
         clientVersion: clientVersion,
@@ -46230,7 +46544,6 @@ async function createContext() {
         clientExecutablePath: clientExecutablePath,
         projectName: projectName,
         lastClientExitCode: LAUNCHER_CONTEXT_DEFAULTS.lastClientExitCode,
-        secHubJsonFilePath: generatedSecHubJsonFilePath,
         workspaceFolder: workspaceFolder,
         trafficLight: LAUNCHER_CONTEXT_DEFAULTS.trafficLight,
         debug: gitHubInputData.debug == 'true',
@@ -46246,7 +46559,7 @@ function createSafeBuilderData(gitHubInputData) {
     return builderData;
 }
 async function init(context) {
-    core.debug(`Init for project : ${context.projectName}`);
+    lib_core.debug(`Init for project : ${context.projectName}`);
     initEnvironmentVariables(context.inputData, context.projectName);
     await downloadClientRelease(context);
 }
@@ -46267,7 +46580,7 @@ function executeDefineFalsePositives(context) {
     logExitCode(context.lastClientExitCode);
 }
 async function postScan(context) {
-    core.debug(`postScan(1): context.lastExitCode=${context.lastClientExitCode}`);
+    lib_core.debug(`postScan(1): context.lastExitCode=${context.lastClientExitCode}`);
     if (context.lastClientExitCode > 1) {
         // in this case (not 0, not 1) this is an error and we cannot download the report - here we fail always!
         failAction(context.lastClientExitCode);
@@ -46278,7 +46591,7 @@ async function postScan(context) {
     context.trafficLight = reportOutputs(context.secHubReportJsonObject);
     /* upload artifacts */
     await uploadArtifact(context, 'sechub scan-report', getFiles(`${context.workspaceFolder}/sechub_report_*.*`));
-    core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.trafficLight='${context.trafficLight}', context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
+    lib_core.debug(`postScan(2): context.lastExitCode=${context.lastClientExitCode}, context.trafficLight='${context.trafficLight}', context.inputData.failJobOnFindings='${context.inputData.failJobOnFindings}'`);
     if (context.trafficLight == 'RED' || context.trafficLight == 'OFF') {
         if (context.inputData.failJobOnFindings == 'true' || context.inputData.failJobOnFindings == '') {
             failAction(1);

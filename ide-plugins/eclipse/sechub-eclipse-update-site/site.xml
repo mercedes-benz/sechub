@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.mercedesbenz.sechub.feature_0.1.2.jar" id="com.mercedesbenz.sechub.feature" version="0.1.2">
+      <category name="com.mercedesbenz.sechub.category.alpha"/>
+   </feature>
+   <feature url="features/com.mercedesbenz.sechub.feature_0.2.0.jar" id="com.mercedesbenz.sechub.feature" version="0.2.0">
+      <category name="com.mercedesbenz.sechub.category.alpha"/>
+   </feature>
+   <feature url="features/com.mercedesbenz.sechub.feature_0.2.1.jar" id="com.mercedesbenz.sechub.feature" version="0.2.1">
+      <category name="com.mercedesbenz.sechub.category.alpha"/>
+   </feature>
+   <feature url="features/com.mercedesbenz.sechub.feature_0.3.0.jar" id="com.mercedesbenz.sechub.feature" version="0.3.0">
+      <category name="com.mercedesbenz.sechub.category.beta"/>
+   </feature>
+   <category-def name="com.mercedesbenz.sechub.category.alpha" label="Alpha">
+      <description>
+         Alpha versions
+      </description>
+   </category-def>
+   <category-def name="com.mercedesbenz.sechub.category.beta" label="Beta">
+      <description>
+         Beta versions
+      </description>
+   </category-def>
+</site>

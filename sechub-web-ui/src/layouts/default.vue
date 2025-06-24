@@ -4,7 +4,9 @@
     <AppHeader />
     <v-main class="background-default">
       <div class="pa-10">
-        <router-view />
+        <v-container fluid>
+          <router-view />
+        </v-container>
       </div>
     </v-main>
   </v-app>

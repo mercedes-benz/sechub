@@ -46,7 +46,6 @@ class GitPrepareWrapperModuleTest {
 
     @BeforeEach
     void beforeEach() {
-        moduleToTest = new GitPrepareWrapperModule();
         writer = new TestFileWriter();
         gitPrepareInputValidator = mock(GitPrepareInputValidator.class);
         gitWrapper = mock(GitWrapper.class);
@@ -55,15 +54,9 @@ class GitPrepareWrapperModuleTest {
         PDSLogSanitizer pdsLogSanitizer = mock(PDSLogSanitizer.class);
 
         PrepareWrapperUploadService uploadService = mock(PrepareWrapperUploadService.class);
-
+        moduleToTest = new GitPrepareWrapperModule(gitWrapper, gitPrepareInputValidator, uploadService, filesSupport, pdsLogSanitizer, gitLocationConverter);
         ReflectionTestUtils.setField(moduleToTest, "enabled", true);
 
-        moduleToTest.uploadService = uploadService;
-        moduleToTest.filesSupport = filesSupport;
-        moduleToTest.gitWrapper = gitWrapper;
-        moduleToTest.gitPrepareInputValidator = gitPrepareInputValidator;
-        moduleToTest.pdsLogSanitizer = pdsLogSanitizer;
-        moduleToTest.gitLocationConverter = gitLocationConverter;
     }
 
     @Test

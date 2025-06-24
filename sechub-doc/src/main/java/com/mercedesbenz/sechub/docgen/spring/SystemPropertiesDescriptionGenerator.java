@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.docgen.spring;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -8,13 +10,16 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.mercedesbenz.sechub.commons.core.doc.Description;
 import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry;
 import com.mercedesbenz.sechub.commons.core.environment.SecureEnvironmentVariableKeyValueRegistry.EnvironmentVariableKeyValueEntry;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.docgen.ConfigurationPropertiesData;
 import com.mercedesbenz.sechub.docgen.DocAnnotationData;
 import com.mercedesbenz.sechub.docgen.Generator;
 import com.mercedesbenz.sechub.docgen.spring.SpringValueExtractor.SpringValue;
 import com.mercedesbenz.sechub.docgen.spring.SpringValueFilter.AcceptAllSpringValueFilter;
+import com.mercedesbenz.sechub.docgen.util.DocGeneratorUtil;
 
 public class SystemPropertiesDescriptionGenerator implements Generator {
 
@@ -46,6 +51,17 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
             rowMap.putAll(customPropertiesMap);
         }
 
+        appendSpringValue(list, registry, filter, rowMap);
+        appendConfigurationProperties(list, registry, filter, rowMap);
+        if (rowMap.isEmpty()) {
+            return "";
+        }
+        appendStringContent(sb, rowMap);
+        return sb.toString();
+    }
+
+    private void appendSpringValue(List<DocAnnotationData> list, SecureEnvironmentVariableKeyValueRegistry registry, SpringValueFilter filter,
+            Map<String, SortedSet<TableRow>> rowMap) {
         for (DocAnnotationData data : list) {
             if (SimpleStringUtils.isEmpty(data.springValue)) {
                 continue;
@@ -75,17 +91,62 @@ public class SystemPropertiesDescriptionGenerator implements Generator {
             }
             rows.add(row);
         }
-        if (rowMap.isEmpty()) {
-            return "";
+    }
+
+    private void appendConfigurationProperties(List<DocAnnotationData> list, SecureEnvironmentVariableKeyValueRegistry registry, SpringValueFilter filter,
+            Map<String, SortedSet<TableRow>> rowMap) {
+        for (DocAnnotationData data : list) {
+            if (data.propertiesData == null) {
+                continue;
+            }
+            SortedSet<TableRow> rows = rowMap.get(data.scope);
+            if (rows == null) {
+                rows = new TreeSet<>();
+                rowMap.put(data.scope, rows);
+            }
+
+            ConfigurationPropertiesData pd = data.propertiesData;
+
+            String prefix = pd.properties.prefix();
+            Constructor<?> constructor = pd.constructor;
+            appendConfigurationPropertiesData(rows, prefix, constructor);
+
         }
-        appendStringContent(sb, rowMap);
-        return sb.toString();
+    }
+
+    private void appendConfigurationPropertiesData(SortedSet<TableRow> rows, String prefix, Constructor<?> constructor) {
+        if (constructor == null) {
+            /* ignore */
+        } else {
+            Parameter[] parameters = constructor.getParameters();
+            for (Parameter param : parameters) {
+                Class<?> type = param.getType();
+                String name = DocGeneratorUtil.convertCamelCaseToKebabCase(param.getName());
+
+                TableRow row = new TableRow();
+                row.defaultValue = ""; // not available
+                row.hasDefaultValue = false;
+                row.propertyKey = prefix + "." + name;
+
+                Description decription = param.getAnnotation(Description.class);
+                if (decription == null) {
+                    row.description = "";
+                } else {
+                    row.description = decription.value();
+                }
+
+                rows.add(row);
+                ConfigurationPropertiesData pd2 = DocGeneratorUtil.createConfigurationPropertiesData(type, null);
+                appendConfigurationPropertiesData(rows, prefix + "." + name, pd2.constructor);
+
+            }
+        }
     }
 
     protected void appendStringContent(StringBuilder sb, Map<String, SortedSet<TableRow>> rowMap) {
         for (Map.Entry<String, SortedSet<TableRow>> entries : rowMap.entrySet()) {
             SortedSet<TableRow> table = entries.getValue();
-            sb.append("[[section-gen-configuration-scope-").append(entries.getKey()).append("]]\n");
+            sb.append("[[section-gen-configuration-scope-").append(DocGeneratorUtil.convertToIdentifier(entries.getKey())).append("]]\n");
             sb.append("[options=\"header\",cols=\"1,1,1\"]\n");
             sb.append(".").append(buildTitle(entries.getKey()));
             sb.append("\n|===\n");

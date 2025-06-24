@@ -18,6 +18,7 @@ spec:
     metadata:
       labels:
         name: web-ui
+        role: sechub-frontend
 {{- if .Values.templateMetadataAnnotations }}
       annotations:
         {{ .Values.templateMetadataAnnotations | indent 8 | trim }}
@@ -32,6 +33,11 @@ spec:
         - name: secret-web-ui-ssl-volume
           secret:
             secretName: secret-web-ui-ssl
+{{- end }}
+{{- if .Values.web_ui.useCustomConfig }}
+        - name: configmap-web-ui-custom-config
+          configMap:
+            name: configmap-sechub-webui-custom-config
 {{- end }}
 {{- if .Values.go_mmproxy.enabled }}
       initContainers:
@@ -90,6 +96,13 @@ spec:
 {{- if ne .Values.web_ui.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub-web-ui/secrets/secret-ssl
             name: secret-web-ui-ssl-volume
+{{- end }}
+{{- if .Values.web_ui.useCustomConfig }}
+          # Mount config.json for customized settings
+          - mountPath: /var/www/html/config.json
+            name: configmap-web-ui-custom-config
+            subPath: config.json
+            readOnly: true
 {{- end }}
         env:
           - name: DEPLOYMENT_COMMENT

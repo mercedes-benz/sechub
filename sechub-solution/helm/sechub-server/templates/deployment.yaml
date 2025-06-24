@@ -30,6 +30,15 @@ spec:
         runAsGroup: 7474 # gid of the application group. (should be same as in the Dockerfile)
         fsGroup: 7474    # This gid has write access to the mounted volumes.
       volumes:
+{{- if .Values.staticResources.enabled }}
+        # Static resources for login page
+        - name: configmap-background-image
+          configMap:
+            name: configmap-login-background-image
+        - name: configmap-main-css
+          configMap:
+            name: configmap-login-main-css
+{{- end }}
 {{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
         - name: secret-ssl
           secret:
@@ -137,6 +146,17 @@ spec:
           successThreshold: 1
           timeoutSeconds: 10
         volumeMounts:
+{{- if .Values.staticResources.enabled }}
+          # Static resources for login page
+          - mountPath: /sechub/web-resources/static/login/images/background_image_login.jpg
+            name: configmap-background-image
+            subPath: background_image_login.jpg
+            readOnly: true
+          - mountPath: /sechub/web-resources/static/login/css/main.css
+            name: configmap-main-css
+            subPath: main.css
+            readOnly: true
+{{- end }}
 {{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
           - mountPath: /sechub/secrets/secret-ssl
             name: secret-ssl
@@ -152,6 +172,13 @@ spec:
         # Base url for sechub server - e.g. https://sechub.example.com
         - name: SECHUB_SERVER_BASEURL
           value: "{{ .Values.server.baseURL.userAccess }}"
+        # Static resources for login page
+        - name: SPRING_WEB_RESOURCES_STATICLOCATIONS
+{{- if .Values.staticResources.enabled }}
+          value: "file:/sechub/web-resources/static,classpath:/static"
+{{- else }}
+          value: "classpath:/static"
+{{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + File upload definitions
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -194,6 +221,7 @@ spec:
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + SSL certificate
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+{{- if ne .Values.server.ssl.keystoreAlias "undefined" }}
         - name: SECHUB_SERVER_SSL_KEYSTORE_TYPE
           value: "PKCS12"
         - name: SECHUB_SERVER_SSL_KEYSTORE_LOCATION
@@ -203,8 +231,9 @@ spec:
         - name: SECHUB_SERVER_SSL_KEYSTORE_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-ssl
-               key: sechub_server_ssl_keystore_password
+              name: secret-ssl
+              key: sechub_server_ssl_keystore_password
+{{- end }}
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
 # + Initial user setup
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -221,13 +250,13 @@ spec:
         - name: SPRING_DATASOURCE_USERNAME
           valueFrom:
             secretKeyRef:
-               name: secret-database
-               key: spring_datasource_username
+              name: secret-database
+              key: spring_datasource_username
         - name: SPRING_DATASOURCE_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-database
-               key: spring_datasource_password
+              name: secret-database
+              key: spring_datasource_password
 {{- end }}
         # Increase HikariPool (10 default)
         - name: SPRING_DATASOURCE_HIKARI_MINIMUMIDLE
@@ -285,14 +314,14 @@ spec:
         - name: SECHUB_ADAPTER_CHECKMARX_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-checkmarx
-               key: sechub_adapter_checkmarx_userid
+              name: secret-checkmarx
+              key: sechub_adapter_checkmarx_userid
         # Password of checkmarx user
         - name: SECHUB_ADAPTER_CHECKMARX_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-checkmarx
-               key: sechub_adapter_checkmarx_password
+              name: secret-checkmarx
+              key: sechub_adapter_checkmarx_password
         # Interval in minutes when SecHub checks if the scan has finished
         - name: SECHUB_ADAPTER_CHECKMARX_SCANRESULTCHECK_PERIOD_MINUTES
           value: "{{ .Values.adapterCheckmarx.checkIntervalInMinutes }}"
@@ -310,8 +339,8 @@ spec:
         - name: SECHUB_SCAN_CONFIG_INITIAL
           valueFrom:
             secretKeyRef:
-               name: secret-config
-               key: sechub_scan_config_initial
+              name: secret-config
+              key: sechub_scan_config_initial
         # Turns off certification checks for this product only. Should only be used in test or development environments!
         - name: SECHUB_ADAPTER_CHECKMARX_TRUSTALL
           value: "{{ .Values.adapterCheckmarx.trustAnyCertificate | toString }}"
@@ -327,14 +356,14 @@ spec:
         - name: SECHUB_ADAPTER_NESSUS_INTERNET_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-nessus
-               key: sechub_adapter_nessus_internet_userid
+              name: secret-nessus
+              key: sechub_adapter_nessus_internet_userid
         # Password for Nessus instance used for Internet scans
         - name: SECHUB_ADAPTER_NESSUS_INTERNET_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-nessus
-               key: sechub_adapter_nessus_internet_password
+              name: secret-nessus
+              key: sechub_adapter_nessus_internet_password
         # Base url of nessus used for intranet scans
         - name: SECHUB_ADAPTER_NESSUS_INTRANET_BASEURL
           value: "{{ .Values.adapterNessus.baseURL.intranet }}"
@@ -342,14 +371,14 @@ spec:
         - name: SECHUB_ADAPTER_NESSUS_INTRANET_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-nessus
-               key: sechub_adapter_nessus_intranet_userid
+              name: secret-nessus
+              key: sechub_adapter_nessus_intranet_userid
         # Password for nessus instance used for intranet scans
         - name: SECHUB_ADAPTER_NESSUS_INTRANET_PASSWORD
           valueFrom:
             secretKeyRef:
-               name: secret-nessus
-               key: sechub_adapter_nessus_intranet_password
+              name: secret-nessus
+              key: sechub_adapter_nessus_intranet_password
         # Time in minutes the adapter will be checked for results. When -1 check is done every 7200 minutes
         - name: SECHUB_ADAPTER_NESSUS_SCANRESULTCHECK_PERIOD_MINUTES
           value: "-1"
@@ -380,14 +409,14 @@ spec:
         - name: SECHUB_ADAPTER_NETSPARKER_USERID
           valueFrom:
             secretKeyRef:
-               name: secret-netsparker
-               key: sechub_adapter_netsparker_userid
+              name: secret-netsparker
+              key: sechub_adapter_netsparker_userid
         # API token for Netsparker user
         - name: SECHUB_ADAPTER_NETSPARKER_APITOKEN
           valueFrom:
             secretKeyRef:
-               name: secret-netsparker
-               key: sechub_adapter_netsparker_apitoken
+              name: secret-netsparker
+              key: sechub_adapter_netsparker_apitoken
         # Default policy ID for Netsparker scans (test policy)
         - name: SECHUB_ADAPTER_NETSPARKER_DEFAULTPOLICYID
           value: "{{ .Values.adapterNetsparker.defaultPolicyID }}"
@@ -479,6 +508,10 @@ spec:
         # See https://mercedes-benz.github.io/sechub/latest/sechub-operations.html#section-general-configuration
         - name: SECHUB_SECURITY_SERVER_MODES
           value: "{{ .Values.security.resourceServer.modes }}"
+{{- if contains "classic" .Values.security.resourceServer.modes }}
+        - name: SECHUB_SECURITY_LOGIN_CLASSICAUTH_COOKIEAGESECONDS
+          value: "{{ .Values.security.resourceServer.classic.cookieValidityInSeconds }}"
+{{- end }}
         - name: SECHUB_SECURITY_SERVER_OAUTH2_MODE
           value: "{{ .Values.security.resourceServer.oauth2.mode }}"
         # OAuth2 mode can be either 'jwt' or 'opaque-token'. Exactly one must be active.
@@ -490,12 +523,19 @@ spec:
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientId }}"
         - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLIENTSECRET
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clientSecret }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_CLUSTERCACHECLEARPERIOD
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.clusterCacheClearPeriod }}"  
         - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_DEFAULTTOKENEXPIRESIN
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.defaultTokenExpiresIn }}"
-        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_MAXCACHEDURATION
-          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.maxCacheDuration }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INMEMORYCACHECLEARPERIOD
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.inMemoryCacheClearPeriod }}"  
         - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_INTROSPECTIONURI
           value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.introspectionUri }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_MAXCACHEDURATION
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.maxCacheDuration }}"
+        - name: SECHUB_SECURITY_SERVER_OAUTH2_OPAQUETOKEN_PRECACHEDURATION
+          value: "{{ .Values.security.resourceServer.oauth2.opaqueToken.preCacheDuration }}"  
+          
 {{- end }}
         - name: SECHUB_SECURITY_LOGIN_ENABLED
           value: "{{ .Values.security.login.enabled }}"
@@ -529,6 +569,8 @@ spec:
 {{- end }}
         - name: SECHUB_SECURITY_ENCRYPTION_SECRETKEY
           value: "{{ .Values.security.encryption.secretKey }}"
+        - name: SECHUB_SECURITY_MINIMUMTOKENVALIDITY
+          value: "{{ .Values.security.minimumTokenValidity }}"
 # ----------------------------------------------------------------------------------------------#
 # - Scope: storage
 # --------------------------------------------------------------------------------------------- #
@@ -549,13 +591,13 @@ spec:
         - name: S3_ACCESSKEY
           valueFrom:
             secretKeyRef:
-               name: secret-storage
-               key: sechub_storage_s3_accesskey
+              name: secret-storage
+              key: sechub_storage_s3_accesskey
         - name: S3_SECRETKEY
           valueFrom:
             secretKeyRef:
-               name: secret-storage
-               key: sechub_storage_s3_secretkey
+              name: secret-storage
+              key: sechub_storage_s3_secretkey
         - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_MAX_MILLISECONDS
           value: "{{ .Values.storage.s3.connectionPool.maxIdleTimeInMilliseconds }}"
         - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_VALIDATE_MILLISECONDS

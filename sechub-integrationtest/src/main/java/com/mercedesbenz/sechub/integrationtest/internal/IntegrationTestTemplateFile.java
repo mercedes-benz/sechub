@@ -70,6 +70,8 @@ public enum IntegrationTestTemplateFile {
 
     CODE_SCAN_3_SOURCES_DATA_ONE_REFERENCE("sechub-integrationtest-codescan-sources-config1-one-data-section-only-folder.json"),
 
+    CODE_SCAN_4_NO_DATA_SECTION_BUT_ONE_USAGE("sechub-integrationtest-codescan-config4-no-data-section-but-one-usage.json"),
+
     ;
 
     private String templateFilename;

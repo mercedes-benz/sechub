@@ -2,7 +2,6 @@
 package com.mercedesbenz.sechub.integrationtest.scenario1;
 
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
-import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException.UnprocessableEntity;
 
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
@@ -101,8 +101,8 @@ public class TemplateScenario1IntTest {
     @Test
     void template_crud_and_healthcheck_test() {
         /* prepare */
-        as(SUPER_ADMIN).createProject(project, SUPER_ADMIN).assignUserToProject(SUPER_ADMIN, Scenario1.PROJECT_1); // not done in this scenario
-                                                                                                                   // automatically
+        as(SUPER_ADMIN).createProject(project, SUPER_ADMIN);
+
         /* check preconditions */
         assertTemplateNotInsideTemplateList();
 
@@ -160,6 +160,9 @@ public class TemplateScenario1IntTest {
 
         // check cleanup worked
         assertTemplateNotInsideTemplateList();
+
+        /* expect HTTP 404 when deleting a template which does not exist anymore */
+        expectHttpFailure(() -> as(SUPER_ADMIN).deleteTemplate(templateId), HttpStatus.NOT_FOUND);
 
     }
 

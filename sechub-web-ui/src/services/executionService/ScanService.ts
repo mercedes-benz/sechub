@@ -9,6 +9,11 @@ import executionApi from './executionService'
 import { createSha256Checksum } from '../../utils/cryptoUtils'
 import { UserUploadsBinariesWorkaroundRequest, UserUploadSourceCodeWorkaroundRequest } from '@/services/executionService/executionService'
 import i18n from '@/i18n'
+import {
+  UPLOAD_BINARIES_IDENTIFIER,
+  UPLOAD_SOURCE_CODE_IDENTIFIER,
+} from '@/utils/applicationConstants'
+import { handleApiError } from '../apiErrorHandler'
 
 // Implements the scan of a file in three steps: creating a Job, uploading the data and approve the job
 class ScanService {
@@ -24,6 +29,7 @@ class ScanService {
       }
     } catch (error) {
       console.error('Scan failed:', error)
+      handleApiError(error)
       errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_GENERIC'))
     }
     return errorMessages
@@ -40,6 +46,7 @@ class ScanService {
       return result.jobId
     } catch (error) {
       console.error('Job creation failed:', error)
+      handleApiError(error)
       return undefined
     }
   }
@@ -47,7 +54,8 @@ class ScanService {
   private async uploadData (configuration: SecHubConfiguration, jobId: string, file: File, errorMessages: string[]) {
     const checksum: string = await createSha256Checksum(file)
 
-    if (configuration.data?.sources) {
+    // sourcode upload
+    if (this.containsString(configuration, UPLOAD_SOURCE_CODE_IDENTIFIER)) {
       const requestParameters: UserUploadSourceCodeWorkaroundRequest = {
         projectId: configuration.projectId,
         jobUUID: jobId,
@@ -59,9 +67,13 @@ class ScanService {
         await executionApi.userUploadSourceCode(requestParameters)
       } catch (error) {
         console.error('Source code upload failed:', error)
+        handleApiError(error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_SOURCE_UPLOAD_FAILED'))
+        errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT'))
       }
-    } else if (configuration.data?.binaries) {
+
+    // binary upload
+    } else if (this.containsString(configuration, UPLOAD_BINARIES_IDENTIFIER)) {
       const size: string = file.size.toString()
       const requestParameters: UserUploadsBinariesWorkaroundRequest = {
         projectId: configuration.projectId,
@@ -75,11 +87,18 @@ class ScanService {
         await executionApi.userUploadsBinaries(requestParameters)
       } catch (error) {
         console.error('Binary upload failed:', error)
+        handleApiError(error)
         errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_BINARY_UPLOAD_FAILED'))
+        errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_DOWNLOAD_CLIENT'))
       }
     } else {
-      errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_NO_DATA_SECTION'))
+      errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_CONFIGURATION_ERROR'))
     }
+  }
+
+  private containsString (config: SecHubConfiguration, searchString: string): boolean {
+    const jsonString = JSON.stringify(config)
+    return jsonString.includes(searchString)
   }
 
   private async approveJob (projectId: string, jobId: string, errorMessages: string[]) {
@@ -92,6 +111,7 @@ class ScanService {
       await executionApi.userApproveJob(requestParameters)
     } catch (error) {
       console.error('Job approval failed:', error)
+      handleApiError(error)
       errorMessages.push(i18n.global.t('SCAN_ERROR_ALERT_JOB_NOT_APPROVED'))
     }
   }

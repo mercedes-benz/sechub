@@ -1,0 +1,67 @@
+{
+  "name": "pds-prepare",
+  "productIdentifier": "PDS_PREPARE",
+  "setup": {
+    "baseURL": "https://pds-prepare:8444",
+    "credentials": {
+      "user": "env:SECHUB_PDS_PREPARE_USERID",
+      "password": "env:SECHUB_PDS_PREPARE_PASSWORD"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "30"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_PREPARE"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": "false"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": "35"
+      },
+      {
+        "key": "pds.config.supported.datatypes",
+        "value": "NONE"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": "1500"
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": "true"
+      },
+      {
+        "key": "pds.prepare.module.git.enabled",
+        "value": "true"
+      },
+      {
+        "key": "pds.prepare.module.skopeo.enabled",
+        "value": "true"
+      },
+      {
+        "key": "pds.prepare.module.git.remove.gitfiles.before.upload",
+        "value": "true"
+      },
+      {
+        "key": "pds.prepare.module.git.clone.without.git.history",
+        "value": "true"
+      },
+      {
+        "key": "pds.prepare.process.timeout.seconds",
+        "value": "-1"
+      },
+      {
+        "key": "pds.prepare.proxy.enabled",
+        "value": "false"
+      }
+    ]
+  },
+  "executorVersion": 1,
+  "enabled": true
+}

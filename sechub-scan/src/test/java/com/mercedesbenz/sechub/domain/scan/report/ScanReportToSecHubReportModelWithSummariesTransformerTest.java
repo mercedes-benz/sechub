@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +29,8 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
     private static final int INFO_FINDING_CWEID = 5;
     private static final int UNCLASSIFIED_FINDING_CWEID = 6;
     private static final int CRITICAL_FINDING2_CWEID = 7;
+    private static final int HIGH_FINDING2_CWEID = 8;
+    private static final int CRITICAL_FINDING3_CWEID = 9;
 
     private static final String CRITICAL_FINDING1_NAME = "Critical name1";
     private static final String CRITICAL_FINDING2_NAME = "Critical name2";
@@ -38,11 +39,14 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
     private static final String LOW_FINDING_NAME = "Cookie Without Secure Flag";
     private static final String INFO_FINDING_NAME = "Info name";
     private static final String UNCLASSIFIED_FINDING_NAME = "Unclassified name";
+    private static final String HIGH_FINDING2_NAME = "High finding 2";
+    private static final String CRITICAL_FINDING3_NAME = "Critical finding 3";
 
     private SecHubFinding criticalCodeScanFinding1;
     private SecHubFinding criticalCodeScanFinding2;
 
     private SecHubFinding highSecretScanFinding;
+    private SecHubFinding highIacScanFinding;
     private SecHubFinding mediumWebScanFinding;
     private SecHubFinding lowInfraScanFinding;
     private SecHubFinding infoLicenseFinding;
@@ -52,6 +56,8 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
     private SecHubFinding criticalWebScanFinding1;
 
     private SecHubFinding lowCodeScanFinding;
+
+    private SecHubFinding criticalIacScanFinding;
 
     @BeforeEach
     void beforeEach() {
@@ -81,6 +87,18 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
         highSecretScanFinding.setSeverity(Severity.HIGH);
         highSecretScanFinding.setName(HIGH_FINDING_NAME);
         highSecretScanFinding.setType(ScanType.SECRET_SCAN);
+
+        criticalIacScanFinding = new SecHubFinding();
+        criticalIacScanFinding.setCweId(CRITICAL_FINDING3_CWEID);
+        criticalIacScanFinding.setSeverity(Severity.CRITICAL);
+        criticalIacScanFinding.setName(CRITICAL_FINDING3_NAME);
+        criticalIacScanFinding.setType(ScanType.IAC_SCAN);
+
+        highIacScanFinding = new SecHubFinding();
+        highIacScanFinding.setCweId(HIGH_FINDING2_CWEID);
+        highIacScanFinding.setSeverity(Severity.HIGH);
+        highIacScanFinding.setName(HIGH_FINDING2_NAME);
+        highIacScanFinding.setType(ScanType.IAC_SCAN);
 
         mediumWebScanFinding = new SecHubFinding();
         mediumWebScanFinding.setCweId(MEDIUM_FINDING_CWEID);
@@ -145,10 +163,10 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
         }
         assertEquals(0, result.getResult().getCount());
 
-        Optional<SecHubReportMetaData> metaDataOpt = result.getMetaData();
-        assertTrue(metaDataOpt.isPresent());
+        SecHubReportMetaData metaData = result.getMetaData();
+        assertNotNull(metaData);
 
-        SecHubReportSummary summary = metaDataOpt.get().getSummary();
+        SecHubReportSummary summary = metaData.getSummary();
         assertTrue(summary.getCodeScan().isEmpty());
         assertTrue(summary.getInfraScan().isEmpty());
         assertTrue(summary.getSecretScan().isEmpty());
@@ -170,7 +188,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(1, critical.size());
         ScanTypeSummaryFindingOverviewData criticalCodeScanDetails = critical.iterator().next();
@@ -194,7 +212,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(1, critical.size());
         ScanTypeSummaryFindingOverviewData criticalCodeScanDetails = critical.iterator().next();
@@ -219,7 +237,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         List<ScanTypeSummaryFindingOverviewData> critical = summary.getCodeScan().get().getDetails().getCritical();
         assertEquals(2, critical.size());
 
@@ -250,7 +268,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         SecHubReportScanTypeSummary codeScan = summary.getCodeScan().get();
         assertEquals(5, codeScan.getCritical());
         assertEquals(0, codeScan.getHigh());
@@ -274,7 +292,9 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
                 mediumWebScanFinding,
                 criticalWebScanFinding1,
                 highSecretScanFinding,
+                highIacScanFinding,
                 infoLicenseFinding,
+                criticalIacScanFinding,
                 lowInfraScanFinding,
                 criticalCodeScanFinding1,
                 criticalCodeScanFinding2,
@@ -290,7 +310,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
             String asJson = result.toFormattedJSON();
             System.out.println(asJson);
         }
-        SecHubReportSummary summary = result.getMetaData().get().getSummary();
+        SecHubReportSummary summary = result.getMetaData().getSummary();
         SecHubReportScanTypeSummary codeScan = summary.getCodeScan().get();
         assertEquals(5, codeScan.getCritical());
         assertEquals(1, codeScan.getLow());
@@ -321,6 +341,16 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
         assertEquals(0, secretScan.getUnclassified());
         assertEquals(0, secretScan.getInfo());
 
+        SecHubReportScanTypeSummary iacScan = summary.getIacScan().get();
+        assertEquals(1, iacScan.getHigh());
+        assertEquals(2, iacScan.getTotal());
+
+        assertEquals(1, iacScan.getCritical());
+        assertEquals(0, iacScan.getMedium());
+        assertEquals(0, iacScan.getLow());
+        assertEquals(0, iacScan.getUnclassified());
+        assertEquals(0, iacScan.getInfo());
+
         SecHubReportScanTypeSummary infraScan = summary.getInfraScan().get();
         assertEquals(1, infraScan.getLow());
         assertEquals(1, infraScan.getTotal());
@@ -341,7 +371,7 @@ class ScanReportToSecHubReportModelWithSummariesTransformerTest {
         assertEquals(0, licenseScan.getLow());
         assertEquals(0, licenseScan.getUnclassified());
 
-        assertEquals(12, result.getResult().getCount());
+        assertEquals(14, result.getResult().getCount());
     }
 
     private ScanReport buildReport(SecHubFinding... findingsForReport) {

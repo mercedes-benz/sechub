@@ -3,20 +3,28 @@
 sechub:
   security:
     server:
-      modes:
-        - oauth2
-        - classic
+      modes: oauth2, classic
       oauth2:
         mode: jwt
         jwt:
           jwk-set-uri: https://example.org/jwk-set-uri
+        opaque-token: 
+          introspection-uri: https://example.org/inrospection-uri
+          
+          client-id: example-client-id
+          client-secret: example-client-secret
+          
+          max-cache-duration: 24h 
+          pre-cache-duration: 10s
+          
+          cluster-cache-clear-period: 1m
+          in-memory-cache-clear-period: 10s
+    
     login:
       enabled: true
       login-page: /login
       redirect-uri: example.org/redirect-uri
-      modes:
-        - oauth2
-        - classic
+      modes: oauth2, classic
       oauth2:
         client-id: example-client-id
         client-secret: example-client-secret
@@ -29,3 +37,5 @@ sechub:
         jwk-set-uri: https://example.org/jwk-set-uri
     encryption:
       secret-key: test-test-test-test-test-test-32
+    minimum-token-validity: 10h
+    

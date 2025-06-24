@@ -7,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zaproxy.clientapi.core.ClientApiException;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperRuntimeException;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
@@ -44,9 +46,12 @@ public class ZapScriptLogin {
         }
 
         LOG.info("Calling groovy script executor to execute login script.");
-        ScriptLoginResult loginResult = groovyScriptExecutor.executeScript(groovyScriptLoginFile, scanContext);
+        ScriptLoginResult loginResult = resilientLogin(() -> groovyScriptExecutor.executeScript(groovyScriptLoginFile, scanContext),
+                scanContext.getMaximumLoginScriptFailureRetries());
         if (loginResult.isLoginFailed()) {
-            throw new ZapWrapperRuntimeException("An error happened during script login.", ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
+            String errorMessage = "An error happened during script login. Please verify your credentials are specified correctly.";
+            scanContext.getZapProductMessageHelper().writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, errorMessage));
+            throw new ZapWrapperRuntimeException(errorMessage, ZapWrapperExitCode.PRODUCT_EXECUTION_ERROR);
         }
         try {
             LOG.info("Calling session grabber to read the HTTP session data and pass them to ZAP.");
@@ -58,6 +63,39 @@ public class ZapScriptLogin {
 
     public void cleanUpScriptLoginData(String targetUrl, ClientApiWrapper clientApiWrapper) throws ClientApiException {
         sessionConfigurator.cleanUpOldSessionDataIfNecessary(targetUrl, clientApiWrapper);
+    }
+
+    private ScriptLoginResult resilientLogin(ScriptLoginRunnable loginRunnable, int maxRetries) {
+        int loginsDone = 0;
+        int maximumAllowedLoginTries = maxRetries + 1; // plus one because this is the "normal" login, without retry
+
+        ScriptLoginResult result = null;
+
+        while (isLoginNecessary(loginsDone, result, maximumAllowedLoginTries)) {
+
+            LOG.info("Start login attempt: {}/{}", loginsDone + 1, maximumAllowedLoginTries);
+            result = loginRunnable.login();
+            loginsDone++;
+
+            if (result.isLoginFailed()) {
+                LOG.warn("Login attempt {} failed!", loginsDone);
+            }
+        }
+        return result;
+    }
+
+    private boolean isLoginNecessary(int loginsDone, ScriptLoginResult result, int maximumAllowedLogins) {
+        if (result == null) {
+            return true;
+        }
+        if (loginsDone >= maximumAllowedLogins) {
+            return false;
+        }
+        return result.isLoginFailed();
+    }
+
+    private interface ScriptLoginRunnable {
+        public ScriptLoginResult login();
     }
 
 }

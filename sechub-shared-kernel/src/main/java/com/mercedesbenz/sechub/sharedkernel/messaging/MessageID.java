@@ -181,6 +181,11 @@ public enum MessageID {
     USER_EMAIL_ADDRESS_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
 
     /**
+     * Request a verification mail to the old mail address
+     */
+    USER_EMAIL_ADDRESS_CHANGE_REQUEST(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
+
+    /**
      * Inform that auto cleanup configuration has changed
      */
     AUTO_CLEANUP_CONFIGURATION_CHANGED(MessageDataKeys.USER_EMAIL_ADDRESS_CHANGE_DATA),
@@ -244,6 +249,26 @@ public enum MessageID {
      *
      */
     RESULT_FULL_CONFIGURATION_VALIDATION(MessageDataKeys.ERROR_MESSAGES),
+
+    /**
+     * Assign the owner as a user of the project. This can be sent at project
+     * creation time but also on ownership changes. Remark: One consumer side will
+     * trigger a {@link #REQUEST_USER_ROLE_RECALCULATION} event for the user found
+     * inside PROJECT_TO_USER_DATA
+     */
+    ASSIGN_OWNER_AS_USER_TO_PROJECT(MessageDataKeys.PROJECT_TO_USER_DATA),
+
+    /**
+     * Request all enabled execution profile IDs for each project. This is sent when
+     * a user requests information about all projects the user is part of.
+     */
+    REQUEST_ENABLED_PROFILE_IDS_FOR_PROJECTS(MessageDataKeys.PROJECT_IDS),
+
+    /**
+     * This is sent as a result to a message with the request:
+     * {@link #REQUEST_ACTIVE_PROFILE_IDS_FOR_PROJECTS}.
+     */
+    RESULT_ENABLED_PROFILE_IDS_FOR_PROJECTS(MessageDataKeys.PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS),
 
     ;
 

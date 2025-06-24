@@ -15,9 +15,7 @@ import org.springframework.http.client.ClientHttpResponse;
 
 /**
  * This http request interceptor does a trace logging of all adapter
- * communication when log level for this logger is set to trace. It uses the
- * DEBUG log level from SLF4J to identify if the data shall be inspected and
- * logged or not.<br>
+ * communication when log level for this logger is set to trace.<br>
  * <br>
  *
  * @author Albert Tregnaghi
@@ -38,14 +36,7 @@ public class TraceLogClientHTTPRequestInterceptor implements ClientHttpRequestIn
     }
 
     private void log(HttpRequest request, byte[] body, ClientHttpResponse response) throws IOException {
-        if (!LOG.isDebugEnabled()) {
-            /*
-             * no output wanted - just do nothing and return. we use debug level, because
-             * this is the standard log level when executing as wiremock too - currently not
-             * able to change the log level for those tests because wiremock... does
-             * something special with logging in this case... If the wiremock logging issue
-             * could be changed then we should use a TRACE level instead!
-             */
+        if (!LOG.isTraceEnabled()) {
             return;
         }
         StringBuilder sb = new StringBuilder();

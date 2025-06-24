@@ -18,6 +18,8 @@ public class RoleConstants {
 
     public static final String ROLE_OWNER = "OWNER";
 
+    private static final String[] ALL_ROLES = new String[] { ROLE_USER, ROLE_OWNER, ROLE_SUPERADMIN };
+
     private RoleConstants() {
     }
 
@@ -31,6 +33,10 @@ public class RoleConstants {
 
     public static boolean isOwnerRole(String role) {
         return ROLE_OWNER.equals(role);
+    }
+
+    public static String[] getAllRoles() {
+        return ALL_ROLES;
     }
 
 }

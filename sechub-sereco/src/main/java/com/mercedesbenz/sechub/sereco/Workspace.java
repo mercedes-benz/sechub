@@ -81,8 +81,8 @@ public class Workspace {
             }
             LOG.warn(prefix + "Import Id: {}. Product id: {}. Will mark as product failure", param.getImportId(), param.getProductId());
 
-            ProductFailureMetaDataBuilder builder = new ProductFailureMetaDataBuilder();
-            SerecoMetaData failureMetaData = builder.forParam(param).build();
+            ProductFailureMetaDataBuilder failureMetaDataBuilder = new ProductFailureMetaDataBuilder();
+            SerecoMetaData failureMetaData = failureMetaDataBuilder.forParam(param).build();
             mergeWithWorkspaceData(sechubConfig, failureMetaData);
             mergeWithWorkspaceData(param.getProductMessages());
 

@@ -5,7 +5,7 @@ import static com.mercedesbenz.sechub.restdoc.RestDocumentationTest.defineRestSe
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,7 @@ import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectData;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectRestController;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectService;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectUserData;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.project.UseCaseGetAssignedProjectDataList;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
@@ -70,16 +72,25 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
 
         String username = "user1";
 
+        ProjectUserData user1 = new ProjectUserData();
+        user1.setUserId(username);
+        user1.setEmailAddress(username + "@example.org");
+
         ProjectData projectData = new ProjectData();
         projectData.setProjectId("project1");
-        projectData.setOwner(username);
+        projectData.setOwner(user1);
         projectData.setOwned(true);
-        String[] assignedUsers = new String[] { "user1", "user2" };
-        projectData.setAssignedUsers(assignedUsers);
+
+        ProjectUserData user2 = new ProjectUserData();
+        user2.setUserId("user2");
+        user2.setEmailAddress("user2@example.org");
+
+        projectData.setAssignedUsers(List.of(user1, user2));
+        projectData.setEnabledProfileIds(Set.of("profile1", "profile2"));
         List<ProjectData> projectDataList = List.of(projectData);
 
         when(userContextService.getUserId()).thenReturn(username);
-        when(projectService.getAssignedProjectDataList(username)).thenReturn(projectDataList);
+        when(projectService.getProjectDataList(username)).thenReturn(projectDataList);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -103,9 +114,14 @@ public class ProjectRestControllerRestDocTest implements TestIsNecessaryForDocum
                                 ),
                                 responseFields(
                                         fieldWithPath("[]." + ProjectData.PROPERTY_PROJECT_ID).description("Project ID"),
-                                        fieldWithPath("[]." + ProjectData.PROPERTY_OWNER).description("Name of owner of the Project"),
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_OWNER).description("Owner of the Project"),
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_OWNER+"."+ProjectUserData.PROPERTY_USER_ID).description("Name of owner"),
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_OWNER+"."+ProjectUserData.PROPERTY_EMAIL_ADDRESS).description("Email address of owner"),
                                         fieldWithPath("[]." + ProjectData.PROPERTY_IS_OWNED).description("If caller is owner of the project"),
-                                        fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS).description("Optional: Assigned users (only viewable by owner or admin)")
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS).description("Optional: Assigned users (only viewable by owner or admin)"),
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS+"[]."+ProjectUserData.PROPERTY_USER_ID).description("Name of assigned user"),
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_ASSIGNED_USERS+"[]."+ProjectUserData.PROPERTY_EMAIL_ADDRESS).description("Email address of assigned user"),
+                                        fieldWithPath("[]." + ProjectData.PROPERTY_ENABLED_PROFILE_IDS+"[].").description("List of profile IDs assigned to the project.")
                                 )
                         )
                 );

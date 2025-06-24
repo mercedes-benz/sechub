@@ -151,17 +151,47 @@ public class ProductExecutionProfileRepositoryDBTest {
         assertThat(profilesProjectUnknown).isEmpty();
     }
 
+    @Test
+    void findIdsOfEnabledExecutionProfilesForProject() {
+        /* prepare */
+        String profile1 = "profile1";
+        String profile2 = "profile2";
+        String profile3 = "profile3";
+        String profile4 = "profile4";
+
+        String project1 = "project1";
+        String project2 = "project1";
+
+        createProfileWithProjectRelation(profile1, false, project1); // not enabled - will not be fetched
+
+        createProfileWithProjectRelation(profile4, true, project1); // profile4 and profile2 are enabled and must be fetched
+        createProfileWithProjectRelation(profile2, true, project1);
+
+        createProfileWithProjectRelation(profile3, project2); // additional profile with another project to test no unwanted data fetched
+
+        /* execute */
+        List<String> profilesProject1 = repositoryToTest.findOrderedIdsOfEnabledExecutionProfilesForProject(project1);
+
+        /* test */
+        assertThat(profilesProject1).containsExactly("profile2", "profile4");
+    }
+
     private ProductExecutionProfile createProfile(String profileId) {
         return createProfileWithProjectRelation(profileId);
     }
 
     private ProductExecutionProfile createProfileWithProjectRelation(String profileId, String... projectIds) {
+        return createProfileWithProjectRelation(profileId, false, projectIds);
+    }
+
+    private ProductExecutionProfile createProfileWithProjectRelation(String profileId, boolean enabled, String... projectIds) {
         ProductExecutionProfile profile = new ProductExecutionProfile();
         profile.id = profileId;
         if (projectIds != null && projectIds.length > 0) {
             profile.projectIds.addAll(Arrays.asList(projectIds));
         }
         ProductExecutionProfile persisted = entityManager.persist(profile);
+        profile.enabled = enabled;
 
         entityManager.flush();
         entityManager.clear();

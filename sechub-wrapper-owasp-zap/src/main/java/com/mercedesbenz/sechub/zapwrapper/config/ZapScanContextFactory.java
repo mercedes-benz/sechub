@@ -3,24 +3,40 @@ package com.mercedesbenz.sechub.zapwrapper.config;
 
 import java.io.File;
 import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.template.TemplateData;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDataResolver;
 import com.mercedesbenz.sechub.commons.model.template.TemplateType;
-import com.mercedesbenz.sechub.zapwrapper.cli.CommandLineSettings;
+import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperConfiguration;
 import com.mercedesbenz.sechub.zapwrapper.cli.ZapWrapperExitCode;
-import com.mercedesbenz.sechub.zapwrapper.helper.*;
+import com.mercedesbenz.sechub.zapwrapper.helper.BaseTargetUriFactory;
+import com.mercedesbenz.sechub.zapwrapper.helper.IncludeExcludeToZapURLHelper;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapPDSEventHandler;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapProductMessageHelper;
+import com.mercedesbenz.sechub.zapwrapper.helper.ZapWrapperDataSectionFileSupport;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableConstants;
 import com.mercedesbenz.sechub.zapwrapper.util.EnvironmentVariableReader;
 import com.mercedesbenz.sechub.zapwrapper.util.UrlUtil;
 
 public class ZapScanContextFactory {
+    private static final int MAXIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES = 5;
+    private static final int MINIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES = 0;
+
     private static final Logger LOG = LoggerFactory.getLogger(ZapScanContextFactory.class);
 
     private final EnvironmentVariableReader environmentVariableReader;
@@ -47,18 +63,20 @@ public class ZapScanContextFactory {
         this.includeExcludeToZapURLHelper = includeExcludeToZapURLHelper;
     }
 
-    public ZapScanContext create(CommandLineSettings settings) throws ZapWrapperContextCreationException {
-        if (settings == null) {
+    public ZapScanContext create(ZapWrapperConfiguration configuration) throws ZapWrapperContextCreationException {
+        if (configuration == null) {
             throw new ZapWrapperContextCreationException("Command line settings must not be null!", ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
         }
         /* Wrapper settings */
-        ZapServerConfiguration serverConfig = createZapServerConfig(settings);
-        ProxyInformation proxyInformation = createProxyInformation(settings);
+        ZapServerConfiguration serverConfig = createZapServerConfig(configuration);
+        ProxyInformation proxyInformation = createProxyInformation(configuration);
+
+        int loginScriptFailureRetries = resolveLoginScriptFailureRetries();
 
         /* SecHub settings */
-        URL targetUrl = targetUriFactory.create(settings.getTargetURL());
+        URL targetUrl = targetUriFactory.create(configuration.getTargetURL());
 
-        SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.fetchSecHubScanConfiguration(settings.getSecHubConfigFile(),
+        SecHubScanConfiguration sechubScanConfig = secHubScanConfigProvider.fetchSecHubScanConfiguration(configuration.getSecHubConfigFile(),
                 environmentVariableReader);
         SecHubWebScanConfiguration sechubWebConfig = resolveSecHubWebConfiguration(sechubScanConfig);
 
@@ -68,12 +86,14 @@ public class ZapScanContextFactory {
 
         Map<String, File> headerValueFiles = fetchHeaderValueFiles(sechubScanConfig);
 
-        File groovyScriptFile = fetchGroovyScriptFile(settings);
+        ZapProductMessageHelper productMessagehelper = createZapProductMessageHelper(configuration);
+
+        File groovyScriptFile = fetchGroovyScriptFile(configuration);
         Map<String, String> templateVariables = fetchTemplateVariables(sechubScanConfig);
-        assertValidScriptLoginConfiguration(groovyScriptFile, templateVariables);
+        assertValidScriptLoginConfiguration(groovyScriptFile, templateVariables, productMessagehelper);
 
         /* we always use the SecHub job UUID as Zap context name */
-        String contextName = settings.getJobUUID();
+        String contextName = configuration.getJobUUID();
         if (contextName == null) {
             contextName = UUID.randomUUID().toString();
             LOG.warn("The job UUID was not set. Using randomly generated UUID: {} as fallback.", contextName);
@@ -82,42 +102,57 @@ public class ZapScanContextFactory {
         Set<String> includeSet = createUrlsIncludedInContext(targetUrl, sechubWebConfig);
         Set<String> excludeSet = createUrlsExcludedFromContext(targetUrl, sechubWebConfig);
 
-        ZapProductMessageHelper productMessagehelper = createZapProductMessageHelper(settings);
-        ZapPDSEventHandler zapEventHandler = createZapEventhandler(settings);
+        ZapPDSEventHandler zapEventHandler = createZapEventhandler(configuration);
 
         /* @formatter:off */
         ZapScanContext scanContext = ZapScanContext.builder()
 												.setTargetUrl(targetUrl)
-												.setVerboseOutput(settings.isVerboseEnabled())
-												.setReportFile(settings.getReportFile())
+												.setVerboseOutput(configuration.isVerboseEnabled())
+												.setReportFile(configuration.getReportFile())
 												.setContextName(contextName)
-												.setAjaxSpiderEnabled(settings.isAjaxSpiderEnabled())
-												.setAjaxSpiderBrowserId(settings.getAjaxSpiderBrowserId())
-												.setActiveScanEnabled(settings.isActiveScanEnabled())
+												.setAjaxSpiderEnabled(configuration.isAjaxSpiderEnabled())
+												.setAjaxSpiderBrowserId(configuration.getAjaxSpiderBrowserId())
+												.setActiveScanEnabled(configuration.isActiveScanEnabled())
 												.setServerConfig(serverConfig)
 												.setSecHubWebScanConfiguration(sechubWebConfig)
 												.setProxyInformation(proxyInformation)
-												.setZapRuleIDsToDeactivate(fetchZapRuleIDsToDeactivate(settings))
+												.setZapRuleIDsToDeactivate(fetchZapRuleIDsToDeactivate(configuration))
 												.setApiDefinitionFiles(apiDefinitionFiles)
 												.setClientCertificateFile(clientCertificateFile)
 												.setHeaderValueFiles(headerValueFiles)
 												.setZapURLsIncludeSet(includeSet)
 												.setZapURLsExcludeSet(excludeSet)
-												.setConnectionCheckEnabled(settings.isConnectionCheckEnabled())
-												.setMaxNumberOfConnectionRetries(settings.getMaxNumberOfConnectionRetries())
-												.setRetryWaittimeInMilliseconds(settings.getRetryWaittimeInMilliseconds())
+												.setConnectionCheckEnabled(configuration.isConnectionCheckEnabled())
+												.setMaxNumberOfConnectionRetries(configuration.getMaxNumberOfConnectionRetries())
+												.setRetryWaittimeInMilliseconds(configuration.getRetryWaittimeInMilliseconds())
 												.setZapProductMessageHelper(productMessagehelper)
 												.setZapPDSEventHandler(zapEventHandler)
 												.setGroovyScriptLoginFile(groovyScriptFile)
-												.setTemplateVariables(templateVariables)
-												.setPacFilePath(fetchPacFilePath(settings))
+												.setMaxGroovyScriptLoginFailureRetries(loginScriptFailureRetries)
+												.setPacFilePath(fetchPacFilePath(configuration))
+												.setNoHeadless(configuration.isNoHeadless())
 											  .build();
 		/* @formatter:on */
         return scanContext;
     }
 
-    private List<String> fetchZapRuleIDsToDeactivate(CommandLineSettings settings) {
-        List<String> deactivateRules = settings.getDeactivateRules();
+    private int resolveLoginScriptFailureRetries() {
+        int loginScriptFailureRetries = environmentVariableReader.readAsInt(EnvironmentVariableConstants.WRAPPER_LOGINSCRIPT_FAILURE_RETRIES);
+        if (loginScriptFailureRetries > MAXIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES) {
+            loginScriptFailureRetries = MAXIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES;
+            LOG.warn("Configured login script failure retries was bigger than maximum: {} - set back to: {}", MAXIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES,
+                    loginScriptFailureRetries);
+        }
+        if (loginScriptFailureRetries < MINIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES) {
+            loginScriptFailureRetries = MINIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES;
+            LOG.warn("Configured login script failure retries was smaler than minimum: {} - set back to: {}", MINIMUM_ACCEPTED_LOGINSCRIPT_FAILURE_RETRIES,
+                    loginScriptFailureRetries);
+        }
+        return loginScriptFailureRetries;
+    }
+
+    private List<String> fetchZapRuleIDsToDeactivate(ZapWrapperConfiguration configuration) {
+        List<String> deactivateRules = configuration.getDeactivateRules();
 
         if (!deactivateRules.isEmpty()) {
             return deactivateRules;
@@ -129,10 +164,10 @@ public class ZapScanContextFactory {
         return Arrays.asList(zapRuleIDsToDeactivate.split(","));
     }
 
-    private ZapServerConfiguration createZapServerConfig(CommandLineSettings settings) throws ZapWrapperContextCreationException {
-        String zapHost = settings.getZapHost();
-        int zapPort = settings.getZapPort();
-        String zapApiKey = settings.getZapApiKey();
+    private ZapServerConfiguration createZapServerConfig(ZapWrapperConfiguration configuration) throws ZapWrapperContextCreationException {
+        String zapHost = configuration.getZapHost();
+        int zapPort = configuration.getZapPort();
+        String zapApiKey = configuration.getZapApiKey();
 
         if (zapHost == null) {
             zapHost = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_HOST_ENV_VARIABLE_NAME);
@@ -160,12 +195,12 @@ public class ZapScanContextFactory {
         return new ZapServerConfiguration(zapHost, zapPort, zapApiKey);
     }
 
-    private ProxyInformation createProxyInformation(CommandLineSettings settings) {
-        String proxyHost = settings.getProxyHost();
-        int proxyPort = settings.getProxyPort();
-        String proxyRealm = settings.getProxyRealm();
-        String proxyUsername = settings.getProxyUsername();
-        String proxyPassword = settings.getProxyPassword();
+    private ProxyInformation createProxyInformation(ZapWrapperConfiguration configuration) {
+        String proxyHost = configuration.getProxyHost();
+        int proxyPort = configuration.getProxyPort();
+        String proxyRealm = configuration.getProxyRealm();
+        String proxyUsername = configuration.getProxyUsername();
+        String proxyPassword = configuration.getProxyPassword();
 
         if (proxyHost == null) {
             proxyHost = environmentVariableReader.readAsString(EnvironmentVariableConstants.PROXY_HOST_ENV_VARIABLE_NAME);
@@ -249,8 +284,8 @@ public class ZapScanContextFactory {
         return excludeSet;
     }
 
-    private ZapProductMessageHelper createZapProductMessageHelper(CommandLineSettings settings) throws ZapWrapperContextCreationException {
-        String userMessagesFolder = settings.getPDSUserMessageFolder();
+    private ZapProductMessageHelper createZapProductMessageHelper(ZapWrapperConfiguration configuration) throws ZapWrapperContextCreationException {
+        String userMessagesFolder = configuration.getPDSUserMessageFolder();
         if (userMessagesFolder == null) {
             userMessagesFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_USER_MESSAGES_FOLDER);
         }
@@ -261,8 +296,8 @@ public class ZapScanContextFactory {
         return new ZapProductMessageHelper(userMessagesFolder);
     }
 
-    private ZapPDSEventHandler createZapEventhandler(CommandLineSettings settings) throws ZapWrapperContextCreationException {
-        String pdsJobEventsFolder = settings.getPDSEventFolder();
+    private ZapPDSEventHandler createZapEventhandler(ZapWrapperConfiguration configuration) throws ZapWrapperContextCreationException {
+        String pdsJobEventsFolder = configuration.getPDSEventFolder();
         if (pdsJobEventsFolder == null) {
             pdsJobEventsFolder = environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_JOB_EVENTS_FOLDER);
         }
@@ -274,8 +309,8 @@ public class ZapScanContextFactory {
         return new ZapPDSEventHandler(pdsJobEventsFolder);
     }
 
-    private File fetchGroovyScriptFile(CommandLineSettings settings) {
-        String groovyScriptFile = settings.getGroovyLoginScriptFile();
+    private File fetchGroovyScriptFile(ZapWrapperConfiguration configuration) {
+        String groovyScriptFile = configuration.getGroovyLoginScriptFile();
         if (groovyScriptFile == null) {
             groovyScriptFile = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_GROOVY_LOGIN_SCRIPT_FILE);
         }
@@ -298,38 +333,29 @@ public class ZapScanContextFactory {
      * This method verifies that the script login configuration is valid. No script
      * login configured is a valid configuration as well.
      *
-     * @param groovyScriptFile
-     * @param templateVariables
+     * @param groovyScriptFile  Groovy script file
+     * @param templateVariables Template variables
+     *
      * @throws ZapWrapperContextCreationException
      *
      */
-    private void assertValidScriptLoginConfiguration(File groovyScriptFile, Map<String, String> templateVariables) throws ZapWrapperContextCreationException {
+    private void assertValidScriptLoginConfiguration(File groovyScriptFile, Map<String, String> templateVariables, ZapProductMessageHelper messageHelper)
+            throws ZapWrapperContextCreationException {
         // no script login was defined
         if (groovyScriptFile == null && templateVariables.isEmpty()) {
             return;
         }
+        // no script found, but template data were configured
+        if (groovyScriptFile == null && !templateVariables.isEmpty()) {
+            String errorMessage = "The SecHub configuration file's webscan section includes a template data section, but no template was loaded for the scan. If you're not a SecHub administrator, please contact your SecHub support to ensure your project is assigned the correct login template.";
+            messageHelper.writeSingleProductMessage(new SecHubMessage(SecHubMessageType.ERROR, errorMessage));
+            throw new ZapWrapperContextCreationException(errorMessage, ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
+        }
         // A script was defined, but no template data where defined
         if (groovyScriptFile != null && templateVariables.isEmpty()) {
             throw new ZapWrapperContextCreationException(
-                    "When a groovy login script is defined, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
-                            + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!",
+                    "When a groovy login script is defined, some variables - e.g. for username, password etc - must be set inside webscan template data. But found nothing.",
                     ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
-        }
-        // No script was defined, but template data where defined
-        if (groovyScriptFile == null && !templateVariables.isEmpty()) {
-            throw new ZapWrapperContextCreationException("When no groovy login script is defined, no template data variables must be defined!",
-                    ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
-        }
-        // if a script and the template data are defined, the mandatory variables must
-        // be present
-        if (groovyScriptFile != null && !templateVariables.isEmpty()) {
-            if (templateVariables.get(ZapTemplateDataVariableKeys.USERNAME_KEY) == null
-                    || templateVariables.get(ZapTemplateDataVariableKeys.PASSWORD_KEY) == null) {
-                throw new ZapWrapperContextCreationException(
-                        "For script authentication webscans using templates, the variables: '" + ZapTemplateDataVariableKeys.USERNAME_KEY + "' and '"
-                                + ZapTemplateDataVariableKeys.PASSWORD_KEY + "' must be set inside webscan template data!",
-                        ZapWrapperExitCode.UNSUPPORTED_CONFIGURATION);
-            }
         }
     }
 
@@ -338,7 +364,7 @@ public class ZapScanContextFactory {
      * specified it must exist on the filesystem. As always, command line parameters
      * take precedence over environment variables.
      *
-     * @param settings
+     * @param configuration
      * @return a file that exists on the filesystem or <code>null</code> if nothing
      *         was specified.
      *
@@ -346,8 +372,8 @@ public class ZapScanContextFactory {
      * @throws ZapWrapperContextCreationException in case the specified file does
      *                                            not exist on the filesystem
      */
-    private File fetchPacFilePath(CommandLineSettings settings) throws ZapWrapperContextCreationException {
-        String pacFilePath = settings.getPacFilePath();
+    private File fetchPacFilePath(ZapWrapperConfiguration configuration) throws ZapWrapperContextCreationException {
+        String pacFilePath = configuration.getPacFilePath();
 
         if (pacFilePath == null) {
             pacFilePath = environmentVariableReader.readAsString(EnvironmentVariableConstants.ZAP_LOGIN_PAC_FILE_PATH);

@@ -2,7 +2,7 @@
 
 = PDS-Solutions
 
-It is easy to integrate security products, even command line tools without a network API, into 
+It is easy to integrate security products, even command line tools, into 
 `SecHub` via `PDS` (Product delegation server).
 
 A PDS solution is a ready-made package for SecHub in which a PDS and the necessary security
@@ -12,12 +12,12 @@ Every solution works "out-of-the-box" and can be started as
 
 - Docker container (single instance)
 - Docker compose (cluster) or 
-- Kubernetes deployment
+- Kubernetes deployment via Helm chart
 
 [TIP]
 ====
-Look into the sub folders for the `PDS-Solutions` - every folder contains a  `README.adoc` file
-which describes the solution in detail.
+**Look** into the sub folders for the `PDS-Solutions`. +
+Every folder contains a `README.adoc` file which describes the solution in detail.
 
 For more technical information please look at the https://mercedes-benz.github.io/sechub/[online documentation]. 
 ====  

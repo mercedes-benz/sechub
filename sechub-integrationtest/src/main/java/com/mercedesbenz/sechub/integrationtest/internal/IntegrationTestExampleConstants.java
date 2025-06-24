@@ -56,7 +56,25 @@ public class IntegrationTestExampleConstants {
     public static final String PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS = "pds/codescan/upload/zipfile_contains_inttest_codescan_with_low.zip";
 
     /**
-     * Sha256 checksum for
+     * Zip file structure is exactly like
+     * {@link #PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS} , but the file name
+     * has some umlauts.
+     *
+     * <pre>
+     *   /data-äüÖ.txt
+     * </pre>
+     *
+     * Content of the file "data-äüÖ.txt":
+     *
+     * <pre>
+     * LOW:i am just a low error
+     * INFO:i am just an information
+     * </pre>
+     */
+    public static final String PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS_BUT_FILENAME_WITH_UMLAUTS = "pds/codescan/upload/zipfile_contains_inttest_codescan_with_low_but_filename_with_umlauts.zip";
+
+    /**
+     * /** Sha256 checksum for
      * {@value #PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS}/data.txt
      */
     public static final String SHA256SUM_FOR_DATA_TXT_FILE_IN_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS = "7d09bec9c44ba241e4dc948706727456fbca2fce9a6b024371f63307ae017372";
@@ -114,6 +132,42 @@ public class IntegrationTestExampleConstants {
      * </pre>
      */
     public static final String PATH_TO_TARFILE_WITH_DATA_SECTION_FOR_INCLUDE_EXCLUDES = "pds/codescan/upload/tarfile_with_data_being_included_and_excluded.tar";
+
+    /**
+     * Tar file structure (without __data__ section, everything is inside root
+     * folder!)
+     *
+     * <pre>
+     * /
+     *      /files-a
+     *         file-a-1.txt (low finding)
+     *         file-a-2.txt (low finding)
+     *         subfolder-1/
+     *             file-a-3.txt ((medium finding)
+     *      /files-b/
+     *        /included-folder
+     *          file-b-1.txt (low finding)
+     *          file-b-2.txt (low finding)
+     *          excluded-1.txt (low finding)
+     *          subfolder-2/
+     *             file-b-3.txt (critical finding)
+     *          excluded-folder/
+     *             file-b-4.txt (critical finding)
+     *        /not-included-subfolder-3
+     *          file-b-5.txt (low finding)
+     * </pre>
+     *
+     * This file will be used with file filtering having
+     *
+     * <pre>
+     *
+     * includes: {@value IntegrationTestDefaultExecutorConfigurations#INCLUDES_1} and
+     * excludes: {@value IntegrationTestDefaultExecutorConfigurations#EXCLUDES_1}
+     *
+     * by using {@link IntegrationTestDefaultProfiles#PROFILE_10_PDS_CODESCAN_INCLUDES_EXCLUDES profile 10}.
+     * </pre>
+     */
+    public static final String PATH_TO_TARFILE_WITH_DATA_SECTION_FOR_INCLUDE_EXCLUDES__BINARIES_ARCHIVE_ROOT_USED = "pds/codescan/upload/tarfile_with_data_being_included_and_excluded_binaries_archive_root.tar";
 
     /**
      * Zip file structure

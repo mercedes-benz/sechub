@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.core;
 
+import java.util.Set;
+
 public class CommonConstants {
 
     public static final String DOT_CHECKSUM = ".checksum";
@@ -18,5 +20,23 @@ public class CommonConstants {
     public final static String MULTIPART_CHECKSUM = "checkSum";
 
     public final static String FILE_SIZE_HEADER_FIELD_NAME = "x-file-size";
+
+    /**
+     * Reserved reference identifier for / folder outside data section of a
+     * sourcecode.zip file
+     */
+    public static final String SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER = "__sourcecode_archive_root__";
+
+    /**
+     * Reserved reference identifier for / folder outside data section of a
+     * binaries.tar file
+     */
+    public static final String BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER = "__binaries_archive_root__";
+
+    public static final Set<String> getAllRootArchiveReferenceIdentifiers() {
+        return Set.of(SOURCECODE_ARCHIVE_ROOT_REFERENCE_IDENTIFIER, BINARIES_ARCHIVE_ROOT_REFERENCE_IDENTIFIER);
+    }
+
+    public static final String META_DATA_KEY_PRODUCT_CANCELED = "PRODUCT_CANCELED";
 
 }

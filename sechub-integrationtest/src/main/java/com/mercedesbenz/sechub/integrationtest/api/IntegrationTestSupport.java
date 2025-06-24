@@ -22,6 +22,7 @@ import com.mercedesbenz.sechub.integrationtest.internal.SecHubServerTestScenario
 import com.mercedesbenz.sechub.integrationtest.internal.TestRestHelper;
 import com.mercedesbenz.sechub.integrationtest.internal.TestScenario;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
+import com.mercedesbenz.sechub.test.TestUtil;
 
 import ch.qos.logback.classic.Level;
 
@@ -286,6 +287,8 @@ public class IntegrationTestSupport {
             String message = "Skipped test scenario '" + scenario.getName() + "'\nReason: not in integration test mode.\nDefine -D"
                     + SECHUB_INTEGRATIONTEST_RUNNING + "=true to enable integration tests!";
             testSkipper.skipTest(message);
+            return; // should not be necessary because skipper shall stop, but just in case of a
+                    // wrong implementation...
         }
 
         if (criticalIntegrationSetupProblemDetected) {
@@ -344,9 +347,9 @@ public class IntegrationTestSupport {
             LOG.error("#         FATAL SCENARIO ERROR");
             LOG.error("#");
             LOG.error("#########################################################################");
-            LOG.error("#    Wasnt able to prepare scenario:{}", scenario.getName());
+            LOG.error("#    Wasn't able to prepare scenario:{}", scenario.getName());
             LOG.error("#    Reason: {}", e.getMessage());
-            LOG.error("#    (for more details look in unit test stack trace output)");
+            LOG.error("#    (Please look into stack trace output for details)");
             LOG.error("#########################################################################");
             LOG.error("Last url :" + TestRestHelper.getLastUrl());
             LOG.error("Last data:" + TestRestHelper.getLastData());
@@ -362,7 +365,6 @@ public class IntegrationTestSupport {
             throw e;
         }
         try {
-//          junit 4:   next.evaluate();
             proceedHandler.proceed();
         } catch (HttpStatusCodeException e) {
             HttpStatusCode code = e.getStatusCode();
@@ -386,6 +388,9 @@ public class IntegrationTestSupport {
             LOG.error("############################################################################################################");
 
         } finally {
+
+            TestUtil.deleteAllCurrentCreatedTempFolders();
+
             logEnd(TestTag.DONE, testClassName, testMethodName, startTime);
         }
     }

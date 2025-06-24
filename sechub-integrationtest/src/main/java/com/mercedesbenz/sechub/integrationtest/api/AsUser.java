@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -41,6 +42,7 @@ import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectData;
 import com.mercedesbenz.sechub.domain.administration.project.ProjectDetailInformation;
 import com.mercedesbenz.sechub.domain.scan.asset.AssetDetailData;
 import com.mercedesbenz.sechub.domain.scan.project.FalsePositiveProjectData;
@@ -81,7 +83,11 @@ public class AsUser {
     }
 
     public WithSecHubClient withSecHubClient() {
-        return new WithSecHubClient(this);
+        return withSecHubClient(null);
+    }
+
+    public WithSecHubClient withSecHubClient(File workingDirectory) {
+        return new WithSecHubClient(this, workingDirectory);
     }
 
     public AsUser enablePDSAutoDumpOnErrorsForSecHubJob(UUID sechubJobUUID) {
@@ -171,6 +177,11 @@ public class AsUser {
         return getContext().getRestHelper(user);
     }
 
+    public AsUser deleteUser(TestUser user) {
+        getRestHelper().delete(getUrlBuilder().buildAdminDeletesUserUrl(user.getUserId()));
+        return this;
+    }
+
     /**
      * Signup given (new) user
      *
@@ -186,8 +197,19 @@ public class AsUser {
 
     }
 
+    public AsUser signUpWithJson(String json) {
+        getRestHelper().postJson(getUrlBuilder().buildUserSignUpUrl(), json);
+        return this;
+
+    }
+
     public AsUser requestNewApiTokenFor(String emailAddress) {
         getRestHelper().postJson(getUrlBuilder().buildAnonymousRequestNewApiToken(emailAddress), "");
+        return this;
+    }
+
+    public AsUser requestChangeMailAddressTo(String emailAddress) {
+        getRestHelper().postJson(getUrlBuilder().buildUserRequestUpdatesEmailUrl(emailAddress), "");
         return this;
     }
 
@@ -354,6 +376,11 @@ public class AsUser {
         return getRestHelper().getJSON(url);
     }
 
+    public String fetchProductExecutorConfigAsJSON(String uuid) {
+        String url = getUrlBuilder().buildAdminFetchesProductExecutorConfig(uuid);
+        return getRestHelper().getJSON(url);
+    }
+
     public TestExecutorConfig fetchProductExecutorConfig(UUID uuid) {
         String json = fetchProductExecutorConfigAsJSON(uuid);
         TestExecutorConfig result = JSONConverter.get().fromJSON(TestExecutorConfig.class, json);
@@ -395,14 +422,19 @@ public class AsUser {
         return getRestHelper().getStringFromURL(link);
     }
 
+    public void sendGetRequestToURI(URI uri) {
+        getRestHelper().sendGetRequestToURI(uri);
+    }
+
     /**
-     * Assigns owner to a project
+     * Changes owner of a project - existing owner will still have access to
+     * project, but only as a normal user
      *
      * @param targetUser
      * @param project
      * @return this
      */
-    public AsUser assignOwnerToProject(TestUser targetUser, TestProject project) {
+    public AsUser changeProjectOwnerOfProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning owner:{} to project:{}", user.getUserId(), project.getProjectId());
         getRestHelper().postJson(getUrlBuilder().buildAdminChangesProjectOwnerUrl(project.getProjectId(), targetUser.getUserId()), "");
         return this;
@@ -417,7 +449,7 @@ public class AsUser {
      */
     public AsUser assignUserToProject(TestUser targetUser, TestProject project) {
         LOG.debug("assigning user:{} to project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().postJson(getUrlBuilder().buildAdminAssignsUserToProjectUrl(project.getProjectId(), targetUser.getUserId()), "");
+        getRestHelper().postJson(getUrlBuilder().buildAssignsUserToProjectUrl(project.getProjectId(), targetUser.getUserId()), "");
         return this;
     }
 
@@ -430,7 +462,7 @@ public class AsUser {
      */
     public AsUser unassignUserFromProject(TestUser targetUser, TestProject project) {
         LOG.debug("unassigning user:{} from project:{}", user.getUserId(), project.getProjectId());
-        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(project.getProjectId(), targetUser.getUserId()));
+        getRestHelper().delete(getUrlBuilder().buildUnassignsUserFromProjectUrl(project.getProjectId(), targetUser.getUserId()));
         return this;
     }
 
@@ -543,6 +575,18 @@ public class AsUser {
         String json = JSONConverter.get().toJSON(config);
         String url = getUrlBuilder().buildAddJobUrl(projectId);
         String resultAsString = getRestHelper().postJson(url, json);
+        return resultAsString;
+    }
+
+    public UUID createJobFromStringAndReturnJobUUID(TestProject project, String config) {
+        String resultAsString = createJobAndReturnResultAsString(project, config);
+        return fetchJobUUID(resultAsString);
+    }
+
+    public String createJobAndReturnResultAsString(TestProject project, String jsonConfig) {
+        String projectId = project.getProjectId();
+        String url = getUrlBuilder().buildAddJobUrl(projectId);
+        String resultAsString = getRestHelper().postJson(url, jsonConfig);
         return resultAsString;
     }
 
@@ -1314,6 +1358,11 @@ public class AsUser {
         getRestHelper().post(url);
     }
 
+    public void changeProjectAccessLevel(TestProject project, String accessLevel) {
+        String url = getUrlBuilder().buildAdminChangesProjectAccessLevelUrl(project.getProjectId(), accessLevel);
+        getRestHelper().post(url);
+    }
+
     public TestUserDetailInformation fetchUserDetails(TestUser user) {
         String url = getUrlBuilder().buildAdminShowsUserDetailsUrl(user.getUserId());
         String json = getRestHelper().getJSON(url);
@@ -1543,6 +1592,12 @@ public class AsUser {
     public void deleteAsset(String assetId) {
         String url = getUrlBuilder().buildAdminDeletesAsset(assetId);
         getRestHelper().delete(url);
+    }
+
+    public List<ProjectData> getAssignedProjectDataList() {
+        String url = getUrlBuilder().buildGetProjects();
+        String json = getRestHelper().getJSON(url);
+        return JSONConverter.get().fromJSONtoListOf(ProjectData.class, json);
     }
 
 }

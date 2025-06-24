@@ -28,6 +28,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_PROJECT = "/api/project";
     private static final String API_PROJECTS = "/api/projects";
     private static final String API_MANAGEMENT = "/api/management";
+    private static final String API_MANAGEMENT_PROJECT = "/api/management/project";
 
     public static SecHubTestURLBuilder https(int port) {
         return new SecHubTestURLBuilder("https", port);
@@ -119,12 +120,16 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return url;
     }
 
-    private static ParameterBuilder params() {
-        return new ParameterBuilder();
-    }
-
     public String buildUserCancelJob(String jobUUID) {
         return buildUrl(API_MANAGEMENT, "jobs/", jobUUID, "/cancel");
+    }
+
+    public String buildAnonymousUserVerifiesMailAddress(String token) {
+        return buildUrl(API_ANONYMOUS, "email/verify/", token);
+    }
+
+    private static ParameterBuilder params() {
+        return new ParameterBuilder();
     }
 
     private static class ParameterBuilder {
@@ -338,15 +343,15 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     }
 
     public String buildAdminChangesProjectOwnerUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "owner", userId);
+        return buildUrl(API_MANAGEMENT, "project", projectId, "owner", userId);
     }
 
-    public String buildAdminAssignsUserToProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
+    public String buildAssignsUserToProjectUrl(String projectId, String userId) {
+        return buildUrl(API_MANAGEMENT_PROJECT, projectId, "membership", userId);
     }
 
-    public String buildAdminUnassignsUserFromProjectUrl(String projectId, String userId) {
-        return buildUrl(API_ADMIN_PROJECT, projectId, "membership", userId);
+    public String buildUnassignsUserFromProjectUrl(String projectId, String userId) {
+        return buildUrl(API_MANAGEMENT_PROJECT, projectId, "membership", userId);
     }
 
     public String buildAdminFetchProjectInfoUrl(String projectId) {
@@ -530,6 +535,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildFetchUserDetailInformationUrl() {
         return buildUrl(API_MANAGEMENT + "/user");
+    }
+
+    public String buildUserRequestUpdatesEmailUrl(String emailAddress) {
+        return buildUrl(API_MANAGEMENT, "user/email", emailAddress);
     }
 
     public String buildGetProjects() {
@@ -772,6 +781,22 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildIntegrationTestClearAllTemplates() {
         return buildUrl(API_ANONYMOUS, "integrationtest/templates/clear-all");
+    }
+
+    public String buildIntegrationTestFetchAllJobInformationEntriesFromAdministration() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/administration/jobinformation");
+    }
+
+    public String buildIntegrationTestOpaqueTokenInitTestCaching() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/caching/opaque-token/init-test-cache");
+    }
+
+    public String buildIntegrationTestOpaqueTokenIntrospectTestCaching(String opaqueToken) {
+        return buildUrl(API_ANONYMOUS, "integrationtest/caching/opaque-token/introspect/" + opaqueToken);
+    }
+
+    public String buildIntegrationTestOpaqueTokenShutdownTestCaching() {
+        return buildUrl(API_ANONYMOUS, "integrationtest/caching/opaque-token/shutdown-test-cache");
     }
 
 }

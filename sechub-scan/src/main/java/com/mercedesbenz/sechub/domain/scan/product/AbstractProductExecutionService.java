@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mercedesbenz.sechub.adapter.AdapterCanceledByUserException;
+import com.mercedesbenz.sechub.commons.core.util.StacktraceUtil;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
@@ -90,6 +92,7 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
                 LOG.debug("{} NO execution necessary by {}", traceLogID, getClass().getSimpleName());
                 return;
             }
+            LOG.debug("{} execution is necessary by {}", traceLogID, getClass().getSimpleName());
             runOnAllAvailableExecutors(getProductExecutors(), context, traceLogID);
         } catch (RuntimeException e) {
             /* catch runtime errors and move and wrapt in SecHubExecutionException */
@@ -225,7 +228,12 @@ public abstract class AbstractProductExecutionService implements ProductExecutio
                 return;
             }
         } catch (Exception e) {
-            getMockableLog().error("Product executor failed:{} {}", productExecutor.getIdentifier(), traceLogID, e);
+
+            if (StacktraceUtil.findRootCause(e) instanceof AdapterCanceledByUserException) {
+                getMockableLog().info("Product executor canceled: {} {}", productExecutor.getIdentifier(), traceLogID);
+            } else {
+                getMockableLog().error("Product executor failed: {} {}", productExecutor.getIdentifier(), traceLogID, e);
+            }
 
             productResults = new ArrayList<ProductResult>();
             ProductResult currentResult = executorContext.getCurrentProductResult();

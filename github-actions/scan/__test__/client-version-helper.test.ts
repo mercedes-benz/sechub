@@ -28,6 +28,7 @@ describe('getClientVersion', function () {
         ''
     ])('client version undefined - throws: No SecHub client version defined!', async (param) => {
         /* prepare */
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const clientVersion: any = param;
 
         /* execute */

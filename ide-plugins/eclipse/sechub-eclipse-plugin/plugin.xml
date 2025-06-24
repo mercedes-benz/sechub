@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="true"
+            class="com.mercedesbenz.sechub.decorators.SecHubReportJSONFileDecorator"
+            id="com.mercedesbenz.sechub.decorators.SecHubDecorator"
+            label="SecHub Report File Decorator"
+            lightweight="true"
+            state="true">
+         <enablement>
+               <objectClass
+                     name="org.eclipse.core.resources.IFile">
+               </objectClass>
+         </enablement>
+      </decorator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            id="com.mercedesbenz.sechub.plugin.commands.category"
+            name="SechHub Import">
+      </category>
+      <command
+            categoryId="com.mercedesbenz.sechub.plugin.commands.category"
+            name="SecHub Import"
+            id="com.mercedesbenz.sechub.plugin.commands.importCommand">
+      </command>
+      <command
+            categoryId="com.mercedesbenz.sechub.plugin.commands.category"
+            name="SecHub Import By current selected resource"
+            id="com.mercedesbenz.sechub.plugin.commands.importCommandByCurrentSelectedResource">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="com.mercedesbenz.sechub.handlers.SecHubJobImportHandler"
+            commandId="com.mercedesbenz.sechub.plugin.commands.importCommand">
+      </handler>
+      <handler
+            class="com.mercedesbenz.sechub.handlers.SecHubJobImportByContextMenuHandler"
+            commandId="com.mercedesbenz.sechub.plugin.commands.importCommandByCurrentSelectedResource">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="com.mercedesbenz.sechub.plugin.commands.importCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            contextId="org.eclipse.ui.contexts.window"
+            sequence="M1+6">
+      </key>
+   </extension>
+   <!--
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="com.mercedesbenz.sechub.plugin.menus.sechubMenu"
+               label="SecHub"
+               mnemonic="M">
+            <command
+                  commandId="com.mercedesbenz.sechub.plugin.commands.importCommand"
+                  id="com.mercedesbenz.sechub.plugin.menus.importCommand"
+                  mnemonic="S">
+            </command>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="com.mercedesbenz.sechub.plugin.toolbars.sampleToolbar">
+            <command
+                  id="com.mercedesbenz.sechub.plugin.toolbars.importCommand"
+                  commandId="com.mercedesbenz.sechub.plugin.commands.importCommand"
+                  icon="icons/sechub-logo.png"
+                  tooltip="Import SecHub Report">
+            </command>
+         </toolbar>
+      </menuContribution>
+   </extension>
+   -->
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml">
+      </toc>
+      <toc
+            file="testToc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.ui.importWizards">
+      <category
+            id="com.mercedesbenz.sechub.category.import"
+            name="SecHub">
+      </category>
+      <wizard
+            id="com.mercedesbenz.sechub.importWizards.ImportWizard"
+            name="Import SecHub job report"
+            class="com.mercedesbenz.sechub.report.SecHubReportImportWizard"
+            category="com.mercedesbenz.sechub.category.import"
+            icon="icons/sechub-logo.png">
+         <description>
+            Import a sechub report file from the local file system into the workspace.
+         </description>
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="SecHub"
+            id="com.mercedesbenz.sechub.viewcategory">
+      </category>
+      <view
+            id="com.mercedesbenz.sechub.views.SecHubReportView"
+            name="SecHub Report"
+            icon="icons/sechub-logo.png"
+            class="com.mercedesbenz.sechub.report.SecHubReportView"
+            category="com.mercedesbenz.sechub.viewcategory"
+            inject="true">
+      </view>
+       <view
+            id="com.mercedesbenz.sechub.views.SecHubCallHierarchyView"
+            name="SecHub Call Hierarchy"
+            icon="icons/sechub-logo.png"
+            class="com.mercedesbenz.sechub.callhierarchy.SecHubCallHierarchyView"
+            category="com.mercedesbenz.sechub.viewcategory"
+            inject="true">
+      </view>
+            <view
+            id="com.mercedesbenz.sechub.views.SecHubServerView"
+            name="SecHub Server"
+            icon="icons/sechub-logo.png"
+            class="com.mercedesbenz.sechub.server.SecHubServerView"
+            category="com.mercedesbenz.sechub.viewcategory"
+            inject="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+         <!-- Java perspective -->
+	      <perspectiveExtension
+	            targetID="org.eclipse.jdt.ui.JavaPerspective">
+	         <view
+	               id="com.mercedesbenz.sechub.views.SecHubReportView"
+	               relative="org.eclipse.ui.views.ProblemView"
+	               relationship="right"
+	               ratio="0.5">
+	         </view>
+	      </perspectiveExtension>
+	      <perspectiveExtension
+	            targetID="org.eclipse.jdt.ui.JavaPerspective">
+	         <view
+	               id="com.mercedesbenz.sechub.views.SecHubServerView"
+	               relative="org.eclipse.ui.navigator.ProjectExplorer"
+	               relationship="bottom"
+	               ratio="0.5">
+	         </view>
+	      </perspectiveExtension>
+ 		<!-- Java perspective -->
+	      <perspectiveExtension
+	            targetID="org.eclipse.ui.resourcePerspective">
+	         <view
+	               id="com.mercedesbenz.sechub.views.SecHubReportView"
+	               relative="org.eclipse.ui.views.ProblemView"
+	               relationship="right"
+	               ratio="0.5">
+	         </view>
+	      </perspectiveExtension>
+	      <perspectiveExtension
+	            targetID="org.eclipse.ui.resourcePerspective">
+	         <view
+	               id="com.mercedesbenz.sechub.views.SecHubServerView"
+	               relative="org.eclipse.ui.navigator.ProjectExplorer"
+	               relationship="bottom"
+	               ratio="0.5">
+	         </view>
+	      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.help.contexts">
+      <contexts
+            file="contexts.xml">
+      </contexts>
+   </extension>
+   <extension 
+   		point="org.eclipse.core.resources.markers" 
+   		id="com.mercedesbenz.sechhub.markers.finding" 
+   		name="SecHub Finding">
+	    <super type="org.eclipse.core.resources.problemmarker"/>
+	    <persistent value="false"/>
+	</extension>
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <!--                          DECORATION                                  -->
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <extension
+         point="org.eclipse.ui.decorators">
+     <decorator
+            lightweight="true"
+            adaptable="true"
+            label="SecHub server data decorator"
+            class="com.mercedesbenz.sechub.server.SechubServerTreeDecorator"
+            state="true"
+            location="BOTTOM_RIGHT"
+            id="com.mercedes.sechub.server.decorator">
+         <description>
+           	Decorator for all sechub server data elements
+         </description>
+      </decorator>
+   </extension>
+	
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <!--        POPUP                                                         -->
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <extension point="org.eclipse.ui.menus">
+        <!-- http://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Fguide%2Fworkbench_cmd_menus.htm -->
+        <menuContribution locationURI="popup:org.eclipse.ui.popup.any?before=additions">
+                <command
+            	  commandId="com.mercedesbenz.sechub.plugin.commands.importCommandByCurrentSelectedResource"
+                  icon="icons/sechub-logo.png"
+                  id="com.mercedesbenz.sechub.plugin.popup.importCommandByCurrentSelectedResource"
+                  label="Open as SecHub Report"
+                  tooltip="Opens as SecHub Report"
+                  style="push">
+                        <visibleWhen 
+                              checkEnabled="false">
+                              <with
+                                    variable="activeMenuSelection">
+				         				<count value="1"/>
+	                                    <iterate ifEmpty="false">
+	                                    	 <adapt type="org.eclipse.core.resources.IResource">
+	                                    	 <test property="com.mercedesbenz.sechub.isSecHubReportFile" value="true"/>
+	                                    	 </adapt>
+				         				</iterate>
+                              </with>
+                        </visibleWhen>
+                </command>
+                
+        </menuContribution>
+   </extension>
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <!--                          PROPERTY TESTERS                            -->
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <extension point="org.eclipse.core.expressions.propertyTesters">
+  	  <!-- see https://wiki.eclipse.org/Platform_Expression_Framework -->
+  	  <!-- see http://help.eclipse.org/neon/index.jsp?topic=/org.eclipse.platform.doc.isv/guide/workbench_cmd_expressions.htm -->
+      <propertyTester
+          class="com.mercedesbenz.sechub.report.SecHubStandardReportNamePatternPropertyTester"
+          id="com.mercedesbenz.sechub.report.SecHubStandardReportNamePatternPropertyTester"
+          namespace="com.mercedesbenz.sechub"
+          properties="isSecHubReportFile"
+          type="org.eclipse.core.resources.IResource">
+      </propertyTester>
+   </extension>
+      <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.mercedesbenz.sechub.preferences.SechubPreferencePage"
+            id="sechub.preference.page"
+            name="SecHub">
+      </page>
+   </extension>
+</plugin>

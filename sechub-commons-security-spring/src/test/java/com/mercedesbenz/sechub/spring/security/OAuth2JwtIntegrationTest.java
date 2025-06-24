@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Set;
 
@@ -137,6 +138,11 @@ class OAuth2JwtIntegrationTest {
         @Bean
         TestSecurityController testSecurityController() {
             return new TestSecurityController();
+        }
+
+        @Bean
+        OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessProvider() {
+            return mock();
         }
     }
 

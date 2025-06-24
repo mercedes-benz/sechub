@@ -10,7 +10,7 @@ import Vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 import VueI18nPlugin from '@intlify/unplugin-vue-i18n/vite'
 
 // Utilities
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import { fileURLToPath, URL } from 'node:url'
 import path from 'path'
 
@@ -85,6 +85,23 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/logout': {
+        target: 'https://localhost:8443',
+        changeOrigin: true,
+        secure: false,
+      },
+      '/login': {
+        target: 'https://localhost:8443',
+        changeOrigin: true,
+        secure: false,
+      },
     },
+  },
+  test: {
+    // enable jest-like global test APIs
+    globals: true,
+    // simulate DOM with happy-dom
+    // (requires installing happy-dom as a peer dependency)
+    environment: 'happy-dom',
   },
 })

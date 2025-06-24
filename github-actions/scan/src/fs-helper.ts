@@ -6,7 +6,9 @@ import * as path from 'path';
 import * as fs_extra from 'fs-extra';
 import axios from 'axios';
 import * as util from 'util';
-import * as extract from 'extract-zip';
+import extract from 'extract-zip';
+import * as os from 'os';
+import { resolveProxyConfig } from './input-helper';
 
 const writeFile = util.promisify(fs_extra.writeFile);
 
@@ -37,7 +39,7 @@ export function getWorkspaceDir(): string {
 export function ensureDirectorySync(path: string) {
     try {
         fs_extra.ensureDirSync(path);
-        core.debug(`Ensured directory at path: ${path}`)
+        core.debug(`Ensured directory at path: ${path}`);
     } catch (error) {
         throw new Error(`Error ensuring directory at path: ${path} with error: ${error}`);
     }
@@ -50,15 +52,20 @@ export function ensureDirectorySync(path: string) {
 export function chmodSync(path: string) {
     try {
         fs_extra.chmodSync(path, 0o755);
-        core.debug(`Grant permissions for file at path: ${path}`)
+        core.debug(`Grant permissions for file at path: ${path}`);
     } catch (error) {
         throw new Error(`Error granting permission for file at path: ${path} with error: ${error}`);
     }
 }
 
 export async function downloadFile(url: string, dest: string) {
+    let proxyConfig = resolveProxyConfig();
+
     try {
-        const response = await axios.get(url, { responseType: 'arraybuffer' });
+        const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            ...(proxyConfig && { proxy: proxyConfig })
+        });
         await writeFile(dest, response.data);
     } catch (err) {
         throw new Error(`Error downloading file from url: ${url} to destination: ${dest} with error: ${err}`);
@@ -87,4 +94,31 @@ export function getFiles(pattern: string): string[] {
     });
 
     return reportFiles;
+}
+
+/**
+ * Delete a directory, but restore the file to keep.
+ * This means anything but the specified fileToKeep inside the directoryToCleanUp is removed.
+ * 
+ * Does nothing if the file to keep is not inside the directory to clean up.
+ * 
+ * @param directoryToCleanUp The directory to clean up.
+ * @param fileToKeep The file that must not be deleted.
+ */
+export function deleteDirectoryExceptGivenFile(directoryToCleanUp: string, fileToKeep: string): void {
+    const absoluteFileToKeep = path.resolve(fileToKeep);
+    const absoluteDirectoryToCleanUp = path.resolve(directoryToCleanUp);
+    // check that the file to keep is inside the directory to clean up
+    if (!absoluteFileToKeep.startsWith(absoluteDirectoryToCleanUp)) {
+        return;
+    }
+    const tempFile = `${os.tmpdir()}/${path.basename(absoluteFileToKeep)}`;
+    // Move the file to a temporary location
+    fs_extra.moveSync(absoluteFileToKeep, tempFile);
+    // Remove the entire directory
+    fs_extra.removeSync(absoluteDirectoryToCleanUp);
+    // Recreate the directory
+    fs_extra.ensureDirSync(path.dirname(absoluteFileToKeep));
+    // Move the file back to its original location
+    fs_extra.moveSync(tempFile, absoluteFileToKeep);
 }

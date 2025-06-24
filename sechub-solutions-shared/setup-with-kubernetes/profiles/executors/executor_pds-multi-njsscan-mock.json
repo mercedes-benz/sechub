@@ -1,0 +1,47 @@
+{
+  "name": "pds-multi-njsscan-mock",
+  "productIdentifier": "PDS_CODESCAN",
+  "setup": {
+    "baseURL": "https://pds-multi:8444",
+    "credentials": {
+      "user": "env:SECHUB_PDS_MULTI_USERID",
+      "password": "env:SECHUB_PDS_MULTI_PASSWORD"
+    },
+    "jobParameters": [
+      {
+        "key": "pds.config.filefilter.includes",
+        "value": "*.jade,*.js,*.json,*.jsx"
+      },
+      {
+        "key": "pds.config.product.timeout.minutes",
+        "value": "30"
+      },
+      {
+        "key": "pds.config.productidentifier",
+        "value": "PDS_NJSSCAN_MOCK"
+      },
+      {
+        "key": "pds.config.supported.datatypes",
+        "value": "SOURCE"
+      },
+      {
+        "key": "pds.config.use.sechub.storage",
+        "value": "false"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timeout.minutes",
+        "value": "35"
+      },
+      {
+        "key": "sechub.productexecutor.pds.timetowait.nextcheck.milliseconds",
+        "value": "500"
+      },
+      {
+        "key": "sechub.productexecutor.pds.trustall.certificates",
+        "value": "true"
+      }
+    ]
+  },
+  "executorVersion": 1,
+  "enabled": true
+}

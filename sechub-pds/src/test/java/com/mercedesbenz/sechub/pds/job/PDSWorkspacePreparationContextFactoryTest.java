@@ -209,14 +209,15 @@ class PDSWorkspacePreparationContextFactoryTest {
         assertTrue(result.isNoneAccepted());
     }
 
-    @Test
-    void model_set_when_supported_datatypes_is_only_empty_nothing_is_accepted() {
+    @ParameterizedTest
+    @EnumSource(ScanType.class)
+    void model_set_when_supported_datatypes_is_only_empty_nothing_is_accepted(ScanType scanType) {
 
         /* prepare */
         when(jobConfigurationSupport.getSupportedDataTypes(any())).thenReturn(Collections.emptySet());
         when(jobConfigurationSupport.resolveSecHubConfigurationModel()).thenReturn(sechubConfigurationModel);
 
-        when(productSetup.getScanType()).thenReturn(ScanType.CODE_SCAN);
+        when(productSetup.getScanType()).thenReturn(scanType);
 
         /* execute */
         PDSWorkspacePreparationContext result = factoryToTest.createPreparationContext(jobConfigurationSupport);

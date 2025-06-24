@@ -6,7 +6,7 @@
             
       "templateData" : { //<1>
         "variables" : {  //<2>
-          "username" : "the-user",  
+          "username" : "the-user",
           "password" : "the-password"
         }
       },

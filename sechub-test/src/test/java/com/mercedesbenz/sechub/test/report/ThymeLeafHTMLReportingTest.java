@@ -8,9 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -24,6 +25,9 @@ import org.thymeleaf.spring6.dialect.SpringStandardDialect;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.ScanType;
+import com.mercedesbenz.sechub.commons.model.SecHubMessage;
+import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.SecHubReportMetaData;
 import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
 import com.mercedesbenz.sechub.commons.model.TrafficLightSupport;
@@ -296,10 +300,6 @@ public class ThymeLeafHTMLReportingTest {
     private class ReportMetaDataInfo {
         private Map<String, String> labels = new TreeMap<>();
 
-        public boolean isMetaDataNecessaryForReport() {
-            return !labels.isEmpty();
-        }
-
         public Map<String, String> getLabels() {
             return labels;
         }
@@ -315,13 +315,20 @@ public class ThymeLeafHTMLReportingTest {
         private ReportInputFormat inputFormat;
         private ProductIdentifier productIdentifier;
         private ReportMetaDataInfo metaData = new ReportMetaDataInfo();
+        private Set<ScanType> executed = new LinkedHashSet<>();
 
         private TestReportContext(int exampleNumber, ProductIdentifier productIdentifier, ReportInputFormat inputFormat, String variant) {
             this.variant = variant;
             this.exampleName = "example" + exampleNumber;
             this.productIdentifier = productIdentifier;
             this.inputFormat = inputFormat;
+            this.executed.add(productIdentifier.getType());
+
             initReport();
+        }
+
+        public Set<ScanType> getExecuted() {
+            return executed;
         }
 
         private void initReport() {
@@ -377,12 +384,19 @@ public class ThymeLeafHTMLReportingTest {
             report.setTrafficLight(trafficLightSupport.calculateTrafficLight(reportModel.getResult()));
 
             ScanSecHubReport scanReport = new ScanSecHubReport(report);
-            if (getMetaData().isMetaDataNecessaryForReport()) {
 
-                Optional<SecHubReportMetaData> reportMetaData = scanReport.getMetaData();
-                reportMetaData.get().getLabels().putAll(getMetaData().labels);
-                scanReport.setMetaData(reportMetaData.get());
+            SecHubReportMetaData reportMetaData = scanReport.getMetaData();
+
+            if (reportMetaData == null) {
+                fail("No report meta data available! Should never happen.");
             }
+            reportMetaData.getLabels().putAll(getMetaData().labels);
+            reportMetaData.getExecuted().addAll(getExecuted());
+
+            scanReport.getMessages().add(new SecHubMessage(SecHubMessageType.INFO, "I am an information"));
+            scanReport.getMessages().add(new SecHubMessage(SecHubMessageType.WARNING, "I am a warning"));
+            scanReport.getMessages().add(new SecHubMessage(SecHubMessageType.ERROR, "I am an error"));
+
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
             Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport, theme);
             return tyhmeleafMap;

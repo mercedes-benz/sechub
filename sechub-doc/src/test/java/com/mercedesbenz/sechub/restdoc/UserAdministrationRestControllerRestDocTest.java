@@ -12,7 +12,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.lang.annotation.Annotation;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +31,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
-import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
 import com.mercedesbenz.sechub.domain.administration.user.User;
 import com.mercedesbenz.sechub.domain.administration.user.UserAdministrationRestController;
@@ -336,13 +334,8 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         User user = mock(User.class);
         when(user.getName()).thenReturn("user1");
         when(user.getEmailAddress()).thenReturn("user1@example.org");
-        Set<Project> projects = new LinkedHashSet<>();
 
-        Project project1 = mock(Project.class);
-        when(project1.getId()).thenReturn("project1");
-        projects.add(project1);
-        when(user.getProjects()).thenReturn(projects);
-        UserDetailInformation info = new UserDetailInformation(user);
+        UserDetailInformation info = new UserDetailInformation(user, Set.of("project1"), Set.of());
 
         when(userDetailService.fetchDetailsById("user1")).thenReturn(info);
 
@@ -392,13 +385,8 @@ public class UserAdministrationRestControllerRestDocTest implements TestIsNecess
         User user = mock(User.class);
         when(user.getName()).thenReturn(userId);
         when(user.getEmailAddress()).thenReturn(emailAddress);
-        Set<Project> projects = new LinkedHashSet<>();
 
-        Project project1 = mock(Project.class);
-        when(project1.getId()).thenReturn("project1");
-        projects.add(project1);
-        when(user.getProjects()).thenReturn(projects);
-        UserDetailInformation info = new UserDetailInformation(user);
+        UserDetailInformation info = new UserDetailInformation(user, Set.of("project1"), Set.of());
 
         when(userDetailService.fetchDetailsByEmailAddress(emailAddress)).thenReturn(info);
 

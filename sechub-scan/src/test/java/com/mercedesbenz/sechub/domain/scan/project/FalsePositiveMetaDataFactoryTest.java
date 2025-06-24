@@ -25,12 +25,27 @@ class FalsePositiveMetaDataFactoryTest {
     }
 
     @Test
-    void code_scan_only_one_netry_factory_code_start_set_but_end_is_null() {
+    void code_scan_only_one_entry_factory_code_start_set_but_end_is_null() {
         /* prepare */
         SecHubFinding codeScanfinding = createCodeFindingOnlyOneCallStackElementOnly();
 
         /* execute */
         FalsePositiveMetaData metaData = factoryToTest.createMetaData(codeScanfinding);
+
+        /* test */
+        FalsePositiveCodeMetaData code = metaData.getCode();
+        assertNotNull(code.getStart());
+        assertNull(code.getEnd());
+
+    }
+
+    @Test
+    void iac_scan_only_one_entry_factory_code_start_set_but_end_is_null() {
+        /* prepare */
+        SecHubFinding iacScanFinding = createIacFindingOnlyOneCallStackElementOnly();
+
+        /* execute */
+        FalsePositiveMetaData metaData = factoryToTest.createMetaData(iacScanFinding);
 
         /* test */
         FalsePositiveCodeMetaData code = metaData.getCode();
@@ -95,6 +110,12 @@ class FalsePositiveMetaDataFactoryTest {
         assertEquals("evidence-snippet1", response.getEvidence());
         assertEquals(4211, response.getStatusCode());
 
+    }
+
+    private SecHubFinding createIacFindingOnlyOneCallStackElementOnly() {
+        SecHubFinding result = createCodeFindingOnlyOneCallStackElementOnly();
+        result.setType(ScanType.IAC_SCAN);
+        return result;
     }
 
     private SecHubFinding createCodeFindingOnlyOneCallStackElementOnly() {

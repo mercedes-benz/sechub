@@ -46,9 +46,9 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_LISTS_ALL_PROJECTS(14),
 
-    UC_ADMIN_ASSIGNS_USER_TO_PROJECT(15),
+    UC_ADMIN_OR_OWNER_ASSIGNS_USER_TO_PROJECT(15),
 
-    UC_ADMIN_UNASSIGNS_USER_FROM_PROJECT(16),
+    UC_ADMIN_OR_OWNER_UNASSIGNS_USER_FROM_PROJECT(16),
 
     UC_ADMIN_SHOWS_USER_DETAILS(17),
 
@@ -141,7 +141,7 @@ public enum UseCaseIdentifier {
     /* project administration */
     UC_ADMIN_UPDATES_PROJECT_METADATA(59),
 
-    UC_ADMIN_CHANGES_PROJECT_OWNER(60),
+    UC_ADMIN_OR_OWNER_CHANGES_PROJECT_OWNER(60),
 
     UC_ADMIN_CHANGES_PROJECT_DESCRIPTION(61),
 
@@ -215,7 +215,9 @@ public enum UseCaseIdentifier {
 
     UC_ADMIN_EXECUTES_TEMPLATE_HEALTHCHECK(96),
 
-    ;
+    UC_USER_UPDATES_EMAIL_ADDRESS(97),
+
+    UC_ANONYMOUS_USER_VERIFIES_EMAIL_ADDRESS(98);
     /* +-----------------------------------------------------------------------+ */
     /* +............................ Helpers ................................+ */
     /* +-----------------------------------------------------------------------+ */

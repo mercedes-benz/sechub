@@ -531,25 +531,30 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><img src="images/sechub-logo.png" alt="sechub"></span> SecHub Getting Started Guide</h1>
 <div class="details">
-<span id="revnumber"> Server 2.5.0</span>
+<span id="revnumber"> Server 2.11.1</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
 <ul class="sectlevel1">
 <li><a href="#introduction">1. Introduction</a></li>
-<li><a href="#prerequisites">2. Prerequisites</a></li>
-<li><a href="#setup-server-environment">3. Setup server environment</a>
+<li><a href="#prerequisites">2. Prerequisites</a>
+<ul class="sectlevel2">
+<li><a href="#tools">2.1. Tools</a></li>
+<li><a href="#access-to-a-kubernetes">2.2. Access to a Kubernetes</a></li>
+</ul>
+</li>
+<li><a href="#run-sechub">3. Run SecHub</a>
 <ul class="sectlevel2">
 <li><a href="#clone-the-repository">3.1. Clone the repository</a></li>
-<li><a href="#start-sechub-server">3.2. Start SecHub Server</a></li>
-<li><a href="#start-gosecpds-server">3.3. Start GoSec+PDS Server</a></li>
-<li><a href="#setup-project">3.4. Setup Project</a></li>
+<li><a href="#start-sechub-environment-and-create-a-basic-setup">3.2. Start SecHub environment and create a basic setup</a></li>
+<li><a href="#setup-a-project-in-sechub">3.3. Setup a project in SecHub</a></li>
 </ul>
 </li>
 <li><a href="#scan-using-sechub-client">4. Scan using SecHub Client</a>
 <ul class="sectlevel2">
-<li><a href="#install-sechub-client">4.1. Install SecHub Client</a></li>
+<li><a href="#environment-vaiables">4.1. Environment vaiables</a></li>
 <li><a href="#scan">4.2. Scan</a></li>
+<li><a href="#sechub-web-ui">4.3. SecHub Web-UI</a></li>
 </ul>
 </li>
 <li><a href="#optional">5. Optional</a>
@@ -563,6 +568,11 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 </li>
 </ul>
 </li>
+<li><a href="#appendix">6. Appendix</a>
+<ul class="sectlevel2">
+<li><a href="#installing-the-sechub-client-maually">6.1. Installing the SecHub Client maually</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -573,10 +583,10 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <p><strong>About SecHub</strong></p>
 </div>
 <div class="paragraph">
-<p>SecHub is an acronym for <code>Security Hub</code> and is first of
-all <strong>one API to scan for different security problems</strong>. Users of SecHub do not
-care about which exact product is doing the real scan on server side, but only
-configure their wanted aim.</p>
+<p>SecHub stands for "Security Hub" and serves as an unified API
+to scan for various security issues.
+With SecHub, users don&#8217;t need to worry about the specific scanning product
+used on the server side; they simply configure their desired security goals.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -586,19 +596,18 @@ configure their wanted aim.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>SecHub does <strong>NOT</strong> provide a security infrastructure but does orchestrate
-different security products/tools.</p>
+<p>The SecHub server alone does <strong>NOT</strong> provide a security infrastructure but orchestrates different security products/tools.</p>
 </div>
 <div class="paragraph">
-<p>So <strong>you still need an existing security infrastructure</strong> behind SecHub !</p>
+<p>Please check our ready to use security open source tools: <strong><a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions">PDS solutions</a></strong> for integration with SecHub server.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>It was designed to be very easy to integrate into any existing
-build pipeline / contionus integration (CI) and helps to provide
+<p>It was designed to be very easy to integrate into existing
+build / contionus integration (CI) pipelines and helps to provide
 <strong>SecDevOps</strong>.</p>
 </div>
 <div class="admonitionblock tip">
@@ -609,7 +618,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can get more information about from <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a>  .</p>
+<p>You can get more documentation from the <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a>  .</p>
 </div>
 <div class="paragraph">
 <p>The project is hosted at <a href="https://github.com/mercedes-benz/sechub" class="bare">https://github.com/mercedes-benz/sechub</a></p>
@@ -646,7 +655,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.5.0 - Build date: 2025-02-14 15:17 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.11.1 - Build date: 2025-06-20 13:10 (UTCZ)</code></p>
 </div>
 </div>
 </div>
@@ -654,7 +663,7 @@ build pipeline / contionus integration (CI) and helps to provide
 <h2 id="introduction">1. Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This tutorial teaches you how to scan a project using SecHub.</p>
+<p>This tutorial teaches you how to setup a SecHub environment and to do a scan using SecHub.</p>
 </div>
 <div class="paragraph">
 <p>You will learn:</p>
@@ -662,10 +671,10 @@ build pipeline / contionus integration (CI) and helps to provide
 <div class="ulist">
 <ul>
 <li>
-<p>How to run SecHub and GoSec+PDS locally</p>
+<p>How to start a SecHub environment and PDS with a SAST scanner using SecHub&#8217;s Helm charts and container images</p>
 </li>
 <li>
-<p>Scan a vulnerable application written in Go</p>
+<p>Scan vulnerable source code.</p>
 </li>
 <li>
 <p>Install and use SecHub&#8217;s extension for VsCodium (Optional)</p>
@@ -680,6 +689,9 @@ build pipeline / contionus integration (CI) and helps to provide
 </div>
 <div class="paragraph">
 <p>This Diagram roughly explains how SecHub functions, behind the scenes.</p>
+</div>
+<div class="paragraph">
+<p>The SecHub server is responsible for taking jobs and passing them to one or more PDS for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -704,14 +716,10 @@ It should also work on different Linux distributions.</p>
 <div class="paragraph">
 <p>You are going to need:</p>
 </div>
+<div class="sect2">
+<h3 id="tools">2.1. Tools</h3>
 <div class="ulist">
 <ul>
-<li>
-<p>docker (Version 23.0.0 used in the tutorial, newer versions will also work) (e. g. <a href="https://docs.docker.com/engine/install/debian/">Debian</a>,  / <a href="https://docs.docker.com/engine/install/ubuntu/">Ubuntu</a>)</p>
-</li>
-<li>
-<p>docker compose (v2.15.1 or newer)</p>
-</li>
 <li>
 <p>git</p>
 </li>
@@ -719,9 +727,28 @@ It should also work on different Linux distributions.</p>
 <p>jq</p>
 </li>
 <li>
-<p><a href="https://github.com/mercedes-benz/sechub/releases">SecHub Client</a></p>
+<p><a href="https://kubernetes.io/docs/reference/kubectl/">kubectl</a></p>
+</li>
+<li>
+<p><a href="https://helm.sh">helm</a></p>
+</li>
+<li>
+<p><a href="https://github.com/mercedes-benz/sechub/releases">SecHub Client</a>
+(On Debian you can use the <a href="https://github.com/mercedes-benz/sechub/releases?q=%22client+version%22&amp;expanded=true">SecHub Client OS package</a> for your architecture.)</p>
 </li>
 </ul>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See [Appendix] below for installing the SecHub client manually.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Optional:</p>
@@ -737,10 +764,44 @@ It should also work on different Linux distributions.</p>
 </ul>
 </div>
 </div>
+<div class="sect2">
+<h3 id="access-to-a-kubernetes">2.2. Access to a Kubernetes</h3>
+<div class="paragraph">
+<p>For local testing you could use <a href="https://kind.sigs.k8s.io">Kind</a> with <a href="https://github.com/kubernetes-sigs/cloud-provider-kind">cloud-provider-kind</a>, Minikube, Docker Desktop, <a href="https://k3s.io">K3s</a> &#8230;&#8203;</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The SecHub team uses <strong><a href="https://kind.sigs.k8s.io">Kind</a></strong> for development<br>
+      and experienced port problems with K3s.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Create a Kube config file for access to your Kubernetes and point the environment variable <code>KUBECONFIG</code> to it.<br>
+Example:<br>
+<code>export KUBECONFIG="$HOME/.kube/kind-config"`</code></p>
+</div>
+<div class="paragraph">
+<p>In your terminal type:
+ <code>kubectl get ns</code> to verify the connectivity.
+ This should list the namespaces of your Kubernetes cluster.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="setup-server-environment">3. Setup server environment</h2>
+<h2 id="run-sechub">3. Run SecHub</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>After issuing below commands, a new namespace "sechub-testing" will be created in your Kubernetes.
+Everything outside this namespace will be left untouched.</p>
+</div>
 <div class="sect2">
 <h3 id="clone-the-repository">3.1. Clone the repository</h3>
 <div class="paragraph">
@@ -757,144 +818,31 @@ cd sechub</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="start-sechub-server">3.2. Start SecHub Server</h3>
-<div class="paragraph">
-<p>The SecHub server is responsible for taking jobs and passing them to the PDS server for processing. Once the job finishes on the PDS side, they are fetched and processed by SecHub<br></p>
-</div>
+<h3 id="start-sechub-environment-and-create-a-basic-setup">3.2. Start SecHub environment and create a basic setup</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">./sechub-solution/01-start-single-docker-compose.sh</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">cd sechub-solutions-shared/setup-with-kubernetes
+./00_prepare_build.sh
+./01_init.sh
+./10_deploy_sechub_server.sh
+./20_deploy_pds-multi.sh
+./30_deploy_web-ui.sh
+./40_apply-profiles.sh</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This starts the server.</p>
+<p>This starts the SecHub server and a PDS with a SAST scanner.<br>
+Additionally scan profiles are created. We will use one of them later.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="start-gosecpds-server">3.3. Start GoSec+PDS Server</h3>
+<h3 id="setup-a-project-in-sechub">3.3. Setup a project in SecHub</h3>
 <div class="paragraph">
-<p>The PDS server, which contains the security tool <a href="https://securego.io/">GoSec</a>, will check the actual code for vulnerabilities and output a result of them.</p>
-</div>
-<div class="paragraph">
-<p>Start another terminal in the root directory of SecHub and type:</p>
+<p>The following call will create a SecHub project named "demo" and assigns the scan profile "sast-python" to it:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">./sechub-pds-solutions/gosec/05-start-single-sechub-network-docker-compose.sh</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will prepare some environment files and will start a container based on SecHub&#8217;s custom PDS+GoSec image. In the container, GoLang and GoSec will be installed and the server will be started.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="setup-project">3.4. Setup Project</h3>
-<div class="paragraph">
-<p>After starting all servers, some environment variables have to be set. Specifically <code>SECHUB_SERVER</code>, <code>SECHUB_USERID</code>, <code>SECHUB_APITOKEN</code>, <code>SECHUB_TRUSTALL</code> and SecHub&#8217;s CLI tools have to be added to the <code>PATH</code> variable to be able to do scans.
-In another, we set local credentials because everything is hosted locally:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">export SECHUB_SERVER=https://localhost:8443
-export SECHUB_USERID=admin
-export SECHUB_APITOKEN='myTop$ecret!'
-export SECHUB_TRUSTALL=true
-export PATH=&quot;$PATH:$(pwd)/sechub-cli/build/go/platform/linux-amd64:$(pwd)/sechub-developertools/scripts&quot;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>After setting the variables, you can run this script, which will first check if you have set the variable correctly. Then it will create a project, and create a user who will be assigned to the project. (Created user/project can be changed in the 8000-setup-gosec.sh file)</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">./sechub-solution/setup-pds/setup-gosec.sh</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>After running it, you should get a similar output if everything is working correctly:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code>user: gosec
-project: test-gosec
-Adding user: gosec
-HTTP/1.1 200
-HTTP/1.1 201
-Creating project test-gosec.
-{
-  &quot;apiVersion&quot;: &quot;1.0&quot;,
-  &quot;name&quot;: &quot;test-gosec&quot;,
-  &quot;owner&quot;: &quot;gosec&quot;,
-  &quot;description&quot;: &quot;Created by sechub-api.sh at 2023-01-01 12:00 CET&quot;
-}
-HTTP/1.1 201
-{
-  &quot;configurations&quot;: [
-    {
-      &quot;uuid&quot;: &quot;d23dc9ab-4a3d-4924-8d77-8026069cbd91&quot;
-    }
-  ],
-  &quot;description&quot;: &quot;Created by sechub-api.sh at 2023-01-01 12:00 CET&quot;,
-  &quot;enabled&quot;: true
-}
-HTTP/1.1 201
-{
-  &quot;id&quot;: &quot;pds-gosec&quot;,
-  &quot;description&quot;: &quot;Created by sechub-api.sh at 2023-01-01 12:00 CET&quot;,
-  &quot;enabled&quot;: true,
-  &quot;configurations&quot;: [
-    {
-      &quot;name&quot;: &quot;pds-gosec&quot;,
-      &quot;productIdentifier&quot;: &quot;PDS_CODESCAN&quot;,
-      &quot;setup&quot;: {
-        &quot;baseURL&quot;: &quot;https://pds-gosec:8444&quot;,
-        &quot;credentials&quot;: {
-          &quot;user&quot;: &quot;techuser&quot;,
-          &quot;password&quot;: &quot;pds-apitoken&quot;
-        },
-        &quot;jobParameters&quot;: [
-          {
-            &quot;key&quot;: &quot;pds.config.productidentifier&quot;,
-            &quot;value&quot;: &quot;PDS_GOSEC&quot;
-          },
-          {
-            &quot;key&quot;: &quot;pds.config.use.sechub.storage&quot;,
-            &quot;value&quot;: &quot;false&quot;
-          },
-          {
-            &quot;key&quot;: &quot;pds.mocking.disabled&quot;,
-            &quot;value&quot;: &quot;true&quot;
-          },
-          {
-            &quot;key&quot;: &quot;sechub.productexecutor.pds.timeout.minutes&quot;,
-            &quot;value&quot;: &quot;60&quot;
-          },
-          {
-            &quot;key&quot;: &quot;sechub.productexecutor.pds.timetowait.nextcheck.milliseconds&quot;,
-            &quot;value&quot;: &quot;500&quot;
-          },
-          {
-            &quot;key&quot;: &quot;sechub.productexecutor.pds.trustall.certificates&quot;,
-            &quot;value&quot;: &quot;true&quot;
-          }
-        ]
-      },
-      &quot;executorVersion&quot;: 1,
-      &quot;enabled&quot;: true,
-      &quot;uuid&quot;: &quot;d23dc9ab-4a3d-4924-8d77-8026069cbd91&quot;
-    }
-  ],
-  &quot;projectIds&quot;: []
-}
-Created executor and profile
-project: test-gosec
-profile: pds-gosec
-Assigned profile pds-gosec to project test-gosec
-
-Setup of GoSec complete:
-
-- user: gosec
-- project: test-gosec</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">./50_create_SecHub_project.sh demo sast-python</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -907,69 +855,70 @@ Setup of GoSec complete:
 <h2 id="scan-using-sechub-client">4. Scan using SecHub Client</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="install-sechub-client">4.1. Install SecHub Client</h3>
+<h3 id="environment-vaiables">4.1. Environment vaiables</h3>
 <div class="paragraph">
-<p>The SecHub Client is needed to scan. In later sections of this guide, the client is used to scan an example.
-The command below, will download the latest version and put it in your <code>/usr/local/bin</code> folder.</p>
+<p>Some environment variables have to be set. Specifically <code>SECHUB_SERVER</code>, <code>SECHUB_USERID</code>, <code>SECHUB_APITOKEN</code>, <code>SECHUB_TRUSTALL</code>. Make sure that the SecHub client executable "sechub" is in the PATH.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash"># Get latest version
-CLIENT_VERSION=`curl -s https://mercedes-benz.github.io/sechub/latest/client-download.html | grep https://github.com/mercedes-benz/sechub/ | awk -F '-' '{print $NF}' | sed 's/.zip&quot;&gt;//'`
-
-# Download the zipped binary
-wget https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip
-
-# Verify the binary
-wget https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip.sha256
-sha256sum --check sechub-cli-$CLIENT_VERSION.zip.sha256
-
-# Extract
-unzip sechub-cli-$CLIENT_VERSION.zip
-
-# Depending on your architecture and OS, you will have to copy a different binary file:
-# Example for Linux x86-64
-sudo cp platform/linux-amd64/sechub /usr/local/bin
-
-# Cleanup
-rm -rf sechub-cli-$CLIENT_VERSION.zip sechub-cli-$CLIENT_VERSION.zip.sha256 platform/</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">SECHUB_IP_ADDRESS=$(kubectl --namespace=sechub-testing get svc/sechub-server -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export SECHUB_SERVER=https://$SECHUB_IP_ADDRESS:8443
+export SECHUB_USERID=sechubadm
+export SECHUB_APITOKEN=demo
+export SECHUB_TRUSTALL=true</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="scan">4.2. Scan</h3>
 <div class="paragraph">
-<p>Now you can go to another project&#8217;s directory and do a scan for vulnerabilities.
-In this example, we will use <a href="https://github.com/Jeeppler/vulnerable-go">vulnerable-go</a>, but you are free to use any other project!</p>
+<p>We have prepared a mini-example with vulnerabe Python code in the "demo" folder.</p>
 </div>
 <div class="paragraph">
-<p>Before starting the scan, you need a <code>sechub.json</code> in the root directory of the project you are scanning, which tells which files to be scanned, and which to be skipped. You can either copy the one in SecHub&#8217;s folder or create your own.<br></p>
+<p>Please have a look at the <code>sechub.json</code>. Here it is defined what should be scanned, and what should be skipped.</p>
 </div>
 <div class="paragraph">
-<p>Here&#8217;s a bare-bones example:</p>
+<p>Now you can do a scan:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="shell">echo '
-{
-  &quot;apiVersion&quot;: &quot;1.0&quot;,
-  &quot;project&quot;: &quot;test-gosec&quot;,
-  &quot;codeScan&quot;: { &quot;use&quot;: [ &quot;sourcecode&quot; ] },
-  &quot;data&quot;: {
-    &quot;sources&quot;: [
-      {
-        &quot;name&quot;: &quot;sourcecode&quot;,
-        &quot;fileSystem&quot;: { &quot;folders&quot;: [ &quot;.&quot; ] }
-      }
-    ]
-  }
-}
-' &gt; sechub.json</code></pre>
+<pre class="CodeRay highlight"><code data-lang="shell">cd demo
+sechub scan</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now you can do a scan, type <code>sechub scan</code>, this will create a file which contains a report of the findings from the scan (JSON format).
-If you want the report in HTML format instead, add <code>-reportformat html</code> as an option: <code>sechub -reportformat html scan</code></p>
+<p>This will run a SAST scan via SecHub and create a file which contains a report of the findings from the scan (JSON format).<br>
+If you want the report in HTML format instead, add <code>-reportformat html</code> as an option:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">sechub -reportformat html scan</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="sechub-web-ui">4.3. SecHub Web-UI</h3>
+<div class="paragraph">
+<p>The URL of the SecHub Web-UI can be retrieved like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="shell">WEB_UI_IP=$(kubectl --namespace=sechub-testing get svc/web-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+WEB_UI_URL=&quot;https://$WEB_UI_IP:4443/&quot;
+echo $WEB_UI_URL</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+After successful login with sechubadm / demo you must open the URL manually. Then the SecHub Web-UI should work.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1010,10 +959,44 @@ You can jump to the exact code lines and fix the problem.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="appendix">6. Appendix</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="installing-the-sechub-client-maually">6.1. Installing the SecHub Client maually</h3>
+<div class="paragraph">
+<p>The command below, will download the latest version and put it in your <code>/usr/local/bin</code> folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash"># Get latest version
+CLIENT_VERSION=`curl -s https://mercedes-benz.github.io/sechub/latest/client-download.html | grep https://github.com/mercedes-benz/sechub/ | awk -F '-' '{print $NF}' | sed 's/.zip&quot;&gt;//'`
+
+# Download the zipped binary
+wget https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip
+
+# Verify the binary
+wget https://github.com/mercedes-benz/sechub/releases/download/v$CLIENT_VERSION-client/sechub-cli-$CLIENT_VERSION.zip.sha256
+sha256sum --check sechub-cli-$CLIENT_VERSION.zip.sha256
+
+# Extract
+unzip sechub-cli-$CLIENT_VERSION.zip
+
+# Depending on your architecture and OS, you will have to copy a different binary file:
+# Example for Linux x86-64
+sudo cp platform/linux-amd64/sechub /usr/local/bin
+
+# Cleanup
+rm -rf sechub-cli-$CLIENT_VERSION.zip sechub-cli-$CLIENT_VERSION.zip.sha256 platform/</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.5.0<br>
+ Server 2.11.1<br>
 </div>
 </div>
 </body>

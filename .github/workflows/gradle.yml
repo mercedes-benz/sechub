@@ -12,20 +12,26 @@ on:
       - '**'
       - '!docs/**'
       - '!github-actions/**'
+      - '!ide-plugins/**'
       - '!sechub-doc/**'
+      - '!sechub-pds-solutions/**'
+      - '!sechub-solution/**'
       - '!sechub-website/**'
       - '!sechub-web-ui/**'
-      - '!ide-plugins/**'
+      - '!sechub-web-ui-solution/**'
       - '.github/workflows/gradle.yml'
   pull_request:
     paths:
       - '**'
       - '!docs/**'
       - '!github-actions/**'
+      - '!ide-plugins/**'
       - '!sechub-doc/**'
+      - '!sechub-pds-solutions/**'
+      - '!sechub-solution/**'
       - '!sechub-website/**'
       - '!sechub-web-ui/**'
-      - '!ide-plugins/**'
+      - '!sechub-web-ui-solution/**'
       - '.github/workflows/gradle.yml'
 
   # enable manual triggering of workflow
@@ -46,14 +52,17 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@94baf225fe0a508e581a564467443d0e2379123b
+        uses: gradle/actions/setup-gradle@8379f6a1328ee0e06e2bb424dadb7b159856a326
         with:
-          cache-read-only: false
+          # To prevent a fill-up of the actions cache:
+          # Only write to the cache for builds on the 'master' branch.
+          # Builds on other branches will only read existing entries from the cache.
+          cache-read-only: ${{ github.ref != 'refs/heads/master' }}
 
       - name: Set up Go
-        uses: actions/setup-go@f111f3307d8850f501ac008e886eec1fd1932a34
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5
         with:
-          go-version: 1.21.6
+          go-version: 1.24.4
 
       - uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57
         with:
@@ -90,7 +99,7 @@ jobs:
       # -----------------------------------------
       - name: Archive combined test report
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: combined-sechub-testreport
           path: build/reports/combined-report
@@ -98,7 +107,7 @@ jobs:
 
       - name: Archive sechub server artifacts
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-server
           path: sechub-server/build/libs
@@ -106,21 +115,21 @@ jobs:
 
       - name: Archive pds server artifacts
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-pds
           path: sechub-pds/build/libs
 
       - name: Archive pds tools artifacts
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-pds-tools
           path: sechub-pds-tools/build/libs
 
       - name: Archive developer tools artifacts
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-developertools
           path: sechub-developertools/build/libs
@@ -128,7 +137,7 @@ jobs:
 
       - name: Archive sechub client artifacts
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-client
           path: sechub-cli/build/go
@@ -136,14 +145,14 @@ jobs:
 
       - name: Archive sechub integration test report artifacts
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-integrationtest-test-reports
           path: sechub-integrationtest/build/sechub-test-reports
           retention-days: 14
 
       - name: Archive openAPI3 JSON files
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-api-spec
           path: sechub-doc/build/api-spec/

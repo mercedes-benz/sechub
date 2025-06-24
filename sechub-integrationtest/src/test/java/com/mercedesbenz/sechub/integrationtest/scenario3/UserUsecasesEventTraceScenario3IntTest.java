@@ -49,7 +49,7 @@ public class UserUsecasesEventTraceScenario3IntTest implements IntegrationTestIs
                  from("com.mercedesbenz.sechub.domain.administration.user.UserRoleCalculationService").
                  to("com.mercedesbenz.sechub.domain.authorization.AuthMessageHandler").
         /* assert + write */
-        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_UNASSIGNS_USER_FROM_PROJECT.name());
+        assertAsExpectedAndCreateHistoryFile(UseCaseIdentifier.UC_ADMIN_OR_OWNER_UNASSIGNS_USER_FROM_PROJECT.name());
 
         /* @formatter:on */
     }

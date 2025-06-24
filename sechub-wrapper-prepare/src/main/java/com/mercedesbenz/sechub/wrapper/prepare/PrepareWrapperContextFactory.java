@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.wrapper.prepare;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -14,10 +13,12 @@ import com.mercedesbenz.sechub.wrapper.prepare.cli.PrepareWrapperEnvironment;
 @Component
 public class PrepareWrapperContextFactory {
 
-    @Autowired
-    PrepareWrapperRemoteConfigurationExtractor extractor;
-
+    private final PrepareWrapperRemoteConfigurationExtractor extractor;
     private static final Logger LOG = LoggerFactory.getLogger(PrepareWrapperContextFactory.class);
+
+    public PrepareWrapperContextFactory(PrepareWrapperRemoteConfigurationExtractor extractor) {
+        this.extractor = extractor;
+    }
 
     public PrepareWrapperContext create(PrepareWrapperEnvironment environment) {
         SecHubConfigurationModel secHubConfigModel = createSecHubConfigModel(environment.getSechubConfigurationModelAsJson());

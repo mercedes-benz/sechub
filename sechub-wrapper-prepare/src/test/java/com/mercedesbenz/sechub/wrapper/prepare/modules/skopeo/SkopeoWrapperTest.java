@@ -36,7 +36,6 @@ class SkopeoWrapperTest {
 
     @BeforeEach
     void beforeEach() throws IOException, InterruptedException {
-        wrapperToTest = new SkopeoWrapper();
         workingDirectory = TestUtil.createTempDirectoryInBuildFolder("skopeo-wrapper-test");
 
         processAdapterFactory = mock(PDSProcessAdapterFactory.class);
@@ -60,10 +59,7 @@ class SkopeoWrapperTest {
         when(processAdapter2.waitFor(any(Long.class), any(TimeUnit.class))).thenReturn(true);
         when(processBuilderFactory.createForCommandList(any())).thenReturn(processBuilder1).thenReturn(processBuilder2);
 
-        wrapperToTest.processAdapterFactory = processAdapterFactory;
-        wrapperToTest.processBuilderFactory = processBuilderFactory;
-        wrapperToTest.logSanitizer = logSanitizer;
-        wrapperToTest.locationConverter = locationConverter;
+        wrapperToTest = new SkopeoWrapper(processAdapterFactory, logSanitizer, processBuilderFactory, locationConverter);
     }
 
     @Test

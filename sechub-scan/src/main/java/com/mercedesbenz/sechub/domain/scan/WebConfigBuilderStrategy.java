@@ -141,6 +141,13 @@ public class WebConfigBuilderStrategy implements AdapterConfigurationStrategy/* 
 
         int duration = optMaxScanDuration.get().getDuration();
         SecHubTimeUnit unit = optMaxScanDuration.get().getUnit();
+        if (unit == null) {
+            /*
+             * without a time unit, we cannot set the max scan duration - so we just skip
+             * max scan duration settings
+             */
+            return;
+        }
         SecHubTimeUnitData maxScanDuration = SecHubTimeUnitData.of(duration, unit);
 
         configBuilder.setMaxScanDuration(maxScanDuration);

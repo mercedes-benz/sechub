@@ -11,7 +11,6 @@ import com.mercedesbenz.sechub.adapter.AdapterConfig;
 import com.mercedesbenz.sechub.adapter.mock.MockDataIdentifierFactory;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapter;
 import com.mercedesbenz.sechub.adapter.pds.PDSAdapterConfig;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.CanceableProductExecutor;
@@ -48,8 +47,8 @@ public abstract class AbstractPDSProductExecutor extends AbstractProductExecutor
     @Autowired
     MockDataIdentifierFactory mockDataIdentifierFactory;
 
-    protected AbstractPDSProductExecutor(ProductIdentifier productIdentifier, int version, ScanType scanType) {
-        super(productIdentifier, version, scanType);
+    protected AbstractPDSProductExecutor(ProductIdentifier productIdentifier, int version) {
+        super(productIdentifier, version);
     }
 
     @PostConstruct

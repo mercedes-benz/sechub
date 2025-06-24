@@ -1,0 +1,79 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+hide empty fields
+hide empty methods
+
+left to right direction
+
+'skinparam linetype ortho
+
+node "Roles" as r{
+	actor User as u #Coral
+		
+	actor Owner as o #PaleGreen
+	
+	actor SuperAdmin as sa #DeepSkyBlue
+	
+}
+	
+node "SecHub" {
+	
+	component Project as p
+		
+	component "Job" as j
+	
+
+}
+
+'User role notes
+'----------------
+note "can access \nassigned projects" as note_u_access_p #Coral
+note "can create + access jobs\nfor assigned projects" as note_u_access_j #Coral
+
+'User role notes
+'----------------
+note "can access all projects" as note_sa_access_p #DeepSkyBlue
+note "can create + access jobs\nfor every project" as note_sa_access_j #DeepSkyBlue
+note "creates or deletes projects" as note_sa_create_delete_p #DeepSkyBlue
+
+'Owner role notes
+'----------------
+note "can assign/unassign users\n to/from owned projects" as note_o_assign_u2p #PaleGreen
+note "can assign/unassign users\n to/from any project" as note_su_assign_u2p #DeepSkyBlue
+note "is responsible for project(s)\n(a project has <u>one owner</u>)" as note_po_responsible #PaleGreen
+
+
+u -- note_u_access_p
+note_u_access_p --> p
+
+u--- note_u_access_j
+note_u_access_j -> j
+
+o -- note_po_responsible
+note_po_responsible --> p
+
+o -- note_o_assign_u2p
+note_o_assign_u2p --> p
+
+
+sa -- note_sa_access_p
+note_sa_access_p --> p
+
+sa -- note_sa_access_j 
+note_sa_access_j --> j
+
+sa -- note_su_assign_u2p
+note_su_assign_u2p --> p
+
+sa -- note_sa_create_delete_p
+note_sa_create_delete_p --> p
+
+
+p ... j : 1...n 
+
+@enduml
+
+
+
+

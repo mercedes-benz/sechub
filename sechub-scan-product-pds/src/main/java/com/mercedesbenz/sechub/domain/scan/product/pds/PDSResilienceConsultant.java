@@ -10,12 +10,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.mercedesbenz.sechub.adapter.pds.PDSEncryptionOutOfSyncException;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceConsultant;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceContext;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilienceProposal;
 import com.mercedesbenz.sechub.commons.core.resilience.SimpleRetryResilienceProposal;
 import com.mercedesbenz.sechub.commons.core.util.StacktraceUtil;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 
 @Component
 public class PDSResilienceConsultant implements ResilienceConsultant {
@@ -31,27 +32,27 @@ public class PDSResilienceConsultant implements ResilienceConsultant {
     private static final int DEFAULT_SERVERERROR_RETRY_TIMEOUT_MILLISECONDS = 5000;
 
     @Value("${sechub.adapter.pds.resilience.encryption-out-of-sync.retry.max:" + DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_MAX + "}")
-    @MustBeDocumented("Amount of retries done when a PDS encryption out of sync problem happens")
+    @MustBeDocumented(value = "Amount of retries done when a PDS encryption out of sync problem happens", scope = DocumentationScopeConstants.SCOPE_PDS)
     private int encryptionOutOfSyncMaxRetries = DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_MAX;
 
     @Value("${sechub.adapter.pds.resilience.encryption-out-of-sync.retry.wait:" + DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_TIMEOUT_MILLISECONDS + "}")
-    @MustBeDocumented("Time to wait until retry is done when a PDS encryption out of sync problem happens")
+    @MustBeDocumented(value = "Time to wait until retry is done when a PDS encryption out of sync problem happens", scope = DocumentationScopeConstants.SCOPE_PDS)
     private int encryptionOutOfSyncMRetryTimeToWaitInMilliseconds = DEFAULT_ENCRYPTION_OUT_OF_SYNC_RETRY_TIMEOUT_MILLISECONDS;
 
     @Value("${sechub.adapter.checkmarx.resilience.badrequest.retry.max:" + DEFAULT_BADREQUEST_RETRY_MAX + "}")
-    @MustBeDocumented("Amount of retries done when a 400 bad request happened on Checkmarx server")
+    @MustBeDocumented(value = "Amount of retries done when a 400 bad request happened on Checkmarx server", scope = DocumentationScopeConstants.SCOPE_PDS)
     private int badRequestMaxRetries = DEFAULT_BADREQUEST_RETRY_MAX;
 
     @Value("${sechub.adapter.checkmarx.resilience.badrequest.retry.wait:" + DEFAULT_BADREQUEST_RETRY_TIMEOUT_MILLISECONDS + "}")
-    @MustBeDocumented("Time to wait until retry is done when a 400 bad request happened on Checkmarx server")
+    @MustBeDocumented(value = "Time to wait until retry is done when a 400 bad request happened on Checkmarx server", scope = DocumentationScopeConstants.SCOPE_PDS)
     private int badRequestRetryTimeToWaitInMilliseconds = DEFAULT_BADREQUEST_RETRY_TIMEOUT_MILLISECONDS;
 
     @Value("${sechub.adapter.checkmarx.resilience.servererror.retry.max:" + DEFAULT_SERVERERROR_RETRY_MAX + "}")
-    @MustBeDocumented("Amount of retries done when a 500 server internal error happened on Checkmarx server")
+    @MustBeDocumented(value = "Amount of retries done when a 500 server internal error happened on Checkmarx server", scope = DocumentationScopeConstants.SCOPE_PDS)
     private int internalServerErrortMaxRetries = DEFAULT_SERVERERROR_RETRY_MAX;
 
     @Value("${sechub.adapter.checkmarx.resilience.servererror.retry.wait:" + DEFAULT_SERVERERROR_RETRY_TIMEOUT_MILLISECONDS + "}")
-    @MustBeDocumented("Time to wait until retry is done when a 500 server internal error happened on Checkmarx server")
+    @MustBeDocumented(value = "Time to wait until retry is done when a 500 server internal error happened on Checkmarx server", scope = DocumentationScopeConstants.SCOPE_PDS)
     private int internalServerErrorTimeToWaitInMilliseconds = DEFAULT_SERVERERROR_RETRY_TIMEOUT_MILLISECONDS;
 
     @Override

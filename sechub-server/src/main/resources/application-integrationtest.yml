@@ -21,6 +21,13 @@ sechub:
                       # one check (which is always done) except multiple. This is to avoid flaky tests,
                       # but gives us possiblity to check multiple ones when necessary (default are 60 seconds
                       # and this too long for test...)
+  security:
+    encryption:
+      # Secret key used to encrypt the access token which is sent back to the user after successful authentication (or login) and the email verification token.
+      # Must be AES256 compatible (256 bit / 32 byte)
+      secret-key: Insert-your-32-byte-string-here.
+         
+
   schedule:
     nextjob: 
        suspend:
@@ -67,7 +74,7 @@ sechub:
   upload:
    binaries:
      maximum:
-      bytes: 409600 # For testing we only allow 400 kbytes         
+      bytes: 409600 # For testing we only allow 400 kbytes
 logging:
  level:
    com.mercedesbenz.sechub: DEBUG
@@ -79,4 +86,5 @@ spring:
  servlet: 
     # to speed up integration tests, we use here only 300kb
     multipart.max-file-size: 300KB
-    multipart.max-request-size: 300KB
+    # requests are usually a little larger than the file upload itself
+    multipart.max-request-size: 320KB

@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: MIT
+sechub:
+  security:
+    server:
+      oauth2:
+        mode: jwt
+        jwt:
+          jwk-set-uri: http://localhost:${KEYCLOAK_CONTAINER_PORT}/realms/web-ui-server-local/protocol/openid-connect/certs
+    login:
+      oauth2:
+        client-secret: ${SECHUB_SECURITY_SERVER_OAUTH2_CLIENT_SECRET}
+        issuer-uri: http://localhost:${KEYCLOAK_CONTAINER_PORT}/realms/web-ui-server-local
+        authorization-uri: http://localhost:${KEYCLOAK_CONTAINER_PORT}/realms/web-ui-server-local/protocol/openid-connect/auth
+        token-uri: http://localhost:${KEYCLOAK_CONTAINER_PORT}/realms/web-ui-server-local/protocol/openid-connect/token
+        user-info-uri: http://localhost:${KEYCLOAK_CONTAINER_PORT}/realms/web-ui-server-local/protocol/openid-connect/userinfo
+        jwk-set-uri: http://localhost:${KEYCLOAK_CONTAINER_PORT}/realms/web-ui-server-local/protocol/openid-connect/certs

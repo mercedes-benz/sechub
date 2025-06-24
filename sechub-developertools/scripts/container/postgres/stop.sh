@@ -7,7 +7,7 @@ function usage() {
     echo "Usage: $script_name <port>" 
 }
 
-defineEexposedPort $1
+defineExposedPort $1
 defineImage "sechub-test-postgres"
 
 killContainer

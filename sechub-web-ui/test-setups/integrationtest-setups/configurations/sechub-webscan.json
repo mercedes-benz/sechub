@@ -1,0 +1,10 @@
+{
+  "apiVersion": "1.0",
+  "webScan": { 
+    "url": "https://example.org"
+  },
+  "maxScanDuration": { 
+    "duration": 1,
+    "unit": "hour" 
+  }
+}

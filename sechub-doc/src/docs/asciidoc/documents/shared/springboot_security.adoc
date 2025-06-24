@@ -28,15 +28,15 @@ Below is an example configuration with `Classic` mode and `OAuth2` in `JWT` mode
 sechub:
   security:
     server:
-      modes:
-        - oauth2
-        - classic
+      modes: oauth2,classic <1>
       oauth2:
         mode: jwt
         jwt:
           jwk-set-uri: <jwk-set-uri-of-your-idp>
 ----
-
+<1> A list of comma separated resource server modes. Supported values are: `oauth2` and `classic`.
+    At least one mode must be defined.
+ 
 In `Opaque Token` mode the server forwards the token to an introspection endpoint for every request.
 
 NOTE:  `Opaque Token` mode increases the load on the IDP server hence caching is very important. Adjust the caching settings to your
@@ -49,8 +49,7 @@ Below is an example configuration with Classic mode and OAuth2 in `Opaque Token`
 sechub:
   security:
     server:
-      modes:
-        - oauth2
+      modes: oauth2
       oauth2:
         mode: opaque-token
         opaque-token:
@@ -86,9 +85,7 @@ Below is a full configuration example with `Login` enabled in `Classic` and `OAu
 sechub:
   security:
     server:
-      modes:
-        - oauth2
-        - classic
+      modes: oauth2,classic <1>
       oauth2:
         mode: jwt
         jwt:
@@ -100,9 +97,7 @@ sechub:
       login-page: /login
       # Here you can configure the target application where the user will be redirected after successful login
       redirect-uri: <your-target-application>
-      modes:
-        - oauth2
-        - classic
+      modes: oauth2,classic
       oauth2:
         client-id: <client-id>
         client-secret: <client-secret>
@@ -118,9 +113,32 @@ sechub:
       classic-auth:
         cookie-age-seconds: 86400 # This is the default
     encryption:
-      secret-key: <aes-256-compatible-secret-key> <1>
+      secret-key: <aes-256-compatible-secret-key> <3>
 ----
-<1> {sechub} uses `AES` encryption to provide temporary but still sensitive information in a secure way.
+<1> Provided server resource mode. In this case `classic` and `oauth2` are enabled and 
+    resource server provides both modes.
+<2> Provided login modes. In this case `classic` and `oauth2` are enabled and user will
+    have both login possibilities. 
+<3> {sechub} uses `AES` encryption to provide temporary but still sensitive information in a secure way.
     This is the secret key for the encryption. The key can be anything, but must 
     have exactly a length of 32 bytes. For example: `example-key-32-byte-long-1234567`.
-    
+
+===== Customizing the Login Mask
+
+The static content of the login mask can be customized by providing a custom background image, custom logo and custom colors.
+This can be done by using the following property:
+
+[source,yaml]
+----
+spring:
+  web:
+    resources:
+      static-locations: file:/custom/static, classpath:/static
+----
+
+The files in your custom static location will be served before the default static files are served,
+as long as they follow the same structure as the default files. +
+See the 'sechub-commons-security-spring' module for more information about the static file structure.
+
+Example: +
+`/custom/static/login/css/main.css` will be served before `/static/login/css/main.css` which allows you to override the default colors.

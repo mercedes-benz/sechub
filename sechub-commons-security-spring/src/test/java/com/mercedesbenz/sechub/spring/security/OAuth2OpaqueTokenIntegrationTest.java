@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Set;
 
@@ -52,7 +53,6 @@ import com.mercedesbenz.sechub.testframework.spring.YamlPropertyLoaderFactory;
  *
  * @author hamidonos
  */
-@SuppressWarnings("JavadocReference")
 @WebMvcTest
 @TestPropertySource(locations = "classpath:application-opaque-token-test.yml", factory = YamlPropertyLoaderFactory.class)
 class OAuth2OpaqueTokenIntegrationTest {
@@ -133,12 +133,18 @@ class OAuth2OpaqueTokenIntegrationTest {
     }
 
     @Configuration
-    @Import({ TestSecurityConfiguration.class, TestOAuth2OpaqueTokenSecurityConfiguration.class, AES256Encryption.class })
+    @Import({ TestSecurityConfiguration.class, TestOAuth2OpaqueTokenSecurityConfiguration.class, AES256Encryption.class,
+            OAuth2TokenExpirationCalculator.class })
     static class TestConfig {
 
         @Bean
         TestSecurityController testSecurityController() {
             return new TestSecurityController();
+        }
+
+        @Bean
+        OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessProvider() {
+            return new OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider();
         }
     }
 }

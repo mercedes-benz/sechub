@@ -1,20 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.https;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.hamcrest.CoreMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -32,7 +26,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.domain.administration.TestAdministrationSecurityConfiguration;
-import com.mercedesbenz.sechub.domain.administration.project.Project;
 import com.mercedesbenz.sechub.domain.administration.signup.AnonymousSignupCreateService;
 import com.mercedesbenz.sechub.domain.administration.signup.Signup;
 import com.mercedesbenz.sechub.domain.administration.signup.SignupRepository;
@@ -99,13 +92,8 @@ public class UserAdministrationRestControllerMockTest {
         User user = mock(User.class);
         when(user.getName()).thenReturn("user1");
         when(user.getEmailAddress()).thenReturn("user1@example.org");
-        Set<Project> projects = new LinkedHashSet<>();
 
-        Project project1 = mock(Project.class);
-        when(project1.getId()).thenReturn("project1");
-        projects.add(project1);
-        when(user.getProjects()).thenReturn(projects);
-        UserDetailInformation info = new UserDetailInformation(user);
+        UserDetailInformation info = new UserDetailInformation(user, Set.of("project1"), Set.of());
 
         when(mockedUserDetailInformationService.fetchDetailsById("user1")).thenReturn(info);
 
@@ -131,13 +119,7 @@ public class UserAdministrationRestControllerMockTest {
         User user = mock(User.class);
         when(user.getName()).thenReturn(userId);
         when(user.getEmailAddress()).thenReturn(emailAddress);
-        Set<Project> projects = new LinkedHashSet<>();
-
-        Project project1 = mock(Project.class);
-        when(project1.getId()).thenReturn("project1");
-        projects.add(project1);
-        when(user.getProjects()).thenReturn(projects);
-        UserDetailInformation info = new UserDetailInformation(user);
+        UserDetailInformation info = new UserDetailInformation(user, Set.of("project1"), Set.of());
 
         when(mockedUserDetailInformationService.fetchDetailsByEmailAddress(emailAddress)).thenReturn(info);
 

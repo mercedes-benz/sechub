@@ -42,8 +42,6 @@ class PrepareWrapperSechubConfigurationSupportTest {
 
     @BeforeEach
     void beforeEach() throws Exception {
-        supportToTest = new PrepareWrapperSechubConfigurationSupport();
-        supportToTest.fileNameSupport = new FileNameSupport();
         writer = new TestFileWriter();
 
         prepareContext = mock(PrepareWrapperContext.class);
@@ -52,6 +50,9 @@ class PrepareWrapperSechubConfigurationSupportTest {
 
         workspaceDirectory = Files.createTempDirectory("test-sechub-prepare_sechubConfigurationSupport").toFile();
         workspaceDirectory.deleteOnExit();
+
+        FileNameSupport fileNameSupport = new FileNameSupport();
+        supportToTest = new PrepareWrapperSechubConfigurationSupport(fileNameSupport);
 
         uploadDirectory = workspaceDirectory.toPath().resolve(Path.of("upload"));
         testDownload = workspaceDirectory.toPath().resolve(Path.of("test-download"));

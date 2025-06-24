@@ -4,43 +4,18 @@ server:
     key-store-type:
       PKCS12
     key-store:
-      # we use a keystore location which is never tracked by git.
-      # see dev-create_localhost_certificate.sh and  dev-ensure_localhost_certificate.sh
-      classpath:certificates-untracked/generated-dev-localhost-keystore.p12
+       # we use a keystore location which is never tracked by git. 
+       # see dev-create_localhost_certificate.sh and  dev-ensure_localhost_certificate.sh
+       classpath:certificates-untracked/generated-dev-localhost-keystore.p12
     key-store-password:
       123456
     key-alias:
-      tomcat
+       tomcat
 sechub:
   server:
     baseurl: "https://localhost:${server.port}"
   security:
     server:
-      modes:
-        - oauth2
-        - classic
-      oauth2:
-        mode: jwt
-        jwt:
-          jwk-set-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/certs
+      modes: classic
     login:
-      enabled: true
-      login-page: /login
-      redirect-uri: http://localhost:3000/
-      modes:
-        - oauth2
-        - classic
-      oauth2:
-        client-id: web-ui-server-local
-        client-secret: n8Ka5Wnkl9tv3rbPzeHt8KQ7CsEy7o5x
-        provider: keycloak
-        redirect-uri: https://localhost:8443/login/oauth2/code/keycloak
-        issuer-uri: http://localhost:8080/realms/local-realm
-        authorization-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/auth
-        token-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/token
-        user-info-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/userinfo
-        jwk-set-uri: http://localhost:8080/realms/local-realm/protocol/openid-connect/certs
-      classic-auth:
-        cookie-age-seconds: 3600
-    encryption:
-      secret-key: aB3xYz8KpL9mQw2VcT1sNj7FuW4vEp0Z
+      enabled: false

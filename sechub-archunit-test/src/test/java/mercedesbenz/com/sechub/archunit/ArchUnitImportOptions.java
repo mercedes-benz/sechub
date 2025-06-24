@@ -51,8 +51,8 @@ public class ArchUnitImportOptions {
 
     static List<ImportOption> ignoreFolders = new ArchUnitRuntimeSupport().createImportOptionsIgnoreFolder(); // ignore specific folders e.g. build folders
 
-    static ImportOption ignoreSechubOpenAPIJava = location -> {
-        return !location.contains("/sechub-openapi-java/"); // ignore any URI to sources that contains '/sechub-openapi-java/'
+    static ImportOption ignoreSechubOpenAPI = location -> {
+        return !location.contains("/sechub-openapi/"); // ignore any URI to sources that contains '/sechub-openapi/'
     };
 
     static ImportOption ignoreSechubTestframework = location -> {

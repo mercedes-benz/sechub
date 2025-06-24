@@ -13,9 +13,27 @@ This GitHub action uses the SecHub cli to scan the repository for security issue
 
 To be able to use this action you need a SecHub project. Check the https://mercedes-benz.github.io/sechub/[documentation] on how to set one up.
 
+If the action runs on a custom runner and a proxy is necessary to download the sechub client from https://github.com,
+specify the proxy using the default ENV variables (lowercased like used by many other cli tools) `http_proxy` or `https_proxy`.
+The ENV variable `https_proxy` will be used if `http_proxy` and `https_proxy` are set.
+Make sure to use the following format:
+
+- http_proxy="http://user:password@proxy.example.org:1234"
+- https_proxy="https://user:password@proxy.example.org:1234"
+
+or without credentials:
+
+- http_proxy="http://proxy.example.org:1234"
+- https_proxy="https://proxy.example.org:1234"
+
 [source,yaml]
 ----
 - uses: mercedes-benz/sechub/github-actions/scan@master
+
+  # OPTIONAL: Set a proxy for the github action with or without credentials, e.g. to download the sechub client and to access sechub
+  env:
+    https_proxy: "https://user:password@proxy.example.org:1234"
+
   with:
     # OPTIONAL: Path to sechub.json for manual configuration. (See IMPORTANT section below for more information)
     config-path: 'sechub.json'
@@ -32,7 +50,7 @@ To be able to use this action you need a SecHub project. Check the https://merce
     # REQUIRED: the name of the project registered in SecHub (can alternatively provided via env variable or config file)
     project-name: ${{ secrets.SECHUB_PROJECT }}
 
-    # OPTIONAL: Which version of the SecHub cli to use
+    # OPTIONAL: 'Which version of the SecHub client to use. E.g `latest` or `1.10.0'
     # DEFAULT: latest
     version: 'latest'
 
@@ -85,6 +103,10 @@ To be able to use this action you need a SecHub project. Check the https://merce
     #           The action defineFalsePositives overwrites all previously marked false positives on SecHub side with the ones defined in this file.
     #           You can use the SecHub client action getFalsePositives to get the current false positives and extend the returned false positive list.
     define-false-positives: 'sechub-false-positives.json'
+    
+    # OPTIONAL: An explicit client build folder path if used client version is 'build'.
+    #           The parameter is only for testing unreleased versions.
+    client-build-folder: ''
 ----
 
 [IMPORTANT]
@@ -161,6 +183,8 @@ npm run test
 
 
 ==== Integration-Test
+
+===== Start integration tests locally
 As a precondition to run the integration tests locally you have to
 execute `01-start.sh $secHubServerVersion $sechubServerPortNr $pdsVersion $pdsPortN`
 inside the integration test folder.
@@ -183,16 +207,40 @@ After the script has been executed, you can execute integration tests multiple t
 npm run integration-test
 ----
 
+====== Change used client version
+Per default 'build' will be used as client version. This means that the local build is used and no
+download happens.
+
+If you want to to change this locally, just set environment variable `SECHUB_CLIENT_VERSION` to
+your wanted version - e.g. `latest` or `1.10.0`
+
+===== Start GitHub action workflow
+The worklow `github-action-scan.yml`
+will be triggered on every PR which changes the worklow or the github action.
+
+It is also possible to trigger the workflow manually at
+https://github.com/mercedes-benz/sechub/actions/workflows/github-action-scan.yml
+
+====== Change used client version
+The workflow `github-action-scan.yml` uses per default `build`.
+
+If you want to change it and test a dedicated version of the client, just trigger a manual
+build at the workflow and set the version inside the parameter panel.
+
+===== Extended logging
 To enable full debug output in integration tests please execute following before running the integration tests:
 [source,npm]
 ----
-export SECHUB_DEBUG=true
+export SECHUB_INTEGRATIONTEST_DEBUG=true
 ----
+
+This will activate debug logging inside integration tests (via jest mocking core.debug).
 
 ==== Debugging tests
 The unit and also the integration tests are written with `jest` test framework.
 
 ===== Setup
+
 ====== VSCodium
 
 Used extensions

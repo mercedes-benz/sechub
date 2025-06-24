@@ -5,13 +5,31 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.internal.gen.model.*;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubIacScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubLicenseScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubSecretScanConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubWebScanApiConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.core.util.SimpleStringUtils;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModel;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidationResult.SecHubConfigurationModelValidationErrorData;
+import com.mercedesbenz.sechub.commons.model.SecHubConfigurationModelValidator;
+import com.mercedesbenz.sechub.commons.model.SecHubScanConfiguration;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -70,20 +88,24 @@ public class SystemTestRuntimeContextHealthCheck {
         RunSecHubJobDefinitionTransformer transformer = new RunSecHubJobDefinitionTransformer();
         SecHubConfiguration secHubConfiguration = transformer.transformToSecHubConfiguration(runSecHubJob);
 
-        /*
-         *
-         * FIXME: This code is commented out because the
-         * SecHubConfigurationModelValidator is deprecated.
-         *
-         * SecHubConfigurationModelValidator validator = new
-         * SecHubConfigurationModelValidator(); SecHubConfigurationModelValidationResult
-         * result = validator.validate(secHubConfiguration); if (result.hasErrors()) {
-         * for (SecHubConfigurationModelValidationErrorData errorData :
-         * result.getErrors()) { throw new WrongConfigurationException("Test: " +
-         * test.getName() + " leads to an invalid sechub configurarion:" +
-         * errorData.toString(), context); } }
-         *
-         */
+        assertConfigurationValid(context, test, secHubConfiguration);
+
+    }
+
+    private void assertConfigurationValid(SystemTestRuntimeContext context, TestDefinition test, SecHubConfiguration secHubConfiguration) {
+        String transformedConfigAsJson = JSONConverter.get().toJSON(secHubConfiguration);
+
+        // the validation works not with the generated model but the commons model,
+        // means we have to convert here:
+        SecHubConfigurationModel model = SecHubScanConfiguration.createFromJSON(transformedConfigAsJson);
+
+        SecHubConfigurationModelValidator validator = new SecHubConfigurationModelValidator();
+        SecHubConfigurationModelValidationResult result = validator.validate(model);
+        if (result.hasErrors()) {
+            for (SecHubConfigurationModelValidationErrorData errorData : result.getErrors()) {
+                throw new WrongConfigurationException("Test: " + test.getName() + " leads to an invalid sechub configurarion:" + errorData.toString(), context);
+            }
+        }
     }
 
     private void assertReferenceIds(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob) {
@@ -93,6 +115,7 @@ public class SystemTestRuntimeContextHealthCheck {
         assertReferencesCorrectForWebScan(context, runSecHubJob, existingReferenceIds);
         assertReferencesCorrectForLicenseScan(context, runSecHubJob, existingReferenceIds);
         assertReferencesCorrectForSecretScan(context, runSecHubJob, existingReferenceIds);
+        assertReferencesCorrectForIacScan(context, runSecHubJob, existingReferenceIds);
 
         /* Because infrastructure scans do not have references we do not handled them */
     }
@@ -109,6 +132,13 @@ public class SystemTestRuntimeContextHealthCheck {
         Optional<SecHubSecretScanConfiguration> secretConfigOpt = runSecHubJob.getSecretScan();
         if (secretConfigOpt.isPresent()) {
             assertReferenceIdsCorrect("secret scan", context, existingReferenceIds, secretConfigOpt.get().getUse());
+        }
+    }
+
+    private void assertReferencesCorrectForIacScan(SystemTestRuntimeContext context, RunSecHubJobDefinition runSecHubJob, List<String> existingReferenceIds) {
+        Optional<SecHubIacScanConfiguration> iacConfigOpt = runSecHubJob.getIacScan();
+        if (iacConfigOpt.isPresent()) {
+            assertReferenceIdsCorrect("iac scan", context, existingReferenceIds, iacConfigOpt.get().getUse());
         }
     }
 

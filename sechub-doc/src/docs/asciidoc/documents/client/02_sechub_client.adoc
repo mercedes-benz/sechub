@@ -86,6 +86,7 @@ Here is an overview of the mandatory parameters for each *action*:
 | <<getStatus>> |server + user + api token + projectID
 | <<getReport>> |server + user + api token + projectID
 | <<listJobs>> |server + user + api token + projectID
+| <<cancel>> |server + user + api token + projectID + jobUUID
 | <<defineFalsePositives>> |server + user + api token + projectID
 | <<getFalsePositives>> |server + user + api token + projectID
 | <<interactiveMarkFalsePositives>> |server + user + api token + projectID + (file only if no report file is in current dir)
@@ -125,9 +126,9 @@ sechub scan
 TIP: If you prefer the report in HTML format: +
      `sechub -reportformat html scan`
 
-TIP: With `-output ${file-or-directory}` you can define where to place the report. +
+TIP: With `-output ${file_or_directory}` you can define where to place the report. +
      Can be a directory, a file name or a file path. +
-     Default: `sechub_report_${your-project}_${jobUUID}.{json|html|spdx}` in current directory
+     Default: `sechub_report_${your_project}_${jobUUID}.{json|html|spdx}` in current directory
 
 ===== scanAsync
 
@@ -173,9 +174,9 @@ TIP: Defaults to latest finished job. +
      You can select the job by providing the wanted job UUID by adding `-jobUUID ${jobUUID}` +
      This action respects defined <<client-configuration-overview,label definitions>> as filter criteria.
 
-TIP: With `-output ${file-or-directory}` you can define where to place the report. +
+TIP: With `-output ${file_or_directory}` you can define where to place the report. +
      Can be a directory, a file name or a file path. +
-     Default: `sechub_report_${your-project}_${jobUUID}.{json|html|spdx}` in current directory
+     Default: `sechub_report_${your_project}_${jobUUID}.{json|html|spdx}` in current directory
 
 ===== listJobs
 Lists the last jobs and their state.
@@ -190,6 +191,13 @@ TIP: This might be useful for an overview or +
      to find out the job UUID of a certain job. +
      This action respects defined <<client-configuration-overview,label definitions>> as filter criteria.
 
+===== cancel
+Cancels a SecHub scan job.
+
+**Minimum call syntax**
+----
+sechub -jobUUID ${jobUUID} cancel
+----
 
 ===== defineFalsePositives
 This will define the false positives list of your project. +
@@ -217,9 +225,9 @@ This will fetch the false positives list of your project as JSON.
 sechub getFalsePositives
 ----
 
-TIP: With `-output ${file-or-directory}` you can define where to place the result. +
+TIP: With `-output ${file_or_directory}` you can define where to place the result. +
      Can be a directory, a file name or a file path. +
-     Default: `sechub-false-positives-${your-project}.json` in current directory
+     Default: `sechub-false-positives-${your_project}.json` in current directory
 
 ===== interactiveMarkFalsePositives
 Instead of creating a json file to mark false positives, you can also do this interactively:
@@ -262,7 +270,7 @@ Create a json file as described below and start action `markFalsePositives`.
 
 **Minimum call syntax**
 ----
-sechub -file ${json-file} markFalsePositives
+sechub -file ${json_file} markFalsePositives
 ----
 
 include::../shared/false-positives/false-positives-howto-define-by-api.adoc[]
@@ -283,7 +291,7 @@ action `unmarkFalsePositives`.
 
 **Minimum call syntax**
 ----
-sechub -file ${json-file} unmarkFalsePositives
+sechub -file ${json_file} unmarkFalsePositives
 ----
 
 The JSON scheme is identical to `markFalsePositives`
@@ -317,6 +325,8 @@ In below table, there is an overview of what can be defined where.
 | append SCM history | `-addScmHistory` | `SECHUB_ADD_SCM_HISTORY` |
 | code scan config ||| <<sechub-config-code-scan,codeScan>>
 | JSON config file | `-configfile` ||
+| fail on red ||`SECHUB_FAIL_ON_RED`|
+| fail on yellow | `-stop-on-yellow`||
 | file | `-file` ||
 | job uuid | `-jobUUID` ||
 | label definitions | `-label` | `SECHUB_LABELS` | <<labels,metaData.labels>>
@@ -328,7 +338,6 @@ In below table, there is an overview of what can be defined where.
 | report format | `-reportformat`||
 | scan for secrets ||| <<secret-scan,secretScan>>
 | server url | `-server` | `SECHUB_SERVER` | server
-| stop on yellow | `-stop-on-yellow`||
 | temporary dir | `-tempdir` | `SECHUB_TEMP_DIR` |
 | trust all certificates || `SECHUB_TRUSTALL` |
 | user id | `-user` | `SECHUB_USERID` | user
@@ -381,12 +390,14 @@ In below table, there is an overview of what can be defined where.
   Will be used for periodic status checks when action=`scan` and for retries of HTTP calls.
 
 ==== Environment variables
-Additionally to above cmdline options, you can set some values also via environment variables which can be helpful when you have different SecHub environments (like: dev, int, prod)
+You can set some values via environment variables:
 
 - `SECHUB_ADD_SCM_HISTORY` +
   (`true` or `false` / unset) Secrets scan only: Upload SCM directories like `.git` for scanning. (same as `-addScmHistory` option)
 - `SECHUB_APITOKEN` +
   The SecHub api token for `SECHUB_USERID`. (same as `-apitoken` option)
+- `SECHUB_FAIL_ON_RED` +
+  Fail on critical or high findings (`true` or `false`) - Client returns non-zero when set to ´true`. Default: `true`
 - `SECHUB_LABELS` +
   Define one or more labels for scan or filtering. The labels will appear in your SecHub report. Separate multiple labels with ",". (see also `-label` option) +
   Example: `export SECHUB_LABELS="key1=test 1,key2=test 2"`

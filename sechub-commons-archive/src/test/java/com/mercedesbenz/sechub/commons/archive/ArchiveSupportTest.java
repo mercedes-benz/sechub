@@ -26,6 +26,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.TextFileReader;
@@ -50,6 +52,10 @@ class ArchiveSupportTest {
     private static File expectedCreateArchivesTest1DecompressWithoutFileStructureTar;
     private static File expectedCreateArchivesTest1DecompressWithFileStructureZip;
     private static File expectedCreateArchivesTest1DecompressWithFileStructureTar;
+    private static File archiveRootReferenceTestZipFile;
+    private static File archiveRootReferenceTestTarFile;
+    private static File expectedExtractionOfArchiveRootReferenceTestZipFile;
+    private static File expectedExtractionOfArchiveRootReferenceTestTarFile;
     private static final FileSize maxFileSizeUncompressed = new FileSize("100MB");
     private static final long maxEntries = 100L;
     private static final long maxDirectoryDepth = 10L;
@@ -74,6 +80,13 @@ class ArchiveSupportTest {
 
         expectedCreateArchivesTest1DecompressWithFileStructureZip = ensureCreateArchivesTest1("expected-decompress-with-filestructure-provider/zip");
         expectedCreateArchivesTest1DecompressWithFileStructureTar = ensureCreateArchivesTest1("expected-decompress-with-filestructure-provider/tar");
+
+        archiveRootReferenceTestZipFile = ensure("./src/test/resources/zipfiles/archive_root_test_file.zip");
+        expectedExtractionOfArchiveRootReferenceTestZipFile = ensure("./src/test/resources/expected-extraction/archive_root_test_file/zip");
+
+        archiveRootReferenceTestTarFile = ensure("./src/test/resources/tar/archive_root_test_file.tar");
+        expectedExtractionOfArchiveRootReferenceTestTarFile = ensure("./src/test/resources/expected-extraction/archive_root_test_file/tar");
+
     }
 
     private static File ensureTar2(String path) {
@@ -93,6 +106,110 @@ class ArchiveSupportTest {
     @BeforeEach
     void beforeEach() {
         supportToTest = new ArchiveSupport();
+    }
+
+    @Test
+    void extract_a_zipfile_containing_a_file_with_umlauts_in_filename_works() throws Exception {
+        /* prepare */
+        File twoFilesZipfile = resolveTestFile("zipfiles/contains-files-with-special-characters.zip");
+        File targetFolder = TestUtil.createTempDirectoryInBuildFolder("contains-files-with-special-characters").toFile();
+        targetFolder.mkdirs();
+
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
+        configuration.setRootFolderAccepted(true);
+
+        /* execute */
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(twoFilesZipfile), twoFilesZipfile.getAbsolutePath(), targetFolder,
+                configuration, archiveExtractionConstraints);
+
+        /* test */
+        assertContainsFiles(targetFolder, "Apfelbäume_muss_man_gut_gießen.txt", "README.md");
+        assertEquals(2, result.getExtractedFilesCount());
+        assertEquals(0, result.getCreatedFoldersCount());
+    }
+
+    @Test
+    void compressFolder_zipping_files_with_umlauts_in_filename_works() throws Exception {
+
+        /* prepare */
+        File targetFile = TestUtil.createTempFileInBuildFolder("zipped-files-with-special-charackters", "zip").toFile();
+        File folder = new File("./src/test/resources/expected-extraction/contains-files-with-special-characters");
+
+        /* execute */
+        supportToTest.compressFolder(ArchiveType.ZIP, folder, targetFile);
+
+        /* test */
+        assertTrue(targetFile.exists());
+
+        File targetFolderCheckZipFileContent = TestUtil.createTempDirectoryInBuildFolder("output-of_zipped-files-with-special-charackters").toFile();
+        targetFolderCheckZipFileContent.mkdirs();
+
+        MutableSecHubFileStructureDataProvider configuration = new MutableSecHubFileStructureDataProvider();
+        configuration.setRootFolderAccepted(true);
+
+        ArchiveExtractionResult result = supportToTest.extract(ZIP, new FileInputStream(targetFile), targetFile.getAbsolutePath(),
+                targetFolderCheckZipFileContent, configuration, archiveExtractionConstraints);
+
+        // now test that the re-extraction still contains file with umlauts
+        assertContainsFiles(targetFolderCheckZipFileContent, "Apfelbäume_muss_man_gut_gießen.txt", "README.md");
+        assertEquals(2, result.getExtractedFilesCount());
+        assertEquals(0, result.getCreatedFoldersCount());
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ScanType.class, names = { "CODE_SCAN", "LICENSE_SCAN", "SECRET_SCAN" })
+    @NullSource
+    void extraction_of_zip_source_archive_root_reference_test_file_works(ScanType type) throws Exception {
+        /* prepare */
+        File configFile = new File("./src/test/resources/expected-extraction/archive_root_test_file/sechub-configuration_archive-root-test.json");
+
+        String json = TestFileSupport.loadTextFile(configFile);
+        SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
+        SecHubFileStructureDataProvider structureDataProvider = null;
+        if (type != null) {
+            // when type is set, we use a structure data provider, no type means we just use
+            // no structure provider
+            structureDataProvider = SecHubFileStructureDataProvider.builder().setModel(model).setScanType(type).build();
+        }
+
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("check-extraction");
+        Path reverseFolderZip = reverseFolder.resolve("zip");
+
+        /* execute */
+        supportToTest.extract(ZIP, new FileInputStream(archiveRootReferenceTestZipFile), archiveRootReferenceTestZipFile.getAbsolutePath(),
+                reverseFolderZip.toFile(), structureDataProvider, archiveExtractionConstraints);
+
+        /* test */
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderZip.toFile(), expectedExtractionOfArchiveRootReferenceTestZipFile);
+
+    }
+
+    @ParameterizedTest
+    @EnumSource(value = ScanType.class, names = { "CODE_SCAN", "LICENSE_SCAN", "SECRET_SCAN" })
+    @NullSource
+    void extraction_of_tar_archive_root_reference_test_file_works(ScanType type) throws Exception {
+        /* prepare */
+        File configFile = new File("./src/test/resources/expected-extraction/archive_root_test_file/sechub-configuration_archive-root-test.json");
+
+        String json = TestFileSupport.loadTextFile(configFile);
+        SecHubConfigurationModel model = JSONConverter.get().fromJSON(SecHubConfigurationModel.class, json);
+        SecHubFileStructureDataProvider structureDataProvider = null;
+        if (type != null) {
+            // when type is set, we use a structure data provider, no type means we just use
+            // no structure provider
+            structureDataProvider = SecHubFileStructureDataProvider.builder().setModel(model).setScanType(type).build();
+        }
+
+        Path reverseFolder = TestUtil.createTempDirectoryInBuildFolder("check-extraction");
+        Path reverseFolderZip = reverseFolder.resolve("tar");
+
+        /* execute */
+        supportToTest.extract(TAR, new FileInputStream(archiveRootReferenceTestTarFile), archiveRootReferenceTestTarFile.getAbsolutePath(),
+                reverseFolderZip.toFile(), structureDataProvider, archiveExtractionConstraints);
+
+        /* test */
+        expectedExtractedFilesAreAllFoundInOutputDirectory(reverseFolderZip.toFile(), expectedExtractionOfArchiveRootReferenceTestTarFile);
+
     }
 
     @ParameterizedTest
@@ -597,6 +714,11 @@ class ArchiveSupportTest {
 
     }
 
+    private void expectedExtractedFilesAreAllFoundInOutputDirectory(File outputDirectory, File expectedOutputBaseFolder) throws IOException {
+        expectedExtractedFilesAreAllFoundInOutputDirectory(outputDirectory, TestFileSupport.loadFilesAsFileList(expectedOutputBaseFolder),
+                expectedOutputBaseFolder);
+    }
+
     private void expectedExtractedFilesAreAllFoundInOutputDirectory(File outputDirectory, List<File> allExpectedFiles, File expectedOutputBaseFolder)
             throws IOException {
         List<File> allExtractedFiles = TestFileSupport.loadFilesAsFileList(outputDirectory);
@@ -668,7 +790,6 @@ class ArchiveSupportTest {
 
     private void assertContainsFiles(File folder, String... childNames) {
         File[] children = folder.listFiles();
-        assertEquals(childNames.length, children.length);
 
         /* build temporary list with names */
         List<String> foundChildNames = new ArrayList<>();
@@ -683,6 +804,7 @@ class ArchiveSupportTest {
                 fail("Child: " + childName + " not found found inside list, but: " + foundChildNames);
             }
         }
+        assertEquals(childNames.length, children.length);
 
     }
 

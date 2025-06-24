@@ -1,26 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.spring.security;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Objects.*;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-
-import javax.crypto.SealedObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -30,21 +24,19 @@ import org.springframework.security.oauth2.core.OAuth2TokenIntrospectionClaimNam
 import org.springframework.security.oauth2.server.resource.introspection.BadOpaqueTokenException;
 import org.springframework.security.oauth2.server.resource.introspection.OAuth2IntrospectionAuthenticatedPrincipal;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
 
-import com.mercedesbenz.sechub.commons.core.cache.InMemoryCache;
-import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+import com.mercedesbenz.sechub.commons.core.cache.CachePersistence;
+import com.mercedesbenz.sechub.commons.core.cache.InMemoryCachePersistence;
+import com.mercedesbenz.sechub.commons.core.cache.SelfCleaningCache;
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccessProvider;
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 
 /**
  * <p>
  * The <code>Base64OAuth2OpaqueTokenIntrospector</code> class is responsible for
- * introspecting opaque OAuth2 tokens. It sends the opaque token to an
- * introspection endpoint and retrieves the token's details.
+ * introspecting opaque OAuth2 tokens. It sends the opaque token via fetcher
+ * instance to an introspection endpoint and retrieves the token's details.
+ * Afterwards it will do caching.
  * </p>
  *
  * <p>
@@ -67,46 +59,167 @@ import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
  *
  * @author hamidonos
  */
-class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
+public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
-    private static final Logger log = LoggerFactory.getLogger(OAuth2OpaqueTokenIntrospector.class);
-    private static final CryptoAccess<String> cryptoString = CryptoAccess.CRYPTO_STRING;
-    private static final String TOKEN = "token";
-    private static final String BASIC_AUTHORIZATION_HEADER_VALUE_FORMAT = "Basic %s";
-    private static final String CLIENT_ID_CLIENT_SECRET_FORMAT = "%s:%s";
-    private static final String TOKEN_TYPE_HINT = "token_type_hint";
-    private static final String ACCESS_TOKEN = "access_token";
-    private static final String TOKEN_TYPE_HINT_VALUE = ACCESS_TOKEN;
+    private static final Logger logger = LoggerFactory.getLogger(OAuth2OpaqueTokenIntrospector.class);
 
-    private final RestTemplate restTemplate;
-    private final String introspectionUri;
-    private final SealedObject clientIdSealed;
-    private final SealedObject clientSecretSealed;
-    private final Duration defaultTokenExpiresIn;
-    private final Duration maxCacheDuration;
-    private final UserDetailsService userDetailsService;
-    private final InMemoryCache<OAuth2OpaqueTokenIntrospectionResponse> cache;
+    private Duration defaultTokenExpiresIn;
+    private Duration maxCacheDuration;
+    private UserDetailsService userDetailsService;
+    private SelfCleaningCache<OAuth2OpaqueTokenIntrospectionResponse> tokenInMemoryCache;
+    private SelfCleaningCache<OAuth2OpaqueTokenIntrospectionResponse> tokenClusterCache;
+    private OAuth2OpaqueTokenIDPIntrospectionResponseFetcher fetcher;
 
-    /* @formatter:off */
-    OAuth2OpaqueTokenIntrospector(RestTemplate restTemplate,
-                                  String introspectionUri,
-                                  String clientId,
-                                  String clientSecret,
-                                  Duration defaultTokenExpiresIn,
-                                  Duration maxCacheDuration,
-                                  UserDetailsService userDetailsService,
-                                  ApplicationShutdownHandler applicationShutdownHandler) {
-        this.restTemplate = requireNonNull(restTemplate, "Parameter restTemplate must not be null");
-        this.introspectionUri = requireNonNull(introspectionUri, "Parameter introspectionUri must not be null");
-        this.clientIdSealed = cryptoString.seal(requireNonNull(clientId, "Parameter clientId must not be null"));
-        this.clientSecretSealed = cryptoString.seal(requireNonNull(clientSecret, "Parameter clientSecret must not be null"));
-        this.defaultTokenExpiresIn = requireNonNull(defaultTokenExpiresIn, "Parameter defaultTokenExpiresIn must not be null");
-        this.maxCacheDuration = requireNonNull(maxCacheDuration, "Parameter maxCacheDuration must not be null");
-        this.userDetailsService = requireNonNull(userDetailsService, "Parameter userDetailsService must not be null");
-        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
-        this.cache = new InMemoryCache<>(maxCacheDuration, scheduledExecutorService, applicationShutdownHandler);
+    private OAuth2TokenExpirationCalculator expirationCalculator;
+    private Duration minimumTokenValidity;
+    private Duration preCacheDuration;
+
+    public static OAuth2OpaqueTokenIntrospectorBuilder builder() {
+        return new OAuth2OpaqueTokenIntrospectorBuilder();
     }
-    /* @formatter:on */
+
+    public static class OAuth2OpaqueTokenIntrospectorBuilder {
+
+        private Duration defaultTokenExpiresIn;
+        private Duration maxCacheDuration;
+        private UserDetailsService userDetailsService;
+        private CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> tokenClusterCachePersistence;
+        private InMemoryCachePersistence<OAuth2OpaqueTokenIntrospectionResponse> inMemoryCachePersistence;
+        private Duration inMemoryCacheClearPeriod;
+        private Duration clusterCacheClearPeriod;
+
+        private OAuth2TokenExpirationCalculator expirationCalculator;
+        private Duration minimumTokenValidity;
+        private Duration preCacheDuration;
+        private ApplicationShutdownHandler applicationShutdownHandler;
+        private OAuth2OpaqueTokenIDPIntrospectionResponseFetcher introspectionResponseFetcher;
+        private CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider;
+
+        public OAuth2OpaqueTokenIntrospector build() {
+            OAuth2OpaqueTokenIntrospector result = new OAuth2OpaqueTokenIntrospector();
+            result.fetcher = requireNonNull(introspectionResponseFetcher, "Parameter fetcher must not be null");
+
+            if (inMemoryCachePersistence == null) {
+                inMemoryCachePersistence = new InMemoryCachePersistence<>();
+            }
+            result.fetcher = introspectionResponseFetcher;
+
+            result.defaultTokenExpiresIn = requireNonNull(defaultTokenExpiresIn, "Parameter defaultTokenExpiresIn must not be null");
+            result.maxCacheDuration = requireNonNull(maxCacheDuration, "Parameter maxCacheDuration must not be null");
+            result.userDetailsService = requireNonNull(userDetailsService, "Parameter userDetailsService must not be null");
+            result.expirationCalculator = requireNonNull(expirationCalculator);
+
+            result.preCacheDuration = requireNonNull(preCacheDuration, "Parameter preCacheDuration must not be null");
+
+            requireNonNull(inMemoryCacheClearPeriod, "Parameter inMemoryCacheClearPeriod must not be null");
+            requireNonNull(clusterCacheClearPeriod, "Parameter clusterCacheClearPeriod must not be null");
+
+            result.tokenInMemoryCache = new SelfCleaningCache<>("token-in-memory-cache", inMemoryCachePersistence, inMemoryCacheClearPeriod,
+                    Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
+
+            if (tokenClusterCachePersistence != null) {
+                result.tokenClusterCache = new SelfCleaningCache<>("token-cluster-cache", tokenClusterCachePersistence, clusterCacheClearPeriod,
+                        Executors.newSingleThreadScheduledExecutor(), applicationShutdownHandler, cryptoAccessProvider);
+
+                logger.debug("Created token cluster cache for this application");
+
+            } else {
+                logger.info("No token cluster cache created for this application - uses only in memory caching!");
+                result.tokenClusterCache = null;
+            }
+
+            result.minimumTokenValidity = minimumTokenValidity;
+
+            return result;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setCryptoAccessProvider(CryptoAccessProvider<OAuth2OpaqueTokenIntrospectionResponse> cryptoAccessProvider) {
+            this.cryptoAccessProvider = cryptoAccessProvider;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setIntrospectionResponseFetcher(
+                OAuth2OpaqueTokenIDPIntrospectionResponseFetcher introspectionResponseFetcher) {
+            this.introspectionResponseFetcher = introspectionResponseFetcher;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setDefaultTokenExpiresIn(Duration defaultTokenExpiresIn) {
+            this.defaultTokenExpiresIn = defaultTokenExpiresIn;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setMaxCacheDuration(Duration maxCacheDuration) {
+            this.maxCacheDuration = maxCacheDuration;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setUserDetailsService(UserDetailsService userDetailsService) {
+            this.userDetailsService = userDetailsService;
+            return this;
+        }
+
+        /**
+         * Set in cluster cache persistence instance. If null or this setter is not
+         * called, no token cluster cache mechanism is used.
+         *
+         * @param inMemoryCachePersistence, can be <code>null</code>
+         * @return builder
+         */
+        public OAuth2OpaqueTokenIntrospectorBuilder setTokenClusterCachePersistence(
+                CachePersistence<OAuth2OpaqueTokenIntrospectionResponse> tokenClusterCachePersistence) {
+            this.tokenClusterCachePersistence = tokenClusterCachePersistence;
+            return this;
+        }
+
+        /**
+         * Set in memory cache persistence instance. If null or this setter is not
+         * called, a new in memory cache persistence will be created automatically
+         *
+         * @param inMemoryCachePersistence
+         * @return builder
+         */
+        public OAuth2OpaqueTokenIntrospectorBuilder setTokenInMemoryCachePersistence(
+                InMemoryCachePersistence<OAuth2OpaqueTokenIntrospectionResponse> inMemoryCachePersistence) {
+            this.inMemoryCachePersistence = inMemoryCachePersistence;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setInMemoryCacheClearPeriod(Duration inMemoryCacheClearPeriod) {
+            this.inMemoryCacheClearPeriod = inMemoryCacheClearPeriod;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setClusterCacheClearPeriod(Duration clusterCacheClearPeriod) {
+            this.clusterCacheClearPeriod = clusterCacheClearPeriod;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setExpirationCalculator(OAuth2TokenExpirationCalculator expirationCalculator) {
+            this.expirationCalculator = expirationCalculator;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setMinimumTokenValidity(Duration minimumTokenValidity) {
+            this.minimumTokenValidity = minimumTokenValidity;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setPreCacheDuration(Duration preCacheDuration) {
+            this.preCacheDuration = preCacheDuration;
+            return this;
+        }
+
+        public OAuth2OpaqueTokenIntrospectorBuilder setApplicationShutdownHandler(ApplicationShutdownHandler applicationShutdownHandler) {
+            this.applicationShutdownHandler = applicationShutdownHandler;
+            return this;
+        }
+    }
+
+    /** Private constructor - to ensure only created by builder */
+    private OAuth2OpaqueTokenIntrospector() {
+
+    }
 
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String opaqueToken) throws OAuth2AuthenticationException {
@@ -116,7 +229,28 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
 
         Instant now = Instant.now();
 
-        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = getIntrospectionResponse(opaqueToken, now);
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = resolveIntrospectionResponseAndUpdateCachesOnDemand(opaqueToken, now);
+
+        if (expirationCalculator.isExpired(introspectionResponse, now)) {
+            /*
+             * Remove value from cache (we differ between expiration and cache time and want
+             * no orphans in cache).
+             */
+            tokenInMemoryCache.remove(opaqueToken);
+            if (tokenClusterCache != null) {
+                tokenClusterCache.remove(opaqueToken);
+            }
+
+            /*
+             * Remark: Spring Boot will catch any BadOpaqueTokenException inside
+             * OpaqueTokenAuthenticationProvider and transform it to an
+             * InvalidBearerTokenException which will be fetched and handled by our custom
+             * Authentication entry point inside AbstractSecurityConfiguration, leading to a
+             * remove of the oauth2 cookie at browser side and finally to a 401 unauthorized
+             * response.
+             */
+            throw new BadOpaqueTokenException("Opaque token is expired");
+        }
 
         if (!introspectionResponse.isActive()) {
             throw new BadOpaqueTokenException("Token is not active");
@@ -132,78 +266,141 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
         Collection<GrantedAuthority> authorities = new ArrayList<>(userDetails.getAuthorities());
         String username = userDetails.getUsername();
+
         return new OAuth2IntrospectionAuthenticatedPrincipal(username, introspectionClaims, authorities);
     }
 
-    private OAuth2OpaqueTokenIntrospectionResponse getIntrospectionResponse(String opaqueToken, Instant now) {
+    private OAuth2OpaqueTokenIntrospectionResponse resolveIntrospectionResponseAndUpdateCachesOnDemand(String opaqueToken, Instant now) {
         /* @formatter:off */
-        return cache
-                .get(opaqueToken)
-                .orElseGet(() -> fetchAndCacheTokenIntrospectionResponse(opaqueToken, now));
+
+        /* ------------------------ */
+        /* -----In memory cache---- */
+        /* ------------------------ */
+        Optional<OAuth2OpaqueTokenIntrospectionResponse> fromInMemoryCache = tokenInMemoryCache.get(opaqueToken);
+        if (fromInMemoryCache.isPresent()) {
+            logger.trace("found introspection response in memory for token: {}", opaqueToken);
+            return fromInMemoryCache.get();
+        }
+        /* Not found in memory - fetch from cluster cache/or from IDP */
+
+        /* ------------------------ */
+        /* -----Cluster cache---- */
+        /* ------------------------ */
+        OAuth2OpaqueTokenIntrospectionResponse fromClusterCacheOrIDP = fetchByClusterCacheOrIDP(opaqueToken, now);
+        /* update cache: */
+        updateInMemoryCache(opaqueToken, fromClusterCacheOrIDP, now);
+
+        return fromClusterCacheOrIDP;
         /* @formatter:on */
     }
 
-    private OAuth2OpaqueTokenIntrospectionResponse fetchAndCacheTokenIntrospectionResponse(String opaqueToken, Instant now) {
-        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = fetchTokenIntrospectionResponse(opaqueToken);
-        cacheIntrospectionResponse(opaqueToken, introspectionResponse, now);
+    private OAuth2OpaqueTokenIntrospectionResponse fetchByClusterCacheOrIDP(String opaqueToken, Instant now) {
+        if (tokenClusterCache == null) {
+            /* no cluster cache defined - just get the value from IDP */
+            logger.trace("no token cluster cache deifned - skip");
+            return fetchFromIDP(opaqueToken, now);
+        }
+        return fetchByClusterCache(opaqueToken, now);
+    }
+
+    private OAuth2OpaqueTokenIntrospectionResponse fetchByClusterCache(String opaqueToken, Instant now) {
+        Optional<OAuth2OpaqueTokenIntrospectionResponse> fromClusterCache = tokenClusterCache.get(opaqueToken);
+        if (fromClusterCache.isPresent()) {
+            logger.trace("found introspection response in cluster cache for token: {}", opaqueToken);
+            return fromClusterCache.get();
+        }
+        return fetchFromIDPAndUpdateClusterCache(opaqueToken, now);
+    }
+
+    private OAuth2OpaqueTokenIntrospectionResponse fetchFromIDPAndUpdateClusterCache(String opaqueToken, Instant now) {
+        OAuth2OpaqueTokenIntrospectionResponse fromIDP = fetchFromIDP(opaqueToken, now);
+        updateDatabaseCache(opaqueToken, fromIDP, now);
+
+        return fromIDP;
+    }
+
+    private OAuth2OpaqueTokenIntrospectionResponse fetchFromIDP(String opaqueToken, Instant now) {
+        logger.trace("start fetching introspection response from IDP");
+        OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = fetcher.fetchOpaqueTokenIntrospectionFromIDP(opaqueToken);
+
+        if (introspectionResponse == null) {
+            throw new BadOpaqueTokenException("Token introspection response from IDP is null");
+        }
+
+        handleDefaultAndMiniumExpiration(now, introspectionResponse);
         return introspectionResponse;
     }
 
-    private OAuth2OpaqueTokenIntrospectionResponse fetchTokenIntrospectionResponse(String opaqueToken) {
-        HttpEntity<MultiValueMap<String, String>> httpEntity = buildHttpEntity(opaqueToken);
+    private void handleDefaultAndMiniumExpiration(Instant now, OAuth2OpaqueTokenIntrospectionResponse introspectionResponse) {
+        if (introspectionResponse.getExpiresAtAsInstant() == null) {
 
-        try {
-            OAuth2OpaqueTokenIntrospectionResponse introspectionResponse = restTemplate.postForObject(introspectionUri, httpEntity,
-                    OAuth2OpaqueTokenIntrospectionResponse.class);
+            Instant calculatedExpiresAtWithDefault = now.plus(defaultTokenExpiresIn);
+            introspectionResponse.setExpiresAt(calculatedExpiresAtWithDefault.getEpochSecond());
 
-            if (introspectionResponse == null) {
-                throw new RestClientException("Response is null");
+            logger.debug("Opaque token introspection response did not contain an `expiresAt` entry! Set `expiresAt` to calculated value `{}` as fallback.",
+                    calculatedExpiresAtWithDefault);
+        }
+        if (minimumTokenValidity != null) {
+            Instant minimumTokenValidityInstant = now.plus(minimumTokenValidity);
+            if (minimumTokenValidityInstant.isAfter(introspectionResponse.getExpiresAtAsInstant())) {
+                introspectionResponse.setExpiresAt(minimumTokenValidityInstant.getEpochSecond());
+
+                logger.debug(
+                        "Opaque token 'expiresAt' entry was smaller than the configured 'minimumTokenValidity'! Set 'expiresAt' to configured 'minimumTokenValidity' value '{}' as fallback.",
+                        minimumTokenValidityInstant);
             }
-
-            return introspectionResponse;
-        } catch (RestClientException e) {
-            String errMsg = "Failed to perform token introspection";
-            log.error(errMsg, e);
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, errMsg, e);
         }
     }
 
-    private void cacheIntrospectionResponse(String opaqueToken, OAuth2OpaqueTokenIntrospectionResponse introspectionResponse, Instant now) {
-        Instant expiresAt;
+    private void updateDatabaseCache(String opaqueToken, OAuth2OpaqueTokenIntrospectionResponse introspectionResponse, Instant now) {
+        if (tokenClusterCache == null) {
+            logger.trace("no token cluster cache available - skip update");
+            return;
+        }
+        Duration idpBasedCacheDurationInSeconds = calculateIDPbasedCacheDurationInSeconds(introspectionResponse, now);
+        /* Update cluster cache, use IDP cache duration */
+        tokenClusterCache.put(opaqueToken, introspectionResponse, idpBasedCacheDurationInSeconds);
+        logger.trace("token cluster cache updated for token: {}", opaqueToken);
+    }
 
-        if (introspectionResponse.getExpiresAt() == null) {
-            expiresAt = now.plus(defaultTokenExpiresIn);
+    private void updateInMemoryCache(String opaqueToken, OAuth2OpaqueTokenIntrospectionResponse introspectionResponse, Instant now) {
+
+        if (tokenClusterCache == null) {
+            Duration idpBasedCacheDurationInSeconds = calculateIDPbasedCacheDurationInSeconds(introspectionResponse, now);
+            /*
+             * No cluster cache available - here we have only the in memory cache and use
+             * IDP cache duration
+             */
+            tokenInMemoryCache.put(opaqueToken, introspectionResponse, idpBasedCacheDurationInSeconds);
         } else {
-            expiresAt = introspectionResponse.getExpiresAt();
+            /*
+             * Here the in memory cache is only for short time (to prevent always asking
+             * cluster cache ). So we use NOT IDP cache duration but the preCacheDuration
+             * field
+             */
+            tokenInMemoryCache.put(opaqueToken, introspectionResponse, preCacheDuration);
+            logger.trace("in memory cache updated for token: {}", opaqueToken);
         }
-
-        Duration cacheDuration = Duration.between(now, expiresAt);
-
-        if (maxCacheDuration.compareTo(cacheDuration) < 0) {
-            log.debug("Opaque token cache duration of %s exceeds the maximum cache duration of %s. Using the maximum cache duration instead."
-                    .formatted(cacheDuration.toString(), maxCacheDuration.toString()));
-            cacheDuration = maxCacheDuration;
-        }
-
-        cache.put(opaqueToken, introspectionResponse, cacheDuration);
     }
 
-    private HttpEntity<MultiValueMap<String, String>> buildHttpEntity(String opaqueToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set(HttpHeaders.AUTHORIZATION, getBasicAuthHeaderValue());
-        MultiValueMap<String, String> formParameters = new LinkedMultiValueMap<>();
-        formParameters.add(TOKEN, opaqueToken);
-        formParameters.add(TOKEN_TYPE_HINT, TOKEN_TYPE_HINT_VALUE);
-        return new HttpEntity<>(formParameters, headers);
-    }
+    private Duration calculateIDPbasedCacheDurationInSeconds(OAuth2OpaqueTokenIntrospectionResponse introspectionResponse, Instant now) {
+        Instant idpCacheExpiresAtInSeconds = introspectionResponse.getExpiresAtAsInstant();
 
-    private String getBasicAuthHeaderValue() {
-        String clientId = cryptoString.unseal(clientIdSealed);
-        String clientSecret = cryptoString.unseal(clientSecretSealed);
-        String clientIdClientSecret = CLIENT_ID_CLIENT_SECRET_FORMAT.formatted(clientId, clientSecret);
-        String clientIdClientSecretB64Encoded = Base64.getEncoder().encodeToString(clientIdClientSecret.getBytes());
-        return BASIC_AUTHORIZATION_HEADER_VALUE_FORMAT.formatted(clientIdClientSecretB64Encoded);
+        // sanity check
+        if (idpCacheExpiresAtInSeconds == null) {
+            throw new IllegalStateException("May not happen - must be handled with defaults before!");
+        }
+
+        Duration idpBasedCacheDurationInSeconds = Duration.between(now.truncatedTo(ChronoUnit.SECONDS), idpCacheExpiresAtInSeconds);
+
+        // we use only the calculated duration for the cluster variant!
+
+        if (maxCacheDuration.compareTo(idpBasedCacheDurationInSeconds) < 0) {
+            logger.debug("Opaque token cache duration of %s exceeds the maximum cache duration of %s. Using the maximum cache duration instead."
+                    .formatted(idpBasedCacheDurationInSeconds.toString(), maxCacheDuration.toString()));
+            idpBasedCacheDurationInSeconds = maxCacheDuration;
+        }
+        return idpBasedCacheDurationInSeconds;
     }
 
     /* @formatter:off */
@@ -215,7 +412,7 @@ class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
         map.put(OAuth2TokenIntrospectionClaimNames.USERNAME, oAuth2OpaqueTokenIntrospectionResponse.getUsername());
         map.put(OAuth2TokenIntrospectionClaimNames.TOKEN_TYPE, oAuth2OpaqueTokenIntrospectionResponse.getTokenType());
         map.put(OAuth2TokenIntrospectionClaimNames.IAT, oAuth2OpaqueTokenIntrospectionResponse.getIssuedAt());
-        Instant expiresAt = oAuth2OpaqueTokenIntrospectionResponse.getExpiresAt();
+        Instant expiresAt = oAuth2OpaqueTokenIntrospectionResponse.getExpiresAtAsInstant();
         if (expiresAt == null) {
             expiresAt = now.plus(defaultTokenExpiresIn);
         }

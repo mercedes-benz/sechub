@@ -320,6 +320,10 @@ public class DeveloperAdministration {
             return "PDS auto cleanup data has been changed";
         }
 
+        public String getJobMetaData(UUID jobUUID) {
+            return restHelper.getStringFromURL(pdsUrlBuilder.buildAdminFetchesJobMetaData(jobUUID));
+        }
+
     }
 
     public String acceptSignup(String userId) {
@@ -567,12 +571,12 @@ public class DeveloperAdministration {
     }
 
     public String assignUserToProject(String userId, String projectId) {
-        getRestHelper().post(getUrlBuilder().buildAdminAssignsUserToProjectUrl(projectId, userId));
+        getRestHelper().post(getUrlBuilder().buildAssignsUserToProjectUrl(projectId, userId));
         return "assigned " + userId + " to project " + projectId;
     }
 
     public String unassignUserFromProject(String userId, String projectId) {
-        getRestHelper().delete(getUrlBuilder().buildAdminUnassignsUserFromProjectUrl(projectId, userId));
+        getRestHelper().delete(getUrlBuilder().buildUnassignsUserFromProjectUrl(projectId, userId));
         return "unassigned " + userId + " to project " + projectId;
     }
 

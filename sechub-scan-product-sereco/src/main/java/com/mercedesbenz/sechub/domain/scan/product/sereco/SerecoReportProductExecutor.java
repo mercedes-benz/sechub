@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.sereco;
 
+import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 import static com.mercedesbenz.sechub.sereco.ImportParameter.*;
 
 import java.io.IOException;
@@ -15,13 +16,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubMessage;
 import com.mercedesbenz.sechub.commons.model.SecHubMessagesList;
 import com.mercedesbenz.sechub.commons.model.SecHubRuntimeException;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionContext;
 import com.mercedesbenz.sechub.domain.scan.SecHubExecutionException;
+import com.mercedesbenz.sechub.domain.scan.product.AdapterMetaDataConverter;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutor;
+import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorCallback;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorContext;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResultRepository;
@@ -103,6 +107,8 @@ public class SerecoReportProductExecutor implements ProductExecutor {
             result = createReport(projectId, secHubJobUUID, context.getConfiguration(), traceLogId, executorContext, foundProductResults);
         }
 
+        result.getMetaData();
+
         result.setStarted(started);
         result.setEnded(LocalDateTime.now());
 
@@ -114,14 +120,16 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         Workspace workspace = sechubReportCollector.createWorkspace(projectId);
 
         for (ProductResult productResult : foundProductResults) {
-            importProductResult(traceLogId, sechubConfig, workspace, productResult);
+            importProductResult(traceLogId, sechubConfig, workspace, productResult, executorContext);
         }
         String json = workspace.createReport();
+
         /* fetch + return all vulnerabilities as JSON */
         return new ProductResult(secHubJobUUID, projectId, executorContext.getExecutorConfig(), json);
     }
 
-    private void importProductResult(UUIDTraceLogID traceLogId, SecHubConfiguration sechubConfig, Workspace workspace, ProductResult productResult) {
+    private void importProductResult(UUIDTraceLogID traceLogId, SecHubConfiguration sechubConfig, Workspace workspace, ProductResult productResult,
+            ProductExecutorContext executorContext) {
         String importData = productResult.getResult();
 
         String productId = productResult.getProductIdentifier().name();
@@ -143,6 +151,17 @@ public class SerecoReportProductExecutor implements ProductExecutor {
 
         LOG.debug("{} found product result for '{}'", traceLogId, productId);
 
+        boolean canceled = false;
+
+        ProductExecutorCallback callback = executorContext.getCallback();
+        // we now use the product result meta data and check if the product has been
+        // been canceled
+        AdapterMetaDataConverter metaDataConverter = callback.getMetaDataConverter();
+        AdapterMetaData metaData = metaDataConverter.convertToMetaDataOrNull(productResult.getMetaData());
+        if (metaData != null) {
+            canceled = metaData.getValueAsBoolean(META_DATA_KEY_PRODUCT_CANCELED);
+        }
+
         UUID uuid = productResult.getUUID();
         String docId = uuid != null ? uuid.toString() : "<no uuid set>";
         LOG.debug("{} start to import result '{}' from product '{}' , config:{}", traceLogId, docId, productId, productResult.getProductExecutorConfigUUID());
@@ -150,6 +169,7 @@ public class SerecoReportProductExecutor implements ProductExecutor {
         /* @formatter:off */
 		try {
 			workspace.doImport(sechubConfig, builder().
+			            canceled(canceled).
 						productId(productId).
 						importData(importData).
 						importProductMessages(productMessages).

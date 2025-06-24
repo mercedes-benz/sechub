@@ -23,4 +23,6 @@ public class EnvironmentVariableConstants {
     public static final String ZAP_GROOVY_LOGIN_SCRIPT_FILE = "ZAP_GROOVY_LOGIN_SCRIPT_FILE";
     public static final String ZAP_LOGIN_PAC_FILE_PATH = "ZAP_LOGIN_PAC_FILE_PATH";
 
+    public static final String WRAPPER_LOGINSCRIPT_FAILURE_RETRIES = " WRAPPER_LOGINSCRIPT_FAILURE_RETRIES";
+
 }

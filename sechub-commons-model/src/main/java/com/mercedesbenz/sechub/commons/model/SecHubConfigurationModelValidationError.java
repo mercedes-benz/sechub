@@ -46,6 +46,10 @@ public enum SecHubConfigurationModelValidationError {
 
     WEB_SCAN_LOGIN_TOTP_CONFIGURATION_INVALID("The TOTP configuration inside the webscan config login section is invalid!"),
 
+    WEB_SCAN_LOGOUT_CONFIGURATION_INVALID("The logout configuration inside the webscan config is invalid!"),
+
+    WEB_SCAN_LOGIN_VERIFICATION_CONFIGURATION_INVALID("The verification configuration inside the webscan config login section is invalid!"),
+
     REFERENCED_DATA_CONFIG_OBJECT_NAME_NOT_EXISTING("The referenced config object name was not found in object!"),
 
     NO_DATA_CONFIG_SPECIFIED_FOR_SCAN("No data config was specified for the scan!"),
@@ -78,7 +82,15 @@ public enum SecHubConfigurationModelValidationError {
 
     REMOTE_DATA_CONFIGURATION_USER_NAME_NOT_DEFINED("Remote data configuration credentials: user name is not defined."),
 
-    REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED("Remote data configuration credentials: user password is not defined.");
+    REMOTE_DATA_CONFIGURATION_USER_PASSWORD_NOT_DEFINED("Remote data configuration credentials: user password is not defined."),
+
+    RESERVED_REFERENCE_ID_MUST_NOT_BE_USED_IN_DATA_SECTION("An internal, reserved reference id may not be manually defined inside a data section."),
+
+    ILLEGAL_SOURCE_DATA_REFERENCE("Illegal source data reference."),
+
+    ILLEGAL_BINARY_DATA_REFERENCE("Illegal binary data reference."),
+
+    ;
 
     private String defaultMessage;
 

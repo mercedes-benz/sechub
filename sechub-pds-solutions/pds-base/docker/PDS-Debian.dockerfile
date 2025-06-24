@@ -10,7 +10,7 @@ ARG BASE_IMAGE
 # Build args
 ARG PDS_VERSION
 ARG BUILD_TYPE
-ARG GO="go1.21.6.linux-amd64.tar.gz"
+ARG GO="go1.24.4.linux-amd64.tar.gz"
 
 # possible values: temurin, openj9, openjdk
 ARG JAVA_DISTRIBUTION="temurin"
@@ -151,6 +151,7 @@ ARG PDS_VERSION
 ENV USER="pds"
 ENV UID="2323"
 ENV GID="${UID}"
+ENV LANG="C.UTF-8"
 ENV SHARED_VOLUMES="/shared_volumes"
 ENV SHARED_VOLUME_UPLOAD_DIR="$SHARED_VOLUMES/uploads"
 ENV PDS_VERSION="${PDS_VERSION}"
@@ -161,6 +162,9 @@ ENV MOCK_FOLDER="$PDS_FOLDER/mocks"
 ENV SCRIPT_FOLDER="$PDS_FOLDER/scripts"
 ENV TOOL_FOLDER="$PDS_FOLDER/tools"
 ENV WORKSPACE="/workspace"
+
+# Copy pds-api.sh into container
+COPY --chmod=755 pds-api.sh "/usr/local/bin/"
 
 # non-root user
 # using fixed group and user ids
@@ -188,16 +192,13 @@ RUN cd "$DOWNLOAD_FOLDER/install-java/" && \
     ./install-java.sh "$JAVA_DISTRIBUTION" "$JAVA_VERSION" jre
 
 # Copy run script into the container
-COPY run.sh /run.sh
+COPY --chmod=755 run.sh /run.sh
 
 # Copy the additional "hook" script into the container
-COPY run_additional.sh /run_additional.sh
+COPY --chmod=755 run_additional.sh /run_additional.sh
 
 # Copy run script into the container
 COPY helper/ "$HELPER_FOLDER"
-
-# Set execute permissions for scripts
-RUN chmod +x /run.sh /run_additional.sh
 
 # Set permissions
 RUN chown --recursive "$USER:$USER" "$PDS_FOLDER" "$SHARED_VOLUME_UPLOAD_DIR"

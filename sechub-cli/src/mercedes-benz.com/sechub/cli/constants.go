@@ -122,11 +122,14 @@ const ExitCodeCanceled = 10
 /* -------- Actions ----------------- */
 /* ---------------------------------- */
 
-// scanAction - name of synchron scan action
+// scanAction - name of synchronous scan action
 const scanAction = "scan"
 
-// scanAsynchronAction - name of asynchron scan action
+// scanAsynchronAction - name of asynchronous scan action
 const scanAsynchronAction = "scanAsync"
+
+// cancelAction - name of the job cancel action
+const cancelAction = "cancel"
 
 // getStatusAction - name of action to get status of Job
 const getStatusAction = "getStatus"
@@ -165,6 +168,7 @@ const showVersionAction = "version"
 var actionlist = []string{
 	scanAction,
 	scanAsynchronAction,
+	cancelAction,
 	getStatusAction,
 	getReportAction,
 	getFalsePositivesAction,
@@ -185,6 +189,12 @@ var actionlist = []string{
 // archiveDataPrefix - Prefix in Zip or Tar archives for files from "data" section
 const archiveDataPrefix = "__data__"
 
+// forbiddenArchiveDataSectionNames - reserved names that are rejected by SecHub server
+var forbiddenArchiveDataSectionNames = []string{
+	"__binaries_archive_root__",
+	"__sourcecode_archive_root__",
+}
+
 /* -------------------------------------- */
 /* -------- Command line options -------- */
 /* -------------------------------------- */
@@ -192,6 +202,7 @@ const archiveDataPrefix = "__data__"
 const addSCMHistoryOption = "addScmHistory"
 const apitokenOption = "apitoken"
 const configfileOption = "configfile"
+const failOnYellowOption = "stop-on-yellow"
 const fileOption = "file"
 const helpOption = "help"
 const jobUUIDOption = "jobUUID"
@@ -201,7 +212,6 @@ const projectOption = "project"
 const quietOption = "quiet"
 const reportformatOption = "reportformat"
 const serverOption = "server"
-const stopOnYellowOption = "stop-on-yellow"
 const tempDirOption = "tempdir"
 const timeoutOption = "timeout"
 const userOption = "user"
@@ -212,6 +222,7 @@ const waitOption = "wait"
 var flaglist = []string{
 	apitokenOption,
 	configfileOption,
+	failOnYellowOption,
 	fileOption,
 	helpOption,
 	jobUUIDOption,
@@ -221,7 +232,6 @@ var flaglist = []string{
 	quietOption,
 	reportformatOption,
 	serverOption,
-	stopOnYellowOption,
 	tempDirOption,
 	timeoutOption,
 	userOption,
@@ -244,6 +254,9 @@ const SechubDebugEnvVar = "SECHUB_DEBUG"
 
 // SechubDebugHTTPEnvVar - environment variable to enable additional HTTP logging
 const SechubDebugHTTPEnvVar = "SECHUB_DEBUG_HTTP"
+
+// SechubFailOnRedEnvVar - environment variable to change exit code behavior
+const SechubFailOnRedEnvVar = "SECHUB_FAIL_ON_RED"
 
 // SechubIgnoreDefaultExcludesEnvVar - environment variable to make it possible to switch off default excludes (DefaultSourceCodeExcludeDirPatterns)
 const SechubIgnoreDefaultExcludesEnvVar = "SECHUB_IGNORE_DEFAULT_EXCLUDES"

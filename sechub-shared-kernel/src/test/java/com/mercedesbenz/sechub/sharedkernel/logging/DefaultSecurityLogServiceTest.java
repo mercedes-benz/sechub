@@ -135,27 +135,28 @@ class DefaultSecurityLogServiceTest {
         serviceToTest.log(SecurityLogType.POTENTIAL_INTRUSION, "testmessage={}", "param1");
 
         /* test */
-        verify(logger).warn(messageCaptor.capture(), typeStringCaptor.capture(), jsonDataCaptor.capture(), messageParamCaptor.capture());
+        verify(logger).warn(messageCaptor.capture(), typeStringCaptor.capture(), messageParamCaptor.capture(), jsonDataCaptor.capture());
 
         // test message
         String message = messageCaptor.getValue();
 
-        int begin = message.indexOf("[SECURITY] [{}]");
-        int data = message.indexOf("data=\n{}");
-        int end = message.indexOf(", message=testmessage={}");
+        int headline = message.indexOf("[SECURITY] [{}]: testmessage={}");
+        int data = message.indexOf("\n{}");
 
-        assertNotEquals(-1, begin); // found
+        assertNotEquals(-1, headline); // found
         assertNotEquals(-1, data); // found
-        assertNotEquals(-1, end); // found
 
-        assertTrue(end > data); // check ordering
-        assertTrue(data > begin); // check ordering
+        assertTrue(data > headline); // check ordering
 
         // test first parameter
         String type = typeStringCaptor.getValue();
         assertEquals(SecurityLogType.POTENTIAL_INTRUSION.getTypeId(), type);
 
-        // test second parameter which contains JSON
+        // test second parameter
+        String messageParam = messageParamCaptor.getValue();
+        assertEquals("param1", messageParam);
+
+        // test third parameter which contains JSON
         String json = jsonDataCaptor.getValue();
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readTree(json); // at least valid json
@@ -182,9 +183,6 @@ class DefaultSecurityLogServiceTest {
 
         JsonNode keyAuth2 = httpHeaders.get(SANITIZED + KEY_AUTHORIZE_mixcased);
         assertEquals(SANITIZED + OBFUSCATED + VALUE_AUTHORIZE, keyAuth2.textValue());
-
-        // test third parameter
-        assertEquals("param1", messageParamCaptor.getValue());
 
         // test some fields which could be tampered as well are also sanitized:
         assertEquals(SANITIZED + "fake-remote-addr", jsonNode.get("clientIp").textValue());

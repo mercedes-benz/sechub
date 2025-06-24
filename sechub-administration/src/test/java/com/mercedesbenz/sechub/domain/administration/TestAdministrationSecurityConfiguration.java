@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.mercedesbenz.sechub.commons.core.shutdown.ApplicationShutdownHandler;
 import com.mercedesbenz.sechub.sharedkernel.security.SecHubSecurityConfiguration;
+import com.mercedesbenz.sechub.spring.security.OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider;
 
 @Configuration
 @Import(SecHubSecurityConfiguration.class)
@@ -22,6 +23,11 @@ public class TestAdministrationSecurityConfiguration {
 
     @Bean
     ApplicationShutdownHandler applicationShutdownHandler() {
+        return mock();
+    }
+
+    @Bean
+    OAuth2OpaqueTokenIntrospectionResponseCryptoAccessProvider cryptoAccessProvider() {
         return mock();
     }
 }

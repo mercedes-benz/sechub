@@ -15,7 +15,6 @@ import com.mercedesbenz.sechub.adapter.AdapterExecutionResult;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfig;
 import com.mercedesbenz.sechub.adapter.pds.PDSInfraScanConfigImpl;
 import com.mercedesbenz.sechub.adapter.pds.PDSMetaDataID;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.InfraScanNetworkLocationProvider;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetProductServerDataAdapterConfigurationStrategy;
 import com.mercedesbenz.sechub.domain.scan.NetworkTargetRegistry.NetworkTargetInfo;
@@ -33,7 +32,7 @@ public class PDSInfraScanProductExecutor extends AbstractPDSProductExecutor {
     private static final Logger LOG = LoggerFactory.getLogger(PDSInfraScanProductExecutor.class);
 
     public PDSInfraScanProductExecutor() {
-        super(ProductIdentifier.PDS_INFRASCAN, 1, ScanType.INFRA_SCAN);
+        super(ProductIdentifier.PDS_INFRASCAN, 1);
     }
 
     @Override

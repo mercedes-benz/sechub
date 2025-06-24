@@ -1,0 +1,16 @@
+{
+  "apiVersion": "1.0",
+  "codeScan": {
+    "use": ["test-sources"]
+  },
+  "data": {
+    "sources": [
+      {
+        "name": "test-sources",
+        "fileSystem": {
+          "folders": ["data/upload/src"]
+        }
+      }
+    ]
+  }
+}

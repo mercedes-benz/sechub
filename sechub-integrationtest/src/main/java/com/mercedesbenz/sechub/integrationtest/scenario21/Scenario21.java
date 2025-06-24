@@ -39,42 +39,56 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * <pre>
  * PROJECT_1 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_18_PDS_SOLUTION_GOSEC_MOCKED profile 18} assigned
+ * - has USER_1 as owner
  *
  * PROJECT_2 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_19_PDS_SOLUTION_CHECKMARX_MOCK_MODE profile 19} assigned
+ *- has USER_1 as owner
  *
  * PROJECT_3 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_20_PDS_SOLUTION_MULTI_BANDIT_MOCKED profile 20} assigned
+ *- has USER_1 as owner
  *
  * PROJECT_4 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_21_PDS_SOLUTION_ZAP_MOCKED profile 21} assigned
+ *- has USER_1 as owner
  *
  * PROJECT_5 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_22_PDS_SOLUTION_SCANCODE_SPDX_JSON_MOCKED profile 22} assigned
+ *- has USER_1 as owner
  *
  * PROJECT_6 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_23_PDS_SOLUTION_GITLEAKS_MOCKED profile 23} assigned
+ * - has USER_1 as owner
  *
  * PROJECT_7 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_24_PDS_SOLUTION_TERN_MOCKED profile 24} assigned
+ * - has USER_1 as owner
  *
  * PROJECT_8 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_25_PDS_SOLUTION_XRAY_SPDX_MOCKED profile 25} assigned
+ * - has USER_1 as owner
  *
  * PROJECT_9 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_26_PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED profile 26} assigned
+ * - has USER_1 as owner
  *
  * PROJECT_10 is automatically created
  * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED profile 27} assigned
+ * - has USER_1 as owner
  *
- * USER_1, is automatically registered, created and assigned to PROJECT_1, PROJECT_2,PROJECT_3,PROJECT_4,PROJECT_5,PROJECT_6
+ * PROJECT_11 is automatically created
+ * - has execution {@link IntegrationTestDefaultProfiles#PROFILE_33_PDS_SOLUTION_KICS_MOCKED profile 33} assigned
+ * - has USER_1 as owner
+ *
+ * USER_1, is automatically registered, created and owner of all projects inside this scenario
  * </pre>
  *
  */
 public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implements PDSTestScenario {
 
     /**
-     * User 1 is registered on startup, also owner and user of {@link #PROJECT_1}
+     * User 1 is registered on startup, also owner of {@link #PROJECT_1}
      */
     public static final TestUser USER_1 = createTestUser(Scenario21.class, "user1");
 
@@ -133,6 +147,12 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
      */
     public static final TestProject PROJECT_10 = createTestProject(Scenario21.class, "project10");
 
+    /**
+     * Project 11 is created on startup, and has {@link #USER_1} assigned. Profile
+     * used = PROFILE_33_PDS_SOLUTION_KICS_MOCKED
+     */
+    public static final TestProject PROJECT_11 = createTestProject(Scenario21.class, "project11");
+
     @Override
     protected void initializeTestData() {
         /* @formatter:off */
@@ -148,6 +168,7 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
             createProject(PROJECT_8, USER_1).
             createProject(PROJECT_9, USER_1).
             createProject(PROJECT_10, USER_1).
+            createProject(PROJECT_11, USER_1).
 
             addProjectIdsToDefaultExecutionProfile(PROFILE_18_PDS_SOLUTION_GOSEC_MOCKED, PROJECT_1).
             addProjectIdsToDefaultExecutionProfile(PROFILE_19_PDS_SOLUTION_CHECKMARX_MOCK_MODE, PROJECT_2).
@@ -159,17 +180,8 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
             addProjectIdsToDefaultExecutionProfile(PROFILE_25_PDS_SOLUTION_XRAY_SPDX_MOCKED, PROJECT_8).
             addProjectIdsToDefaultExecutionProfile(PROFILE_26_PDS_SOLUTION_XRAY_CYCLONEDX_MOCKED, PROJECT_9).
             addProjectIdsToDefaultExecutionProfile(PROFILE_27_PDS_SOLUTION_FINDSECURITYBUGS_MOCKED, PROJECT_10).
+            addProjectIdsToDefaultExecutionProfile(PROFILE_33_PDS_SOLUTION_KICS_MOCKED, PROJECT_11)
 
-            assignUserToProject(PROJECT_1, USER_1).
-            assignUserToProject(PROJECT_2, USER_1).
-            assignUserToProject(PROJECT_3, USER_1).
-            assignUserToProject(PROJECT_4, USER_1).
-            assignUserToProject(PROJECT_5, USER_1).
-            assignUserToProject(PROJECT_6, USER_1).
-            assignUserToProject(PROJECT_7, USER_1).
-            assignUserToProject(PROJECT_8, USER_1).
-            assignUserToProject(PROJECT_9, USER_1).
-            assignUserToProject(PROJECT_10, USER_1)
             ;
         /* @formatter:on */
     }
@@ -178,7 +190,7 @@ public class Scenario21 extends AbstractGrowingSecHubServerTestScenario implemen
     protected void waitForTestDataAvailable() {
         /* @formatter:off */
         initializer().
-            waitUntilProjectExists(PROJECT_10).
+            waitUntilProjectExists(PROJECT_11).
 
             waitUntilUserExists(USER_1).
 

@@ -32,8 +32,9 @@ import com.mercedesbenz.sechub.integrationtest.internal.PDSTestScenario;
  * <pre>
  * PROJECT_1
  *  - has execution {@link IntegrationTestDefaultProfiles#PROFILE_2_PDS_CODESCAN profile 2} assigned
+ *  - has USER_1 as owner
  *
- * USER_1, is automatically registered, created and assigned to PROJECT_1
+ * USER_1, is automatically registered, created and owner of PROJECT_1
  * </pre>
  *
  *
@@ -59,8 +60,7 @@ public class Scenario14 extends AbstractGrowingSecHubServerTestScenario implemen
         initializer().
             createUser(USER_1).
             createProject(PROJECT_1, USER_1).
-            addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN,PROJECT_1).
-            assignUserToProject(PROJECT_1,USER_1)
+            addProjectIdsToDefaultExecutionProfile(PROFILE_2_PDS_CODESCAN,PROJECT_1)
             ;
         /* @formatter:on */
     }

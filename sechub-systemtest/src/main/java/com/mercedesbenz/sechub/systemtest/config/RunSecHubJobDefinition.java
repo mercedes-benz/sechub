@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeScanConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubConfigurationMetaData;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubIacScanConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubInfrastructureScanConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubLicenseScanConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubSecretScanConfiguration;
@@ -23,6 +24,8 @@ public class RunSecHubJobDefinition extends AbstractDefinition {
     private Optional<SecHubCodeScanConfiguration> codeScan = Optional.empty();
     private Optional<SecHubLicenseScanConfiguration> licenseScan = Optional.empty();
     private Optional<SecHubSecretScanConfiguration> secretScan = Optional.empty();
+    private Optional<SecHubIacScanConfiguration> iacScan = Optional.empty();
+
     private Optional<SecHubConfigurationMetaData> metaData = Optional.empty();
 
     public List<UploadDefinition> getUploads() {
@@ -75,6 +78,14 @@ public class RunSecHubJobDefinition extends AbstractDefinition {
 
     public void setSecretScan(Optional<SecHubSecretScanConfiguration> secretScan) {
         this.secretScan = secretScan;
+    }
+
+    public void setIacScan(Optional<SecHubIacScanConfiguration> iacScan) {
+        this.iacScan = iacScan;
+    }
+
+    public Optional<SecHubIacScanConfiguration> getIacScan() {
+        return iacScan;
     }
 
     public Optional<SecHubConfigurationMetaData> getMetaData() {

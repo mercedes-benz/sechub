@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.commons.model;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -19,7 +18,7 @@ public class SecHubReportModel implements SecHubReportData, JSONable<SecHubRepor
     private SecHubResult result = new SecHubResult();
     private SecHubStatus status;
     private String reportVersion;
-    private Optional<SecHubReportMetaData> metaData = Optional.ofNullable(null);
+    private SecHubReportMetaData metaData = new SecHubReportMetaData();
 
     private Set<SecHubMessage> messages = new TreeSet<>();
 
@@ -93,12 +92,12 @@ public class SecHubReportModel implements SecHubReportData, JSONable<SecHubRepor
         this.reportVersion = version;
     }
 
-    public Optional<SecHubReportMetaData> getMetaData() {
+    public SecHubReportMetaData getMetaData() {
         return metaData;
     }
 
     public void setMetaData(SecHubReportMetaData metaData) {
-        this.metaData = Optional.ofNullable(metaData);
+        this.metaData = metaData;
     }
 
     @Override

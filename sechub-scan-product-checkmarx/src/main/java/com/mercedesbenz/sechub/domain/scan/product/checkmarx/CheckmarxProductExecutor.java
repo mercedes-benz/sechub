@@ -25,14 +25,14 @@ import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxConfig;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxMetaDataID;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceCallback;
 import com.mercedesbenz.sechub.adapter.checkmarx.CheckmarxResilienceConsultant;
+import com.mercedesbenz.sechub.commons.core.doc.MustBeDocumented;
 import com.mercedesbenz.sechub.commons.core.environment.SystemEnvironmentVariableSupport;
 import com.mercedesbenz.sechub.commons.core.resilience.ResilientActionExecutor;
-import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.domain.scan.SecHubAdapterOptionsBuilderStrategy;
 import com.mercedesbenz.sechub.domain.scan.product.AbstractProductExecutor;
 import com.mercedesbenz.sechub.domain.scan.product.ProductExecutorData;
 import com.mercedesbenz.sechub.domain.scan.product.ProductResult;
-import com.mercedesbenz.sechub.sharedkernel.MustBeDocumented;
+import com.mercedesbenz.sechub.sharedkernel.DocumentationScopeConstants;
 import com.mercedesbenz.sechub.sharedkernel.ProductIdentifier;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspection;
 import com.mercedesbenz.sechub.sharedkernel.metadata.MetaDataInspector;
@@ -61,11 +61,11 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     static final Logger LOG = LoggerFactory.getLogger(CheckmarxProductExecutor.class);
 
     @Value("${sechub.adapter.checkmarx.scanresultcheck.period.minutes:-1}")
-    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK_IN_MINUTES)
+    @MustBeDocumented(value = AbstractAdapterConfigBuilder.DOCUMENT_INFO_CHECK_IN_MINUTES, scope = DocumentationScopeConstants.SCOPE_CHECKMARX)
     private int scanResultCheckPeriodInMinutes;
 
     @Value("${sechub.adapter.checkmarx.scanresultcheck.timeout.minutes:-1}")
-    @MustBeDocumented(AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES)
+    @MustBeDocumented(value = AbstractAdapterConfigBuilder.DOCUMENT_INFO_TIMEOUT_IN_MINUTES, scope = DocumentationScopeConstants.SCOPE_CHECKMARX)
     private int scanResultCheckTimeOutInMinutes;
 
     @Autowired
@@ -87,7 +87,7 @@ public class CheckmarxProductExecutor extends AbstractProductExecutor {
     SecHubDirectCheckmarxResilienceConfiguration environmentBasedResilienceConfig;
 
     public CheckmarxProductExecutor() {
-        super(ProductIdentifier.CHECKMARX, 1, ScanType.CODE_SCAN);
+        super(ProductIdentifier.CHECKMARX, 1);
     }
 
     @PostConstruct

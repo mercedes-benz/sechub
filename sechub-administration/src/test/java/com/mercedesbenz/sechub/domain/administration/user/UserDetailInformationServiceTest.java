@@ -1,21 +1,20 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.administration.user;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.util.ReflectionTestUtils.*;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.domain.administration.project.Project;
+import com.mercedesbenz.sechub.domain.administration.project.ProjectRepository;
 import com.mercedesbenz.sechub.sharedkernel.logging.LogSanitizer;
 import com.mercedesbenz.sechub.sharedkernel.security.UserContextService;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
@@ -30,16 +29,22 @@ class UserDetailInformationServiceTest {
 
     private static final UserContextService userContextService = mock();
     private static final UserRepository userRepository = mock();
+    private static final ProjectRepository projectRepository = mock();
+
     private static final LogSanitizer logSanitizer = mock();
     private static final UserInputAssertion userInputAssertion = mock();
-    private static final UserDetailInformationService serviceToTest = new UserDetailInformationService(userContextService, userRepository, logSanitizer,
-            userInputAssertion);
+    private static final UserDetailInformationService serviceToTest = new UserDetailInformationService(userContextService, userRepository, projectRepository,
+            logSanitizer, userInputAssertion);
 
     @BeforeEach
     void beforeEach() {
-        reset(userContextService, userRepository, logSanitizer, userInputAssertion);
+        reset(userContextService, userRepository, projectRepository, logSanitizer, userInputAssertion);
+
         when(userContextService.getUserId()).thenReturn(USER_ID);
         when(userRepository.findOrFailUser(USER_ID)).thenReturn(USER);
+        when(projectRepository.findAllProjectIdsWhereUserIsAssigned(USER_ID)).thenReturn(PROJECTS.stream().map(Project::getId).collect(Collectors.toSet()));
+        when(projectRepository.findAllProjectIdsWhereUserIsOwner(USER_ID)).thenReturn(OWNED_PROJECTS.stream().map(Project::getId).collect(Collectors.toSet()));
+
     }
 
     @Test
@@ -56,6 +61,7 @@ class UserDetailInformationServiceTest {
         assertThat(userDetailInformation.getOwnedProjects()).isNotEmpty();
         assertThat(userDetailInformation.getOwnedProjects()).isEqualTo(getProjectIds(OWNED_PROJECTS));
         assertThat(userDetailInformation.isSuperAdmin()).isTrue();
+
         verify(userContextService).getUserId();
         verify(userRepository).findOrFailUser(USER_ID);
     }
@@ -74,6 +80,7 @@ class UserDetailInformationServiceTest {
         assertThat(userDetailInformation.getOwnedProjects()).isNotEmpty();
         assertThat(userDetailInformation.getOwnedProjects()).isEqualTo(getProjectIds(OWNED_PROJECTS));
         assertThat(userDetailInformation.isSuperAdmin()).isTrue();
+
         verify(logSanitizer).sanitize(USER_ID, 30);
         verify(userContextService).getUserId();
         verify(userInputAssertion).assertIsValidUserId(USER_ID);
@@ -97,6 +104,7 @@ class UserDetailInformationServiceTest {
         assertThat(userDetailInformation.getOwnedProjects()).isNotEmpty();
         assertThat(userDetailInformation.getOwnedProjects()).isEqualTo(getProjectIds(OWNED_PROJECTS));
         assertThat(userDetailInformation.isSuperAdmin()).isTrue();
+
         verify(logSanitizer).sanitize(EMAIL_ADDRESS, 30);
         verify(userContextService).getUserId();
         verify(userInputAssertion).assertIsValidEmailAddress(EMAIL_ADDRESS);
@@ -117,8 +125,6 @@ class UserDetailInformationServiceTest {
         User user = new User();
         user.name = UserDetailInformationServiceTest.USER_ID;
         user.emailAddress = UserDetailInformationServiceTest.EMAIL_ADDRESS;
-        user.projects = UserDetailInformationServiceTest.PROJECTS;
-        user.ownedProjects = UserDetailInformationServiceTest.OWNED_PROJECTS;
         user.superAdmin = true;
         return user;
     }

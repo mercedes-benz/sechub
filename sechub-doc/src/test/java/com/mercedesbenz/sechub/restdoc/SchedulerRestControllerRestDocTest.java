@@ -76,8 +76,9 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     private static final String VARIANT_CODES_SCAN_WITH_FULL_DATA_SECTION = "Code Scan using data section";
 
     private static final String VARIANT_WEB_SCAN_HEADERS = "Web Scan headers";
-    private static final String VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED = "Web Scan login form scripted";
+    private static final String VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED_WITH_LOGOUT = "Web Scan login form scripted";
     private static final String VARIANT_WEB_SCAN_LOGIN_BASIC = "Web Scan login basic";
+    private static final String VARIANT_WEB_SCAN_LOGIN_BASIC_WITH_VERIFICATION = "Web Scan login basic with login verification";
     private static final String VARIANT_WEB_SCAN_WITH_CLIENT_CERTIFICATE_DEFINITION = "Web scan with client certificate definition";
     private static final String VARIANT_WEB_SCAN_WITH_API_DEFINITION = "Web scan with api definition";
     private static final String VARIANT_WEB_SCAN_ANONYMOUS = "Web scan anonymous";
@@ -700,7 +701,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED)
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED_WITH_LOGOUT)
     public void restDoc_userCreatesNewJob_webScan_login_form_script_and_totp_as_second_auth_factor() throws Exception {
         /* prepare */
         String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
@@ -708,6 +709,10 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 
         UUID randomUUID = UUID.randomUUID();
         SchedulerResult mockResult = new SchedulerResult(randomUUID);
+
+        WebLogoutConfiguration logout = new WebLogoutConfiguration();
+        logout.setXpath("/html/body/div");
+        logout.setHtmlElement("div");
 
         when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
 
@@ -719,6 +724,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    					api("1.0").
 	    					webConfig().
 	    						addURI("https://localhost/mywebapp").
+	    						logout(logout).
 	    						login("https://localhost/mywebapp/login").
 	    						  totp("example-seed", 30, TOTPHashAlgorithm.HMAC_SHA1, 6, EncodingType.BASE32).
 	    						  formScripted("username1","password1").
@@ -760,7 +766,7 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
 	    		andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
 	    		andDo(defineRestService().
                         with().
-                            useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED).
+                            useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_FORM_SCRIPTED_WITH_LOGOUT).
                             tag(RestDocFactory.extractTag(apiEndpoint)).
                             requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
                             responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
@@ -790,13 +796,81 @@ public class SchedulerRestControllerRestDocTest implements TestIsNecessaryForDoc
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].selector").description("css selector").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].value").description("value").optional(),
     										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].description").description("description").optional(),
-    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].unit").description("the time unit to wait: millisecond, second, minute, hour, day.").optional()
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+FORM+"."+SCRIPT+".pages[].actions[].unit").description("the time unit to wait: millisecond, second, minute, hour, day.").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGOUT).description("Webscan '"+SecHubWebScanConfiguration.PROPERTY_LOGOUT+"' section to avoid logout for webscans of a frontend.").optional(),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGOUT+"."+WebLogoutConfiguration.PROPERTY_XPATH).description(WebLogoutConfiguration.PROPERTY_XPATH+"to locate the element to avoid on the frontend."),
+    										fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGOUT+"."+WebLogoutConfiguration.PROPERTY_HTML_ELEMENT).description("'"+WebLogoutConfiguration.PROPERTY_HTML_ELEMENT+"' to locate the element to avoid on the frontend.")
                                         ),
                                         responseFields(
                                                 fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
                                         )
 	    		    ));
 	    /* @formatter:on */
+    }
+
+    @Test
+    @UseCaseRestDoc(useCase = UseCaseUserCreatesNewJob.class, variant = VARIANT_WEB_SCAN_LOGIN_BASIC_WITH_VERIFICATION)
+    public void restDoc_userCreatesNewJob_webscan_login_basic_and_verification() throws Exception {
+        /* prepare */
+        String apiEndpoint = https(PORT_USED).buildAddJobUrl(PROJECT_ID.pathElement());
+        Class<? extends Annotation> useCase = UseCaseUserCreatesNewJob.class;
+
+        UUID randomUUID = UUID.randomUUID();
+        SchedulerResult mockResult = new SchedulerResult(randomUUID);
+        URL verificationUrl = new URL("https://localhost/mywebapp/verification");
+
+        when(mockedScheduleCreateJobService.createJob(any(), any(SecHubConfiguration.class))).thenReturn(mockResult);
+
+        /* execute + test @formatter:off */
+        this.mockMvc.perform(
+                        post(apiEndpoint, PROJECT1_ID).
+                                contentType(MediaType.APPLICATION_JSON_VALUE).
+                                content(configureSecHub().
+                                        api("1.0").
+                                        webConfig().
+                                        addURI("https://localhost/mywebapp").
+                                        login("https://localhost/mywebapp/login").
+                                        verification(verificationUrl, 204).
+                                        basic("username1","password1").
+                                        build().
+                                        toJSON())
+                ).
+                andExpect(status().isOk()).
+                andExpect(content().json("{jobId:"+randomUUID.toString()+"}")).
+                andDo(defineRestService().
+                        with().
+                        useCaseData(useCase, VARIANT_WEB_SCAN_LOGIN_BASIC_WITH_VERIFICATION).
+                        tag(RestDocFactory.extractTag(apiEndpoint)).
+                        requestSchema(TestOpenApiSchema.SCAN_JOB.getSchema()).
+                        responseSchema(TestOpenApiSchema.JOB_ID.getSchema()).
+                        and().
+                        document(
+                                requestHeaders(
+
+                                ),
+                                pathParameters(
+                                        parameterWithName(PROJECT_ID.paramName()).description("The unique id of the project id where a new sechub job shall be created")
+                                ),
+                                requestFields(
+                                        fieldWithPath(PROPERTY_API_VERSION).description("The api version, currently only 1.0 is supported"),
+                                        fieldWithPath(PROPERTY_WEB_SCAN).description("Webscan configuration block").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_URL).description("Webscan URI to scan for").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN).description("Webscan login definition").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+".url").description("Login URL").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_VERIFICATION).description("login verification definition").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_VERIFICATION+"."+WebLoginVerificationConfiguration.PROPERTY_URL).description("Verification URL").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_VERIFICATION+"."+WebLoginVerificationConfiguration.PROPERTY_RESPONSE_CODE).description("Expected HTTP status code").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC).description("basic login definition").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC+".user").description("username").optional(),
+                                        fieldWithPath(PROPERTY_WEB_SCAN+"."+SecHubWebScanConfiguration.PROPERTY_LOGIN+"."+WebLoginConfiguration.PROPERTY_BASIC+".password").description("password").optional()
+
+                                ),
+                                responseFields(
+                                        fieldWithPath(SchedulerResult.PROPERTY_JOBID).description("A unique job id")
+                                )
+                        ));
+
+        /* @formatter:on */
     }
 
     @Test

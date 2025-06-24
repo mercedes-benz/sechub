@@ -25,7 +25,10 @@ public class SerecoJobDataFalsePositiveFinder {
     SecretScanJobDataFalsePositiveStrategy jobDataSecretScanStrategy;
 
     @Autowired
-    WebScanJobDataFalsePositiveStrategy jobDataSebScanStrategy;
+    IacScanJobDataFalsePositiveStrategy jobDataIacScanStrategy;
+
+    @Autowired
+    WebScanJobDataFalsePositiveStrategy jobDataWebScanStrategy;
 
     public boolean isFound(SerecoVulnerability vulnerability, FalsePositiveMetaData metaData) {
         if (!isVulnerabilityValid(vulnerability)) {
@@ -40,8 +43,10 @@ public class SerecoJobDataFalsePositiveFinder {
             return jobDataCodeScanStrategy.isFalsePositive(vulnerability, metaData);
         case SECRET_SCAN:
             return jobDataSecretScanStrategy.isFalsePositive(vulnerability, metaData);
+        case IAC_SCAN:
+            return jobDataIacScanStrategy.isFalsePositive(vulnerability, metaData);
         case WEB_SCAN:
-            return jobDataSebScanStrategy.isFalsePositive(vulnerability, metaData);
+            return jobDataWebScanStrategy.isFalsePositive(vulnerability, metaData);
         default:
             return false;
         }

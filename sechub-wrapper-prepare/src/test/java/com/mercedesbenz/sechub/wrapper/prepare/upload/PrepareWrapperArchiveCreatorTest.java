@@ -33,15 +33,13 @@ class PrepareWrapperArchiveCreatorTest {
 
     @BeforeEach
     void beforeEach() {
-        creatorToTest = new PrepareWrapperArchiveCreator();
         fileNameSupport = mock(FileNameSupport.class);
         ArchiveSupport archiveSupport = new ArchiveSupport();
-        PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport = new PrepareWrapperSechubConfigurationSupport();
         writer = new TestFileWriter();
 
-        sechubConfigurationSupport.fileNameSupport = fileNameSupport;
-        creatorToTest.archiveSupport = archiveSupport;
-        creatorToTest.sechubConfigurationSupport = sechubConfigurationSupport;
+        PrepareWrapperSechubConfigurationSupport sechubConfigurationSupport = new PrepareWrapperSechubConfigurationSupport(fileNameSupport);
+        creatorToTest = new PrepareWrapperArchiveCreator(archiveSupport, sechubConfigurationSupport);
+
     }
 
     @Test

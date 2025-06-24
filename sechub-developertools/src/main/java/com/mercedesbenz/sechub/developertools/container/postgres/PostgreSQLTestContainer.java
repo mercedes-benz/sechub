@@ -1,74 +1,58 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.developertools.container.postgres;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+import com.mercedesbenz.sechub.developertools.container.AbstractTestContainer;
 import com.mercedesbenz.sechub.developertools.container.BashScriptContainerLaunchConfig;
-import com.mercedesbenz.sechub.developertools.container.BashScriptContainerLauncher;
 
-public class PostgreSQLTestContainer {
+public class PostgreSQLTestContainer extends AbstractTestContainer {
 
-    private int testPort;
-    private String username;
-    private String password;
-    private String databaseName;
-    private BashScriptContainerLaunchConfig config;
-    private BashScriptContainerLauncher launcher;
+    private final String databaseName;
 
     /**
      * Creates a postgres test container with wanted exposed port
      *
      * @param exposedPostgresPort port to be exposed. use -1 when you want a random
      *                            one
-     * @param imageVersion2
+     * @param userName
+     * @param password
+     * @param databaseName
      */
     public PostgreSQLTestContainer(int exposedPostgresPort, String userName, String password, String databaseName) {
-        this.testPort = exposedPostgresPort;
-        this.username = userName;
+        super(exposedPostgresPort, userName, password);
         this.databaseName = databaseName;
-        this.password = password;
-        launcher = new BashScriptContainerLauncher();
-
     }
 
+    @Override
     public void start() throws IOException {
-        File file = new File("./scripts/container/postgres/start.sh");
-        config = new BashScriptContainerLaunchConfig(file.toPath());
+        Path scriptPath = pathUtils.resolveScriptpath(PostgreSQLTestContainer.class, "postgres/start.sh");
+        if (!Files.exists(scriptPath)) {
+            throw new IllegalStateException("Does not exist:" + scriptPath);
+        }
 
+        config = new BashScriptContainerLaunchConfig(scriptPath);
         config.getEnvironment().put("POSTGRES_DB_USER", username);
         config.getEnvironment().put("POSTGRES_DB_PASSWORD", password);
         config.getEnvironment().put("POSTGRES_DB_NAME", databaseName);
-
-        config.getParameters().add("" + testPort);
+        config.getParameters().add("" + port);
 
         launcher.start(config);
     }
 
+    @Override
     public void stop() throws IOException {
-        File file = new File("./scripts/container/postgres/stop.sh");
-        config = new BashScriptContainerLaunchConfig(file.toPath());
+        Path path = pathUtils.resolveScriptpath(PostgreSQLTestContainer.class, "postgres/stop.sh");
+        config = new BashScriptContainerLaunchConfig(path);
 
-        config.getParameters().add("" + testPort);
+        config.getParameters().add("" + port);
 
         launcher.start(config);
-
-    }
-
-    public String getDatabaseName() {
-        return databaseName;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getJdbcUrl() {
-        return "jdbc:postgresql://127.0.0.1:" + testPort + "/" + databaseName + "?loggerLevel=OFF";
+        return "jdbc:postgresql://127.0.0.1:" + port + "/" + databaseName + "?loggerLevel=OFF";
     }
-
 }

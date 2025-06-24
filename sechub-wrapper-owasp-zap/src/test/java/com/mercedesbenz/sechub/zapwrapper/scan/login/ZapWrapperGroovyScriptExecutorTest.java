@@ -9,6 +9,7 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 
 import com.mercedesbenz.sechub.commons.model.SecHubWebScanConfiguration;
 import com.mercedesbenz.sechub.commons.model.login.WebLoginConfiguration;
+import com.mercedesbenz.sechub.commons.model.template.TemplateData;
 import com.mercedesbenz.sechub.zapwrapper.config.ZapScanContext;
 
 class ZapWrapperGroovyScriptExecutorTest {
@@ -85,6 +87,7 @@ class ZapWrapperGroovyScriptExecutorTest {
         assertTrue(loginResult.isLoginFailed());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void valid_script_is_executed_as_expected() throws Exception {
         /* prepare */
@@ -95,7 +98,12 @@ class ZapWrapperGroovyScriptExecutorTest {
 
         WebLoginConfiguration login = new WebLoginConfiguration();
         login.setUrl(new URL("http://example.com/login"));
+        TemplateData templateData = new TemplateData();
+        templateData.getVariables().putAll(Map.of("custom-username", "user1", "custom-password", "pwd1"));
+        login.setTemplateData(templateData);
         webScanConfig.setLogin(Optional.of(login));
+
+        when((Map<String, Object>) firefox.executeScript(anyString())).thenReturn(Collections.emptyMap());
 
         ZapScanContext zapScanContext = ZapScanContext.builder().setSecHubWebScanConfiguration(webScanConfig).setTargetUrl(webScanConfig.getUrl().toURL())
                 .build();

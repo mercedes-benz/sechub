@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.domain.authorization.AuthUser;
 import com.mercedesbenz.sechub.domain.authorization.AuthUserRepository;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerAssignsUserToProject;
+import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminOrOwnerUnassignsUserFromProject;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -34,8 +34,8 @@ public class AuthUserUpdateRolesService {
     UserInputAssertion assertion;
 
     /* @formatter:off */
-	@UseCaseAdminAssignsUserToProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer adds ROLE_USER"))
-	@UseCaseAdminUnassignsUserFromProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer removes ROLE_USER"))/* @formatter:on */
+	@UseCaseAdminOrOwnerAssignsUserToProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer adds ROLE_USER"))
+	@UseCaseAdminOrOwnerUnassignsUserFromProject(@Step(number=4,next={Step.NO_NEXT_STEP} ,name="Roles changed in auth", description="Authorization layer removes ROLE_USER"))/* @formatter:on */
     public void updateRoles(String userId, Set<String> roles) {
         assertion.assertIsValidUserId(userId);
 

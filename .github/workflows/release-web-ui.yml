@@ -59,7 +59,7 @@ jobs:
           node-version: 22
 
       - name: Docker login to ghcr.io
-        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
@@ -81,7 +81,7 @@ jobs:
       - name: Create pull request for SPDX license headers
         id: pr_spdx_headers
         if: steps.apply-headers.outputs.commits != ''
-        uses: peter-evans/create-pull-request@67ccf781d68cd99b580ae25a5c18a1cc84ffff1f
+        uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e
         with:
           branch: release-spdx-headers
           branch-suffix: short-commit-hash
@@ -104,7 +104,7 @@ jobs:
       - name: Build SecHub web-ui
         run: |
           cd sechub-web-ui && \
-          npm install && \
+          npm ci && \
           npm run generate-api-client && \
           npm run build && \
           cd dist && \
@@ -123,7 +123,7 @@ jobs:
 
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
@@ -131,7 +131,7 @@ jobs:
 
       - name: Archive Web-UI artifacts
         if: always()
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
         with:
           name: sechub-web-ui_htdocs
           path: sechub-web-ui/dist/
@@ -156,7 +156,7 @@ jobs:
           done
           # Define release data
           tag_name="v${{ inputs.web-ui-version }}-web-ui"
-          release_title="web-ui frontend Version ${{ inputs.web-ui-version }}"
+          release_title="web-ui Version ${{ inputs.web-ui-version }}"
           release_message="Changes in this Release
           - New shiny Web-UI features"
           release_footer="For more details please look at [Milestone ${{inputs.web-ui-milestone-number}}]( https://github.com/mercedes-benz/sechub/milestone/${{inputs.web-ui-milestone-number}}?closed=1)"

@@ -36,9 +36,6 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminC
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminDeleteProject;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminListsAllProjects;
 import com.mercedesbenz.sechub.sharedkernel.usecases.admin.project.UseCaseAdminShowsProjectDetails;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminAssignsUserToProject;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminChangesProjectOwner;
-import com.mercedesbenz.sechub.sharedkernel.usecases.admin.user.UseCaseAdminUnassignsUserFromProject;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
@@ -142,27 +139,45 @@ public class ProjectAdministrationRestController {
         return listProjectsService.listProjects();
     }
 
+    /*
+     * This is an outdated REST API and will be removed in future - we provide same
+     * functionality via management URL (but for owners and administrators). The old
+     * API endpoint is only kept for compatibility reasons and works only for
+     * administrators
+     */
+    @Deprecated(forRemoval = true)
     /* @formatter:off */
-	@UseCaseAdminChangesProjectOwner(@Step(number = 1, name = "Rest call", description = "Administrator does call rest API to set new project owner", needsRestDoc=true))
-    @RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(path = AdministrationAPIConstants.API_OLD_ASSIGN_OWNER_TO_PROJECT, method = RequestMethod.POST, produces= {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public void changeProjectOwner(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "userId") String userId) {
         /* @formatter:on */
         assignOwnerToProjectService.changeProjectOwner(userId, projectId);
     }
 
+    /*
+     * This is an outdated REST API and will be removed in future - we provide same
+     * functionality via management URL (but for owners and administrators). The old
+     * API endpoint is only kept for compatibility reasons and works only for
+     * administrators
+     */
     /* @formatter:off */
-	@UseCaseAdminAssignsUserToProject(@Step(number = 1, name = "Rest call", description = "Administrator does call rest API to assign user", needsRestDoc = true))
-	@RequestMapping(path = AdministrationAPIConstants.API_ASSIGN_USER_TO_PROJECT, method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Deprecated(forRemoval = true)
+	@RequestMapping(path = AdministrationAPIConstants.OLD_API_ASSIGN_USER_TO_PROJECT, method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void assignUserToProject(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "userId") String userId) {
 		/* @formatter:on */
-        assignUserToProjectService.assignUserToProject(userId, projectId);
+        assignUserToProjectService.assignUserToProjectAsUser(userId, projectId, true);
     }
 
+    /*
+     * This is an outdated REST API and will be removed in future - we provide same
+     * functionality via management URL (but for owners and administrators). The old
+     * API endpoint is only kept for compatibility reasons and works only for
+     * administrators
+     */
     /* @formatter:off */
-	@UseCaseAdminUnassignsUserFromProject(@Step(number = 1, name = "Rest call", description = "Administrator does call rest API to unassign user", needsRestDoc = true))
-	@RequestMapping(path = AdministrationAPIConstants.API_UNASSIGN_USER_TO_PROJECT, method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON_VALUE})
+    @Deprecated(forRemoval = true)
+	@RequestMapping(path = AdministrationAPIConstants.OLD_API_UNASSIGN_USER_TO_PROJECT, method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON_VALUE})
 	@ResponseStatus(HttpStatus.OK)
 	public void unassignUserFromProject(@PathVariable(name = "projectId") String projectId, @PathVariable(name = "userId") String userId) {
 		/* @formatter:on */

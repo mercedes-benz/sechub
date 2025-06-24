@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 2.1.0 modified (commit b96d539)</span>
+<span id="revnumber"> PDS 2.3.0 modified (commit 2c14cb9)</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -579,7 +579,9 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#how-pds-provides-output-and-error-stream-content-of-running-jobs-in-clustered-environments">3.1.6.1. How PDS provides output and error stream content of running jobs in clustered environments</a></li>
 <li><a href="#how-pds-handles-meta-data">3.1.6.2. How PDS handles meta data</a>
 <ul class="sectlevel5">
-<li><a href="#checkmarx-pds-solution-adapter-meta-data-handling">3.1.6.2.1. Checkmarx PDS solution adapter meta data handling</a></li>
+<li><a href="#concept-pds_solution_metadata">3.1.6.2.1. General</a></li>
+<li><a href="#pds-job-meta-data-file">3.1.6.2.2. PDS job meta data file</a></li>
+<li><a href="#checkmarx-pds-solution-adapter-meta-data-handling">3.1.6.2.3. Checkmarx PDS solution adapter meta data handling</a></li>
 </ul>
 </li>
 <li><a href="#how-pds-handles-storage-data">3.1.6.3. How PDS handles storage data</a>
@@ -703,7 +705,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#section-usecase-PDS_UC_005">4.7.6. PDS_UC_005-User fetches job status</a></li>
 <li><a href="#section-usecase-PDS_UC_006">4.7.7. PDS_UC_006-User fetches job result</a></li>
 <li><a href="#section-usecase-PDS_UC_007">4.7.8. PDS_UC_007-Admin fetches monitoring status</a></li>
-<li><a href="#section-usecase-PDS_UC_008">4.7.9. PDS_UC_008-Anymous check if server is alive</a></li>
+<li><a href="#section-usecase-PDS_UC_008">4.7.9. PDS_UC_008-Anonymous check if server is alive</a></li>
 <li><a href="#section-usecase-PDS_UC_009">4.7.10. PDS_UC_009-Admin fetches job result</a></li>
 <li><a href="#section-usecase-PDS_UC_010">4.7.11. PDS_UC_010-Admin fetches server configuration</a></li>
 <li><a href="#section-usecase-PDS_UC_011">4.7.12. PDS_UC_011-Admin fetches job output stream</a></li>
@@ -724,10 +726,18 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <li><a href="#create-job">4.8.2. Create JOB</a></li>
 <li><a href="#upload-data">4.8.3. Upload data</a></li>
 <li><a href="#mark-job-ready-to-start">4.8.4. Mark JOB ready to start</a></li>
-<li><a href="#fetch-job-status">4.8.5. Fetch JOB status</a></li>
-<li><a href="#fetch-job-result">4.8.6. Fetch JOB result</a></li>
-<li><a href="#cancel-job">4.8.7. Cancel JOB</a></li>
+<li><a href="#cancel-job">4.8.5. Cancel JOB</a></li>
+<li><a href="#fetch-job-status">4.8.6. Fetch JOB status</a></li>
+<li><a href="#fetch-job-result">4.8.7. Fetch JOB result</a></li>
 <li><a href="#get-monitoring-status">4.8.8. Get monitoring status</a></li>
+<li><a href="#check-server-alive">4.8.9. Check server alive</a></li>
+<li><a href="#fetch-server-configuration">4.8.10. Fetch server configuration</a></li>
+<li><a href="#fetch-job-output-stream">4.8.11. Fetch job output stream</a></li>
+<li><a href="#fetch-job-error-stream">4.8.12. Fetch job error stream</a></li>
+<li><a href="#section-rest-autocleanup">4.8.13. Fetch auto cleanup configuration</a></li>
+<li><a href="#update-auto-cleanup-configuration">4.8.14. Update auto cleanup configuration</a></li>
+<li><a href="#fetch-job-messages">4.8.15. Fetch job messages</a></li>
+<li><a href="#section-rest-fetch-job-meta-data">4.8.16. Fetch job meta data</a></li>
 </ul>
 </li>
 </ul>
@@ -743,10 +753,10 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <p><strong>About SecHub</strong></p>
 </div>
 <div class="paragraph">
-<p>SecHub is an acronym for <code>Security Hub</code> and is first of
-all <strong>one API to scan for different security problems</strong>. Users of SecHub do not
-care about which exact product is doing the real scan on server side, but only
-configure their wanted aim.</p>
+<p>SecHub stands for "Security Hub" and serves as an unified API
+to scan for various security issues.
+With SecHub, users don&#8217;t need to worry about the specific scanning product
+used on the server side; they simply configure their desired security goals.</p>
 </div>
 <div class="admonitionblock important">
 <table>
@@ -756,19 +766,18 @@ configure their wanted aim.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>SecHub does <strong>NOT</strong> provide a security infrastructure but does orchestrate
-different security products/tools.</p>
+<p>The SecHub server alone does <strong>NOT</strong> provide a security infrastructure but orchestrates different security products/tools.</p>
 </div>
 <div class="paragraph">
-<p>So <strong>you still need an existing security infrastructure</strong> behind SecHub !</p>
+<p>Please check our ready to use security open source tools: <strong><a href="https://github.com/mercedes-benz/sechub/tree/develop/sechub-pds-solutions">PDS solutions</a></strong> for integration with SecHub server.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>It was designed to be very easy to integrate into any existing
-build pipeline / contionus integration (CI) and helps to provide
+<p>It was designed to be very easy to integrate into existing
+build / contionus integration (CI) pipelines and helps to provide
 <strong>SecDevOps</strong>.</p>
 </div>
 <div class="admonitionblock tip">
@@ -779,7 +788,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can get more information about from <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a>  .</p>
+<p>You can get more documentation from the <a href="https://mercedes-benz.github.io/sechub">SecHub web page</a>  .</p>
 </div>
 <div class="paragraph">
 <p>The project is hosted at <a href="https://github.com/mercedes-benz/sechub" class="bare">https://github.com/mercedes-benz/sechub</a></p>
@@ -816,7 +825,7 @@ build pipeline / contionus integration (CI) and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 2.1.0 modified (commit b96d539) - Build date: 2025-02-14 15:17 (UTCZ)</code></p>
+<p>Documentation version: <code>PDS 2.3.0 modified (commit 2c14cb9) - Build date: 2025-06-20 13:10 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -1167,11 +1176,11 @@ disappears after a certain period of time.</p>
 <div class="sect3">
 <h4 id="concept-pds-auto-cleanup">3.1.4. Auto cleanup</h4>
 <div class="paragraph">
-<p>The PDS provides an auto cleanup mechanism which will remove old PDS jobs automatically.</p>
+<p>The PDS provides an auto cleanup mechanism which will remove old PDS jobs and their data automatically.</p>
 </div>
 <div class="paragraph">
 <p>The default configuration is set to 2 days.
-Administrators can change the default configuration via REST.</p>
+Administrators can change the default configuration via <a href="#section-rest-autocleanup">REST</a> .</p>
 </div>
 </div>
 <div class="sect3">
@@ -1535,13 +1544,18 @@ But when the job has finished <em>(no matter if canceled, done or failed)</em> t
 </div>
 <div class="sect4">
 <h5 id="how-pds-handles-meta-data">3.1.6.2. How PDS handles meta data</h5>
-<div id="concept-pds_solution_metadata" class="paragraph">
+<div class="sect5">
+<h6 id="concept-pds_solution_metadata">3.1.6.2.1. General</h6>
+<div class="paragraph">
 <p>When communication of PDS with the used product is stateful and is a long running operation,
-it can be useful to store such state/meta data.</p>
+it can be useful to store state information as meta data.</p>
 </div>
 <div class="paragraph">
-<p>One use case is the restart possibility for a SecHub job. Another one are debugging or
-trace information.</p>
+<p>One use case is the restart possibility for a SecHub job. Other ones are debugging or
+trace information. The meta data from PDS can be reused by SecHub.</p>
+</div>
+<div class="paragraph">
+<p>An administrator is able to fetch job meta data via <a href="#section-rest-fetch-job-meta-data">REST</a> .</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -1551,8 +1565,8 @@ trace information.</p>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>Most times PDS solutions do not need to store special meta data information: When the PDS job starts
-a CLI tool, the result or the failure will just be returned to the SecHub side.</p>
+<p>Most times PDS solutions do not need to store special meta data information: When the PDS
+job starts a CLI tool, the result or the failure will just be returned to the SecHub side.</p>
 </div>
 <div class="paragraph">
 <p>If it shall be done again (because of on failure) just a new PDS job will be started.</p>
@@ -1564,19 +1578,49 @@ a CLI tool, the result or the failure will just be returned to the SecHub side.<
 </tr>
 </table>
 </div>
+</div>
+<div class="sect5">
+<h6 id="pds-job-meta-data-file">3.1.6.2.2. PDS job meta data file</h6>
 <div class="paragraph">
-<p>A PDS launcher script has no access to the PDS database!
-If meta data shall be read or written, we just have the workspace file <code>metadata.txt</code>.
-Inside this file the product relevant meta data
-of the job run must be available, see next diagram for details:</p>
+<p><strong>Access mechanism</strong><br>
+A PDS launcher script has no access to the PDS database.
+If meta data shall be read or written, we have a dedicated workspace file to write into.
+The location of the file is available with environment variable <code>PDS_JOB_METADATA_FILE</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Exchanging meta data with SecHub</strong><br>
+The PDS executors inside SecHub are able to access meta data (e.g. for restart handling).
+See next diagram for details:</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="images/diagram_pds_metadata.png" alt="Diagram" width="1824" height="979">
 </div>
 </div>
+<div class="paragraph">
+<p>The meta data file must have the same meta data syntax as in SecHub product results:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">key1</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">value1</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">key2</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">value2</span><span class="delimiter">&quot;</span></span> 
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Inside the <code>metaData</code> element we can provide any kind of key value combination.</td>
+</tr>
+</table>
+</div>
+</div>
 <div class="sect5">
-<h6 id="checkmarx-pds-solution-adapter-meta-data-handling">3.1.6.2.1. Checkmarx PDS solution adapter meta data handling</h6>
+<h6 id="checkmarx-pds-solution-adapter-meta-data-handling">3.1.6.2.3. Checkmarx PDS solution adapter meta data handling</h6>
 <div class="paragraph">
 <p>The PDS solution for <code>Checkmarx</code> does reuse the already existing <code>CheckmarxAdapter</code> class.
 A <code>sechub-wrapper-checkmarx</code> gradle project was introduced which contains a simple spring boot
@@ -1634,7 +1678,7 @@ the archive <a href="#pds-explanation-data-structure">data structure</a>.</p>
 <h6 id="pds-explanation-data-structure">3.1.6.3.3. Data structure inside TAR and ZIP files</h6>
 <div id="data-structure-tar-and-zip-files" class="paragraph">
 <p>The data structure inside <code>TAR</code> and <code>ZIP</code> files contains
-data configuration parts inside <code><em>data</em></code> folder.</p>
+data configuration parts inside <code>__data__</code> folder.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1653,22 +1697,8 @@ SecHub configuration, we already provided a <code>fileSystem</code> element insi
 backward compatibility with existing SecHub configuration files.</p>
 </div>
 <div class="paragraph">
-<p>So this is the reason, why <a href="#sechub-config-data-section">data</a> is contained inside <code><em>_data_</em></code>
+<p>So this is the reason, why <a href="#sechub-config-data-section">data</a> is contained inside <code>__data__</code>
 folder and there is still content inside the root folder as well.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-warning" title="Warning"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>Only source code scan configuration files may be located inside the root folder!</p>
 </div>
 </td>
 </tr>
@@ -1827,6 +1857,72 @@ __data__/unique-name-2/${content} <i class="conum" data-value="3"></i><b>(3)</b>
                      subfolder2/
                         example-content.img</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p><strong>How to support custom archive uploads by Web UI?</strong></p>
+</div>
+<div class="paragraph">
+<p>Every scan configuration which relies on file data - except the <code>codeScan</code> legacy way - needs at least one
+reference to sources or binaries inside the data section.</p>
+</div>
+<div class="paragraph">
+<p>With the <code>Web UI</code> users shall be able to upload custom source and/or binary archives and start a job directly.
+But most users just want to create a simple archive with their sources (or binaries) inside and do not want
+to bother with data sections. While creating a new SecHub job, the <code>Web UI</code> generates a temporary SecHub
+configuration file which must reference files related to the root folder of the custom user archives.</p>
+</div>
+<div class="paragraph">
+<p>To provide this in a convenient but still compatible way, following unique reference names/ids were introduced:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>__sourcecode_archive_root__</code> <br>
+<em>(for source code files at root level in a ZIP)</em></p>
+</li>
+<li>
+<p><code>__binaries_archive_root__</code><br>
+<em>(for binary files at root level in a TAR)</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>They can be used like any other reference name within a configuration.
+But they <strong>cannot</strong> be defined in a data section of a configuration, since their target, the root folder of the
+respective archive, is always present anyway. The <code>Web UI</code> can now generate a temporary config file by using the
+reserved reference names.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If a data section of a configuration contains a reserved reference name the configuration is invalid for the server.
+If the custom archive contains folders directly below <code>__data__</code> having the reserved name as folder name, they will be
+ignored at extraction time.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The SecHub go client will always produce archives with <code>__data__</code> inside the root folder.
+The reserved reference names for archive root locations are only a workaround for custom created
+archives where no <code>__data__</code> folder exists.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect5">
@@ -2453,7 +2549,7 @@ Please look for more information at the following tables.</p>
 </tr>
 </table>
 </div>
-<table id="section-gen-configuration-scope-Encryption" class="tableblock frame-all grid-all stretch">
+<table id="section-gen-configuration-scope-encryption" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Scope 'Encryption'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2480,8 +2576,55 @@ Please look for more information at the following tables.</p>
 </tr>
 </tbody>
 </table>
+<table id="section-gen-configuration-scope-job" class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Scope 'Job'</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Key or variable name</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancelrequest.minutes.before.treated.orphaned</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The time in minutes after which a cancel job request is treated as orphaned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.cachetime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PDS job stream data caching time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.check.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of tries to check if a stream data refresh has been handled (stream data has been updated)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.check.timetowait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Defines time in milliseconds for PDS job stream data update checks after job has been marked as necessary to have stream data refresh</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.mark.retries</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of retries to mark job stream data refresh</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.upload.maximum.bytes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">52428800</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define the maximum amount of bytes accepted for uploading files. The default when not set is 52428800 (50 MiB)</p></td>
+</tr>
+</tbody>
+</table>
 <table id="section-gen-configuration-scope-credentials" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Scope 'credentials'</caption>
+<caption class="title">Table 3. Scope 'credentials'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2513,7 +2656,7 @@ Please look for more information at the following tables.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-credentials." class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Scope 'credentials.'</caption>
+<caption class="title">Table 4. Scope 'credentials.'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2535,7 +2678,7 @@ Please look for more information at the following tables.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-development" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Scope 'development'</caption>
+<caption class="title">Table 5. Scope 'development'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2562,7 +2705,7 @@ Please look for more information at the following tables.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-execution" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Scope 'execution'</caption>
+<caption class="title">Table 6. Scope 'execution'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2629,7 +2772,7 @@ Please look for more information at the following tables.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-migration" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Scope 'migration'</caption>
+<caption class="title">Table 7. Scope 'migration'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2651,7 +2794,7 @@ Please look for more information at the following tables.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-monitoring" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Scope 'monitoring'</caption>
+<caption class="title">Table 8. Scope 'monitoring'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2672,7 +2815,7 @@ Please look for more information at the following tables.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.heartbeat.verbose.logging.enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Configure if heartbeat verbose logging is enabled</p></td>
 </tr>
 <tr>
@@ -2687,84 +2830,8 @@ Please look for more information at the following tables.</p>
 </tr>
 </tbody>
 </table>
-<table id="section-gen-configuration-scope-pdscancel" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Scope 'pdscancel'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.cancelrequest.minutes.before.treated.orphaned</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">60</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in minutes after which a cancel job request is treated as orphaned.</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-pdsget" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Scope 'pdsget'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.check.retries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of tries to check if a stream data refresh has been handled (stream data has been updated)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.check.timetowait</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Defines time in milliseconds for PDS job stream data update checks after job has been marked as necessary to have stream data refresh</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.mark.retries</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Maximum amount of retries to mark job stream data refresh</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-pdsstream" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Scope 'pdsstream'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.config.job.stream.cachetime</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2000</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">PDS job stream data caching time in milliseconds. This defines the maximum period of time between an update time stamp and the request timestamp in database where current data is handled as still valid</p></td>
-</tr>
-</tbody>
-</table>
 <table id="section-gen-configuration-scope-scheduler" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Scope 'scheduler'</caption>
+<caption class="title">Table 9. Scope 'scheduler'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2796,7 +2863,7 @@ Please look for more information at the following tables.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-security" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Scope 'security'</caption>
+<caption class="title">Table 10. Scope 'security'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2818,7 +2885,7 @@ Please look for more information at the following tables.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-startup" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Scope 'startup'</caption>
+<caption class="title">Table 11. Scope 'startup'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2845,7 +2912,7 @@ Please look for more information at the following tables.</p>
 </tbody>
 </table>
 <table id="section-gen-configuration-scope-storage" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Scope 'storage'</caption>
+<caption class="title">Table 12. Scope 'storage'</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2928,28 +2995,6 @@ Please look for more information at the following tables.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.sharedvolume.upload.dir</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the root path for shared volume uploads - e.g. for sourcecode.zip etc. When using keyword <strong>temp</strong> as path, this will create a temporary directory (for testing).</p></td>
-</tr>
-</tbody>
-</table>
-<table id="section-gen-configuration-scope-upload" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Scope 'upload'</caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Key or variable name</th>
-<th class="tableblock halign-left valign-top">Default</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pds.upload.maximum.bytes</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">52428800</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Define the maximum amount of bytes accepted for uploading files. The default when not set is 52428800 (50 MiB)</p></td>
 </tr>
 </tbody>
 </table>
@@ -3159,22 +3204,36 @@ workspace location can be defined</p>
 <div class="sect2">
 <h3 id="section-pds-server-config-file">4.5. Server configuration file</h3>
 <div class="paragraph">
-<p>PDS reads configuration JSON file on startup.</p>
+<p>The PDS reads a configuration JSON file on startup to configure the product delegation server
+and the provided products.</p>
 </div>
 <div class="paragraph">
-<p><strong>Location</strong></p>
+<p><strong>Location</strong><br></p>
 </div>
+<div class="paragraph">
+<p>Per default the file is <code>pds-config.json</code> in the folder were the PDS instance has been started.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
 <div class="paragraph">
 <p>With <code>-Dpds.config.file=&#8230;&#8203;</code> or using environment variable <code>PDS_CONFIG_FILE</code>
-its is possible to set config file path ( when not defined fallback is <code>./pds-config.json</code>)</p>
+its is possible to set a custom location file path.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>product-id</code><br>
-Must be <strong>unique</strong> for this product. Allowed characters are [a-zA-Z0-9_]. Maximum length:30. If it&#8217;s not inside SERECO listed it must provide general sereco report format from #283.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>In our container images, the path is defined as <code>/pds/pds-config.json</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Description</strong><br>
+Here an example configuration with explanations:</p>
 </div>
 <div id="section-pds-server-example-config-file" class="listingblock">
 <div class="content">
@@ -3262,7 +3321,16 @@ Allowed characters are [a-zA-Z0-9_]. Maximum length:30</td>
 <p>codeScan</p>
 </li>
 <li>
+<p>iacScan</p>
+</li>
+<li>
 <p>infraScan</p>
+</li>
+<li>
+<p>licenseScan</p>
+</li>
+<li>
+<p>secretScan</p>
 </li>
 <li>
 <p>webScan</p>
@@ -3465,7 +3533,7 @@ Mandatory parts are always present, optional ones can be empty.</p>
 <p>We have following standard parameters:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. PDS executor configuration parameters</caption>
+<caption class="title">Table 13. PDS executor configuration parameters</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4114,7 +4182,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#section-usecase-PDS_UC_008">PDS_UC_008-Anymous check if server is alive</a></p>
+<p><a href="#section-usecase-PDS_UC_008">PDS_UC_008-Anonymous check if server is alive</a></p>
 </li>
 </ul>
 </div>
@@ -4246,14 +4314,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User creates job. If configuration is not valid an error will be thrown</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">job will be created, serverId will be used to store new job</p></td>
 </tr>
@@ -4289,14 +4357,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User uploads a file to workspace of given job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">uploaded file is stored by storage service</p></td>
 </tr>
@@ -4332,7 +4400,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User marks job as ready to start.</p></td>
 </tr>
@@ -4368,23 +4436,16 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User cancels a job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">trigger change to execution service and marks job status as cancel requested</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">marks job status as cancel requested</p></td>
 </tr>
 </tbody>
 </table>
@@ -4418,14 +4479,14 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User fetches status of a job.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">returns job status</p></td>
 </tr>
@@ -4461,16 +4522,16 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User wants to get result of a job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job result from database. When job is not already done a failure will be shown</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job result from database. When job is not done, a NOT_ACCEPTABLE will be returned instead</p></td>
 </tr>
 </tbody>
 </table>
@@ -4518,7 +4579,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">admin fetches monitoring status by REST API</p></td>
 </tr>
@@ -4533,7 +4594,7 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 </table>
 </div>
 <div class="sect3">
-<h4 id="section-usecase-PDS_UC_008">4.7.9. PDS_UC_008-Anymous check if server is alive</h4>
+<h4 id="section-usecase-PDS_UC_008">4.7.9. PDS_UC_008-Anonymous check if server is alive</h4>
 <div class="paragraph">
 <p>Anonymous access to check if server is alive or not</p>
 </div>
@@ -4571,12 +4632,8 @@ have to use exact same S3 bucket and provide PDS servers with correct S3 credent
 <div class="sect3">
 <h4 id="section-usecase-PDS_UC_009">4.7.10. PDS_UC_009-Admin fetches job result</h4>
 <div class="paragraph">
-<p>Same as when a user is fetching a job result. But will return results in any kind of state.
-If failure happens an admin is able to load the error output which is contained
-instead of result - but it&#8217;s no JSON!</p>
-</div>
-<div class="paragraph">
-<p>So only administrator is able to get insightsto processes and system logs, but no normal user.</p>
+<p>Similar to the usecase when a user is fetching a job result.
+But will return current job result in any kind of state without throwning an error.</p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -4602,16 +4659,16 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches result or failure text for job from db.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Result data will be returned - can be empty or even a failure text from job execution.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result data will be returned - will be empty if job is not done</p></td>
 </tr>
 </tbody>
 </table>
@@ -4619,7 +4676,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <div class="sect3">
 <h4 id="section-usecase-PDS_UC_010">4.7.11. PDS_UC_010-Admin fetches server configuration</h4>
 <div class="paragraph">
-<p>An administrator fetches server configuration.</p>
+<p>An administrator fetches the server configuration.</p>
 </div>
 <div class="paragraph">
 <p><strong>Steps</strong></p>
@@ -4645,7 +4702,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches server configuration of PDS server(s).</p></td>
 </tr>
@@ -4681,14 +4738,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches output stream text.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Output stream content of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -4738,14 +4795,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches error stream text.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Error stream content of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -4795,7 +4852,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator fetches auto cleanup configuration</p></td>
 </tr>
@@ -4838,7 +4895,7 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator changes auto cleanup configuration</p></td>
 </tr>
@@ -4931,14 +4988,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User wants to get messages of job</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN, USER</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a>, <a href="#section-role2usecase-list-USER">USER</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Fetches job messages from database. When job is not already done a failure will be shown</p></td>
 </tr>
@@ -4974,14 +5031,14 @@ instead of result - but it&#8217;s no JSON!</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">rest call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">an admin fetches meta data text or null.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">service call</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SUPERADMIN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#section-role2usecase-list-SUPERADMIN">SUPERADMIN</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Meta data of PDS job shall be returned. If the data is available in database and not outdated it will be returned directly. Otherwise job is marked for refresh and service will wait until stream data has been updated by executing machine. After succesful upate the new result will be returned.</p></td>
 </tr>
@@ -5172,6 +5229,9 @@ instead of result - but it&#8217;s no JSON!</p>
 </div>
 <div class="sect3">
 <h4 id="create-job">4.8.2. Create JOB</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_001">Usecase PDS_UC_001-User creates job </a></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/create [POST]</code></pre>
@@ -5231,6 +5291,9 @@ Only <code>[a-z\.0-9]</code> is allowed. <code>.</code> will be converted always
 </div>
 <div class="sect3">
 <h4 id="upload-data">4.8.3. Upload data</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_002">Usecase PDS_UC_002-User uploads job data</a></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/upload [POST]</code></pre>
@@ -5243,6 +5306,9 @@ This avoids file system freezes&#8230;&#8203;</p>
 </div>
 <div class="sect3">
 <h4 id="mark-job-ready-to-start">4.8.4. Mark JOB ready to start</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_003">Usecase PDS_UC_003-User marks job ready to start</a></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/mark-ready-to-start [PUT]</code></pre>
@@ -5250,23 +5316,10 @@ This avoids file system freezes&#8230;&#8203;</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="fetch-job-status">4.8.5. Fetch JOB status</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/status [GET]</code></pre>
+<h4 id="cancel-job">4.8.5. Cancel JOB</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_004">Usecase PDS_UC_004-User cancels job</a></p>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="fetch-job-result">4.8.6. Fetch JOB result</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/result [GET]</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="cancel-job">4.8.7. Cancel JOB</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/cancel [PUT]</code></pre>
@@ -5279,14 +5332,49 @@ This avoids file system freezes&#8230;&#8203;</p>
 <i class="fa icon-tip" title="Tip"></i>
 </td>
 <td class="content">
-This will the process hard!
+This will stop the process hard!
 </td>
 </tr>
 </table>
 </div>
 </div>
 <div class="sect3">
+<h4 id="fetch-job-status">4.8.6. Fetch JOB status</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_005">Usecase PDS_UC_005-User fetches job status</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/status [GET]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fetch-job-result">4.8.7. Fetch JOB result</h4>
+<div class="paragraph">
+<p><strong>As user</strong><br>
+See also <a href="#section-usecase-PDS_UC_006">Usecase PDS_UC_006-User fetches job result</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/${jobUUID}/result [GET]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>As administrator</strong><br>
+See also <a href="#section-usecase-PDS_UC_009">Usecase PDS_UC_009-Admin fetches job result</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}api/admin/job/{jobUUID}/result [GET]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="get-monitoring-status">4.8.8. Get monitoring status</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_007">Usecase PDS_UC_007-Admin fetches monitoring status</a></p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/admin/monitoring/status [GET]</code></pre>
@@ -5342,13 +5430,240 @@ This will the process hard!
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="check-server-alive">4.8.9. Check server alive</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_008">Usecase PDS_PDS_UC_008-Anonymous check if server is alive</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/anonymous/check/alive [GET,HEAD]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fetch-server-configuration">4.8.10. Fetch server configuration</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_010">Usecase PDS_UC_010-Admin fetches server configuration</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/admin/config/server [GET]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here an example output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">apiVersion</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">serverId</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">example-server</span><span class="delimiter">&quot;</span></span>,
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">products</span><span class="delimiter">&quot;</span></span> : [ {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">id</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">PDS_TESTPRODUCT_ID</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">scanType</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">codeScan</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">path</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">./testproduct-codescan.sh</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">envWhitelist</span><span class="delimiter">&quot;</span></span> : [ <span class="string"><span class="delimiter">&quot;</span><span class="content">SPECIAL_ENV_NAME</span><span class="delimiter">&quot;</span></span> ],
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">A description of the product</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">parameters</span><span class="delimiter">&quot;</span></span> : {
+      <span class="key"><span class="delimiter">&quot;</span><span class="content">mandatory</span><span class="delimiter">&quot;</span></span> : [ {
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">key</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">testproduct.mandatory_parameter</span><span class="delimiter">&quot;</span></span>,
+        <span class="key"><span class="delimiter">&quot;</span><span class="content">description</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">A description for this mandatory parameter</span><span class="delimiter">&quot;</span></span>
+      } ]
+    }
+  } ]
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You find more details about PDS server configuration <a href="#section-pds-server-config-file">here</a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fetch-job-output-stream">4.8.11. Fetch job output stream</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_011">Usecase PDS_UC_011-Admin fetches job output stream</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}api/admin/job/{jobUUID}/stream/output [GET]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fetch-job-error-stream">4.8.12. Fetch job error stream</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_012">Usecase PDS_UC_012-Admin fetches job error stream</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}api/admin/job/{jobUUID}/stream/error [GET]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-rest-autocleanup">4.8.13. Fetch auto cleanup configuration</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_013">Usecase PDS_UC_013-Admin fetches auto cleanup configuration</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/admin/config/autoclean [GET]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example result:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">cleanupTime</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">unit</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">DAY</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">amount</span><span class="delimiter">&quot;</span></span> : <span class="integer">2</span>
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">version</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The concept for auto cleanup is defined <a href="#concept-pds-auto-cleanup">here</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="update-auto-cleanup-configuration">4.8.14. Update auto cleanup configuration</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_014">Usecase PDS_UC_014-Admin updates auto cleanup configuration</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/admin/config/autoclean [PUT]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example body data:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">cleanupTime</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">unit</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">DAY</span><span class="delimiter">&quot;</span></span>, <i class="conum" data-value="1"></i><b>(1)</b>
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">amount</span><span class="delimiter">&quot;</span></span> : <span class="integer">3</span>  <i class="conum" data-value="2"></i><b>(2)</b>
+  },
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">version</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">1.0</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Defines the used time unit. Can be a either <code>MILLISECOND</code>, <code>SECOND</code>, <code>MINUTE</code>, <code>HOUR</code> or <code>DAY</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Amount of time (for given unit) - in the example above we have defined 3 days</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The concept for auto cleanup is defined <a href="#concept-pds-auto-cleanup">here</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="fetch-job-messages">4.8.15. Fetch job messages</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_016">Usecase PDS_UC_016-User fetches job messages</a></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/job/{jobUUID}/messages [GET]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example result:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">secHubMessages</span><span class="delimiter">&quot;</span></span> : [ {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">INFO</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">text</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">some information - e.g. from a PDS test product launcher script</span><span class="delimiter">&quot;</span></span>
+  } ],
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">type</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">sechubMessagesList</span><span class="delimiter">&quot;</span></span>
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="section-rest-fetch-job-meta-data">4.8.16. Fetch job meta data</h4>
+<div class="paragraph">
+<p>See also <a href="#section-usecase-PDS_UC_017">Usecase PDS_UC_017-Admin fetches job meta data</a></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The concept of PDS job meta data handling is described <a href="#concept-pds_solution_metadata">here</a> .
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="bash">https://${baseURL}/api/admin/job/{jobUUID}/metadata [GET]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example result:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{
+  <span class="key"><span class="delimiter">&quot;</span><span class="content">metaData</span><span class="delimiter">&quot;</span></span> : {
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">key1</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">value1</span><span class="delimiter">&quot;</span></span>,
+    <span class="key"><span class="delimiter">&quot;</span><span class="content">key2</span><span class="delimiter">&quot;</span></span> : <span class="string"><span class="delimiter">&quot;</span><span class="content">value2</span><span class="delimiter">&quot;</span></span> 
+  }
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 2.1.0 modified (commit b96d539)<br>
+ PDS 2.3.0 modified (commit 2c14cb9)<br>
 </div>
 </div>
 </body>

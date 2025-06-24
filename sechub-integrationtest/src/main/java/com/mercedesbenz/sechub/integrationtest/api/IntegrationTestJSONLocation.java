@@ -47,6 +47,8 @@ public enum IntegrationTestJSONLocation {
 
     CLIENT_JSON_SECRET_SCAN_YELLOW_ZERO_WAIT("sechub-integrationtest-secretscanconfig.json"),
 
+    CLIENT_JSON_SECRET_SCAN_YELLOW_ZERO_WAIT_WITH_SOURCECODE_ARCHIVE_ROOT_REFERENCE("sechub-integrationtest-secretscanconfig_sourcecode_archive_root.json"),
+
     CLIENT_JSON_REMOTE_SCAN_CONFIGURATION("sechub-integrationtest-remote-scan-configuration.json");
 
     private String path;

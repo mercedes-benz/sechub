@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: MIT
+name: SecHub eclipse plugin Java build
+
+on:
+  push:
+    branches:
+      - 'develop'
+      - 'hotfix'
+      - 'main'
+      - 'master'
+    paths:
+      - '.github/workflows/sechub-plugin-eclipse-gradle.yml'
+      - 'ide-plugins/eclipse/**'
+  pull_request:
+    paths:
+      - '.github/workflows/sechub-plugin-eclipse-gradle.yml'
+      - 'ide-plugins/eclipse/**'
+  # enable manual triggering of workflow
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ide-plugins/eclipse
+    steps:
+    - uses: actions/checkout@v4.2.2
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        distribution: adopt
+        java-version: 17
+    - name: Gradle clean build
+      run: ./gradlew clean build
+    - name: "Archive test results"
+      if: always()
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+      with:
+          name: test-results
+          path: |
+            ide-plugins/eclipse/sechub-eclipse-plugin/build/reports
+            retention-days: 14

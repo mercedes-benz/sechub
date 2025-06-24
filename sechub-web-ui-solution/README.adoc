@@ -2,8 +2,7 @@
 
 == Web UI Image
 
-The files to create the Web UI container image.
-
+The files to create the Web UI container image. +
 The Web UI is a Vue.js SPA build with nuxt.js.
 
 === Local Web-UI Frontend and SecHub Server SetUp
@@ -14,28 +13,20 @@ remove the root `redirect / to login page` if you do not have login enabled in t
 
 2. Adjust the docker/nginx/config.json to your needs: +
 +
-If you do not have login enabled, you can set basic auth for the Web-UI in the config.json file. +
+If you do not have login enabled, you can set basic auth for the Web-UI in the config.json file. in docker/nginx/ +
+The values can be changed at runtime +
+See table 1 for the .ENV variables that can be set in the config.json file. +
 +
-.ENV that can be set in the config.json file
-|===
-|Name |Default Value |Description
-
-|HOST
-|http://localhost
-|The URL of the Web-UI (used as API Endpoint to prevent CORS issues)
-
-|LOCAL_DEV
-|false
-|Sets Basic Auth for the Web-UI (only for development, username and password must be set)
-
-|USERNAME
-|''
-|Basic Auth username (only for development)
-
-|PASSWORD
-|''
-|Basic Auth password (only for development)
-|===
+Example config.json file: +
++
+[source,json]
+----
+{
+  "SECHUB_USER_SUPPORT_EMAIL": "myusersupport@example.org",
+  "SECHUB_USER_SUPPORT_WEBSITE": "https://mycustomwebsite.example.org",
+  "SECHUB_FAQ_LINK": "https://mycustomwebsite.example.org/faq"
+}
+----
 
 3. Start the sechub server docker container in sechub/sechub-solution +
 +
@@ -52,3 +43,40 @@ If you do not have login enabled, you can set basic auth for the Web-UI in the c
 The command will run the Web UI on localhost as docker container, with nginx as reverse proxy.
 
 5. The webui is available at https://localhost +
+
+.ENV that can be set in the config.json file
+|===
+|Name |Default Value |Description
+
+|BASIC_AUTH_DEV
+|false
+|Sets Basic Auth for the Web-UI (only for development, username and password must be set)
+
+|USERNAME
+|undefined
+|Basic Auth username (only for development)
+
+|PASSWORD
+|undefined
+|Basic Auth password (only for development)
+
+|SECHUB_USER_SUPPORT_EMAIL
+|example@example.org
+|Support email address for your service shown in the Web UI
+
+|SECHUB_USER_SUPPORT_WEBSITE
+|https://sechub.example.org
+|Support website for your service shown in the Web UI
+
+|SECHUB_FAQ_LINK
+|https://sechub.example.org/faq
+|Link to your custom FAQ page
+
+|SECHUB_UPLOAD_SOURCES_MAXIMUM_BYTES
+|-1
+|the maximum size of the source code to be uploaded in bytes. -1 means no limit.
+
+|SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES
+|-1
+|the maximum size of the binaries to be uploaded in bytes. -1 means no limit.
+|===

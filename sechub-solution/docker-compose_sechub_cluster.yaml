@@ -13,6 +13,7 @@ services:
         - GO=${GO}
         - TAG=${TAG}
         - BRANCH=${BRANCH}
+        - SECHUB_SECURITY_ENCRYPTION_SECRET_KEY
       context: docker/
       dockerfile: SecHub-Debian.dockerfile
     env_file:

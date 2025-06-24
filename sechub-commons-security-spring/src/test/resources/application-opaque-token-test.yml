@@ -3,9 +3,7 @@
 sechub:
   security:
     server:
-      modes:
-        - oauth2
-        - classic
+      modes: oauth2, classic
       oauth2:
         mode: opaque-token
         opaque-token:
@@ -14,5 +12,9 @@ sechub:
           client-secret: example-client-secret
           default-token-expires-in: 1h
           max-cache-duration: 24h
+          pre-cache-duration: 10s
+          in-memory-cache-clear-period: 20s
+          cluster-cache-clear-period: 30m
+          
     encryption:
       secret-key: test-test-test-test-test-test-32

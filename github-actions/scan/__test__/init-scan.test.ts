@@ -3,9 +3,10 @@
 import {initReportFormats, initSecHubJson} from '../src/init-scan';
 
 jest.mock('./../src/configuration-builder');
-import {SecHubConfigurationModelBuilderData, createSecHubConfigJsonFile} from '../src/configuration-builder';
+import {SecHubConfigurationModelBuilderData, createSecHubConfigJsonString} from '../src/configuration-builder';
 
 import * as core from '@actions/core';
+import * as fs from 'fs';
 
 jest.mock('@actions/core');
 
@@ -23,35 +24,46 @@ beforeEach(() => {
 });
 
 describe('initSecHubJson', function () {
+    const testTargetConfigFilePath = '__test__/test-resources/generated-test-config.json';
+    afterEach(() => {
+        if (fs.existsSync(testTargetConfigFilePath)) {
+            fs.unlinkSync(testTargetConfigFilePath);
+        }
+    });
+
     it('throws error if configPath is set, but file does not exist', function () {
         /* prepare */
-        const configPath = 'not-existing-json.json';
+        const customConfigPath = 'not-existing-json.json';
         const builderData = new SecHubConfigurationModelBuilderData();
 
         /* execute + test */
-        expect(() => initSecHubJson('somewhere/runtime/sechub.json', configPath, builderData)).toThrow(Error);
+        expect(() => initSecHubJson('somewhere/runtime/sechub.json', customConfigPath, builderData)).toThrow(Error);
     });
 
-    it('returns parameter if configPath is set and file exists', function () {
+    it('target config file is created - when custom config file exists', function () {
         /* prepare */
-        const configPath = '__test__/test-resources/test-config.json';
+        const customConfigPath = '__test__/test-resources/test-config.json';
+        
         const builderData = new SecHubConfigurationModelBuilderData();
 
         /* execute */
-        const parameter = initSecHubJson('somewhere/runtime/sechub.json', configPath, builderData);
+        initSecHubJson(testTargetConfigFilePath, customConfigPath, builderData);
 
         /* test */
-        expect(parameter).toContain(configPath);
+        expect(fs.existsSync(testTargetConfigFilePath)).toBe(true);
     });
 
-    it('creates sechub.json if configPath is not set', function () {
-        /* execute */
+    it('target config file is created - when custom config path is empty', function () {
+        /* prepare */
         const builderData = new SecHubConfigurationModelBuilderData();
-        const parameter = initSecHubJson('somewhere/runtime/sechub.json','', builderData);
+        (createSecHubConfigJsonString as jest.Mock).mockReturnValue('{}');
+
+        /* execute */
+        initSecHubJson(testTargetConfigFilePath,'', builderData);
 
         /* test */
-        expect(parameter).toEqual('somewhere/runtime/sechub.json');
-        expect(createSecHubConfigJsonFile).toHaveBeenCalledTimes(1);
+        expect(fs.existsSync(testTargetConfigFilePath)).toBe(true);
+        expect(createSecHubConfigJsonString).toHaveBeenCalledTimes(1);
     });
 });
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 === SecHub configuration JSON
 
-A `{sechub}` configuration  must be valid `JSON` and is defined
+A `{sechub}` job configuration file must be valid `JSON` and is defined
 at caller side.
 
 It is used by the client and also by rest calls to define {sechub}
@@ -55,7 +55,7 @@ You should call {sechub} inside the repository's root folder - this is the stand
 
 There are two ways to define source code uploads for the {sechub} client:
 
-###### Using `data` section
+###### Using data section
 
 Define the files and folders in a `data` section and reference it inside the `codeScan`. +
 This becomes useful e.g. if the same sources are used by different scan types.
@@ -81,7 +81,7 @@ include::sechub_config_example1_sourcescan_data_section.json[]
     In the {sechub} client documentation you will find a list of the default file endings. +
     Here we also add ".cplusplus" and ".py9" as additional accepted source file extensions.
 
-###### `fileSystem` inside the `codeScan` section (deprecated)
+###### fileSystem inside the codeScan section (deprecated)
 
 Define a `fileSystem` child entry inside the `codeScan` section for code scanning. +
 
@@ -95,6 +95,89 @@ Example `sechub.json` using `fileSystem` inside the `codeScan` section (results 
 ----
 include::sechub_config_example1_sourcescan_filesystem.json[]
 ----
+==== IaC scan
+`iacScan` defines "Infrastructure as Code" scanning.
+
+[NOTE]
+====
+The difference to `infraScan` is, that *we do NOT penetrate* here the 
+infrastructure *at runtime but only inspect* the infrastructure definitions in
+*code* (e.g. kubernetes files or terraform scripts).
+
+`iacScan` is very similar to `codeScan`, but specific for infrastructure scanning.
+====
+
+[WARNING]
+====
+Only source code data sections are allowed for `iacScan`.
+====
+
+[[sechub-config-example-iacscan-sources]]
+===== Example IaC scan
+[source, json, title="IaC scan configuration"]
+----
+include::sechub_config_example26_iacscan.json[]
+----
+<1> name of the source <<sechub-config-data-section,data>> configuration - here we name it "iac"
+<2> The source folders which shall be inspected by IaC scanning
+<3> IaC scan uses the referenced <<sechub-config-data-section,data>> configuration "iac"
+
+==== Infrastructure scan
+`infraScan` (optional) defines the infrastructure scan settings.
+
+[CAUTION]
+====
+This setup is used to penetrate an existing IT infrastructure at *runtime*. 
+Those scans try to detect and exploit CVEs - very similar to a real attacker.
+Executing such a scan can lead to DoS (denial of service), corrupted data, hanging
+systems and more.
+
+This means *infrastructure scans* shall only be executed on appropriate test environments
+(which can be thrown away...) - and *never on production systems*!  
+====
+
+===== Security setup
+====== SecHub infrastracture side
+The behavior of {sechub} must be accepted by {sechub} host environment: Infrastructure scans
+looks like a hacker has taken over the system and is using it to attack the target.
+
+Means {sechub} operators must define their environment in a way which makes it clear
+that this acceptable.
+
+====== Test application side
+Because the scan behaves like an attacker, existing security solutions could 
+prevent {sechub} from scanning - e.g. your firewall /intrusion detection system
+would detect massive port scans and prevent further access.
+
+If you want your infrastructure to be scanned by {sechub} you have to provide
+the technical possibilities for {sechub} - e.g. configure your firewall for
+the test environment and let {sechub} through.
+
+===== URIs
+Use `uris` element to define a string array containing `URIs` you want to scan.
+As in web scans (DAST), the URI must be whitelisted inside the project.
+
+====== Example infrascan one URI
+[[sechub-config-example-infrascan-with-uri]]
+[source, json]
+----
+include::sechub_config_example7_infrascan_uri.json[]
+----
+<1> Define infrastructure scan
+<2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
+
+===== IPs
+Use `ips` element to define a string array containing `IPs` you want to scan.
+
+====== Example infrascan one IP
+[[sechub-config-example-infrascan-with-ip]]
+[source, json]
+----
+include::sechub_config_example6_infrascan_ip.json[]
+----
+<1> Define infrastructure scan
+<2> The `IP` s to scan. Every `IP` listed here must be white listed in `{sechub}` project.
+    The given example with 127.0.0.1 is just an example and will not work because scanners do not scan themselves.
 
 
 ==== License scan
@@ -173,6 +256,13 @@ Use the `url` element to define a URL you want to scan.
 
 WARNING: The URL must be whitelisted in your project. Otherwise it will be rejected.
          So you are not able to start scanning foreign domains and do _accidently_ attack them...
+[CAUTION]
+====
+This setup is used to penetrate an existing web application at *runtime*. Those scans change application data, do fuzzing and try to break into the application,
+similar to a real attacker.
+
+This means web scans (DAST) shall only be executed on appropriate test environments - and normally not on production systems!  
+====
 
 ====== Example anonymous
 [[sechub-config-example-webscan-anonymous]]
@@ -263,6 +353,30 @@ include::sechub_config_example4_webscan_login_clientcertificate.json[]
     In the example above the SecHub GO client will substitute the value of `"{{ .CERT_PASSWORD }}"` with the value of the environment variable `CERT_PASSWORD`.
 <3> web scan uses the referenced <<sechub-config-data-section,data>> configuration "client-certificate-file-reference", to obtain the client certificate file.
 
+====== Example authentication via webscan template
+This can be used to handle complex authentication steps that can be handled in a template e.g. with a login script. The template must be assigned to the project.
+Any other part of the webscan configuration can be combined with the template section of the webscan configuration, e.g. TOTP or avoiding logout.
+[source,json,title="authentication via webscan template"]
+----
+include::sechub_config_example22_webscan_with_template.json[]
+----
+<1> `templateData` contains all the data relevant to make use of the template. The template itself must be configured and saved and managed on the {sechub} server.
+    Please have a look at the `concept_templates_and_assets.adoc` for more details on how the templates work.
+<2> `variables` for the template that shall be used. These are defined by the template, in this case this template for the webscan requires a `username` and a `password`.
+    Only if users know which template is assigned to their project, they will be able to configure the template correctly.
+
+====== Example logout configuration
+This is onyl relevant if scanning a frontend, since this logout specification tries to find certain HTML elements.
+When scanning a web API this section can be omitted. For URLs to exclude from the scan see <<sechub-config-example-webscan-anonymous>>.
+[source,json,title="logout configuration"]
+----
+include::sechub_config_example25_logout_config.json[]
+----
+<1> `logout` section to avoid logout during scan. A button or any other HTML element can be specified here,
+    to avoid a logout during the scan. To specify an URL to avoid during scan please use <<sechub-config-example-webscan-anonymous>>
+<2> `xpath` to locate the HTML element that shall be avoided during the scan. In the example the `xpath` points to a button.
+<3> `htmlElement` to locate the HTML element that shall be avoided during the scan. In this example the logout is done via a `button`. The button will be found by the `xpath` above, but the element type is still required, to avoid interaction with this element successfully.
+
 ====== Example form based login by script
 WARNING: This example [.underline]#currently# [.underline]#only# works with the `Netsparker` DAST module. We deprecated the `Netsparker` integration because it is not developed any further from our side. We use and develop the `Zaproxy` integration. As soon as this feature is available for our actively maintained `Zaproxy` DAST module, we will remove this warning. If you host SecHub yourself with a `Netsparker` module, this does not affect you. You can use this configuration as before.
 
@@ -338,6 +452,17 @@ The default value is `AUTODETECT` where {sechub} tries to detect the encoding of
 - `PLAIN`
 - `AUTODETECT`
 
+====== Example form based login with Login Verification
+The login verification can be configured to verify the login was successful and the DAST module is logged in during the scan.
+
+[source,json,title="Login Verification"]
+----
+include::sechub_config_example24_webscan_login_form_with_verification.json[]
+----
+<1> Start of login verification configuration. (Optional)
+<2> The url of a page which can only be visited if the login was successful. (Mandatory)
+<3> The response code which is expected when visiting the verification page. (Optional, default is 200)
+
 [[sechub-config-example-webscan-openapi]]
 ====== Example OpenAPI scan
 [source,json,title="Open API scan"]
@@ -407,36 +532,6 @@ Please use single files only instead of folders to specify the header value. Use
 This can be used if you want to provide a large header value, which exceeds the maximum size of the sechub.json configuration file.
 For each header provide either a `value` directly (as shown in <<sechub-config-example-webscan-header,Example Header scan>>) or a data section reference via `use` as shown in this example.
 
-==== Infrastructure scan
-`infraScan` (optional) defines the infrastructure scan settings.
-
-===== URIs
-Use `uris` element to define a string array containing `URIs` you want to scan.
-
-
-====== Example infrascan one URI
-[[sechub-config-example-infrascan-with-uri]]
-[source, json]
-----
-include::sechub_config_example7_infrascan_uri.json[]
-----
-<1> Define infrastructure scan
-<2> The `URI` s to scan. Every `URI` listed here must be white listed in `{sechub}` project.
-
-===== IPs
-Use `ips` element to define a string array containing `IPs` you want to scan.
-
-====== Example infrascan one IP
-[[sechub-config-example-infrascan-with-ip]]
-[source, json]
-----
-include::sechub_config_example6_infrascan_ip.json[]
-----
-<1> Define infrastructure scan
-<2> The `IP` s to scan. Every `IP` listed here must be white listed in `{sechub}` project.
-    The given example with `127.0.0.1` represents only an example and will always not work
-    because scanners do not scan them self.
-
 [[sechub-config-data-section]]
 ==== Data section
 With the `data` section users are able to
@@ -486,7 +581,8 @@ for details about default behaviour for sources.
 
 ===== Remote Data
 
-Instead of configuring the file system and uploading local data, it is also possible to define a remote data section to automatically retrieve the data to be scanned from remote locations.
+Instead of configuring the file system and uploading local data, it is also possible to define a remote data section to automatically retrieve 
+the data to be scanned from remote locations.
 In a `PREPARE` phase the `PDS` prepare will download the data from the remote location and upload it to a shared storage.
 From there any other `PDS solution` can access the data for scanning.
 The `type` is not mandatory, but it is recommended to set it to `git` or `docker` to make it clear what type of remote data is being used.

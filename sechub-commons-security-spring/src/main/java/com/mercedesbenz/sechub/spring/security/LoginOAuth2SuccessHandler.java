@@ -11,6 +11,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -42,23 +44,30 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
+    private static final Logger LOG = LoggerFactory.getLogger(LoginOAuth2SuccessHandler.class);
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
     private static final Duration DEFAULT_EXPIRY_ONE_HOUR = Duration.ofHours(1);
 
     private final String provider;
     private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
     private final AES256Encryption aes256Encryption;
-    private final LoginRedirectHandler loginRedirectHandler;
+    private final String redirectUri;
+    private final Duration minimumTokenValidity;
+    private final OAuth2TokenExpirationCalculator calculator;
 
     /* @formatter:off */
     public LoginOAuth2SuccessHandler(String provider,
                                      OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
                                      AES256Encryption aes256Encryption,
-                                     LoginRedirectHandler loginRedirectHandler) {
+                                     String redirectUri,
+                                     Duration minimumTokenValidity,
+                                     OAuth2TokenExpirationCalculator calculator) {
         this.provider = requireNonNull(provider, "Property provider must not be null");
         this.oAuth2AuthorizedClientService = requireNonNull(oAuth2AuthorizedClientService, "Property oAuth2AuthorizedClientService must not be null");
         this.aes256Encryption = requireNonNull(aes256Encryption, "Property aes256Encryption must not be null");
-        this.loginRedirectHandler = requireNonNull(loginRedirectHandler, "Property loginRedirectHandler must not be null");
+        this.redirectUri = requireNonNull(redirectUri, "Property redirectUri must not be null");
+        this.calculator = requireNonNull(calculator, "Property calculator must not be null");
+        this.minimumTokenValidity = minimumTokenValidity;
     }
     /* @formatter:on */
 
@@ -67,7 +76,7 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2AccessToken oAuth2AccessToken = getAccessTokenFromAuthentication(authentication);
         Instant issuedAt = requireNonNullElseGet(oAuth2AccessToken.getIssuedAt(), Instant::now);
         /* Assume a default expiry of 1 hour if the expiry time is not set */
-        Instant expiresAt = requireNonNullElseGet(oAuth2AccessToken.getExpiresAt(), () -> Instant.now().plusSeconds(DEFAULT_EXPIRY_ONE_HOUR.toSeconds()));
+        Instant expiresAt = calculator.calculateAccessTokenDuration(Instant.now(), DEFAULT_EXPIRY_ONE_HOUR, oAuth2AccessToken, minimumTokenValidity);
         long expirySeconds = expiresAt.getEpochSecond() - issuedAt.getEpochSecond();
         Duration expiryDuration = Duration.ofSeconds(expirySeconds);
         String accessToken = oAuth2AccessToken.getTokenValue();
@@ -75,11 +84,13 @@ class LoginOAuth2SuccessHandler implements AuthenticationSuccessHandler {
         String encryptedAccessTokenB64Encoded = ENCODER.encodeToString(encryptedAccessTokenBytes);
         Cookie cookie = CookieHelper.createCookie(OAUTH2_COOKIE_NAME, encryptedAccessTokenB64Encoded, expiryDuration, BASE_PATH);
         response.addCookie(cookie);
-        loginRedirectHandler.redirect(request, response);
+        LOG.debug("Redirecting to {}", redirectUri);
+        response.sendRedirect(redirectUri);
     }
 
     private OAuth2AccessToken getAccessTokenFromAuthentication(Authentication authentication) {
         OAuth2AuthorizedClient oAuth2AuthorizedClient = oAuth2AuthorizedClientService.loadAuthorizedClient(provider, authentication.getName());
         return oAuth2AuthorizedClient.getAccessToken();
     }
+
 }
