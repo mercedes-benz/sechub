@@ -87,11 +87,21 @@ Just call
 ----
 
 ==== Execute integration tests
-Just call
+
+Start the integration test server
+----
+./gradlew startIntegrationTestServer
+----
+
+Execute tests
 ----
 ./gradlew integrationtest
 ----
-This will start also an integration test server
+
+Optionally shut down the integration test server
+----
+./gradlew stopIntegrationTestServer
+----
 
 ==== Build Documentation
 Just call

@@ -86,13 +86,23 @@ jobs:
         run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
 
       # Integration test
-      - name: Integration test
-        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-integrationtest:integrationtest :sechub-systemtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain
+      - name: Start Integration Test Servers
+        run: ./gradlew :sechub-integrationtest:startIntegrationTestInstances --console=plain
+
+      - name: Run Integration Tests
+        run: ./gradlew :sechub-integrationtest:integrationtest --console=plain
+
+      - name: Run System Tests
+        run: ./gradlew :sechub-systemtest:integrationtest --console=plain
 
       # We use 'if: always()' to run a step even if a previous step failed
+      - name: Stop Integration Test Servers
+        if: always()
+        run: ./gradlew :sechub-integrationtest:stopIntegrationTestInstances --console=plain
+
       - name: Create combined test report
         if: always()
-        run: ./gradlew createCombinedTestReport -Dsechub.build.stage=all
+        run: ./gradlew createCombinedTestReport 
 
       # -----------------------------------------
       # Upload Build Artifacts

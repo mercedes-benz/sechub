@@ -168,7 +168,7 @@ do
         INTEGRATIONTEST_ALL="YES"
         shift # past argument
         ;;
-        -ii|--integrationtest-integratio)
+        -ii|--integrationtest-integration)
         INTEGRATIONTEST_INTEGRATION="YES"
         shift # past argument
         ;;
@@ -285,8 +285,11 @@ function cleanOldReportData() {
 }
 
 
-CMD_EXEC_ALL_INTEGRATIONTESTS="./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain"
-CMD_CREATE_COMBINED_REPORT="./gradlew createCombinedTestReport -Dsechub.build.stage=all"
+CMD_START_INTEGRATION_TEST_INSTANCES="./gradlew :sechub-integrationtest:startIntegrationTestInstances --console=plain"
+CMD_EXEC_INTEGRATION_TESTS="./gradlew :sechub-integrationtest:integrationtest --console=plain"
+CMD_EXEC_SYSTEM_TESTS="./gradlew :sechub-systemtest:integrationtest --console=plain"
+CMD_STOP_INTEGRATION_TEST_INSTANCES="./gradlew :sechub-integrationtest:stopIntegrationTestInstances --console=plain"
+CMD_CREATE_COMBINED_REPORT="./gradlew createCombinedTestReport"
 # -----------------------
 # Handle known commands
 # -----------------------
@@ -297,22 +300,22 @@ fi
 if [[ "$CLEAN_ALL" = "YES" ]]; then
     startJob "Clean all"
     step "Clean all gradle parts"
-    ./gradlew clean -Dsechub.build.stage=all --console=plain
+    ./gradlew clean --console=plain
     
     step "Clean old report data"
     cleanOldReportData
 fi
 if [[ "$CLEAN_ALL_TESTS" = "YES" ]]; then
     startJob "Clean all tests"
-    ./gradlew cleanTest cleanIntegrationtest -Dsechub.build.stage=all --console=plain
+    ./gradlew cleanTest cleanIntegrationtest --console=plain
 fi
 if [[ "$CLEAN_UNIT_TESTS" = "YES" ]]; then
     startJob "Clean all unit tests"
-    ./gradlew cleanTest -Dsechub.build.stage=all --console=plain
+    ./gradlew cleanTest --console=plain
 fi
 if [[ "$CLEAN_INTEGRATIONTEST" = "YES" ]]; then
     startJob "Clean all integration tests"
-    ./gradlew cleanIntegrationtest -Dsechub.build.stage=all --console=plain
+    ./gradlew cleanIntegrationtest --console=plain
     
     step "Clean old report data"
     cleanOldReportData
@@ -340,21 +343,28 @@ fi
 
 if [[ "$UNIT_TESTS" = "YES" ]]; then
     startJob "Execute all unit tests"
-    ./gradlew test -Dsechub.build.stage=all --console=plain
+    ./gradlew test --console=plain
 fi
 
 if [[ "$INTEGRATIONTEST_ALL" = "YES" ]]; then
     startJob "Execute all integration tests"
-    eval "${CMD_EXEC_ALL_INTEGRATIONTESTS}"
+    eval "${CMD_START_INTEGRATION_TEST_INSTANCES}"
+    eval "${CMD_EXEC_INTEGRATION_TESTS}"
+    eval "${CMD_EXEC_SYSTEM_TESTS}"
+    eval "${CMD_STOP_INTEGRATION_TEST_INSTANCES}"
 fi
 
 if [[ "$INTEGRATIONTEST_INTEGRATION" = "YES" ]]; then
     startJob "Execute integration tests (sechub-integrationtest only)"
-    ./gradlew integrationtest --console=plain
+    eval "${CMD_START_INTEGRATION_TEST_INSTANCES}"
+    eval "${CMD_EXEC_INTEGRATION_TESTS}"
+    eval "${CMD_STOP_INTEGRATION_TEST_INSTANCES}"
 fi
 if [[ "$INTEGRATIONTEST_SYSTEMTEST" = "YES" ]]; then
     startJob "Execute integration tests (sechub-systemtest only)"
-    ./gradlew :sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all --console=plain
+    eval "${CMD_START_INTEGRATION_TEST_INSTANCES}"
+    eval "${CMD_EXEC_SYSTEM_TESTS}"
+    eval "${CMD_STOP_INTEGRATION_TEST_INSTANCES}"
 fi
 
 if [[ "$FULL_BUILD" = "YES" ]]; then
@@ -368,29 +378,38 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
     
     step "Generate and build Java projects related to SecHub Java API"
-    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
+    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI 
     
-    step "Integration test"
-    eval "${CMD_EXEC_ALL_INTEGRATIONTESTS}"
+    step "Start Integration Test Instances"
+    eval "${CMD_START_INTEGRATION_TEST_INSTANCES}"
+
+    step "Execute integration tests"
+    eval "${CMD_EXEC_INTEGRATION_TESTS}"
+
+    step "Execute system tests"
+    eval "${CMD_EXEC_SYSTEM_TESTS}"
+
+    step "Stop Integration Test Instances"
+    eval "${CMD_STOP_INTEGRATION_TEST_INSTANCES}"
     
     step "Create combined test report"
     eval "${CMD_CREATE_COMBINED_REPORT}"
     
     step "Create documentation"
-    ./gradlew documentation -Dsechub.build.stage=all
+    ./gradlew documentation
     
 fi
 
 if [[ "$PDS_TOOLS_BUILD" = "YES" ]]; then
      startJob "Execute build pds tools"
      step "Generate and build Java projects related to SecHub Java API"
-    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
+    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI 
   
 fi
 
 if [[ "$DOCUMENT_FULL" = "YES" ]]; then
     startJob "Create documentation"
-    ./gradlew documentation -Dsechub.build.stage=all
+    ./gradlew documentation
 fi
 
 if [[ "$REPORT_COMBINED" = "YES" ]]; then

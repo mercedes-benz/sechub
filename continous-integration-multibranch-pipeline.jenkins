@@ -100,8 +100,11 @@ pipeline {
                     steps {
                         script{
                             // start integration tests and also create combined test report after all
-                            callGradleWrapper(":sechub-integrationtest:startIntegrationTestInstances :sechub-systemtest:integrationtest :sechub-integrationtest:integrationtest :sechub-integrationtest:stopIntegrationTestInstances -Dsechub.build.stage=all -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT} --console=plain")
-                            callGradleWrapper("createCombinedTestReport -Dsechub.build.stage=all --console=plain")
+                            callGradleWrapper(":sechub-integrationtest:startIntegrationTestInstances -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT} --console=plain")
+                            callGradleWrapper(":sechub-integrationtest:integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT} --console=plain")
+                            callGradleWrapper(":sechub-systemtest:integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT} --console=plain")
+                            callGradleWrapper(":sechub-integrationtest:stopIntegrationTestInstances -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT} --console=plain")
+                            callGradleWrapper("createCombinedTestReport --console=plain")
                         }
                     }
                 }
@@ -132,7 +135,7 @@ pipeline {
         stage('Build Documentation') {
             steps {
                 script{
-                    callGradleWrapper("documentation -Dsechub.build.stage=all --console=plain")
+                    callGradleWrapper("documentation --console=plain")
                 }
             }
         }
