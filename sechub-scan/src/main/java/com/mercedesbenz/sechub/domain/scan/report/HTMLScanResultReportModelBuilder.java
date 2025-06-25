@@ -23,7 +23,7 @@ public class HTMLScanResultReportModelBuilder {
     static final String DEFAULT_THEME = "default";
     static final String JETBRAINS_THEME = "jetbrains";
 
-    public Map<String, Object> build(ScanSecHubReport report, String theme) {
+    public Map<String, Object> build(ScanSecHubReport report, boolean interactive, String theme) {
         TrafficLight trafficLight = report.getTrafficLight();
 
         String styleRed = HIDE_LIGHT;

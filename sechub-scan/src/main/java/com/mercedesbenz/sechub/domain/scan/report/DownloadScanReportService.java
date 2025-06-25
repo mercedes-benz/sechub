@@ -13,7 +13,6 @@ import com.mercedesbenz.sechub.sharedkernel.Step;
 import com.mercedesbenz.sechub.sharedkernel.error.NotFoundException;
 import com.mercedesbenz.sechub.sharedkernel.logging.AuditLogService;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
-import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsLatestJobReport;
 import com.mercedesbenz.sechub.sharedkernel.validation.UserInputAssertion;
 
 @Service
@@ -39,7 +38,6 @@ public class DownloadScanReportService {
 
     // TODO: Write tests for this method
 
-    @UseCaseUserDownloadsLatestJobReport(@Step(number = 3, name = "Resolve latest scan report result"))
     public ScanSecHubReport getLatestObfuscatedScanSecHubReport(String projectId) {
         assertion.assertIsValidProjectId(projectId);
 

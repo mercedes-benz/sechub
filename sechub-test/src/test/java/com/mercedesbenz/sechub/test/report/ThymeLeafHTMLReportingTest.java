@@ -398,7 +398,7 @@ public class ThymeLeafHTMLReportingTest {
             scanReport.getMessages().add(new SecHubMessage(SecHubMessageType.ERROR, "I am an error"));
 
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
-            Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport, theme);
+            Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport, interactive, theme);
             return tyhmeleafMap;
         }
 

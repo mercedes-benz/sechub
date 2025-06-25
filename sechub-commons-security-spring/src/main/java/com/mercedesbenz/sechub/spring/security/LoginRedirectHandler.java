@@ -12,8 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
  * The {@code LoginRedirectHandler} handles the redirection of the user the
  * desired redirect uri after successful authentication. The redirect uri is
  * specified as a query parameter in the request. If the redirect uri is not
- * specified, the default redirect uri from the configuration is used.
- * TODO: the redirect uri should probably not be configurable freely by the caller (security issue)
+ * specified, the default redirect uri from the configuration is used. TODO: the
+ * redirect uri should probably not be configurable freely by the caller
+ * (security issue)
  *
  * @author hamidonos
  */
