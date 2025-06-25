@@ -36,13 +36,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
-import com.mercedesbenz.sechub.domain.scan.report.DownloadScanReportService;
-import com.mercedesbenz.sechub.domain.scan.report.DownloadSpdxScanReportService;
-import com.mercedesbenz.sechub.domain.scan.report.HTMLReportHelper;
-import com.mercedesbenz.sechub.domain.scan.report.HTMLScanResultReportModelBuilder;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReport;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
-import com.mercedesbenz.sechub.domain.scan.report.ScanSecHubReport;
+import com.mercedesbenz.sechub.domain.scan.report.*;
+import com.mercedesbenz.sechub.domain.scan.report.ScanReportController;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDocOutput;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
@@ -52,10 +47,10 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ScanReportRestController.class)
-@ContextConfiguration(classes = { ScanReportRestController.class, ScanReportRestControllerRestDocTest.SimpleTestConfiguration.class })
+@WebMvcTest(ScanReportController.class)
+@ContextConfiguration(classes = { ScanReportController.class, ScanReportControllerDocTest.SimpleTestConfiguration.class })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDocumentation {
+public class ScanReportControllerDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1_ID = "project1";
 
@@ -233,6 +228,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
     public void before() throws Exception {
         jobUUID = UUID.randomUUID();
         Map<String, Object> map = new HashMap<>();
+        map.put("theme", "default");
         map.put("jobuuid", jobUUID);
         map.put("styleRed", "theRedStyle");
         map.put("styleGreen", "display:none");
@@ -241,7 +237,7 @@ public class ScanReportRestControllerRestDocTest implements TestIsNecessaryForDo
         map.put("metaData", null);
         map.put("reportHelper", new HTMLReportHelper());
         map.put("scanTypeSummaries", new ArrayList<>());
-        when(modelBuilder.build(any(), anyBoolean(), anyString())).thenReturn(map);
+        when(modelBuilder.build(any(), anyString())).thenReturn(map);
     }
 
 }

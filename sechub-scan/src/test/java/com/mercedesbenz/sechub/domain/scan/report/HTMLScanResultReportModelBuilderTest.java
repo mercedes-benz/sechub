@@ -20,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
@@ -37,13 +39,14 @@ class HTMLScanResultReportModelBuilderTest {
      */
     private static final String SHOW_LIGHT = "opacity: 1.0";
     private static final String HIDE_LIGHT = "opacity: 0.25";
+    private static final String DEFAULT_THEME = "default";
 
     private HTMLScanResultReportModelBuilder builderToTest;
     private ScanSecHubReport scanSecHubReport;
     private SecHubResult result;
 
     @BeforeEach
-    void beforeEach() throws Exception {
+    void beforeEach() {
         builderToTest = new HTMLScanResultReportModelBuilder();
 
         result = mock(SecHubResult.class);
@@ -60,11 +63,40 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getMetaData()).thenReturn(reportMetaData);
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, DEFAULT_THEME);
 
         /* test */
         SecHubReportMetaData metaData = (SecHubReportMetaData) map.get("metaData");
         assertThat(metaData).isEqualTo(reportMetaData);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = { "default", "jetbrains", "vscode", "eclipse" })
+    void use_supported_themes(String theme) {
+        /* prepare */
+        UUID uuid = UUID.randomUUID();
+        when(scanSecHubReport.getJobUUID()).thenReturn(uuid);
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
+
+        /* execute */
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, theme);
+
+        /* test */
+        assertEquals(theme, map.get("theme"));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = { "", " ", "some-random-theme" })
+    void use_unsupported_theme_or_null_throws_illegal_argument_exception(String theme) {
+        /* prepare */
+        UUID uuid = UUID.randomUUID();
+        when(scanSecHubReport.getJobUUID()).thenReturn(uuid);
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
+
+        /* execute + test */
+        assertThatThrownBy(() -> builderToTest.build(scanSecHubReport, theme)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Theme %s is not supported".formatted(theme));
     }
 
     @Test
@@ -76,12 +108,13 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, DEFAULT_THEME);
 
         /* test */
         assertSame(result, map.get("result"));
         assertNull(map.get("${includedCSSRef}"));
 
+        assertEquals(DEFAULT_THEME, map.get("theme"));
         assertEquals("RED", map.get("trafficlight"));
         assertEquals(uuid.toString(), map.get("jobuuid"));
         assertEquals(SHOW_LIGHT, map.get("styleRed"));
@@ -93,7 +126,7 @@ class HTMLScanResultReportModelBuilderTest {
     void trafficlight_red_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, DEFAULT_THEME);
         assertEquals(SHOW_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
@@ -103,7 +136,7 @@ class HTMLScanResultReportModelBuilderTest {
     void trafficlight_yellow_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.YELLOW);
 
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, DEFAULT_THEME);
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(SHOW_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
@@ -113,7 +146,7 @@ class HTMLScanResultReportModelBuilderTest {
     void trafficlight_green_set_display_block__others_are_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.GREEN);
 
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, DEFAULT_THEME);
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(SHOW_LIGHT, map.get("styleGreen"));
@@ -123,7 +156,7 @@ class HTMLScanResultReportModelBuilderTest {
     void trafficlight_off_set_all_display_none() {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.OFF);
 
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, DEFAULT_THEME);
         assertEquals(HIDE_LIGHT, map.get("styleRed"));
         assertEquals(HIDE_LIGHT, map.get("styleYellow"));
         assertEquals(HIDE_LIGHT, map.get("styleGreen"));
@@ -147,7 +180,7 @@ class HTMLScanResultReportModelBuilderTest {
         when(code1.getCalls()).thenReturn(subCode);
 
         /* execute */
-        Map<String, Object> buildResult = builderToTest.build(scanSecHubReport);
+        Map<String, Object> buildResult = builderToTest.build(scanSecHubReport, DEFAULT_THEME);
 
         /* test */
         assertNotNull(buildResult.get("codeScanEntries"));
@@ -168,7 +201,7 @@ class HTMLScanResultReportModelBuilderTest {
         when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
 
         /* execute */
-        Map<String, Object> map = builderToTest.build(scanSecHubReport);
+        Map<String, Object> map = builderToTest.build(scanSecHubReport, DEFAULT_THEME);
 
         /* test */
         assertNotNull(map.get("codeScanSupport"));
@@ -414,6 +447,36 @@ class HTMLScanResultReportModelBuilderTest {
         assertEquals(0, summary1.getUnclassifiedSeverityCount());
         assertEquals(0, summary1.getInfoSeverityCount());
         assertEquals(3, summary1.getTotalCount());
+    }
+
+    @Test
+    void build_interactive_report_sets_interactive_flag_and_nonce() {
+        /* prepare */
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
+        when(scanSecHubReport.getJobUUID()).thenReturn(UUID.randomUUID());
+        String nonce = UUID.randomUUID().toString();
+
+        /* execute */
+        Map<String, Object> map = builderToTest.buildInteractiveReport(scanSecHubReport, DEFAULT_THEME, nonce);
+
+        /* test */
+        assertNotNull(map);
+        assertNotNull(map.get("interactive"));
+        assertTrue((Boolean) map.get("interactive"));
+        assertNotNull(map.get("nonce"));
+        assertEquals(nonce, map.get("nonce"));
+    }
+
+    @Test
+    void build_interactive_report_with_null_nonce_throw_exception() {
+        /* prepare */
+        when(scanSecHubReport.getTrafficLight()).thenReturn(TrafficLight.RED);
+        when(scanSecHubReport.getJobUUID()).thenReturn(UUID.randomUUID());
+
+        /* execute + test */
+        assertThatThrownBy(() -> builderToTest.buildInteractiveReport(scanSecHubReport, DEFAULT_THEME, null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessageContaining("Parameter 'nonce' must not be null");
     }
 
 }

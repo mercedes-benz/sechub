@@ -203,6 +203,9 @@ public abstract class AbstractSecurityConfiguration {
 
             throw new BeanInstantiationException(SecurityFilterChain.class, exMsg);
         }
+
+        LoginRedirectHandler loginRedirectHandler = new LoginRedirectHandler(loginProperties.getLoginPage());
+
         if (loginProperties.isOAuth2ModeEnabled()) {
             /*
              * Note:
@@ -211,11 +214,11 @@ public abstract class AbstractSecurityConfiguration {
              * always use the default login page of the first configured login mode.
              */
             configureLoginOAuth2Mode(httpSecurity, sechubSecurityProperties, restTemplate, aes256Encryption, oAuth2AuthorizedClientService,
-                    expirationCalculator);
+                    expirationCalculator, loginRedirectHandler);
         }
 
         if (loginProperties.isClassicModeEnabled()) {
-            configureLoginClassicMode(httpSecurity, aes256Encryption, sechubSecurityProperties);
+            configureLoginClassicMode(httpSecurity, aes256Encryption, sechubSecurityProperties, loginRedirectHandler);
         }
 
         return httpSecurity.build();
@@ -456,7 +459,8 @@ public abstract class AbstractSecurityConfiguration {
 												 RestTemplate restTemplate,
 												 AES256Encryption aes256Encryption,
 												 OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
-												 OAuth2TokenExpirationCalculator expirationCalculator) throws Exception {
+												 OAuth2TokenExpirationCalculator expirationCalculator,
+												 LoginRedirectHandler loginRedirectHandler) throws Exception {
 
 	    SecHubSecurityProperties.LoginProperties loginProperties = sechubSecurityProperties.getLoginProperties();
 	    if (loginProperties == null) {
@@ -484,7 +488,7 @@ public abstract class AbstractSecurityConfiguration {
 
 		Duration minimumTokenValidity = sechubSecurityProperties.getMinimumTokenValidity();
 		AuthenticationSuccessHandler authenticationSuccessHandler = new LoginOAuth2SuccessHandler(loginOAuth2Properties.getProvider(), oAuth2AuthorizedClientService,
-				aes256Encryption, loginProperties.getRedirectUri(), minimumTokenValidity, expirationCalculator);
+				aes256Encryption, minimumTokenValidity, expirationCalculator, loginRedirectHandler);
 
 		StatelessAuthorizationRequestRepository authorizationRequestRepository = new StatelessAuthorizationRequestRepository(aes256Encryption);
 
@@ -499,8 +503,12 @@ public abstract class AbstractSecurityConfiguration {
     }
     /* @formatter:on */
 
-    private static void configureLoginClassicMode(HttpSecurity httpSecurity, AES256Encryption aes256Encryption,
-            SecHubSecurityProperties secHubSecurityProperties) throws Exception {
+    /* @formatter:off */
+    private static void configureLoginClassicMode(HttpSecurity httpSecurity,
+												  AES256Encryption aes256Encryption,
+												  SecHubSecurityProperties secHubSecurityProperties,
+												  LoginRedirectHandler loginRedirectHandler) throws Exception {
+		/* @formatter:on */
         if (aes256Encryption == null) {
             throw new NoSuchBeanDefinitionException(AES256Encryption.class);
         }
@@ -521,7 +529,7 @@ public abstract class AbstractSecurityConfiguration {
         AuthenticationSuccessHandler authenticationSuccessHandler = new LoginClassicSuccessHandler(
 				aes256Encryption,
 				classicCookieAge,
-				loginProperties.getRedirectUri()
+				loginRedirectHandler
 		);
         String loginPage = loginProperties.getLoginPage();
 		httpSecurity.formLogin(form -> form

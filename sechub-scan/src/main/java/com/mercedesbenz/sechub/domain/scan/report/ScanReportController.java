@@ -10,12 +10,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mercedesbenz.sechub.sharedkernel.Step;
@@ -35,15 +30,14 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author Albert Tregnaghi
  *
  */
-@Controller
+@RestController
 @EnableAutoConfiguration
 @RequestMapping(APIConstants.API_PROJECT + "{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
 @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
-public class ScanReportRestController {
+public class ScanReportController {
 
     private static final String CONTENT_SECURITY_POLICY_HEADER = "Content-Security-Policy";
     private static final String SCRIPT_SRC_NONCE_HEADER_VALUE_FORMAT = "script-src 'nonce-%s' 'strict-dynamic';";
-    private static final String NONCE = "nonce";
 
     @Autowired
     private HTMLScanResultReportModelBuilder htmlModelBuilder;
@@ -57,20 +51,18 @@ public class ScanReportRestController {
     // TODO: extend api tests to cover for themes etc.
 
     /* @formatter:off */
-	@UseCaseUserDownloadsJobReport(@Step(number=1, next= {3}, name="REST API call to get JSON report", needsRestDoc=true))
-	@UseCaseUserStartsSynchronousScanByClient(@Step(number=4, name="download job report and traffic light"))
-	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
-	public ScanSecHubReport getScanSecHubReportAsJSON(
-			@PathVariable("projectId") String projectId,
-			@PathVariable("jobUUID") UUID jobUUID) {
-		/* @formatter:on */
+    @UseCaseUserDownloadsJobReport(@Step(number=1, next= {3}, name="REST API call to get JSON report", needsRestDoc=true))
+    @UseCaseUserStartsSynchronousScanByClient(@Step(number=4, name="download job report and traffic light"))
+    @RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
+    public ScanSecHubReport getScanSecHubReportAsJSON(@PathVariable("projectId") String projectId,
+                                                      @PathVariable("jobUUID") UUID jobUUID) {
+        /* @formatter:on */
         return fetchObfuscatedScanSecHubReport(projectId, jobUUID);
     }
 
     /* @formatter:off */
 	@UseCaseUserDownloadsJobReport(@Step(number=2, next= {3}, name="REST API call to get HTML report", needsRestDoc=true))
 	@RequestMapping(path = "/report/{jobUUID}", method = RequestMethod.GET, produces= {"application/xhtml+xml", "text/html","text/html;charset=UTF-8"})
-	@ResponseBody
 	public ModelAndView getScanSecHubReportAsHTML(HttpServletResponse response,
                                                   @PathVariable("projectId") String projectId,
                                                   @PathVariable("jobUUID") UUID jobUUID,
@@ -91,7 +83,6 @@ public class ScanReportRestController {
     /* @formatter:off */
 	@UseCaseUserDownloadsSpdxJobReport(@Step(number=1,name="REST API call to get SPDX JSON report", needsRestDoc=true))
 	@RequestMapping(path = "/report/spdx/{jobUUID}", method = RequestMethod.GET, produces= {MediaType.APPLICATION_JSON_VALUE})
-	@ResponseBody
 	public String getScanSecHubReportAsSpdxJson(
 			@PathVariable("projectId") String projectId,
 			@PathVariable("jobUUID") UUID jobUUID
@@ -100,10 +91,6 @@ public class ScanReportRestController {
         String spdxDocument = serecoSpdxDownloadService.getScanSpdxJsonReport(projectId, jobUUID);
 
         return spdxDocument;
-    }
-
-    private ScanSecHubReport fetchLatestObfuscatedScanSecHubReport(String projectId) {
-        return downloadReportService.getLatestObfuscatedScanSecHubReport(projectId);
     }
 
     private ScanSecHubReport fetchObfuscatedScanSecHubReport(String projectId, UUID jobUUID) {
@@ -136,7 +123,7 @@ public class ScanReportRestController {
         requireNonNull(scanSecHubReport, "Parameter 'scanSecHubReport' may not be null");
         requireNonNull(theme, "Parameter 'theme' must not be null");
 
-        Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport, false, theme);
+        Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport, theme);
         return new ModelAndView("report/html/report", model);
     }
 
@@ -145,8 +132,7 @@ public class ScanReportRestController {
         requireNonNull(theme, "Parameter 'theme' must not be null");
         requireNonNull(nonce, "Parameter 'nonce' must not be null for interactive HTML report");
 
-        Map<String, Object> model = htmlModelBuilder.build(scanSecHubReport, interactive, theme);
-        model.put(NONCE, nonce);
+        Map<String, Object> model = htmlModelBuilder.buildInteractiveReport(scanSecHubReport, theme, nonce);
         return new ModelAndView("report/html/report", model);
     }
 

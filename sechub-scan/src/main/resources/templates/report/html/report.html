@@ -11,60 +11,6 @@
 </head>
 <body>
 
-<!-- TODO: create if conditions to not include plugin source code when report is fetched normally -->
-
-<!-- TODO: clarify if NONCE is sufficient for secure inline scripts here (JAN) -->
-<script th:nonce="${nonce}">
-    <!-- Doing this because inline event callbacks are blocked by Content Security Policy -->
-
-    document.addEventListener("DOMContentLoaded", function() {
-
-        const startScan = document.getElementById("startScan");
-
-        startScan.addEventListener("click", function() {
-            window.dispatchEvent(new CustomEvent("START_SCAN"));
-        });
-
-        const goToWebUi = document.getElementById("goToWebUi");
-
-        goToWebUi.addEventListener("click", function() {
-            window.dispatchEvent(new CustomEvent("GO_TO_WEB_UI"));
-        });
-
-        const markFalsePositives = document.querySelectorAll(".markFalsePositive");
-
-        markFalsePositives.forEach(function(element) {
-            element.addEventListener("change", function() {
-                const findingId = element.id;
-                if (element.checked) {
-                    window.dispatchEvent(new CustomEvent("MARK_FALSE_POSITIVE", {
-                        detail: { findingId: findingId }
-                    }));
-                } else {
-                    window.dispatchEvent(new CustomEvent("UNMARK_FALSE_POSITIVE", {
-                        detail: { findingId: findingId }
-                    }));
-                }
-            });
-        });
-
-        const codeScanEntryLocations = document.querySelectorAll(".codeScanEntryLocation");
-
-        codeScanEntryLocations.forEach(function(element) {
-            element.addEventListener("click", function(event) {
-                event.preventDefault();
-                window.dispatchEvent(new CustomEvent("JUMP_TO_LOCATION", {
-                    detail: {
-                        location: element.getAttribute('data-location'),
-                        line: element.getAttribute('data-line'),
-                        column: element.getAttribute('data-column')
-                    }
-                }));
-            });
-        });
-    });
-</script>
-
     <!--
     ---------------------------------
     -      Traffic light            -
@@ -103,7 +49,7 @@
 
             <tr>
                 <td>
-                   <!--                   
+                   <!--
 	                ---------------------------------
 	                -      Shield icon              -
 	                ---------------------------------
@@ -142,7 +88,7 @@
                 <td>Scan result Report for Job:<span th:text="${jobuuid}">job-uuid</span>
                 </td>
             </tr>
-              <!--                 
+              <!--
                 ---------------------------------
                 -            Version control    -
                 ---------------------------------
@@ -184,7 +130,7 @@
             </tr>
         </table>
     </div>
-	<!--                   
+	<!--
          ---------------------------------
          - Execution                     -
          ---------------------------------
@@ -192,7 +138,7 @@
      <div th:replace="~{report/html/execution :: renderExecution(metaData=${metaData})}"></div>
     <div class="content">
 
-           <!--                   
+           <!--
                ---------------------------------
                -            Summary            -
                ---------------------------------
@@ -216,13 +162,13 @@
                 <tbody>
                 <tr th:each="scanTypeSummary : ${scanTypeSummaries}">
                 <div th:remove="all">
-                <!--/* 
+                <!--/*
                    Next fragment line renders summary row for each contained scan type.
                    An example:
-                   
+
                             Total  Critical High  Medium   Low   Unclassified Info
                    Web scan   1     0        1       0       0       0          0
-                   
+
                    */-->
                    </div>
                     <div th:replace="~{report/html/summary :: renderScanTypeOverviewLine(scanTypeSummary=${scanTypeSummary})}"></div>
@@ -231,7 +177,7 @@
             </table>
         </div>
         <div th:remove="all">
-        <!--/*                   
+        <!--/*
              ---------------------------------
              - Summary scan type detail data -
              - as overview for scan types    -
@@ -243,7 +189,7 @@
          <div th:each="scanTypeSummary : ${scanTypeSummaries}">
                <div th:replace="~{report/html/summary :: renderScanTypeOverviewDetails(scanTypeSummary=${scanTypeSummary})}"></div>
          </div>
-         <!--                   
+         <!--
              ---------------------------------
              - Findings grouped by traffic   -
              - light, severity and id        -
@@ -252,8 +198,8 @@
          <div th:each="trafficLightGroup : ${trafficLightGroups}">
               <div th:replace="~{report/html/findings :: renderTrafficLightGroup(trafficLightGroup=${trafficLightGroup})}"></div>
          </div>
-         
-         <!--                   
+
+         <!--
              ---------------------------------
              - Messages                      -
              ---------------------------------
@@ -261,5 +207,7 @@
          <div th:replace="~{report/html/messages :: renderMessages(messages=${messages})}"></div>
    </div>
 </div>
+
+    <script th:if="${interactive}" th:src="@{/../js/events.js}" th:nonce="${nonce}" defer></script>
 </body>
 </html>

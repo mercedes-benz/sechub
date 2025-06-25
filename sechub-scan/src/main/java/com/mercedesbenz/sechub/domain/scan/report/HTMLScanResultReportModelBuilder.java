@@ -1,12 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.report;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import static java.util.Objects.requireNonNull;
+
+import java.util.*;
 
 import org.springframework.stereotype.Component;
 
@@ -22,8 +19,15 @@ public class HTMLScanResultReportModelBuilder {
     static final String HIDE_LIGHT = "opacity: 0.25";
     static final String DEFAULT_THEME = "default";
     static final String JETBRAINS_THEME = "jetbrains";
+    static final String VSCODE = "vscode";
+    static final String ECLIPSE = "eclipse";
+    static final Set<String> SUPPORTED_THEMES = Set.of(DEFAULT_THEME, JETBRAINS_THEME, VSCODE, ECLIPSE);
 
-    public Map<String, Object> build(ScanSecHubReport report, boolean interactive, String theme) {
+    public Map<String, Object> build(ScanSecHubReport report, String theme) {
+        if (theme == null || !SUPPORTED_THEMES.contains(theme)) {
+            throw new IllegalArgumentException("Theme %s is not supported".formatted(theme));
+        }
+
         TrafficLight trafficLight = report.getTrafficLight();
 
         String styleRed = HIDE_LIGHT;
@@ -83,6 +87,26 @@ public class HTMLScanResultReportModelBuilder {
             model.put("jobuuid", "none");
         }
 
+        return model;
+    }
+
+    /**
+     * Builds a model for an interactive report, which includes additional DOM
+     * elements for user interaction. Furthermore, the report will publish events to
+     * the browser, so that the browser can react on user interaction if needed.
+     *
+     * @param report the scan report to build the model for
+     * @param theme  the theme to use for the report, must be one of the supported
+     *               themes
+     * @param nonce  a nonce value for Content Security Policy (CSP) to securely
+     *               allow inline scripts
+     */
+    public Map<String, Object> buildInteractiveReport(ScanSecHubReport report, String theme, String nonce) {
+        requireNonNull(nonce, "Parameter 'nonce' must not be null");
+
+        Map<String, Object> model = build(report, theme);
+        model.put("interactive", true);
+        model.put("nonce", nonce);
         return model;
     }
 

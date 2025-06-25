@@ -2,6 +2,7 @@
 package com.mercedesbenz.sechub.domain.scan;
 
 import static com.mercedesbenz.sechub.test.SecHubTestURLBuilder.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -20,10 +21,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import com.mercedesbenz.sechub.commons.model.*;
 import com.mercedesbenz.sechub.domain.scan.product.ReportProductExecutionService;
@@ -31,13 +34,15 @@ import com.mercedesbenz.sechub.domain.scan.report.*;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(ScanReportRestController.class)
-@ContextConfiguration(classes = { ScanReportRestController.class, ScanReportRestControllerMockTest.SimpleTestConfiguration.class })
-class ScanReportRestControllerMockTest {
+@WebMvcTest(ScanReportController.class)
+@ContextConfiguration(classes = { ScanReportController.class, ScanReportControllerMockTest.SimpleTestConfiguration.class })
+class ScanReportControllerMockTest {
 
     private static final String PROJECT1_ID = "project1";
 
     private static final int PORT_USED = TestPortProvider.DEFAULT_INSTANCE.getWebMVCTestHTTPSPort();
+
+    private static final String DEFAULT_THEME = "default";
 
     @Autowired
     private MockMvc mockMvc;
@@ -139,9 +144,9 @@ class ScanReportRestControllerMockTest {
         scanReport.setResult(JSONConverter.get().toJSON(model));
 
         ScanSecHubReport report = new ScanSecHubReport(scanReport);
-        Map<String, Object> realModelBuilderResult = realBuilder.build(report, interactive, theme);
+        Map<String, Object> realModelBuilderResult = realBuilder.build(report, DEFAULT_THEME);
 
-        when(modelBuilder.build(any(), interactive, theme)).thenReturn(realModelBuilderResult);
+        when(modelBuilder.build(any(), eq(DEFAULT_THEME))).thenReturn(realModelBuilderResult);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -169,7 +174,7 @@ class ScanReportRestControllerMockTest {
         reportModelBuilderResult.put("redList", Arrays.asList(new SecHubFinding()));
         reportModelBuilderResult.put("codeScanEntries", new ArrayList<>());
 
-        when(modelBuilder.build(any(), interactive, theme)).thenReturn(reportModelBuilderResult);
+        when(modelBuilder.build(any(), eq(DEFAULT_THEME))).thenReturn(reportModelBuilderResult);
 
         /* execute + test @formatter:off */
         this.mockMvc.perform(
@@ -184,6 +189,12 @@ class ScanReportRestControllerMockTest {
                 );
 
         /* @formatter:on */
+    }
+
+    @Test
+    @WithMockUser
+    void get_interactive_report_contains_nonce_header_and_script_tags() throws Exception {
+        internalTestAcceptedAndReturnsHTML(MediaType.TEXT_HTML, true);
     }
 
     @Test
@@ -226,6 +237,10 @@ class ScanReportRestControllerMockTest {
     }
 
     private void internalTestAcceptedAndReturnsHTML(MediaType acceptedType) throws Exception {
+        internalTestAcceptedAndReturnsHTML(acceptedType, false);
+    }
+
+    private void internalTestAcceptedAndReturnsHTML(MediaType acceptedType, boolean interactive) throws Exception {
         /* prepare */
         ScanReport report = new ScanReport(randomUUID, PROJECT1_ID);
         report.setResult("{'count':'1'}");
@@ -235,19 +250,31 @@ class ScanReportRestControllerMockTest {
         when(downloadReportService.getObfuscatedScanSecHubReport(PROJECT1_ID, randomUUID)).thenReturn(scanSecHubReport);
 
         /* execute + test @formatter:off */
-        this.mockMvc.perform(
+        MvcResult result = this.mockMvc.perform(
         		get(https(PORT_USED).buildGetJobReportUrl(PROJECT1_ID,randomUUID)).accept(acceptedType).
-        			contentType(MediaType.APPLICATION_JSON_VALUE)
+        			contentType(MediaType.APPLICATION_JSON_VALUE).
+                    param("interactive", String.valueOf(interactive))
         		).
         			andExpect(status().isOk()).
         			andExpect(content().contentType("text/html;charset=UTF-8")).
         			andExpect(content().encoding("UTF-8")).
         			andExpect(content().string(containsString(randomUUID.toString()))).
-        			andExpect(content().string(containsString("theRedStyle"))
-
-        		);
-
+        			andExpect(content().string(containsString("theRedStyle"))).
+                    andReturn();
         /* @formatter:on */
+
+        MockHttpServletResponse response = result.getResponse();
+        String cspHeader = response.getHeader("Content-Security-Policy");
+        String contentAsString = response.getContentAsString();
+
+        if (interactive) {
+            assertThat(cspHeader).isNotEmpty();
+            assertThat(cspHeader).matches("script-src 'nonce-[a-zA-Z0-9]+' 'strict-dynamic';");
+            assertThat(contentAsString).containsPattern("<script src=\"/../js/events.js\" nonce=\"[a-zA-Z0-9]+\" defer></script>");
+        } else {
+            assertThat(cspHeader).isNull();
+            assertThat(contentAsString).doesNotContain("<script");
+        }
     }
 
     @TestConfiguration
@@ -257,12 +284,17 @@ class ScanReportRestControllerMockTest {
     }
 
     @BeforeEach
-    void beforeEach() throws Exception {
+    void beforeEach() {
+        ScanReport scanReport = new ScanReport(randomUUID, PROJECT1_ID);
+        ScanSecHubReport scanSecHubReport = new ScanSecHubReport(scanReport);
+        when(downloadReportService.getObfuscatedScanSecHubReport(anyString(), any())).thenReturn(scanSecHubReport);
+
         randomUUID = UUID.randomUUID();
 
         reportModelBuilderResult = new HashMap<>();
 
         /* define report model builder default result */
+        reportModelBuilderResult.put("theme", DEFAULT_THEME);
         reportModelBuilderResult.put("jobuuid", randomUUID);
         reportModelBuilderResult.put("styleRed", "theRedStyle");
         reportModelBuilderResult.put("styleGreen", "display:none");
@@ -276,7 +308,14 @@ class ScanReportRestControllerMockTest {
         reportModelBuilderResult.put("codeScanSupport", new HTMLCodeScanDescriptionSupport());
         reportModelBuilderResult.put("scanTypeSummaries", new ArrayList<>());
 
-        when(modelBuilder.build(any(), interactive, theme)).thenReturn(reportModelBuilderResult);
+        when(modelBuilder.build(any(), anyString())).thenReturn(reportModelBuilderResult);
+
+        when(modelBuilder.buildInteractiveReport(any(), anyString(), anyString())).thenAnswer(invocation -> {
+            Map<String, Object> model = modelBuilder.build(invocation.getArgument(0), invocation.getArgument(1));
+            model.put("interactive", true);
+            model.put("nonce", invocation.getArgument(2));
+            return model;
+        });
     }
 
 }

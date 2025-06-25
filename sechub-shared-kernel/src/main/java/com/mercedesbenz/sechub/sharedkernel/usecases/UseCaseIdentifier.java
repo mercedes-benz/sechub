@@ -36,8 +36,6 @@ public enum UseCaseIdentifier {
 
     UC_USER_GET_JOB_REPORT(10),
 
-    UC_USER_GET_LATEST_JOB_REPORT(11),
-
     UC_USER_GET_SPDX_JOB_REPORT(70),
 
     UC_USER_USES_CLIENT_TO_SCAN(11, true),

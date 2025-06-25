@@ -37,7 +37,6 @@ class LoginOAuth2SuccessHandlerTest {
     private static final String ACCESS_TOKEN = "this-is-a-plain-access-token";
     private static final Duration DEFAULT_EXPIRY = Duration.ofHours(1);
     private static final String BASE_PATH = "/";
-    private static final String REDIRECT_URI = "https://example.org/redirect-uri";
 
     private static final OAuth2AuthorizedClientService oAuth2AuthorizedClientService = mock();
     private static final AES256Encryption aes256Encryption = mock();
@@ -47,12 +46,13 @@ class LoginOAuth2SuccessHandlerTest {
     private static final OAuth2AuthorizedClient oauth2AuthorizedClient = mock();
     private static final OAuth2AccessToken oAuth2AccessToken = mock();
     private static final OAuth2TokenExpirationCalculator expirationCalculator = mock();
+    private static final LoginRedirectHandler loginRedirectHandler = mock();
     private static final LoginOAuth2SuccessHandler loginOAuth2SuccessHandler = new LoginOAuth2SuccessHandler(PROVIDER, oAuth2AuthorizedClientService,
-            aes256Encryption, REDIRECT_URI, null, expirationCalculator);
+            aes256Encryption, null, expirationCalculator, loginRedirectHandler);
 
     @BeforeEach
     void beforeEach() {
-        reset(aes256Encryption, httpServletResponse);
+        reset(aes256Encryption, httpServletResponse, loginRedirectHandler);
         when(aes256Encryption.encrypt(ArgumentMatchers.anyString())).thenReturn(ENCRYPTED_ACCESS_TOKEN_BYTES);
         when(oAuth2AuthorizedClientService.loadAuthorizedClient(PROVIDER, PRINCIPAL)).thenReturn(oauth2AuthorizedClient);
         when(authentication.getName()).thenReturn(PRINCIPAL);
@@ -78,7 +78,7 @@ class LoginOAuth2SuccessHandlerTest {
 
         /* test */
         verify(aes256Encryption).encrypt(ACCESS_TOKEN);
-        verify(httpServletResponse).sendRedirect(REDIRECT_URI);
+        verify(loginRedirectHandler).redirect(httpServletRequest, httpServletResponse);
         ArgumentMatcher<Cookie> argumentMatcher = cookie -> {
             /* @formatter:off */
             if (!ACCESS_TOKEN_COOKIE_NAME.equals(cookie.getName())) return false;

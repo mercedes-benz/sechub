@@ -56,7 +56,7 @@ public class ThymeLeafHTMLReportingTest {
     private static final Logger LOG = LoggerFactory.getLogger(ThymeLeafHTMLReportingTest.class);
 
     @BeforeAll
-    private static void beforAll() throws IOException {
+    public static void beforeAll() throws IOException {
         thymeleafTemplateEngine = new TemplateEngine();
         thymeleafTemplateEngine.setDialect(new SpringStandardDialect());
 
@@ -398,7 +398,7 @@ public class ThymeLeafHTMLReportingTest {
             scanReport.getMessages().add(new SecHubMessage(SecHubMessageType.ERROR, "I am an error"));
 
             storeAsJSONFileForDebuggingWhenTempFilesAreKept(JSONConverter.get().toJSON(scanReport, true), this);
-            Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport, interactive, theme);
+            Map<String, Object> tyhmeleafMap = reportModelBuilder.build(scanReport, "default");
             return tyhmeleafMap;
         }
 
