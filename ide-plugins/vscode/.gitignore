@@ -1,7 +1,13 @@
-node_modules
 out
-.vscode-test/
-!.vscode
+node_modules
+client/server
+.vscode-test
 
-# Plugin installation packages
-*.vsix
+client/testFixture/src/gitignore
+
+server/src/common/debugging/debugging-data.json
+
+tests/dev-test-helpers/features-cache.json
+
+.vscode
+.idea

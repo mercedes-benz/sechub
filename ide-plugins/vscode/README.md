@@ -1,106 +1,126 @@
-<!--- SPDX-License-Identifier: MIT -->
+# poc-vscode README
 
-# SecHub VSCode/VSCodium/Eclipse Theia plugin
-
-This is an VSCode/VSCodium/Eclipse Theia plugin for a convenient IDE integration of [SecHub](https://github.com/mercedes-benz/sechub).
+This is the README for your extension "poc-vscode". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 
-* Read and navigate through SecHub reports
-* Supported modules: `codeScan` and `secretScan`
+Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
 
-## Installation
+For example if there is an image subfolder under your extension project workspace:
 
-Recommended: Install the plugin from the Open-VSX marketplace from within [VSCodium](https://vscodium.com/) or [Eclipse Theia](https://theia-ide.org/) by searching for the term: `sechub` in the `Extensions` manager.
+\!\[feature X\]\(images/feature-x.png\)
 
-For VS Code you need to download the [plugin](https://open-vsx.org/extension/mercedes-benz/sechub) and install it manually. It is also possible to install the plugin manually in VSCodium and Eclipse Theia.
+> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
 
-NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extension/mercedes-benz/sechub>. The old Daimler plugin will be deprecated. The reason for the deprecation is the rebranding of Daimler to Mercedes-Benz.
+## Requirements
+
+If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+
+## Extension Settings
+
+Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+
+For example:
+
+This extension contributes the following settings:
+
+* `myExtension.enable`: Enable/disable this extension.
+* `myExtension.thing`: Set to `blah` to do something.
+
+## Known Issues
+
+Calling out known issues can help limit users opening duplicate issues against your extension.
+
+## Release Notes
+
+Users appreciate release notes as you update your extension.
+
+### 1.0.0
+
+Initial release of ...
+
+### 1.0.1
+
+Fixed issue #.
+
+### 1.1.0
+
+Added features X, Y, and Z.
+
+---
+
+## Following extension guidelines
+
+Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+
+* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+
+## Working with Markdown
+
+You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+
+* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
+* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
+* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+
+## For more information
+
+* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
+* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
+
+**Enjoy!**
 
 ## Development
 
-### Develop
+1. strat proxy
 
-1. Install Node.js
+```shell
+node proxy.js
+```
 
-    * [Windows, macOS and Linux](https://nodejs.org/en/download)
-    * [`deb` and `rpm` packages (Debian/Ubuntu, RHEL/Fedora etc.)](https://github.com/nodesource/distributions/tree/master)
-    * [Node.js releases](https://nodejs.dev/en/about/releases/)
+## Troubleshooting
 
-2. Install Typescript compiler
+- https self signed cert: no control in webView -> Proxy does only parially solve problem (bc login redirect to https://)
 
-    ~~~
-    npm install -g typescript
+- x-frame-options DENY and SAME_ORIGIN -> not usable in webView (works only when off)
 
-    # or on Linux
+- Cookies Blocked: SECHUB_CLASSIC_AUTH_CREDENTIALS (wegen sameSite=Lax), JSESSIONID (evtl. wegen proxy?)
 
-    sudo npm install -g typescript
+- Bisher Aside mit TreeDataProvider -> irgendwie komisch mit WebView (https://github.com/microsoft/vscode/pull/247214)
 
-    # check version
-    tsc --version
-    ~~~
+- package.json webview in aside geht aktuell noch nicht
+```json
+...
+ "activationEvents": [
+    "onView:sechub.start"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sechub.start",
+        "title": "Start sechub session",
+        "category": "SecHub"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "type": "webview",
+          "id": "sechub",
+          "name": "SecHub",
+          "icon": "/media/sechub-logo-vscode-styled.svg"
+        }
+      ]
+    }
+  },
+  ...
+  ```
 
-3. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
+## Possible solutions
 
-    NOTE: VSCodium and Eclipse Theia distribute free/libre open source software binaries. VS Code, on the other hand, distributes non-free binaries and collects telemetry data.
+- DEV Deploy mit x-frame-options = same origin aber nicht geeignet für development
 
-4. In VSCodium toolbar: `Run -> Start Debugging`.
+## Example Project:
 
-    ![image](README/start_debugging.png)
-
-### Test
-
-Prerequisite: The Node package manager NPM needs to be installed.
-
-1. Install dependencies
-
-    ~~~
-    npm install
-    ~~~
-
-2. Compile and run tests
-
-    ~~~
-    npm test
-    ~~~
-
-    NOTE: The test automatically downloads and runs VS Code.
-
-### Build
-
-1. Install the vsce cli tool
-
-    ~~~
-    npm install -g @vscode/vsce
-
-    # or on Linux
-
-    sudo npm install -g @vscode/vsce
-    ~~~
-
-2. Build the plugin
-
-    ~~~
-    vsce package
-    ~~~
-
-## Contributing
-
-We welcome any contributions.
-If you want to contribute to this project, please read the [contributing guide](CONTRIBUTING.md).
-
-## Code of Conduct
-
-Please read our [Code of Conduct](https://github.com/mercedes-benz/foss/blob/master/CODE_OF_CONDUCT.md) as it is our base for interaction.
-
-## License
-
-This project is licensed under the link:LICENSE[MIT LICENSE].
-
-## Provider Information
-
-Please visit https://www.mercedes-benz-techinnovation.com/en/imprint/ for information on the provider.
-
-Notice: Before you use the program in productive use, please take all necessary precautions,
-e.g. testing and verifying the program with regard to your specific use.
-The program was tested solely for our own use cases, which might differ from yours.
+- https://github.com/microsoft/vscode-extension-samples/blob/main/webview-sample/README.md

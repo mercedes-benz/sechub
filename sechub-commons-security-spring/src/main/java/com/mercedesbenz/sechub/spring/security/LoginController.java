@@ -49,6 +49,7 @@ class LoginController {
     private static final Set<String> ALLOWED_TABS = Set.of(OAUTH2_TAB, CLASSIC_TAB);
     private static final String DEFAULT_THEME = "default";
     private static final String JETBRAINS_THEME = "jetbrains";
+    private static final String VSCODE_THEME = "vscode";
 
     private final SecHubSecurityProperties.LoginProperties loginProperties;
     private final boolean isOAuth2Enabled;
@@ -75,7 +76,7 @@ class LoginController {
         // TODO: alternatively whitelist the redirectPath so that no redirect to other domains is possible
 
         /* @formatter:on */
-        if (!Set.of(JETBRAINS_THEME, DEFAULT_THEME).contains(theme)) {
+        if (!Set.of(JETBRAINS_THEME, DEFAULT_THEME, VSCODE_THEME).contains(theme)) {
             throw new ResponseStatusException(BAD_REQUEST, "Invalid theme");
         }
 

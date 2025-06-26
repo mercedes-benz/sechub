@@ -1,98 +1,140 @@
-// SPDX-License-Identifier: MIT
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as path from 'path';
 import * as vscode from 'vscode';
-import * as callHierarchyViewActions from './action/callHierarchyViewActions';
-import * as importActions from './action/importActions';
-import * as reportViewActions from './action/reportViewActions';
-import { FileLocationExplorer } from './fileLocationExplorer';
-import { FindingNodeLinkBuilder } from './model/findingNodeLinkBuilder';
-import * as secHubModel from './model/sechubModel';
-import { HierarchyItem, SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
-import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvider';
-import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('SecHub plugin activation requested.');
-	
-	let loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
-	let initialFindingModel = undefined;
-	if (loadTestData) {
-		initialFindingModel = secHubModel.loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
-	}
+    context.subscriptions.push(
+        vscode.commands.registerCommand('sechub.start', () => {
+            SecHubPanel.createOrShow(context.extensionUri);
+        })
+    );
 
-	let secHubContext: SecHubContext = new SecHubContext(initialFindingModel, context);
-
-	buildReportView(secHubContext);
-	buildCallHierarchyView(secHubContext);
-	buildInfoView(secHubContext);
-
-	hookActions(secHubContext);
-
-	console.log('SecHub plugin has been activated.');
+    if (vscode.window.registerWebviewPanelSerializer) {
+        vscode.window.registerWebviewPanelSerializer(SecHubPanel.viewType, {
+            async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: unknown) {
+                console.log(`Got state: ${state}`);
+                webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+                SecHubPanel.revive(webviewPanel, context.extensionUri);
+            }
+        });
+    }
 }
 
-function buildReportView(context: SecHubContext) {
-	var view =vscode.window.createTreeView('sechubReportView', {
-		treeDataProvider: context.reportTreeProvider
-	});
-	context.reportView=view;
+function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
+    return {
+        enableScripts: true,
+        localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
+    };
 }
 
-function buildCallHierarchyView(context: SecHubContext) {
-	var view = vscode.window.createTreeView('sechubCallHierarchyView', {
-		treeDataProvider: context.callHierarchyTreeDataProvider
-	});
-	context.callHierarchyView=view;
-}
+class SecHubPanel {
+    public static currentPanel: SecHubPanel | undefined;
+    public static readonly viewType = 'sechub';
 
-function buildInfoView(context: SecHubContext) {
-	vscode.window.createTreeView('sechubInfoView', {
-		treeDataProvider: context.infoTreeProvider
-	});
-}
+    private readonly _panel: vscode.WebviewPanel;
+    private readonly _extensionUri: vscode.Uri;
+    private _disposables: vscode.Disposable[] = [];
 
-function hookActions(context: SecHubContext) {
-	importActions.hookImportAction(context);
-	reportViewActions.hookReportItemActions(context);
-	callHierarchyViewActions.hookHierarchyItemActions(context);
-}
+    public static createOrShow(extensionUri: vscode.Uri) {
+        const column = vscode.window.activeTextEditor
+            ? vscode.window.activeTextEditor.viewColumn
+            : undefined;
 
+        if (SecHubPanel.currentPanel) {
+            SecHubPanel.currentPanel._panel.reveal(column);
+            return;
+        }
 
-export class SecHubContext {
-	callHierarchyView: vscode.TreeView<HierarchyItem|undefined> | undefined = undefined;
-	reportView: vscode.TreeView<ReportItem> | undefined = undefined;
+        const panel = vscode.window.createWebviewPanel(
+            SecHubPanel.viewType,
+            'SecHub Login',
+            column || vscode.ViewColumn.One,
+            getWebviewOptions(extensionUri),
+        );
 
-	findingNodeLinkBuilder: FindingNodeLinkBuilder;
-	callHierarchyTreeDataProvider: SecHubCallHierarchyTreeDataProvider;
-	reportTreeProvider: SecHubReportTreeDataProvider;
-	infoTreeProvider: SecHubInfoTreeDataProvider;
-	findingModel: secHubModel.FindingModel | undefined;
-	extensionContext: vscode.ExtensionContext;
-	fileLocationExplorer: FileLocationExplorer;
+        SecHubPanel.currentPanel = new SecHubPanel(panel, extensionUri);
+    }
 
-	constructor(findingModel: secHubModel.FindingModel | undefined, extensionContext: vscode.ExtensionContext,
-	) {
-		this.reportTreeProvider = new SecHubReportTreeDataProvider(findingModel);
-		this.callHierarchyTreeDataProvider = new SecHubCallHierarchyTreeDataProvider(undefined);
-		this.infoTreeProvider = new SecHubInfoTreeDataProvider(undefined, undefined);
-		this.extensionContext = extensionContext;
-		this.fileLocationExplorer = new FileLocationExplorer();
-		this.findingNodeLinkBuilder = new FindingNodeLinkBuilder();
+    public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+        SecHubPanel.currentPanel = new SecHubPanel(panel, extensionUri);
+    }
 
-		/* setup search folders for explorer */
-		let workspaceFolders = vscode.workspace.workspaceFolders; // get the open folder path
-		workspaceFolders?.forEach((workspaceFolder) => {
-			this.fileLocationExplorer.searchFolders.add(workspaceFolder.uri.fsPath);
-		});
+    private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+        this._panel = panel;
+        this._extensionUri = extensionUri;
 
-	}
-}
+        this._update();
 
-export function deactivate() { }
+        this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
-function resolveFileLocation(testfile: string): string {
-	let testReportLocation = path.dirname(__filename) + "/../src/test/suite/" + testfile;
-	return testReportLocation;
+        this._panel.onDidChangeViewState(
+            () => {
+                if (this._panel.visible) {
+                    this._update();
+                }
+            },
+            null,
+            this._disposables
+        );
+
+        this._panel.webview.onDidReceiveMessage(
+            message => {
+                switch (message.command) {
+                    case 'alert':
+                        vscode.window.showErrorMessage(message.text);
+                        return;
+                }
+            },
+            null,
+            this._disposables
+        );
+    }
+
+    public dispose() {
+        SecHubPanel.currentPanel = undefined;
+
+        this._panel.dispose();
+
+        while (this._disposables.length) {
+            const x = this._disposables.pop();
+            if (x) {
+                x.dispose();
+            }
+        }
+    }
+
+    private _update() {
+        const webview = this._panel.webview;
+        this._panel.title = 'SecHub Login';
+        this._panel.webview.html = this._getHtmlForWebview(webview);
+    }
+
+    private _getHtmlForWebview(webview: vscode.Webview) {
+        const theme = 'vscode'
+        const redirectUri = 'http://localhost:3000'
+
+        // const loginPageUrl = 'https://localhost:8443/login?theme=jetbrains&redirectUri=/api/projects'; // problem: ssl certificates
+        const loginPageUrl = `http://localhost:8000/login?theme=${theme}&redirectUri=${redirectUri}/`; // problem: http login redirect auf https (immer)
+        // const loginPageUrl = `http://localhost:8000/login?theme=${theme}`;
+        // const loginPageUrl = 'https://sechub-dev.app.corpintra.net/login' // problem: x-frame-options
+        // const loginPageUrl = 'http://localhost:3000/login' // problem: auch https redirect, nur web-ui funktioniert 
+
+        return `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>SecHub Login</title>
+                <style>
+                    .iframe-error {
+                        color: red;
+                        margin-top: 20px;
+                        display: none;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>SecHub Plugin</h1>
+				<iframe id="loginFrame" src="${loginPageUrl}" width="100%" height="500px" frameborder="0"></iframe>
+            </body>
+            </html>`;
+    }
 }
