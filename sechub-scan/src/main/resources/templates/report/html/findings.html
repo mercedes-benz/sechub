@@ -31,7 +31,7 @@
 
 <th:block th:fragment="renderFindings(finding,scanTypeFindingData)">
 <td>
-    <input type="checkbox" class="markFalsePositive" th:id="${finding.id}">
+    <input th:if="${interactive}" type="checkbox" class="markFalsePositive" th:id="${finding.id}">
 </td>
 <td th:text="${finding.id}" th:id="${reportHelper.createFindingAnkerId(finding)}">
     4711

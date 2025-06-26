@@ -38,7 +38,7 @@
     <div class="header">
         <table>
 
-            <tr class="actions">
+            <tr th:if="${interactive}" class="actions">
                 <td>
                     <button id="startScan" class="actionButtonMain">Start Scan</button>
                 </td>
@@ -208,6 +208,8 @@
    </div>
 </div>
 
+    <!-- Inline scripting is not possible due to CSP -->
+    <!-- Therefore, we handle all events in a central location with a common NONCE -->
     <script th:if="${interactive}" th:src="@{/../js/events.js}" th:nonce="${nonce}" defer></script>
 </body>
 </html>

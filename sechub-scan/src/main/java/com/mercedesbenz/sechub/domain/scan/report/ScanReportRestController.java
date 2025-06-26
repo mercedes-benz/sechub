@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableAutoConfiguration
 @RequestMapping(APIConstants.API_PROJECT + "{projectId}") // API like https://developer.github.com/v3/issues/labels/#create-a-label
 @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_SUPERADMIN })
-public class ScanReportController {
+public class ScanReportRestController {
 
     private static final String CONTENT_SECURITY_POLICY_HEADER = "Content-Security-Policy";
     private static final String SCRIPT_SRC_NONCE_HEADER_VALUE_FORMAT = "script-src 'nonce-%s' 'strict-dynamic';";

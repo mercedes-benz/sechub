@@ -37,7 +37,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.domain.scan.report.*;
-import com.mercedesbenz.sechub.domain.scan.report.ScanReportController;
+import com.mercedesbenz.sechub.domain.scan.report.ScanReportRestController;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc.SpringRestDocOutput;
 import com.mercedesbenz.sechub.sharedkernel.usecases.user.execute.UseCaseUserDownloadsJobReport;
@@ -47,10 +47,10 @@ import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(ScanReportController.class)
-@ContextConfiguration(classes = { ScanReportController.class, ScanReportControllerDocTest.SimpleTestConfiguration.class })
+@WebMvcTest(ScanReportRestController.class)
+@ContextConfiguration(classes = { ScanReportRestController.class, ScanReportRestControllerDocTest.SimpleTestConfiguration.class })
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = ExampleConstants.URI_SECHUB_SERVER, uriPort = 443)
-public class ScanReportControllerDocTest implements TestIsNecessaryForDocumentation {
+public class ScanReportRestControllerDocTest implements TestIsNecessaryForDocumentation {
 
     private static final String PROJECT1_ID = "project1";
 

@@ -34,9 +34,9 @@ import com.mercedesbenz.sechub.domain.scan.report.*;
 import com.mercedesbenz.sechub.test.TestPortProvider;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(ScanReportController.class)
-@ContextConfiguration(classes = { ScanReportController.class, ScanReportControllerMockTest.SimpleTestConfiguration.class })
-class ScanReportControllerMockTest {
+@WebMvcTest(ScanReportRestController.class)
+@ContextConfiguration(classes = { ScanReportRestController.class, ScanReportRestControllerMockTest.SimpleTestConfiguration.class })
+class ScanReportRestControllerMockTest {
 
     private static final String PROJECT1_ID = "project1";
 

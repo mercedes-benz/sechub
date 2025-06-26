@@ -1,4 +1,3 @@
-// report.js
 
 document.getElementById("startScan")?.addEventListener("click", () => {
     window.dispatchEvent(new CustomEvent("START_SCAN"));
