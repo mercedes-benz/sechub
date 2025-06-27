@@ -1,0 +1,11 @@
+:root {
+    --text-color: #fff;
+    --primary-color: #28a745;
+    --primary-color-dark: #218838;
+    --background-default: #0D0D0D;
+    --background-paper: #1A1A1A;
+    --layer-01: #333333;
+    --warning: #FACC00;
+    --error: #FF4A4A;
+    --success: #21A330;
+}

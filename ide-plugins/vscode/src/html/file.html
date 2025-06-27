@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecHub Login</title>
+    <link href="/login/favicon.ico" rel="icon" />
+    <link href="/login/css/main.css" rel="stylesheet" />
+    <link href="/login/css/login.css" rel="stylesheet"/>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('requestApiTokenForm');
+            form.addEventListener('submit', handleFormSubmit);
+        });
+    </script>
+    <script type="text/javascript" src="/login/js/login.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="login-section">
+        <h1>Login</h1>
+
+        
+
+        
+
+        <div class="login-option  active">
+            <h4>Login with your provided User ID & API Token.</h4>
+
+            
+
+            <form action="/login" method="POST">
+                <label for="id">User ID</label>
+                <input type="text" id="id" name="username" required>
+                <label for="apiToken">API Token</label>
+                <input type="password" id="apiToken" name="password" required>
+                <div class="button-space"></div>
+                <button type="submit">Login</button>
+            </form>
+
+            <div class="register">
+                <p>Don't have an account? <a href="/register">Register</a></p>
+                <p>Forgot API Token? <a href="#" onclick="openModal('forgetApiTokenModal')">Request new Token</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The forgetApiTokenModal Modal -->
+<div id="forgetApiTokenModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('forgetApiTokenModal')">&times;</span>
+        <h2>Request New API Token</h2>
+        <form id="requestApiTokenForm">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+
+<!-- Custom Alert Modal -->
+<div id="alertModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('alertModal')">&times;</span>
+        <p id="alertMessage"></p>
+        <button onclick="closeModal('alertModal')">OK</button>
+    </div>
+</div>
+</body>
+</html>

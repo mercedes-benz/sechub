@@ -1,4 +1,9 @@
 import * as vscode from 'vscode';
+import * as  https from 'https';
+import * as path from 'path';
+import * as fs from 'fs';
+import axios from 'axios';
+import { load } from 'cheerio';
 
 export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
@@ -101,13 +106,88 @@ class SecHubPanel {
         }
     }
 
-    private _update() {
+    private async _update() {
         const webview = this._panel.webview;
         this._panel.title = 'SecHub Login';
-        this._panel.webview.html = this._getHtmlForWebview(webview);
+        
+        const filePath: vscode.Uri = vscode.Uri.file(path.join(this._extensionUri.fsPath, 'src', 'html', 'file.html'));
+        const loginUrl = 'https://localhost:8443/login?theme=vscode&redirectUri=http://localhost:3000';
+        
+        // LOGIN
+        // login download and render
+        // const html = await fetchAndSaveContent(loginUrl, this._extensionUri.fsPath, webview);
+        // direct login this._panel.webview.html = this._getHtmlForWebview(webview);
+
+        // REPORT (BASIC AUTH)
+        const jobUUID = 'af026a36-8e15-40b5-9bd5-0f486245f9c5'
+        const interactive = true
+        const theme = 'jetbrains'
+        const projectId = 'test-checkmarx'
+        const reportUrl = `https://localhost:8443/api/project/${projectId}/report/${jobUUID}?interactive=${interactive}&theme=${theme}`;
+        const username = 'int-test_superadmin'
+        const password = 'int-test_superadmin-pwd'
+
+        const html = await fetchReport(reportUrl, username, password);
+
+        // REPORT EVENTS
+        // Attention: can only be loaded when in html (not as extra .js file!!)
+        // Inject event bridge script into the HTML to catch events in vscode
+        const injectedScript = `
+            <script>
+                window.addEventListener("START_SCAN", () => {
+                    vscode.postMessage({ command: "startScan" });
+                });
+                window.addEventListener("GO_TO_WEB_UI", () => {
+                    vscode.postMessage({ command: "goToWebUi" });
+                });
+                window.addEventListener("MARK_FALSE_POSITIVE", (e) => {
+                    vscode.postMessage({ command: "markFalsePositive", findingId: e.detail?.findingId });
+                });
+                window.addEventListener("UNMARK_FALSE_POSITIVE", (e) => {
+                    vscode.postMessage({ command: "unmarkFalsePositive", findingId: e.detail?.findingId });
+                });
+                window.addEventListener("JUMP_TO_LOCATION", (e) => {
+                    vscode.postMessage({ command: "jumpToLocation", detail: e.detail });
+                });
+                // VSCode API bridge
+                const vscode = acquireVsCodeApi();
+            </script>
+        `;
+
+        // Insert the script before </body>
+        const htmlWithBridge = html.replace(/<\/body>/i, injectedScript + '</body>');
+
+        this._panel.webview.html = htmlWithBridge;
+
+        // Listen for messages from the webview
+        this._panel.webview.onDidReceiveMessage(
+            message => {
+                switch (message.command) {
+                    case 'startScan':
+                        vscode.window.showInformationMessage('Starting scan...');
+                        break;
+                    case 'goToWebUi':
+                        vscode.window.showInformationMessage('Navigating to Web UI...');
+                        break;
+                    case 'markFalsePositive':
+                        vscode.window.showInformationMessage(`Marking ${message.findingId} as false positive.`);
+                        break;
+                    case 'unmarkFalsePositive':
+                        vscode.window.showInformationMessage(`Unmarking ${message.findingId} as false positive.`);
+                        break;
+                    case 'jumpToLocation':
+                        vscode.window.showInformationMessage(`Jumping to location: ${message.detail.location}`);
+                        break;
+                }
+            },
+            undefined,
+            this._disposables
+        );
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
+        // login direct in iframe
+
         const theme = 'vscode'
         const redirectUri = 'http://localhost:3000'
 
@@ -138,3 +218,78 @@ class SecHubPanel {
             </html>`;
     }
 }
+
+async function fetchAndSaveContent(url: string, baseDir: string, webview: vscode.Webview): Promise<string> {
+    // login download and render
+
+    try {
+        const response = await axios.get(url, { httpsAgent: new https.Agent({ rejectUnauthorized: false }) });
+        let html = response.data;
+        const $ = load(html);
+
+        // Modify form action to point to the correct backend URL
+        $('form[action="/login"]').attr('action', 'https://localhost:8443/login');
+        console.log('Form action modified:', $('form').attr('action')); // Debugging: Log the form action
+
+
+        const resources = [
+            ...Array.from($('link[rel="stylesheet"]')).map(link => $(link).attr('href')),
+            ...Array.from($('script[src]')).map(script => $(script).attr('src')),
+            ...Array.from($('img[src]')).map(img => $(img).attr('src'))
+        ];
+
+        for (const resourceUrl of resources) {
+            if (resourceUrl) {
+                const absoluteUrl = new URL(resourceUrl, url).href;
+                const resourcePath = path.join(baseDir, 'media', path.basename(resourceUrl));
+                await fetchResource(absoluteUrl, resourcePath);
+
+                // Update HTML to reference local paths
+                const localPath = webview.asWebviewUri(vscode.Uri.file(resourcePath)).toString();
+                html = html.replace(new RegExp(resourceUrl, 'g'), localPath);
+                console.log(html)
+            }
+        }
+
+        return $.html(); // Return the modified HTML
+    } catch (error) {
+        console.error('Error fetching URL:', error);
+        return '';
+    }
+}
+
+async function fetchResource(url: string, filePath: string) {
+    try {
+        const response = await axios.get(url, { responseType: 'arraybuffer', httpsAgent: new https.Agent({ rejectUnauthorized: false }) });
+        fs.writeFileSync(filePath, response.data);
+        console.log(`Resource saved: ${filePath}`);
+    } catch (error) {
+        console.error(`Error fetching resource ${url}:`, error);
+    }
+}
+
+async function fetchReport(reportUrl: string, username: string, password: string) {
+
+    try {
+        const response = await axios.get(reportUrl, {
+            auth: {
+                username: username,
+                password: password
+            },
+            httpsAgent: new https.Agent({
+                rejectUnauthorized: false 
+            }),
+            headers: {
+                'Accept': 'text/html', // Set the Accept header to text/html
+                'Content-Type': 'text/html;charset=UTF-8'
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching report:', error);
+        return '<h1>Error loading report</h1>';
+    }
+}
+
+export function deactivate() {}
