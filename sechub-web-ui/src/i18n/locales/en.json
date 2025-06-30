@@ -62,7 +62,7 @@
     "PROJECT_SETTINGS_DIALOG_PROJECT_MEMBER": "Project member",
     "PROJECT_SETTINGS_DIALOG_PROJECT_OWNER": "Project owner",
     "PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED": "Unable to assign new user to project.",
-    "PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED_USER_NOT_EXIST": "The requested user does not exist in SecHub. Please sign up the user.",
+    "PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED_USER_NOT_EXIST": "The requested user does not exist in SecHub. Please contact your administrator.",
     "PROJECT_SETTINGS_PROJECT_UNASSIGN_USER_FAILED": "Unable to remove user from project",
     "PROJECT_SETTINGS_CONFIRM_REMOVE_USER_TITLE": "Confirm Remove User",
     "PROJECT_SETTINGS_CONFIRM_REMOVE_USER_TEXT": "Are you sure you want to remove the user from the project? He will loose access to this project.",
