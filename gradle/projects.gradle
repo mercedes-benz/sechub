@@ -27,6 +27,7 @@ projectType = [
                project(':sechub-systemtest'),
                project(':sechub-pds-tools'),
                project(':sechub-examples:example-sechub-api-java'),
+               project(':sechub-ide-plugin-jetbrains')
             ],
 
             publishedLibraries: [

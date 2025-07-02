@@ -10,11 +10,11 @@ on:
       - 'master'
     paths:
       - '.github/workflows/sechub-plugin-jetbrains-gradle.yml'
-      - 'ide-plugins/jetbrains/**'
+      - '../../jetbrains/**'
   pull_request:
     paths:
       - '.github/workflows/sechub-plugin-jetbrains-gradle.yml'
-      - 'ide-plugins/jetbrains/**'
+      - '../../jetbrains/**'
   # enable manual triggering of workflow
   workflow_dispatch:
 

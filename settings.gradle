@@ -109,8 +109,13 @@ include 'sechub-cli',
 /* PDS tools */
 'sechub-pds-tools',
 
+/* Plugins */
+'sechub-ide-plugin-jetbrains',
+
 // Examples (are below 'sechub-examples' folder)
 'sechub-examples:example-sechub-api-java'
+
+
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

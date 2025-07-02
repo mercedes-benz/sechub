@@ -1,0 +1,54 @@
+// SPDX-License-Identifier: MIT
+
+plugins {
+    // see https://github.com/JetBrains/gradle-intellij-plugin and
+    // https://plugins.gradle.org/plugin/org.jetbrains.intellij
+    id 'org.jetbrains.intellij' version '1.17.4'
+
+    // https://github.com/JetBrains/gradle-changelog-plugin#initializechangelog
+    id("org.jetbrains.changelog") version "2.2.1"
+}
+
+// Info: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration-intellij-extension
+dependencies {
+    implementation project(':sechub-openapi-java-client')
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+}
+
+apply plugin: "org.jetbrains.intellij"
+
+group 'com.mercedesbenz.sechub'
+version '0.5.0'
+
+sourceSets{
+    main{
+        java{
+            srcDirs 'src/main/java', 'src/main/java-intellij'
+        }
+    }
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    // we chose 2023.1.1 - to have compatibility to Android Studio (Hedgehog, 2023.1.1 is last stable release at the moment)
+    // https://developer.android.com/studio/releases/
+    // https://plugins.jetbrains.com/docs/intellij/android-studio-releases-list.html#2023
+    version= '2023.1.1'
+    type = 'IC'
+    plugins = ['java']
+}
+
+patchPluginXml {
+    sinceBuild = '231'
+    untilBuild =''
+}
+
+signPlugin {
+    certificateChain = System.getenv("SECHUB_CERTIFICATE_CHAIN")
+    privateKey = System.getenv("SECHUB_PRIVATE_KEY")
+    password = System.getenv("SECHUB_PRIVATE_KEY_PASSWORD")
+}
+
+publishPlugin {
+    token = System.getenv("SECHUB_INTELLIJ_PUBLISH_TOKEN")
+}
