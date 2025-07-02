@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 # OpenApi Generator for TypeScript
 
 ## Usage
