@@ -6,12 +6,14 @@ import axios from 'axios';
 import { load } from 'cheerio';
 
 export function activate(context: vscode.ExtensionContext) {
+    // Register the main command
     context.subscriptions.push(
         vscode.commands.registerCommand('sechub.start', () => {
             SecHubPanel.createOrShow(context.extensionUri);
         })
     );
 
+    // Register the webview panel serializer if supported
     if (vscode.window.registerWebviewPanelSerializer) {
         vscode.window.registerWebviewPanelSerializer(SecHubPanel.viewType, {
             async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: unknown) {
@@ -21,6 +23,40 @@ export function activate(context: vscode.ExtensionContext) {
             }
         });
     }
+
+    // Function to prompt for and store credentials
+    async function promptForCredentials() {
+        const username = await vscode.window.showInputBox({ prompt: 'Enter your Sechub username' });
+        const password = await vscode.window.showInputBox({ prompt: 'Enter your Sechub apitoken', password: true });
+
+        if (username && password) {
+            //     const secrets: SecretStorage = context.secrets;
+            await context.secrets.store('sechub.username', username);
+            await context.secrets.store('sechub.password', password);
+            vscode.window.showInformationMessage('Sechub credentials stored securely!');
+        } else {
+            vscode.window.showWarningMessage('Sechub credentials not provided.');
+        }
+    }
+
+    async function checkCredentials() {
+        const username = await context.secrets.get('sechub.username');
+        const password = await context.secrets.get('sechub.password');
+
+        if (!username || !password) {
+            await promptForCredentials();
+        } else {
+            vscode.window.showInformationMessage(`Sechub credentials already stored. Username: ${username}`);
+        }
+    }
+
+    checkCredentials();
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('sechub.setCredentials', async () => {
+            await promptForCredentials();
+        })
+    );
 }
 
 function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
@@ -109,16 +145,22 @@ class SecHubPanel {
     private async _update() {
         const webview = this._panel.webview;
         this._panel.title = 'SecHub Login';
+        const theme = 'vscode';
+        const redirectUri = 'http://localhost:3000';
         
         const filePath: vscode.Uri = vscode.Uri.file(path.join(this._extensionUri.fsPath, 'src', 'html', 'file.html'));
         const loginUrl = 'https://localhost:8443/login?theme=vscode&redirectUri=http://localhost:3000';
+        const httpLogin = `http://localhost:8000/login?theme=${theme}&redirectUri=${redirectUri}/`;
+
         
         // LOGIN
         // login download and render
         // const html = await fetchAndSaveContent(loginUrl, this._extensionUri.fsPath, webview);
-        // direct login this._panel.webview.html = this._getHtmlForWebview(webview);
+        // login direct
+        this._panel.webview.html = this._getHtmlForWebview(httpLogin)
 
         // REPORT (BASIC AUTH)
+        /*
         const jobUUID = 'af026a36-8e15-40b5-9bd5-0f486245f9c5'
         const interactive = true
         const theme = 'jetbrains'
@@ -183,16 +225,13 @@ class SecHubPanel {
             undefined,
             this._disposables
         );
+        */
     }
 
-    private _getHtmlForWebview(webview: vscode.Webview) {
-        // login direct in iframe
-
-        const theme = 'vscode'
-        const redirectUri = 'http://localhost:3000'
+    private _getHtmlForWebview(loginPageUrl: string) {
 
         // const loginPageUrl = 'https://localhost:8443/login?theme=jetbrains&redirectUri=/api/projects'; // problem: ssl certificates
-        const loginPageUrl = `http://localhost:8000/login?theme=${theme}&redirectUri=${redirectUri}/`; // problem: http login redirect auf https (immer)
+        // const loginPageUrl = `http://localhost:8000/login?theme=${theme}&redirectUri=${redirectUri}/`; // problem: http login redirect auf https (immer)
         // const loginPageUrl = `http://localhost:8000/login?theme=${theme}`;
         // const loginPageUrl = 'https://sechub-dev.app.corpintra.net/login' // problem: x-frame-options
         // const loginPageUrl = 'http://localhost:3000/login' // problem: auch https redirect, nur web-ui funktioniert 
@@ -212,7 +251,7 @@ class SecHubPanel {
                 </style>
             </head>
             <body>
-                <h1>SecHub Plugin</h1>
+                <h1>SecHub Plugin Webview</h1>
 				<iframe id="loginFrame" src="${loginPageUrl}" width="100%" height="500px" frameborder="0"></iframe>
             </body>
             </html>`;

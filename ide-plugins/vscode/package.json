@@ -19,8 +19,24 @@
         "command": "sechub.start",
         "title": "Start sechub session",
         "category": "SecHub"
+      },
+      {
+        "command": "sechub.setCredentials",
+        "title": "Set SecHub credentials",
+        "category": "SecHub"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "SecHub",
+      "type": "object",
+      "properties": {
+        "sechub.serverUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Server URL for the extension"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
