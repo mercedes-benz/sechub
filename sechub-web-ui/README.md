@@ -26,11 +26,13 @@ npm install
 
 ### Build the openAPI SecHub Client
 
-To generate the SecHub openAPI Client use:
+To generate the SecHub openAPI Client switch to the sechub-openapi-types directory and see [README.md](../sechub-openapi-typescript/README.md) for instructions.
+
+### link the generated client to your local npm environment
 
 ```bash
-npm run generate-api-client
- ```
+npm link sechub-openapi-typescript
+```
 
 ## Usage
 

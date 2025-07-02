@@ -4,9 +4,9 @@ import {
   SecHubConfiguration,
   UserApproveJobRequest,
   UserCreateNewJobRequest,
-} from '@/generated-sources/openapi'
-import executionApi from './executionService'
+} from 'sechub-openapi-typescript/src/generated-sources/openapi'
 import { createSha256Checksum } from '../../utils/cryptoUtils'
+import defaultClient from '../defaultClient'
 import { UserUploadsBinariesWorkaroundRequest, UserUploadSourceCodeWorkaroundRequest } from '@/services/executionService/executionService'
 import i18n from '@/i18n'
 import {
@@ -42,7 +42,7 @@ class ScanService {
     }
 
     try {
-      const result: SchedulerResult = await executionApi.userCreateNewJob(requestParameters)
+      const result: SchedulerResult = await defaultClient.withExecutionApi.userCreateNewJob(requestParameters)
       return result.jobId
     } catch (error) {
       console.error('Job creation failed:', error)
@@ -64,7 +64,7 @@ class ScanService {
       }
 
       try {
-        await executionApi.userUploadSourceCode(requestParameters)
+        await defaultClient.withExecutionApi.userUploadSourceCode(requestParameters)
       } catch (error) {
         console.error('Source code upload failed:', error)
         handleApiError(error)
@@ -84,7 +84,7 @@ class ScanService {
       }
 
       try {
-        await executionApi.userUploadsBinaries(requestParameters)
+        await defaultClient.withExecutionApi.userUploadsBinaries(requestParameters)
       } catch (error) {
         console.error('Binary upload failed:', error)
         handleApiError(error)
@@ -108,7 +108,7 @@ class ScanService {
     }
 
     try {
-      await executionApi.userApproveJob(requestParameters)
+      await defaultClient.withExecutionApi.userApproveJob(requestParameters)
     } catch (error) {
       console.error('Job approval failed:', error)
       handleApiError(error)
