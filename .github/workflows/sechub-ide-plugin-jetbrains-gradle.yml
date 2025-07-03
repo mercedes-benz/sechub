@@ -4,17 +4,17 @@ name: SecHub Jetbrains Plugin Java build
 on:
   push:
     branches:
-      - 'develop'
-      - 'hotfix'
-      - 'main'
-      - 'master'
+      - develop
+      - hotfix
+      - main
+      - master
     paths:
-      - '.github/workflows/sechub-ide-plugin-jetbrains-gradle.yml'
-      - 'sechub-ide-plugin-jetbrains/**'
+      - .github/workflows/sechub-ide-plugin-jetbrains-gradle.yml
+      - sechub-ide-plugin-jetbrains/**
   pull_request:
     paths:
-      - '.github/workflows/sechub-ide-plugin-jetbrains-gradle.yml'
-      - 'sechub-ide-plugin-jetbrains/**'
+      - .github/workflows/sechub-ide-plugin-jetbrains-gradle.yml
+      - sechub-ide-plugin-jetbrains/**
   # enable manual triggering of workflow
   workflow_dispatch:
 
@@ -34,26 +34,23 @@ jobs:
         distribution: temurin
         java-version: 17
 
-    - name: "Build plugin"
+    - name: Build plugin
       run: ./gradlew test buildPlugin
 
-    - name: "Archive test results"
+    - name: Archive test results
       if: always()
       uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
       with:
           name: test-results
-          path: |
-            ide-plugins/jetbrains/build/reports
-            retention-days: 14
+          path: build/reports
+          retention-days: 14
 
-    - name: "Documentations"
+    - name: Documentations
       run: ./gradlew asciidoc
 
-    - name: "Archive documentation"
-      if: always()
+    - name: Archive documentation
       uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
       with:
           name: documentation
-          path: |
-            ide-plugins/jetbrains/build/docs/asciidoc
-            retention-days: 14
+          path: build/docs/asciidoc
+          retention-days: 14
