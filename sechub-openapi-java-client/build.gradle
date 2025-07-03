@@ -118,23 +118,51 @@ tasks.named('compileJava') {
 * the assemble task before importing projects/modules, so it should work there always.
 */
 tasks.named('eclipse') {
-    dependsOn('assemble')
+    dependsOn('provideOpenAPIJavaClientForEclipse')
 }
 
 /**
- * Custom gradle task to build a 'fatJar'.
+ * Custom gradle task to cleanup all existing library jars inside eclipse lib folder 
  */
-tasks.register('buildJavaApiAll', Jar) {
+task cleanEclipseLibFolder(type: Delete) {
     group 'sechub'
-    description 'Builds the java api library as standalone library.'
-    archivesBaseName = 'sechub-java-api-all'
-    from {
-        configurations.runtimeClasspath.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
+    description 'Deletes all JAR files in the eclipse lib folder.'
+    delete fileTree(dir: "${rootProject.projectDir}/ide-plugins/eclipse/sechub-eclipse-plugin/lib", include: '*.jar')
+}
+
+
+/**
+ * Custom gradle task to provide a library inside the lib folder for eclipse PDE (without a version number - avoids changes in project PDE setup files 
+ */
+task provideOpenAPIJavaClientForEclipse(type: Copy) {
+    dependsOn("assemble", cleanEclipseLibFolder)
+    
+    group 'sechub'
+    description 'Copies the built JAR file to eclipse lib folder without version number in filename.'
+    from("$buildDir/libs") {
+        include "sechub-openapi-java-client-${project.version}.jar" 
     }
-    duplicatesStrategy = DuplicatesStrategy.INCLUDE
-    with jar
+    
+    // copy all necessary runtime dependencies
+    from(configurations.runtimeClasspath) {
+    }
+    into("${rootProject.projectDir}/ide-plugins/eclipse/sechub-eclipse-plugin/lib")
+	
+	rename { 
+		String fileName -> 
+		 if (fileName.startsWith('sechub-openapi-java-client')) {
+			return "sechub-openapi-java-client.jar" // rename to jar file without version
+		 } else if (fileName.startsWith('sechub-commons-archive')) {
+			return "sechub-commons-archive.jar" // rename to jar file without version
+		 } else if (fileName.startsWith('sechub-commons-core')) {
+			return "sechub-commons-core.jar" // rename to jar file without version
+		 } else if (fileName.startsWith('sechub-commons-model')) {
+			return "sechub-commons-model.jar" // rename to jar file without version
+		 }
+		 // in all cases we use the library name as is
+		 return fileName;
+    }
+    
 }
 
 sourceSets {

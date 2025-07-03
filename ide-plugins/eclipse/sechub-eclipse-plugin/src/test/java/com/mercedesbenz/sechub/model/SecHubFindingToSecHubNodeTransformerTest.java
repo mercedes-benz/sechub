@@ -10,9 +10,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeCallStack;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
+import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 
 public class SecHubFindingToSecHubNodeTransformerTest {
 	
@@ -30,6 +30,7 @@ public class SecHubFindingToSecHubNodeTransformerTest {
 		SecHubFinding finding = new SecHubFinding();
 		finding.setName("myname");
 		finding.setSeverity(Severity.HIGH);
+		finding.setId(4711);
 		
 		SecHubCodeCallStack stack1 = new SecHubCodeCallStack();
 		stack1.setColumn(11);

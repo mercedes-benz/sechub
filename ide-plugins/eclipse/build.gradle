@@ -16,6 +16,12 @@ allprojects{
 
 def doAutomateEclipseSetup = ['sechub-eclipse-other'];
 
+task printRootProjectDir {
+    doLast {
+        println "Root project directory: ${rootProject.projectDir}"
+    }
+}
+
 subprojects {
     apply plugin: 'java'
     apply plugin: 'java-library'
@@ -30,7 +36,6 @@ subprojects {
 			    		}
 			   }	
 	}
-//	apply plugin: "maven"
 		
 	/* Setup UTF-8 for compile AND test compilation*/
 	[ compileJava, compileTestJava ]*.options*.encoding = 'UTF-8'
@@ -60,10 +65,8 @@ subprojects {
 		archives sourcesJar
 		archives javadocJar
 	}
-
-    afterEvaluate{
-        // Use ./gradlew compileJava -Parg=rebuildJar, to rebuild 'sechub-eclipse-plugin/lib/sechub-java-api-all-0.0.0.jar' automatically.
-        // Alternatively the jar file can be deleted manually and it will be rebuild from sources whenever compileJava is used
+	
+	afterEvaluate{
         tasks.named('compileJava') {
             dependsOn rootProject.tasks.named('checkAndBuildDependencies')
         }
@@ -101,5 +104,6 @@ task checkAndBuildDependencies {
         commandLine '/bin/bash', './build-dependencies.sh', arg
     }
 }
+
 
 
