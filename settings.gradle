@@ -109,9 +109,6 @@ include 'sechub-cli',
 /* PDS tools */
 'sechub-pds-tools',
 
-/* Plugins */
-'sechub-ide-plugin-jetbrains',
-
 // Examples (are below 'sechub-examples' folder)
 'sechub-examples:example-sechub-api-java'
 

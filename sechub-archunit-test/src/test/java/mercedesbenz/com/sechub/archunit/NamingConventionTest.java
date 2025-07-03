@@ -29,7 +29,7 @@ public class NamingConventionTest {
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreFolders)
-                .withImportOption(ignoreAllMain)
+                .withImportOption(ignoreAllSrc)
                 .withImportOption(ignoreArchUnit)
                 .withImportOption(ignoreDocGen)
                 .withImportOption(ignoreSechubOpenAPI)
@@ -63,7 +63,7 @@ public class NamingConventionTest {
         /* @formatter:off */
         JavaClasses importedClasses = new ClassFileImporter()
                 .withImportOptions(ignoreFolders)
-                .withImportOption(ignoreAllMain)
+                .withImportOption(ignoreAllSrc)
                 .withImportOption(ignoreArchUnit)
                 .withImportOption(ignoreDocGen)
                 .withImportOption(ignoreSechubOpenAPI)

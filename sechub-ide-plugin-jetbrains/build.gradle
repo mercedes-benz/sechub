@@ -3,22 +3,34 @@
 plugins {
     // see https://github.com/JetBrains/gradle-intellij-plugin and
     // https://plugins.gradle.org/plugin/org.jetbrains.intellij
-    id 'org.jetbrains.intellij' version '1.17.4'
+    id 'org.jetbrains.intellij' version '1.17.2'
 
     // https://github.com/JetBrains/gradle-changelog-plugin#initializechangelog
     id("org.jetbrains.changelog") version "2.2.1"
+
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+repositories {
+    // intellij plugin adds www.jetbrains.com/intellij-repository/releases in a redirected way over
+    // https://cache-redirector.jetbrains.com/www.jetbrains.com/intellij-repository/releases
+    mavenCentral()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
 }
 
 // Info: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration-intellij-extension
 dependencies {
-    implementation project(':sechub-openapi-java-client')
+    implementation 'com.mercedesbenz.sechub:sechub-openapi-java-client'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
-apply plugin: "org.jetbrains.intellij"
+apply plugin: 'org.jetbrains.intellij'
 
 group 'com.mercedesbenz.sechub'
-version '0.5.0'
+version '0.4.1'
 
 sourceSets{
     main{
@@ -40,15 +52,36 @@ intellij {
 
 patchPluginXml {
     sinceBuild = '231'
-    untilBuild =''
+    untilBuild = ''
+}
+
+asciidoctor {
+    baseDirFollowsSourceDir()
+    sources {
+        include 'user-guide.adoc', 'plugin-development.adoc'
+    }
+    outputDir  file('build/docs/asciidoc')
+
+    attributes 'build-gradle': file('build.gradle'),
+            'source-highlighter': 'coderay',
+            'toc': 'left',
+            'toclevels': '5',
+            'icons': 'font',
+            'setanchors': 'true',
+            'idprefix': '',
+            'idseparator': '-',
+            'docinfo1': 'true',
+            'sectnums': 'true',
+            'sectnumlevels': '5',
+            'version': rootProject.version
 }
 
 signPlugin {
-    certificateChain = System.getenv("SECHUB_CERTIFICATE_CHAIN")
-    privateKey = System.getenv("SECHUB_PRIVATE_KEY")
-    password = System.getenv("SECHUB_PRIVATE_KEY_PASSWORD")
+    certificateChain = System.getenv('SECHUB_CERTIFICATE_CHAIN')
+    privateKey = System.getenv('SECHUB_PRIVATE_KEY')
+    password = System.getenv('SECHUB_PRIVATE_KEY_PASSWORD')
 }
 
 publishPlugin {
-    token = System.getenv("SECHUB_INTELLIJ_PUBLISH_TOKEN")
+    token = System.getenv('SECHUB_INTELLIJ_PUBLISH_TOKEN')
 }

@@ -9,11 +9,11 @@ on:
       - 'main'
       - 'master'
     paths:
-      - '.github/workflows/sechub-plugin-jetbrains-gradle.yml'
+      - 'sechub-ide-plugin-jetbrains-gradle.yml'
       - '../../jetbrains/**'
   pull_request:
     paths:
-      - '.github/workflows/sechub-plugin-jetbrains-gradle.yml'
+      - 'sechub-ide-plugin-jetbrains-gradle.yml'
       - '../../jetbrains/**'
   # enable manual triggering of workflow
   workflow_dispatch:
@@ -25,7 +25,7 @@ jobs:
     
     defaults:
       run:
-        working-directory: ide-plugins/jetbrains
+        working-directory: sechub-ide-plugin-jetbrains
     steps:
     - uses: actions/checkout@v4.2.2
     - name: Set up JDK 17
@@ -45,6 +45,7 @@ jobs:
           path: |
             ide-plugins/jetbrains/build/reports
             retention-days: 14
+
     - name: "Documentations"
       run: ./gradlew asciidoc
 

@@ -1,2 +1,9 @@
 // SPDX-License-Identifier: MIT
-rootProject.name = 'sechub-plugin-intellij'
+
+rootProject.name = 'sechub-ide-plugin-jetbrains'
+
+includeBuild('..') {
+    dependencySubstitution {
+        substitute(module('com.mercedesbenz.sechub:sechub-openapi-java-client')).using(project(':sechub-openapi-java-client'))
+    }
+}
