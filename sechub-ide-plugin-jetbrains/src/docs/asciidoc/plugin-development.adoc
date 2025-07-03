@@ -30,7 +30,7 @@ ____
 - The plugin module has a dependency on the root build.
 - You can manually import the `sechub-ide-plugin-jetbrains` into your IDE.
 
-image::../images/gradle-import.png["Eugen" - the SecHub mascot]
+image::../images/gradle-import.png["Gradle Import"]
 
 == Start the plugin in sandbox mode
 
