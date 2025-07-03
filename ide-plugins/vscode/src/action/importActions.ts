@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as sechubExtension from './../extension';
-import * as secHubModel from './../model/sechubModel';
+import { ScanType } from 'sechub-openapi-typescript/src/generated-sources/openapi';
+import { loadFromFile } from '../utils/sechubUtils';
 
 export function hookImportAction(context: sechubExtension.SecHubContext) {
 	let importReportFileCommandDisposable = vscode.commands.registerCommand('sechubReportView.importReportFile', () => {
@@ -25,21 +26,22 @@ export function hookImportAction(context: sechubExtension.SecHubContext) {
 
 				vscode.window.showInformationMessage('Started SecHub report import...');
 
-				let findingModel = secHubModel.loadFromFile(filePath);
+				let report = loadFromFile(filePath);
+				let scanTypes: Array<ScanType> = report.metaData?.executed || [];
 
-				let scanTypes = getScanTypesTypesOfFindingModel(findingModel);
+				if(scanTypes.length === 0){
+					vscode.window.showErrorMessage("No scan was executed in this report.");
+					return;
+				}
 
-				if (scanTypes.has(secHubModel.ScanType.codeScan) || (scanTypes.has(secHubModel.ScanType.secretScan))) {
-					context.reportTreeProvider.update(findingModel);
-					context.findingModel = findingModel;
+				
+				if (scanTypes.includes(ScanType.CodeScan) || (scanTypes.includes(ScanType.IacScan) || (scanTypes.includes(ScanType.SecretScan)))) {
+					context.reportTreeProvider.update(report);
+					context.report = report;
 				} else {
-					var foundScanTypesStr = "No scan types found.";
 
-					if (scanTypes.size > 0) {
-						foundScanTypesStr = "Found scan types: " + Array.from(scanTypes).join(", ");
-					}
-
-					vscode.window.showErrorMessage("Unable to import report. Wrong scan types. Can only import scan types: `codeScan` or `secretScan`. " + foundScanTypesStr);
+					const scanTypesString = scanTypes.join(', ');
+					vscode.window.showErrorMessage(`SecHub Plugin only support codeScan, iacScan and secretScan in IDE, but your scan was: ${scanTypesString}`);
 				}
 			}
 		});
@@ -48,13 +50,4 @@ export function hookImportAction(context: sechubExtension.SecHubContext) {
 	context.extensionContext.subscriptions.push(importReportFileCommandDisposable);
 }
 
-function getScanTypesTypesOfFindingModel(findingModel: secHubModel.FindingModel): Set<secHubModel.ScanType> {
-	const scanTypes = new Set<secHubModel.ScanType>();
-
-	for (let finding of findingModel.result.findings) {
-		scanTypes.add(finding.type);
-	}
-
-	return scanTypes;
-}
 

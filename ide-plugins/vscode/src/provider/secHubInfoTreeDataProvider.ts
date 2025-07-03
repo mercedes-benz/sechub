@@ -4,11 +4,12 @@ import * as vscode from 'vscode';
 import { Command } from 'vscode';
 import * as findingNodeLinkBuilder from '../model/findingNodeLinkBuilder';
 import * as sechubModel from '../model/sechubModel';
+import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-typescript/src/generated-sources/openapi';
 
 export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoItem> {
   findingNodeLinkBuilder: findingNodeLinkBuilder.FindingNodeLinkBuilder;
 
-  constructor(private findingNode: sechubModel.FindingNode | undefined, private callStack: sechubModel.CodeCallStackElement | undefined) {
+  constructor(private findingNode: SecHubFinding | undefined, private callStack: SecHubCodeCallStack | undefined) {
     this.findingNodeLinkBuilder = new findingNodeLinkBuilder.FindingNodeLinkBuilder();
   }
 
@@ -45,7 +46,7 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
   }
 
 
-  public update(findingNode: sechubModel.FindingNode | undefined, callStack: sechubModel.CodeCallStackElement) {
+  public update(findingNode: SecHubFinding | undefined, callStack: SecHubCodeCallStack) {
     this.findingNode = findingNode;
     this.callStack = callStack;
     this.refresh();

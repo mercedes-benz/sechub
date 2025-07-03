@@ -8,21 +8,29 @@ import * as importActions from './action/importActions';
 import * as reportViewActions from './action/reportViewActions';
 import { FileLocationExplorer } from './fileLocationExplorer';
 import { FindingNodeLinkBuilder } from './model/findingNodeLinkBuilder';
-import * as secHubModel from './model/sechubModel';
 import { HierarchyItem, SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
 import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvider';
 import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
 
+import { loadFromFile } from './utils/sechubUtils';
+import { SecHubReport } from 'sechub-openapi-typescript/src/generated-sources/openapi';
+
 export function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
+	try {
+		const openapi = require('sechub-openapi-typescript/src/generated-sources/openapi');
+		console.log('Module loaded successfully:', openapi);
+	} catch (error) {
+		console.error('Failed to load module:', error);
+	}
 	
 	let loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
-	let initialFindingModel = undefined;
+	let report: SecHubReport | undefined = undefined;
 	if (loadTestData) {
-		initialFindingModel = secHubModel.loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
+		report = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
 	}
 
-	let secHubContext: SecHubContext = new SecHubContext(initialFindingModel, context);
+	let secHubContext: SecHubContext = new SecHubContext(report, context);
 
 	buildReportView(secHubContext);
 	buildCallHierarchyView(secHubContext);
@@ -68,13 +76,13 @@ export class SecHubContext {
 	callHierarchyTreeDataProvider: SecHubCallHierarchyTreeDataProvider;
 	reportTreeProvider: SecHubReportTreeDataProvider;
 	infoTreeProvider: SecHubInfoTreeDataProvider;
-	findingModel: secHubModel.FindingModel | undefined;
+	report: SecHubReport | undefined;
 	extensionContext: vscode.ExtensionContext;
 	fileLocationExplorer: FileLocationExplorer;
 
-	constructor(findingModel: secHubModel.FindingModel | undefined, extensionContext: vscode.ExtensionContext,
+	constructor(report: SecHubReport| undefined, extensionContext: vscode.ExtensionContext,
 	) {
-		this.reportTreeProvider = new SecHubReportTreeDataProvider(findingModel);
+		this.reportTreeProvider = new SecHubReportTreeDataProvider(report);
 		this.callHierarchyTreeDataProvider = new SecHubCallHierarchyTreeDataProvider(undefined);
 		this.infoTreeProvider = new SecHubInfoTreeDataProvider(undefined, undefined);
 		this.extensionContext = extensionContext;
