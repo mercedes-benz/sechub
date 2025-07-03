@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-name: SecHub Jetbrains plugin Java build
+name: SecHub Jetbrains Plugin Java build
 
 on:
   push:
