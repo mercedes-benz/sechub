@@ -885,7 +885,7 @@ components:
           description: List of messages
           type: array
           items:
-            $ref: '#/components/schemas/SecHubMessage'
+            $ref: '#/components/schemas/TrafficLight'
 
     SecHubMessageType:
       title: SecHubMessageType
@@ -918,7 +918,9 @@ components:
         - GREEN
         - YELLOW
         - RED
-        - OFF
+        # on, off, y, n, yes and no may be interpreted as boolean values
+        # quoting these values is recommended
+        - 'OFF'
 
     Severity:
       title: Severity

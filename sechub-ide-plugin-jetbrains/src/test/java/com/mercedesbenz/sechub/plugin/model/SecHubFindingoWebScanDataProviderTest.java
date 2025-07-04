@@ -68,7 +68,6 @@ public class SecHubFindingoWebScanDataProviderTest {
 
         /* test */
         assertNotNull(text);
-        System.out.println(text);
         String expected = """
                 Method: GET
                 URL: http://localhost:3000/rest/products/search?q=%27%28
@@ -108,7 +107,6 @@ public class SecHubFindingoWebScanDataProviderTest {
 
         /* test */
         assertNotNull(text);
-        System.out.println(text);
         String expected = """
                 Attack vector: '(
 
@@ -139,7 +137,6 @@ public class SecHubFindingoWebScanDataProviderTest {
 
         /* test */
         assertNotNull(text);
-        System.out.println(text);
         String expected = """
                 HTTP/1.1 500 Internal Server Error
 

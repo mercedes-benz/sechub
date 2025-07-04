@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.plugin.idea.util;
+package com.mercedesbenz.sechub.plugin.util;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
-
-import com.mercedesbenz.sechub.plugin.util.SimpleStringUtil;
 
 public class SimpleStringUtilTest {
 

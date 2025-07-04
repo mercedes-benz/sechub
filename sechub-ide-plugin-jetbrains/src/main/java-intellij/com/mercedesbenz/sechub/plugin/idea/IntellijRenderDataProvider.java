@@ -65,7 +65,7 @@ public class IntellijRenderDataProvider implements FindingRenderDataProvider {
         case RED -> {
             return findIcon("/icons/trafficlight-red.svg");
         }
-        case FALSE -> {
+        case OFF -> {
             return findIcon("/icons/trafficlight-off.svg");
         }
         }

@@ -197,8 +197,7 @@ public class SecHubReportPanel implements SecHubPanel {
         textArea.setWrapStyleWord(true);
 
         Caret caret = textArea.getCaret();
-        if (caret instanceof DefaultCaret) {
-            DefaultCaret defaultCaret = (DefaultCaret) caret;
+        if (caret instanceof DefaultCaret defaultCaret) {
             defaultCaret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         }
 
@@ -276,8 +275,7 @@ public class SecHubReportPanel implements SecHubPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) {
                     Object component = callHierarchyTree.getLastSelectedPathComponent();
-                    if (component instanceof DefaultMutableTreeNode) {
-                        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) component;
+                    if (component instanceof DefaultMutableTreeNode treeNode) {
                         Object userObject = treeNode.getUserObject();
                         if (userObject instanceof FindingNode) {
                             showInEditor((FindingNode) userObject);
@@ -415,7 +413,7 @@ public class SecHubReportPanel implements SecHubPanel {
 
         TrafficLight trafficLight = model.getTrafficLight();
         if (trafficLight == null) {
-            trafficLight = TrafficLight.FALSE;
+            trafficLight = TrafficLight.OFF;
         }
         if (jobUUID == null) {
             amountOfFindingsLabel.setText("No SecHub report loaded");
