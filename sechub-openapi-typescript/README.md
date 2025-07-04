@@ -29,10 +29,10 @@ npm install
 npm run generate-api-client
  ```
 
-### link the generated client to your local npm environment
+### build the generated client
 
 ```bash
-npm link
+npm build
 ```
 
 ## Description

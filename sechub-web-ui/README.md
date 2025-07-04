@@ -18,20 +18,13 @@ nvm install
 nvm use
 ```
 
+Build the openAPI SecHub Client +
+To generate the SecHub openAPI Client switch to the sechub-openapi-types directory and see [README.md](../sechub-openapi-typescript/README.md) for instructions.
+
 Install the project dependencies:
 
 ```bash
 npm install
-```
-
-### Build the openAPI SecHub Client
-
-To generate the SecHub openAPI Client switch to the sechub-openapi-types directory and see [README.md](../sechub-openapi-typescript/README.md) for instructions.
-
-### link the generated client to your local npm environment
-
-```bash
-npm link sechub-openapi-typescript
 ```
 
 ## Usage

@@ -52,7 +52,7 @@ NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extens
 
 Prerequisite: The Node package manager NPM needs to be installed.
 
-1. Install dependencies
+1. Install dependencies (make sure you have generated and build t+he sechub-openapi-typescript client first)
 
     ~~~
     npm install
