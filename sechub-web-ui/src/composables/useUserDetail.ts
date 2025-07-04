@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 import defaultClient from '@/services/defaultClient'
-import { UserDetailInformation } from '@/generated-sources/openapi'
+import { UserDetailInformation } from 'sechub-openapi-typescript'
 import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
 import { handleApiError } from '@/services/apiErrorHandler'
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 import { useConfig } from '@/config'
-import { Configuration } from 'sechub-openapi-typescript/src/generated-sources/openapi'
+import { Configuration } from 'sechub-openapi-typescript'
 
 let apiConfig: Configuration
 const config = useConfig()
@@ -23,5 +23,7 @@ if (config.value.BASIC_AUTH_DEV) {
     },
   })
 }
-
+if (!apiConfig) {
+  throw Error('No api configuration available!')
+}
 export default apiConfig

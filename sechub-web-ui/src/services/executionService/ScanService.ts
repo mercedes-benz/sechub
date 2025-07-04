@@ -4,7 +4,7 @@ import {
   SecHubConfiguration,
   UserApproveJobRequest,
   UserCreateNewJobRequest,
-} from 'sechub-openapi-typescript/src/generated-sources/openapi'
+} from 'sechub-openapi-typescript'
 import { createSha256Checksum } from '../../utils/cryptoUtils'
 import defaultClient from '../defaultClient'
 import { UserUploadsBinariesWorkaroundRequest, UserUploadSourceCodeWorkaroundRequest } from '@/services/executionService/executionService'

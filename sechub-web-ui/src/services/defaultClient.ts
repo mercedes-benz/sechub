@@ -11,7 +11,7 @@ import {
   SignUpApi,
   SystemApi,
   UserSelfServiceApi,
-} from 'sechub-openapi-typescript/src/generated-sources/openapi'
+} from 'sechub-openapi-typescript'
 
 const otherApi = new OtherApi(apiConfig)
 const jobManagementApi = new JobManagementApi(apiConfig)

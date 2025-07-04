@@ -57,7 +57,7 @@
 </template>
 <script lang="ts">
   import { useRoute, useRouter } from 'vue-router'
-  import { SecHubReport } from '@/generated-sources/openapi'
+  import { SecHubReport } from 'sechub-openapi-typescript'
   import { getIconColorFromScanStatus, getIconFromScanStatus } from '@/utils/projectUtils'
   import { useReportStore } from '@/stores/reportStore'
   import '@/styles/sechub.scss'

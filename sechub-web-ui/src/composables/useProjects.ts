@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: MIT */
-import { ProjectData } from '@/generated-sources/openapi'
+import { ProjectData } from 'sechub-openapi-typescript'
 import defaultClient from '@/services/defaultClient'
 import { useProjectStore } from '@/stores/projectStore'
 import { handleApiError } from '@/services/apiErrorHandler'

@@ -202,10 +202,9 @@
   import { defineComponent } from 'vue'
   import defaultClient from '@/services/defaultClient'
   import { useI18n } from 'vue-i18n'
-  import { ProjectData, UserDetailInformation } from 'sechub-openapi-typescript/src/generated-sources/openapi'
+  import { ProjectData, ResponseError, UserDetailInformation } from 'sechub-openapi-typescript'
   import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
   import '@/styles/sechub.scss'
-  import { ResponseError } from 'sechub-openapi-typescript/src/generated-sources/openapi/runtime'
   import { handleApiError } from '@/services/apiErrorHandler'
 
   interface Props {

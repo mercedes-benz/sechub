@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import scanConfigurationBuilderService from '../../src/services/scanConfigurationBuilderService'
-import { SecHubConfiguration } from '../../src/generated-sources/openapi'
+import { SecHubConfiguration } from 'sechub-openapi-typescript'
 import {
   CODE_SCAN_IDENTIFIER,
   FILETYPE_BINARIES,

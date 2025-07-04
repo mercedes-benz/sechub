@@ -167,7 +167,7 @@
     SecHubJobInfoForUserListPage,
     UserCancelsJobRequest,
     UserListsJobsForProjectRequest,
-  } from 'sechub-openapi-typescript/src/generated-sources/openapi/'
+  } from 'sechub-openapi-typescript'
   import '@/styles/sechub.scss'
   import { useFetchProjects } from '@/composables/useProjects'
   import { handleApiError } from '@/services/apiErrorHandler'

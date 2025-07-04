@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-import { ProjectData } from '@/generated-sources/openapi'
+import { ProjectData } from 'sechub-openapi-typescript'
 import { defineStore } from 'pinia'
 
 const STORE_NAME = 'projectStore'

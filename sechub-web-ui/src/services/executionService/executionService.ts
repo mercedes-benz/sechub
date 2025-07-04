@@ -2,8 +2,8 @@
 import {
   SecHubExecutionApi,
   UserDownloadJobReportRequest,
-} from 'sechub-openapi-typescript/src/generated-sources/openapi'
-import * as runtime from 'sechub-openapi-typescript/src/generated-sources/openapi'
+} from 'sechub-openapi-typescript'
+import * as runtime from 'sechub-openapi-typescript'
 import { v4 as uuidv4 } from 'uuid'
 import { FormDataBodyBuilder } from './FormDataBodyBuilder'
 
