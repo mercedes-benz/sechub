@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-typescript/src/generated-sources/openapi';
+import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-typescript';
 
 export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvider<HierarchyItem> {
 

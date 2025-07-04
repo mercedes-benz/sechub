@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { SecHubReport, SecHubFinding } from 'sechub-openapi-typescript/src/generated-sources/openapi';
+import { SecHubReport, SecHubFinding } from 'sechub-openapi-typescript';
 
 export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<ReportItem> {
 

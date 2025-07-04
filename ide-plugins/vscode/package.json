@@ -116,8 +116,7 @@
 		"glob": "^8.1.0",
 		"mocha": "^10.8.2",
 		"mocha-explorer-launcher-scripts": "^0.4.0",
-		"typescript": "^4.9.5",
-		"sechub-openapi-typescript": "file:../../sechub-openapi-typescript"
+		"typescript": "^4.9.5"
 	},
 	"dependencies": {
 		"sechub-openapi-typescript": "file:../../sechub-openapi-typescript"

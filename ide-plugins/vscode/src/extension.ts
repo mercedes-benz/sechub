@@ -13,7 +13,7 @@ import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvide
 import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
 
 import { loadFromFile } from './utils/sechubUtils';
-import { SecHubReport } from 'sechub-openapi-typescript/src/generated-sources/openapi';
+import { SecHubReport } from 'sechub-openapi-typescript';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');

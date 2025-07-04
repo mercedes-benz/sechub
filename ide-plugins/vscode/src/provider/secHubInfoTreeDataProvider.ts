@@ -4,7 +4,7 @@ import * as vscode from 'vscode';
 import { Command } from 'vscode';
 import * as findingNodeLinkBuilder from '../model/findingNodeLinkBuilder';
 import * as sechubModel from '../model/sechubModel';
-import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-typescript/src/generated-sources/openapi';
+import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-typescript';
 
 export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoItem> {
   findingNodeLinkBuilder: findingNodeLinkBuilder.FindingNodeLinkBuilder;

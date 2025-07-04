@@ -2,8 +2,7 @@
 import * as vscode from 'vscode';
 import * as sechubExtension from './../extension';
 import { HierarchyItem } from './../provider/secHubCallHierarchyTreeDataProvider';
-import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-typescript/src/generated-sources/openapi';
-
+import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-typescript';
 export function hookHierarchyItemActions(context: sechubExtension.SecHubContext) {
 	let callBack = (hierarchyItem: HierarchyItem) => {
 		if (hierarchyItem instanceof HierarchyItem) {

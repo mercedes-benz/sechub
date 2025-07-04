@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "es2021",
-    "lib": ["es2021", "dom"],
-    "outDir": "dist",
-    "rootDir": "src",
+    "target": "ES6",
+    "module": "CommonJS",
+    "declaration": true,
+    "outDir": "./dist",
     "strict": true
   },
-  "include": [
-    "src",
-    "src/generated-sources/openapi/**/*"
-  ]
+  "include": ["src/**/*"]
 }

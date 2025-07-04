@@ -1,4 +1,4 @@
-import { SecHubReport } from 'sechub-openapi-typescript/src/generated-sources/openapi';
+import { SecHubReport } from 'sechub-openapi-typescript';
 
 export function loadFromFile(location: string): SecHubReport {
 
