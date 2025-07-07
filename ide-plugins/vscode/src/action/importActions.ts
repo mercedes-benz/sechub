@@ -2,7 +2,7 @@
 import * as vscode from 'vscode';
 import * as sechubExtension from './../extension';
 import { ScanType } from 'sechub-openapi-typescript';
-import { loadFromFile } from '../utils/sechubUtils';
+import { loadFromFile } from './../utils/sechubUtils';
 
 export function hookImportAction(context: sechubExtension.SecHubContext) {
 	let importReportFileCommandDisposable = vscode.commands.registerCommand('sechubReportView.importReportFile', () => {

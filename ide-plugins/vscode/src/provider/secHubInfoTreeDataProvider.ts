@@ -3,7 +3,6 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { Command } from 'vscode';
 import * as findingNodeLinkBuilder from '../model/findingNodeLinkBuilder';
-import * as sechubModel from '../model/sechubModel';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-typescript';
 
 export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoItem> {
@@ -100,9 +99,9 @@ export class MetaDataInfoItem extends InfoItem {
 }
 
 export class FindingMetaInfoItem extends InfoItem {
-  readonly findingNode: sechubModel.FindingNode;
+  readonly findingNode: SecHubFinding;
 
-  constructor(findingNode: sechubModel.FindingNode
+  constructor(findingNode: SecHubFinding
   ) {
     super(findingNode.id + " - " + findingNode.severity, vscode.TreeItemCollapsibleState.None);
 

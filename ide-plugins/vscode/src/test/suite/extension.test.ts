@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 import * as assert from 'assert';
 import * as path from 'path';
-import * as SecHubModel from '../../model/sechubModel';
-
+import { SecHubReport, Severity, ScanType } from 'sechub-openapi-typescript';
+import { loadFromFile } from '../../utils/sechubUtils';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
@@ -18,7 +18,7 @@ suite('Extension Test Suite', () => {
 
 	test('SecHub test report file can be loaded and contains job uuid', () => {
 		/* execute */
-		let model = SecHubModel.loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
+		let model = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
 
 		/* test */
 		assert.strictEqual("061234c8-40aa-4dcf-81f8-7bb8f723b780", model.jobUUID);
@@ -27,24 +27,28 @@ suite('Extension Test Suite', () => {
 
 	test('SecHub test report file can be loaded and contains 277 findings', () => {
 		/* execute */
-		let model = SecHubModel.loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
+		let model = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
 
 		/* test */
+		assert(model.result);
 		let findings = model.result.findings;
 
+		assert(findings);
 		assert.strictEqual(277, findings.length);
 
 	});
 
 	test('SecHub test report file can be loaded and contains medium finding with id3', () => {
 		/* execute */
-		let model = SecHubModel.loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
+		let model = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
 
 		/* test */
+		assert(model.result);
 		let findings = model.result.findings;
+		assert(findings);
 		let firstFinding = findings[0];
 		assert.strictEqual(3, firstFinding.id);
-		assert.strictEqual(SecHubModel.Severity.medium, firstFinding.severity);
+		assert.strictEqual(Severity.Medium, firstFinding.severity);
 
 		let codeCallstack1 = firstFinding.code;
 		assert.strictEqual(82, codeCallstack1?.line);
@@ -58,14 +62,16 @@ suite('Extension Test Suite', () => {
 
 	test('SecHub load test report originating from GoSec scan', () => {
 		/* execute */
-		let model = SecHubModel.loadFromFile(resolveFileLocation("test_sechub_report_gosec.json"));
+		let model = loadFromFile(resolveFileLocation("test_sechub_report_gosec.json"));
 
 		/* test */
+		assert(model.result);
 		let findings = model.result.findings;
+		assert(findings);
 		let secondFinding = findings[1];
 		assert.strictEqual(2, secondFinding.id);
-		assert.strictEqual(SecHubModel.Severity.high, secondFinding.severity);
-		assert.strictEqual(SecHubModel.ScanType.codeScan, secondFinding.type);
+		assert.strictEqual(Severity.High, secondFinding.severity);
+		assert.strictEqual(ScanType.CodeScan, secondFinding.type);
 
 		let codeCallstack1 = secondFinding.code;
 		assert.strictEqual("vulnerable-go/source/app/app.go", codeCallstack1?.location);
@@ -81,14 +87,16 @@ suite('Extension Test Suite', () => {
 
 	test('SecHub load test report originating from Gitleaks (Secret Scan) scan', () => {
 		/* execute */
-		let model = SecHubModel.loadFromFile(resolveFileLocation("test_sechub_report_gitleaks.json"));
+		let model = loadFromFile(resolveFileLocation("test_sechub_report_gitleaks.json"));
 
 		/* test */
+		assert(model.result);
 		let findings = model.result.findings;
+		assert(findings);
 		let firstFinding = findings[0];
 		assert.strictEqual(1, firstFinding.id);
-		assert.strictEqual(SecHubModel.Severity.medium, firstFinding.severity);
-		assert.strictEqual(SecHubModel.ScanType.secretScan, firstFinding.type);
+		assert.strictEqual(Severity.Medium, firstFinding.severity);
+		assert.strictEqual(ScanType.SecretScan, firstFinding.type);
 		assert.strictEqual("generic-api-key has detected secret for file vulnerable-go/source/app/app.go.", firstFinding.description);
 
 		let codeCallstack1 = firstFinding.code;
@@ -100,24 +108,28 @@ suite('Extension Test Suite', () => {
 
 	test('SecHub load test report of scan error', () => {
 		/* execute */
-		let model = SecHubModel.loadFromFile(resolveFileLocation("test_sechub_report_error.json"));
+		let model = loadFromFile(resolveFileLocation("test_sechub_report_error.json"));
 
 		/* test */
+		assert(model.result);
+		assert(model.result.findings);
 		assert.strictEqual(0, model.result.findings.length);
 	});
 
 	test('SecHub load test report callstack, but no column, source or relevant part', () => {
 		/* execute */
-		let model = SecHubModel.loadFromFile(resolveFileLocation("test_sechub_report-3.json"));
+		let model = loadFromFile(resolveFileLocation("test_sechub_report-3.json"));
 
 		/* test */
+		assert(model.result);
 		let findings = model.result.findings;
 
+		assert(findings);
 		assert.strictEqual(2, findings.length);
 		let firstFinding = findings[0];
 		assert.strictEqual(1, firstFinding.id);
-		assert.strictEqual(SecHubModel.Severity.critical, firstFinding.severity);
-		assert.strictEqual(SecHubModel.ScanType.codeScan, firstFinding.type);
+		assert.strictEqual(Severity.Critical, firstFinding.severity);
+		assert.strictEqual(ScanType.CodeScan, firstFinding.type);
 
 		let f1CodeCallstack1 = firstFinding.code;
 		assert.strictEqual(82, f1CodeCallstack1?.line);
@@ -136,8 +148,8 @@ suite('Extension Test Suite', () => {
 
 		let secondFinding = findings[1];
 		assert.strictEqual(2, secondFinding.id);
-		assert.strictEqual(SecHubModel.Severity.low, secondFinding.severity);
-		assert.strictEqual(SecHubModel.ScanType.codeScan, secondFinding.type);
+		assert.strictEqual(Severity.Low, secondFinding.severity);
+		assert.strictEqual(ScanType.CodeScan, secondFinding.type);
 
 		let f2CodeCallstack1 = secondFinding.code;
 		assert.strictEqual(12, f2CodeCallstack1?.line);
