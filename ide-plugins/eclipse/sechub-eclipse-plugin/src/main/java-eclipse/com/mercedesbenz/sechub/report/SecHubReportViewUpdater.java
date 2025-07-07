@@ -9,7 +9,7 @@ import org.eclipse.ui.PartInitException;
 
 import com.mercedesbenz.sechub.EclipseUtil;
 import com.mercedesbenz.sechub.Logging;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 import com.mercedesbenz.sechub.model.FindingModel;
 
 public class SecHubReportViewUpdater {
