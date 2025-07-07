@@ -38,6 +38,9 @@ public class InfralightWrapperEnvironment {
     /****************************************/
     /* Infralight specific environment setup */
     /****************************************/
+    @Value("${" + InfralightWrapperKeyConstants.RT_KEY_PDS_INFRALIGHT_INFRASCAN_PRODUCTS_OUTPUT_FOLDER + "}")
+    private String infrascanProductsOutputFolder;
+    
     @Value("${" + InfralightWrapperKeyConstants.KEY_PDS_INFRALIGHT_MOCKING_ENABLED + ":false}")
     private boolean mockingEnabled;
 
@@ -71,6 +74,10 @@ public class InfralightWrapperEnvironment {
 
     public String getPdsResultFile() {
         return pdsResultFile;
+    }
+    
+    public String getInfrascanProductsOutputFolder() {
+        return infrascanProductsOutputFolder;
     }
 
 }
