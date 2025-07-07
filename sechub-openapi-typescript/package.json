@@ -2,17 +2,18 @@
   "name": "sechub-openapi-typescript",
   "version": "1.0.0",
   "scripts": {
-    "generate-api-client": "rm -rf src; openapi-generator-cli generate -i ../sechub-openapi/src/main/resources/openapi.yaml -o src -g typescript-fetch --additional-properties=supportsES6=true,npmVersion=10.8.3",
+    "generate-api-client": "rm -rf gen; openapi-generator-cli generate -i ../sechub-openapi/src/main/resources/openapi.yaml -o gen -g typescript-fetch --additional-properties=supportsES6=true,npmVersion=10.8.3",
     "build": "tsc"
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.20.0",
     "@types/node": "^24.0.10",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "uuid": "^11.0.3"
   },
   "description": "SecHub OpenApi Generator for TypeScript",
   "keywords": [],
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts"
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts"
 }

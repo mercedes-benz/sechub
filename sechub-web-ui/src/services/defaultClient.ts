@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 import apiConfig from './configuration'
-import SecHubExecutionApiWorkaround from './executionService/executionService'
-import scanService from './executionService/ScanService'
+import scanService from './scanService'
 import {
   ConfigurationApi,
   JobManagementApi,
   OtherApi,
   ProjectAdministrationApi,
   SecHubExecutionApi,
+  SecHubExecutionApiWorkaround,
   SignUpApi,
   SystemApi,
   UserSelfServiceApi,

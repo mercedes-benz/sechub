@@ -4,16 +4,17 @@ import {
   SecHubConfiguration,
   UserApproveJobRequest,
   UserCreateNewJobRequest,
+  UserUploadsBinariesWorkaroundRequest,
+  UserUploadSourceCodeWorkaroundRequest,
 } from 'sechub-openapi-typescript'
-import { createSha256Checksum } from '../../utils/cryptoUtils'
-import defaultClient from '../defaultClient'
-import { UserUploadsBinariesWorkaroundRequest, UserUploadSourceCodeWorkaroundRequest } from '@/services/executionService/executionService'
+import { createSha256Checksum } from '../utils/cryptoUtils'
+import defaultClient from './defaultClient'
 import i18n from '@/i18n'
 import {
   UPLOAD_BINARIES_IDENTIFIER,
   UPLOAD_SOURCE_CODE_IDENTIFIER,
 } from '@/utils/applicationConstants'
-import { handleApiError } from '../apiErrorHandler'
+import { handleApiError } from './apiErrorHandler'
 
 // Implements the scan of a file in three steps: creating a Job, uploading the data and approve the job
 class ScanService {

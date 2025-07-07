@@ -6,5 +6,5 @@
     "outDir": "./dist",
     "strict": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "gen/**/*"],
 }
