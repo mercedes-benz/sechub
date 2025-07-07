@@ -4,7 +4,7 @@ import {
   SecHubConfiguration,
   SecHubIacScanConfiguration,
   SecHubSecretScanConfiguration,
-} from 'sechub-openapi-typescript'
+} from 'sechub-openapi-ts-client'
 
 import {
   CODE_SCAN_IDENTIFIER,

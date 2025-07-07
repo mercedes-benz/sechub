@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-import { SecHubFinding } from 'sechub-openapi-typescript';
+import { SecHubFinding } from 'sechub-openapi-ts-client';
 import * as vscode from 'vscode';
 
 export class FindingNodeLinkBuilder {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as assert from 'assert';
 
-import { SecHubReport, Severity, ScanType } from 'sechub-openapi-typescript';
+import { Severity, ScanType } from 'sechub-openapi-ts-client';
 import { FindingNodeLinkBuilder } from '../../model/findingNodeLinkBuilder';
 
 suite('FindingNodeLinkBuilder Test Suite', () => {

@@ -138,7 +138,7 @@
 <script lang="ts">
   import defaultClient from '@/services/defaultClient'
   import { defineComponent } from 'vue'
-  import type { UserDetailInformation } from 'sechub-openapi-typescript'
+  import type { UserDetailInformation } from 'sechub-openapi-ts-client'
   import { useConfig } from '@/config'
   import { useRouter } from 'vue-router'
   import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'

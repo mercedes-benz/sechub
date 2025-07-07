@@ -111,7 +111,7 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { useRoute } from 'vue-router'
-  import { SecHubConfiguration } from 'sechub-openapi-typescript'
+  import { SecHubConfiguration } from 'sechub-openapi-ts-client'
   import scanConfigurationBuilderService from '@/services/scanConfigurationBuilderService'
   import defaultClient from '@/services/defaultClient'
   import { CODE_SCAN_IDENTIFIER, IAC_SCAN_IDENTIFIER, SECRET_SCAN_IDENTIFIER } from '@/utils/applicationConstants'

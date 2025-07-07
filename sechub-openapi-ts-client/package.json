@@ -1,5 +1,5 @@
 {
-  "name": "sechub-openapi-typescript",
+  "name": "sechub-openapi-ts-client",
   "version": "1.0.0",
   "scripts": {
     "generate-api-client": "rm -rf gen; openapi-generator-cli generate -i ../sechub-openapi/src/main/resources/openapi.yaml -o gen -g typescript-fetch --additional-properties=supportsES6=true,npmVersion=10.8.3",

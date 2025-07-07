@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 import { useConfig } from '@/config'
-import { Configuration } from 'sechub-openapi-typescript'
+import { Configuration } from 'sechub-openapi-ts-client'
 
 let apiConfig: Configuration
 const config = useConfig()

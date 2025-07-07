@@ -40,7 +40,7 @@
 </template>
 <script lang="ts">
   import { defineComponent, toRefs } from 'vue'
-  import { ProjectData } from 'sechub-openapi-typescript'
+  import { ProjectData } from 'sechub-openapi-ts-client'
 
   interface Props {
     projectData: ProjectData,

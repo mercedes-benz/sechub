@@ -2,7 +2,7 @@
 import {
   FalsePositives,
   UserMarkFalsePositivesRequest,
-} from 'sechub-openapi-typescript'
+} from 'sechub-openapi-ts-client'
 import defaultClient from '@/services/defaultClient'
 import { handleApiError } from '@/services/apiErrorHandler'
 

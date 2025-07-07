@@ -67,7 +67,7 @@
 
 <script lang="ts">
   import { useFetchProjects } from '@/composables/useProjects'
-  import { ProjectData } from 'sechub-openapi-typescript'
+  import { ProjectData } from 'sechub-openapi-ts-client'
   import { useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { ResponseError } from 'sechub-openapi-typescript'
+import { ResponseError } from 'sechub-openapi-ts-client'
 import { handleApiError } from '../../src/services/apiErrorHandler'
 
 // Mock the router

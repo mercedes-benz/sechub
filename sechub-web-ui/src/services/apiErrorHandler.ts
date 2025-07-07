@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-import { ResponseError } from 'sechub-openapi-typescript'
+import { ResponseError } from 'sechub-openapi-ts-client'
 
 export function handleApiError (error: any) {
   if (!(error instanceof ResponseError)) {

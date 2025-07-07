@@ -6,7 +6,7 @@ import {
   UserCreateNewJobRequest,
   UserUploadsBinariesWorkaroundRequest,
   UserUploadSourceCodeWorkaroundRequest,
-} from 'sechub-openapi-typescript'
+} from 'sechub-openapi-ts-client'
 import { createSha256Checksum } from '../utils/cryptoUtils'
 import defaultClient from './defaultClient'
 import i18n from '@/i18n'

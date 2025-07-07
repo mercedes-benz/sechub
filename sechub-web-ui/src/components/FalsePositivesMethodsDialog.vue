@@ -34,7 +34,7 @@
 </template>
 <script lang="ts">
   import { defineComponent } from 'vue'
-  import { WebscanFalsePositiveProjectData } from 'sechub-openapi-typescript'
+  import { WebscanFalsePositiveProjectData } from 'sechub-openapi-ts-client'
 
   interface Props {
     falsePositive: WebscanFalsePositiveProjectData,

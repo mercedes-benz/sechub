@@ -9,7 +9,7 @@
 		],
 		"baseUrl": ".",
 		"paths": {
-			"sechub-openapi-typescript": ["../../sechub-openapi-typescript/dist"]
+			"sechub-openapi-ts-client": ["../../sechub-openapi-ts-client/dist"]
 		},
 		"outDir": "out",
 		"sourceMap": true,

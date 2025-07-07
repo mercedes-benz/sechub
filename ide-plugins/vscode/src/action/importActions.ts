@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as sechubExtension from './../extension';
-import { ScanType } from 'sechub-openapi-typescript';
+import { ScanType } from 'sechub-openapi-ts-client';
 import { loadFromFile } from './../utils/sechubUtils';
 
 export function hookImportAction(context: sechubExtension.SecHubContext) {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as assert from 'assert';
 import * as path from 'path';
-import { SecHubReport, Severity, ScanType } from 'sechub-openapi-typescript';
+import { SecHubReport, Severity, ScanType } from 'sechub-openapi-ts-client';
 import { loadFromFile } from '../../utils/sechubUtils';
 
 // You can import and use all API from the 'vscode' module

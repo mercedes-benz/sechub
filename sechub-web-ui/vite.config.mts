@@ -78,11 +78,11 @@ export default defineConfig({
   },
   // necessary configuration for custom module as commonjs
   optimizeDeps: {
-    include: ['sechub-openapi-typescript'],
+    include: ['sechub-openapi-ts-client'],
   },
   build: {
     commonjsOptions: {
-      include: [/sechub-openapi-typescript/, /node_modules/],
+      include: [/sechub-openapi-ts-client/, /node_modules/],
     },
   },
   server: {

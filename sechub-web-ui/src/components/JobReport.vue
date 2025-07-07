@@ -153,7 +153,7 @@
 <script lang="ts">
   import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
-  import { SecHubFinding, SecHubReport } from 'sechub-openapi-typescript'
+  import { SecHubFinding, SecHubReport } from 'sechub-openapi-ts-client'
   import { useReportStore } from '@/stores/reportStore'
   import { TmpFalsePositives, useTmpFalsePositivesStore } from '@/stores/tempFalsePositivesStore'
   import '@/styles/sechub.scss'

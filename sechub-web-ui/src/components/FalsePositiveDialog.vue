@@ -154,7 +154,7 @@
     FalsePositives,
     SecHubFinding,
     WebscanFalsePositiveProjectData,
-  } from 'sechub-openapi-typescript'
+  } from 'sechub-openapi-ts-client'
   import '@/styles/sechub.scss'
 
   export default defineComponent({

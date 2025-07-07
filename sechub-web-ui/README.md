@@ -19,7 +19,7 @@ nvm use
 ```
 
 Build the openAPI SecHub Client +
-To generate the SecHub openAPI Client switch to the sechub-openapi-types directory and see [README.md](../sechub-openapi-typescript/README.md) for instructions.
+To generate the SecHub openAPI Client switch to the sechub-openapi-types directory and see [README.md](../sechub-openapi-ts-client/README.md) for instructions.
 
 Install the project dependencies:
 

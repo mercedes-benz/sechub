@@ -82,7 +82,7 @@
 </template>
 <script lang="ts">
   import { useRoute, useRouter } from 'vue-router'
-  import { SecHubReport, SecHubReportScanTypeSummary } from 'sechub-openapi-typescript'
+  import { SecHubReport, SecHubReportScanTypeSummary } from 'sechub-openapi-ts-client'
   import { getTrafficLightClass } from '@/utils/projectUtils'
   import { useReportStore } from '@/stores/reportStore'
   import { useFetchReport } from '@/composables/useReport'
