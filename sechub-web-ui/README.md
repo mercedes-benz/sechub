@@ -18,8 +18,13 @@ nvm install
 nvm use
 ```
 
+
+### Build the SecHub OpenAPI Client
+
 Build the openAPI SecHub Client +
-To generate the SecHub openAPI Client switch to the sechub-openapi-types directory and see [README.md](../sechub-openapi-ts-client/README.md) for instructions.
+To generate the SecHub openAPI Client switch to the sechub-openapi-ts-client directory and see [README.md](../sechub-openapi-ts-client/README.md) for instructions.
+
+### Install Dependencies
 
 Install the project dependencies:
 

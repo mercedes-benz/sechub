@@ -35,7 +35,5 @@ npm run generate-api-client
 npm build
 ```
 
-## Description
-
-In the src/services overrides for incorrectly generated code is overridden.
-As well as shared services (by web-ui and vscode extension) are implemented here.
+After building the client, you can find the generated code in the `dist` directory.
+The module can be now imported into your TypeScript project.
