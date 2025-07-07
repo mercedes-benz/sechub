@@ -33,6 +33,13 @@ jobs:
       with:
         # Matrix test using LTS (Long Term Support) versions
         node-version: ${{ matrix.node }}
+    - name: Build sechub-openapi-ts-client
+      run: |
+        cd ../../sechub-openapi-ts-client
+        npm ci
+        npm run generate-api-client
+        npm run build
+        cd ../ide-plugins/vscode
     - run: npm ci
     # https://code.visualstudio.com/api/working-with-extensions/continuous-integration#github-actions
 
