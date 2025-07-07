@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: MIT
+ /*============================================================================
+ * Build file for subproject
+ *
+ * Root build file: "${rootProject.projectDir}/build.gradle"
+ * ============================================================================
+ */
+dependencies {
+    /* runtime */
+    implementation project(':sechub-commons-archive')
+    implementation project(':sechub-commons-model')
+    implementation project(':sechub-commons-core')
+    implementation project(':sechub-commons-pds')
+
+    /* test */
+    testImplementation project(':sechub-testframework')
+
+    testImplementation spring_boot_dependency.junit_jupiter
+    testImplementation spring_boot_dependency.junit_jupiter_params
+    testImplementation spring_boot_dependency.mockito_core
+
+    testImplementation library.apache_commons_io
+}
+
+version = versionData.getInfralightWrapperVersion()
+
+bootJar {
+
+     doLast {
+            /* Here we copy the created wrapper jar as "sechub-wrapper-infralight.jar" into the
+             * pds-tools folder inside the sechub-integrationtest gradle subproject.
+             *
+             *  This enables integration test script to use the solution infralight.sh script
+             *  and just set as tool folder: ${project.buildDir}/pds-tools
+             */
+            File integratonTestLaunchFile = new File("${rootProject.projectDir}/sechub-integrationtest/build/pds-tools/sechub-wrapper-infralight.jar")
+
+            if (integratonTestLaunchFile.exists()){
+                java.nio.file.Files.delete(integratonTestLaunchFile.toPath())
+            }else{
+                integratonTestLaunchFile.getParentFile().mkdirs();
+            }
+
+            File buildFile = new File("${project.buildDir}/libs/sechub-wrapper-infralight-${project.version}.jar")
+            java.nio.file.Files.copy(buildFile.toPath(),integratonTestLaunchFile.toPath())
+    }
+
+}

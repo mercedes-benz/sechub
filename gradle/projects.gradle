@@ -53,6 +53,7 @@ projectType = [
                     /* special wrapper applications which are also spring boot applications
                        to have dependency injection and access to some other spring boot parts */
                     project(':sechub-wrapper-checkmarx'),
+                    project(':sechub-wrapper-infralight'),
                     project(':sechub-wrapper-prepare'),
 
                     project(':sechub-wrapper-secretvalidation'),
@@ -105,6 +106,7 @@ projectType = [
                    project(':sechub-server'),
                    project(':sechub-pds'),
                    project(':sechub-wrapper-checkmarx'),
+                   project(':sechub-wrapper-infralight'),
                    project(':sechub-wrapper-prepare'),
                    project(':sechub-wrapper-secretvalidation'),
             ],
