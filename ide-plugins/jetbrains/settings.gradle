@@ -2,7 +2,7 @@
 
 rootProject.name = 'sechub-ide-plugin-jetbrains'
 
-includeBuild('..') {
+includeBuild('../..') {
     dependencySubstitution {
         substitute(module('com.mercedesbenz.sechub:sechub-openapi-java-client')).using(project(':sechub-openapi-java-client'))
     }

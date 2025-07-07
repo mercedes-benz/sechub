@@ -1,6 +1,6 @@
 # SecHub IntelliJ Plugin
 
-![SecHub Logo](./other/images/sechub-logo-big.png)
+![SecHub Logo](other/images/sechub-logo-big.png)
 
 ## Intended Usage
 
