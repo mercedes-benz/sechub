@@ -17,12 +17,6 @@ import { SecHubReport } from 'sechub-openapi-ts-client';
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
-	try {
-		const openapi = require('sechub-openapi-typescript/src/generated-sources/openapi');
-		console.log('Module loaded successfully:', openapi);
-	} catch (error) {
-		console.error('Failed to load module:', error);
-	}
 	
 	let loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
 	let report: SecHubReport | undefined = undefined;
