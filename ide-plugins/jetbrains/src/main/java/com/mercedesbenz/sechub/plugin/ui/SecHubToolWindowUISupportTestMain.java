@@ -6,20 +6,17 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 import javax.swing.*;
+import javax.swing.Action;
 
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
-import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebEvidence;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.plugin.model.FindingModel;
 import com.mercedesbenz.sechub.plugin.model.FindingNode;
 import com.mercedesbenz.sechub.plugin.util.ErrorLog;
 
 /**
- * This is only a simple test application - so we do not need to start IntelliJ all time here and are able to test
- * UI interaction provided by SecHubToolWindowUISupport class
+ * This is only a simple test application - so we do not need to start IntelliJ
+ * all time here and are able to test UI interaction provided by
+ * SecHubToolWindowUISupport class
  */
 public class SecHubToolWindowUISupportTestMain {
 
@@ -38,8 +35,7 @@ public class SecHubToolWindowUISupportTestMain {
             menu.add(new SetNewModelAction());
             JMenuBar menuBar = new JMenuBar();
 
-            ImageIcon codeScanIcon = new ImageIcon("icons/activity.png",
-                    "Just a green ball...");
+            ImageIcon codeScanIcon = new ImageIcon("icons/activity.png", "Just a green ball...");
 
             menuBar.add(menu);
             frame.setJMenuBar(menuBar);
@@ -76,16 +72,16 @@ public class SecHubToolWindowUISupportTestMain {
             context.errorLog = new ErrorLog() {
             };
             context.cweIdLabel = new JLabel("cwe");
-            context.findingTypeDetailsTabbedPane=tabbedPane;
-            context.callHierarchyTabComponent= callHierarchySplitPane;
-            context.descriptionAndSolutionTabbedPane=new JTabbedPane();
+            context.findingTypeDetailsTabbedPane = tabbedPane;
+            context.callHierarchyTabComponent = callHierarchySplitPane;
+            context.descriptionAndSolutionTabbedPane = new JTabbedPane();
 
             JTextArea webRequestTextArea = new JTextArea();
             JTextArea webResponseTextArea = new JTextArea();
             JTextArea attackTextArea = new JTextArea();
 
             attackPanel.setLayout(new BorderLayout());
-            attackPanel.add(new JScrollPane(attackTextArea),BorderLayout.CENTER);
+            attackPanel.add(new JScrollPane(attackTextArea), BorderLayout.CENTER);
 
             webRequestPanel.setLayout(new BorderLayout());
             webRequestPanel.add(new JScrollPane(webRequestTextArea), BorderLayout.CENTER);
@@ -93,15 +89,14 @@ public class SecHubToolWindowUISupportTestMain {
             webResponsePanel.setLayout(new BorderLayout());
             webResponsePanel.add(new JScrollPane(webResponseTextArea), BorderLayout.CENTER);
 
-            context.webRequestTextArea= webRequestTextArea;
-            context.webResponseTextArea= webResponseTextArea;
-            context.attackTextArea= attackTextArea;
-            context.attackTabComponent=attackPanel;
-            context.webRequestTabComponent=webRequestPanel;
-            context.webResponseTabComponent=webResponsePanel;
+            context.webRequestTextArea = webRequestTextArea;
+            context.webResponseTextArea = webResponseTextArea;
+            context.attackTextArea = attackTextArea;
+            context.attackTabComponent = attackPanel;
+            context.webRequestTabComponent = webRequestPanel;
+            context.webResponseTabComponent = webResponsePanel;
 
-
-            context.componentFactory =new ComponentBuilder(){
+            context.componentFactory = new ComponentBuilder() {
 
                 @Override
                 public JScrollPane createScrollPane(JComponent component) {
@@ -112,7 +107,7 @@ public class SecHubToolWindowUISupportTestMain {
 
                 @Override
                 public Icon getIconForScanType(ScanType scanType) {
-                    if (ScanType.CODE_SCAN.equals(scanType)){
+                    if (ScanType.CODE_SCAN.equals(scanType)) {
                         return codeScanIcon;
                     }
                     return null;
@@ -144,13 +139,13 @@ public class SecHubToolWindowUISupportTestMain {
             FindingModel model = new FindingModel();
 
             append(model, "alpha", Severity.CRITICAL, ScanType.CODE_SCAN);
-            append(model, "beta", Severity.HIGH,ScanType.CODE_SCAN);
-            append(model, "gamma", Severity.MEDIUM,ScanType.CODE_SCAN);
-            append(model, "delta", Severity.LOW,ScanType.CODE_SCAN);
-            append(model, "epsilon", Severity.INFO,ScanType.CODE_SCAN);
-            append(model, "zeta", Severity.INFO,ScanType.WEB_SCAN);
-            append(model, "eta", Severity.INFO,ScanType.INFRA_SCAN);
-            append(model, "theta", Severity.INFO,ScanType.SECRET_SCAN);
+            append(model, "beta", Severity.HIGH, ScanType.CODE_SCAN);
+            append(model, "gamma", Severity.MEDIUM, ScanType.CODE_SCAN);
+            append(model, "delta", Severity.LOW, ScanType.CODE_SCAN);
+            append(model, "epsilon", Severity.INFO, ScanType.CODE_SCAN);
+            append(model, "zeta", Severity.INFO, ScanType.WEB_SCAN);
+            append(model, "eta", Severity.INFO, ScanType.INFRA_SCAN);
+            append(model, "theta", Severity.INFO, ScanType.SECRET_SCAN);
             return model;
         }
 
@@ -158,38 +153,62 @@ public class SecHubToolWindowUISupportTestMain {
             int step = 1;
 
             SecHubFinding finding = new SecHubFinding();
-            if (scanType.equals(ScanType.WEB_SCAN)){
+            if (scanType.equals(ScanType.WEB_SCAN)) {
                 SecHubReportWeb web = new SecHubReportWeb();
                 finding.setWeb(web);
                 web.getRequest().setMethod("http");
-                web.getRequest().getHeaders().put("header-key-","header-value");
+                web.getRequest().getHeaders().put("header-key-", "header-value");
                 web.getResponse().setReasonPhrase("the reason...");
-                web.getResponse().getHeaders().put("header-key-","header-value");
+                web.getResponse().getHeaders().put("header-key-", "header-value");
                 web.getAttack().setVector("attack vector...");
                 SecHubReportWebEvidence evidence = new SecHubReportWebEvidence();
                 evidence.setSnippet("<Code> snippet with problem inside </code>");
                 web.getAttack().setEvidence(evidence);
             }
 
-            FindingNode node1 = FindingNode.builder().setId(findingCounter++).setDescription(generateDescription(prefix))
-                    .setScanType(scanType).setName("the name for "+prefix)
+            /* @formatter:off */
+            FindingNode node1 = FindingNode.builder()
+                    .setId(findingCounter++)
+                    .setDescription(generateDescription(prefix))
+                    .setScanType(scanType)
+                    .setName("the name for " + prefix)
                     .setSecHubFinding(finding)
-                    .setColumn(12).setLine(1).setLocation("/some/where/found/Xyz.java").setSeverity(severity)
-                    .setCallStackStep(step++).setRelevantPart("i am relevant1")
-                    .setSource("I am source... and i am relevant").build();
-            FindingNode node2 = FindingNode.builder().setId(findingCounter++).setDescription(generateDescription(prefix))
-                    .setColumn(13).setLine(2).setLocation("/some/where/found/Xyz.java").setSeverity(severity)
-                    .setCallStackStep(step++).setRelevantPart("i am relevant2")
-                    .setSource("I am source... and i am relevant").build();
+                    .setColumn(12)
+                    .setLine(1)
+                    .setLocation("/some/where/found/Xyz.java")
+                    .setSeverity(severity)
+                    .setCallStackStep(step++)
+                    .setRelevantPart("i am relevant1")
+                    .setSource("I am source... and i am relevant")
+                    .build();
 
-            FindingNode node3 = FindingNode.builder().setId(findingCounter++).setDescription(generateDescription(prefix))
-                    .setColumn(14).setLine(3).setLocation("/some/where/found/Xyz.java").setSeverity(severity)
-                    .setCallStackStep(step++).setRelevantPart("i am relevant3")
-                    .setSource("I am source... and i am relevant").build();
+            FindingNode node2 = FindingNode.builder()
+                    .setId(findingCounter++)
+                    .setDescription(generateDescription(prefix))
+                    .setColumn(13)
+                    .setLine(2)
+                    .setLocation("/some/where/found/Xyz.java")
+                    .setSeverity(severity)
+                    .setCallStackStep(step++)
+                    .setRelevantPart("i am relevant2")
+                    .setSource("I am source... and i am relevant")
+                    .build();
+
+            FindingNode node3 = FindingNode.builder()
+                    .setId(findingCounter++)
+                    .setDescription(generateDescription(prefix))
+                    .setColumn(14)
+                    .setLine(3)
+                    .setLocation("/some/where/found/Xyz.java")
+                    .setSeverity(severity)
+                    .setCallStackStep(step++)
+                    .setRelevantPart("i am relevant3")
+                    .setSource("I am source... and i am relevant")
+                    .build();
+            /* @formatter:on */
 
             node1.getChildren().add(node2);
             node2.getChildren().add(node3);
-
             model.getFindings().add(node1);
         }
 

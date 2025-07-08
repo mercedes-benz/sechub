@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea.window;
 
+import java.awt.*;
+import java.util.Objects;
+
+import javax.swing.*;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.ui.components.JBLabel;
@@ -9,11 +16,6 @@ import com.intellij.ui.components.JBTextField;
 import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccess;
 import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccessFactory;
 import com.mercedesbenz.sechub.settings.SechubSettings;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import java.awt.*;
-import java.util.Objects;
 
 public class SecHubServerPanel implements SecHubPanel {
 
@@ -31,7 +33,6 @@ public class SecHubServerPanel implements SecHubPanel {
     private final @NotNull Icon serverActiveTrue = AllIcons.General.InspectionsOK;
     private final @NotNull Icon serverActiveFalse = AllIcons.Ide.ErrorPoint;
     private final JButton serverActiveButton = new JButton(BUTTON_TEXT);
-
 
     public SecHubServerPanel() {
         createComponents();

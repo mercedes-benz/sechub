@@ -163,21 +163,25 @@ tasks.named("spotlessJava"){
 * the assemble task before importing projects/modules, so it should work there always. 
 */ 
 tasks.named("eclipse") {
-    dependsOn("assemble")
+    dependsOn("provideOpenAPIJavaForEclipse")
 }
 
 /**
- * Custom gradle task to build a "fatJar".
+ * Custom gradle task to build a "fatJar" inside eclipse plugin library folder
  */
-task buildJavaApiAll(type: Jar) {
+task provideOpenAPIJavaForEclipse(type: Jar) {
+    dependsOn("assemble")
+    
     group 'sechub'
+    version = '' // we do not want version here, means no update of MANIFEST.MF, .classpath etc. necessary in eclipse plugin
     description 'Builds the java api library as standalone library.'
-    archivesBaseName = 'sechub-java-api-all'
+    archivesBaseName = 'sechub-openapi-java-client-full'
     from { 
         configurations.runtimeClasspath.collect { 
             it.isDirectory() ? it : zipTree(it) 
         } 
     }
     duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    destinationDirectory = file("${rootProject.projectDir}/ide-plugins/eclipse/sechub-eclipse-plugin/lib") // target to eclipse plugin folder
     with jar
 }

@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 
 /**
  * The FindingNode represents data structure required in

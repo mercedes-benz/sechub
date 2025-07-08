@@ -8,13 +8,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.Severity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeCallStack;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
+import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 import com.mercedesbenz.sechub.model.FindingNode.FindingNodeBuilder;
 
 public class SecHubFindingToFindingModelTransformer {
 
+	private static final Logger logger = LoggerFactory.getLogger(SecHubFindingToFindingModelTransformer.class);
+	
 	private static final String EMPTY = "";
 
 	public FindingModel transform(List<SecHubFinding> findings) {
@@ -28,12 +33,19 @@ public class SecHubFindingToFindingModelTransformer {
 	}
 
 	private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubFinding finding) {
+		if (finding==null) {
+			return;
+		}
 		Severity severity = finding.getSeverity();
 
 		List<FindingNode> list = map.computeIfAbsent(severity,
 				SecHubFindingToFindingModelTransformer::createFindingNodeList);
 
-		int id = finding.getId();
+		Integer id = finding.getId();
+		if (id==null) {
+			logger.warn("Finding id is null!");
+			return;
+		}
 		int callStackStep = 1;
 		String description = finding.getName();
 		Integer cweId = finding.getCweId();

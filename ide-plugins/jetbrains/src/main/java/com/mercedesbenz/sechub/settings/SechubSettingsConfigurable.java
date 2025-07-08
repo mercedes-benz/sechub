@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.settings;
 
+import java.util.Objects;
+
+import javax.swing.*;
+
+import org.jetbrains.annotations.Nls;
+import org.jetbrains.annotations.Nullable;
+
 import com.intellij.credentialStore.Credentials;
 import com.intellij.openapi.options.Configurable;
 import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccess;
 import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccessFactory;
 import com.mercedesbenz.sechub.plugin.idea.window.SecHubServerPanel;
-import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
-import java.util.Objects;
 
 /*
  * Provides controller functionality for application settings.
@@ -53,10 +55,11 @@ final class SechubSettingsConfigurable implements Configurable {
             currentPassword = credentials.getPasswordAsString();
             currentUserName = credentials.getUserName();
         }
-
+        /* @formatter:off */
         return !sechubSettingsComponent.getUserNameText().equals(currentUserName) ||
                 !sechubSettingsComponent.getApiTokenPassword().equals(currentPassword) ||
                 !sechubSettingsComponent.getServerUrlText().equals(state.serverURL);
+        /* @formatter:on */
     }
 
     @Override
@@ -65,7 +68,10 @@ final class SechubSettingsConfigurable implements Configurable {
 
         String serverUrl = sechubSettingsComponent.getServerUrlText();
         if (!serverUrl.isBlank() && !serverUrl.startsWith("http")) {
-            /* It is necessary to apply http protocol since the sechubClient needs it even when the URI is valid */
+            /*
+             * It is necessary to apply http protocol since the sechubClient needs it even
+             * when the URI is valid
+             */
             /* using URL instead of URI won't solve the problem */
             serverUrl = "https://" + serverUrl;
         }
@@ -76,8 +82,6 @@ final class SechubSettingsConfigurable implements Configurable {
 
         updateComponents(state);
     }
-
-
 
     @Override
     public void reset() {
@@ -94,7 +98,7 @@ final class SechubSettingsConfigurable implements Configurable {
             String password = credentials.getPasswordAsString();
             String userName = credentials.getUserName();
 
-            if(userName == null){
+            if (userName == null) {
                 userName = "";
             }
             if (password == null) {

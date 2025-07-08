@@ -1,18 +1,22 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea.sechubaccess;
 
-import com.mercedesbenz.sechub.plugin.idea.util.DoNothingSecHubClient;
-import com.mercedesbenz.sechub.api.SecHubClient;
-import com.mercedesbenz.sechub.api.SecHubClientException;
+import static java.util.Objects.requireNonNull;
+
+import java.net.URI;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
+import com.mercedesbenz.sechub.api.DefaultSecHubClient;
+import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 
 public class SecHubAccess {
 
     private static final Logger LOG = LoggerFactory.getLogger(SecHubAccess.class);
     private SecHubClient client;
+
     public SecHubAccess(String secHubServerUrl, String userId, String apiToken, boolean trustAllCertificates) {
         initSecHubClient(secHubServerUrl, userId, apiToken, trustAllCertificates);
     }
@@ -24,35 +28,33 @@ public class SecHubAccess {
         }
         try {
             return client.isServerAlive();
-        } catch (SecHubClientException e) {
+        } catch (ApiException e) {
+            LOG.debug("Failed to check SecHub server status", e);
             return false;
         }
     }
 
     private void initSecHubClient(String secHubServerUrl, String userId, String apiToken, boolean trustAllCertificates) {
 
-        if (isInputMissingOrEmpty(secHubServerUrl, userId, apiToken)) {
-            return;
-        }
+        requireNonNull(secHubServerUrl, "Parameter 'secHubServerUrl' must not be null");
+        requireNonNull(userId, "Parameter 'userId' must not be null");
+        requireNonNull(apiToken, "Parameter 'apiToken' must not be null");
+
+        URI serverUri;
         try {
-            URI serverUri = URI.create(secHubServerUrl);
-
-            /* @formatter:off */
-//            this.client = DefaultSecHubClient.builder()
-//                    .server(serverUri)
-//                    .user(userId)
-//                    .apiToken(apiToken)
-//                    .trustAll(trustAllCertificates)
-//                    .build();
-            this.client = new DoNothingSecHubClient();
-            /* @formatter:on */
-
+            serverUri = URI.create(secHubServerUrl);
         } catch (IllegalArgumentException e) {
-            LOG.error("Failed to initialize SecHub client", e);
+            LOG.error("Parameter 'secHubServerUrl' must contain a valid secHub server URL", e);
+            throw new IllegalStateException("Invalid parameter 'secHubServerUrl': %s".formatted(secHubServerUrl), e);
         }
-    }
 
-    private boolean isInputMissingOrEmpty(String secHubServerUrl, String userId, String apiToken) {
-        return secHubServerUrl.isBlank() || userId == null || apiToken == null;
+        /* @formatter:off */
+        this.client = DefaultSecHubClient.builder()
+                .server(serverUri)
+                .user(userId)
+                .apiToken(apiToken)
+                .trustAll(trustAllCertificates)
+                .build();
+        /* @formatter:on */
     }
 }
