@@ -166,20 +166,49 @@ public class SecHubToolWindowUISupportTestMain {
                 web.getAttack().setEvidence(evidence);
             }
 
-            FindingNode node1 = FindingNode.builder().setId(findingCounter++).setDescription(generateDescription(prefix)).setScanType(scanType)
-                    .setName("the name for " + prefix).setSecHubFinding(finding).setColumn(12).setLine(1).setLocation("/some/where/found/Xyz.java")
-                    .setSeverity(severity).setCallStackStep(step++).setRelevantPart("i am relevant1").setSource("I am source... and i am relevant").build();
-            FindingNode node2 = FindingNode.builder().setId(findingCounter++).setDescription(generateDescription(prefix)).setColumn(13).setLine(2)
-                    .setLocation("/some/where/found/Xyz.java").setSeverity(severity).setCallStackStep(step++).setRelevantPart("i am relevant2")
-                    .setSource("I am source... and i am relevant").build();
+            /* @formatter:off */
+            FindingNode node1 = FindingNode.builder()
+                    .setId(findingCounter++)
+                    .setDescription(generateDescription(prefix))
+                    .setScanType(scanType)
+                    .setName("the name for " + prefix)
+                    .setSecHubFinding(finding)
+                    .setColumn(12)
+                    .setLine(1)
+                    .setLocation("/some/where/found/Xyz.java")
+                    .setSeverity(severity)
+                    .setCallStackStep(step++)
+                    .setRelevantPart("i am relevant1")
+                    .setSource("I am source... and i am relevant")
+                    .build();
 
-            FindingNode node3 = FindingNode.builder().setId(findingCounter++).setDescription(generateDescription(prefix)).setColumn(14).setLine(3)
-                    .setLocation("/some/where/found/Xyz.java").setSeverity(severity).setCallStackStep(step++).setRelevantPart("i am relevant3")
-                    .setSource("I am source... and i am relevant").build();
+            FindingNode node2 = FindingNode.builder()
+                    .setId(findingCounter++)
+                    .setDescription(generateDescription(prefix))
+                    .setColumn(13)
+                    .setLine(2)
+                    .setLocation("/some/where/found/Xyz.java")
+                    .setSeverity(severity)
+                    .setCallStackStep(step++)
+                    .setRelevantPart("i am relevant2")
+                    .setSource("I am source... and i am relevant")
+                    .build();
+
+            FindingNode node3 = FindingNode.builder()
+                    .setId(findingCounter++)
+                    .setDescription(generateDescription(prefix))
+                    .setColumn(14)
+                    .setLine(3)
+                    .setLocation("/some/where/found/Xyz.java")
+                    .setSeverity(severity)
+                    .setCallStackStep(step++)
+                    .setRelevantPart("i am relevant3")
+                    .setSource("I am source... and i am relevant")
+                    .build();
+            /* @formatter:on */
 
             node1.getChildren().add(node2);
             node2.getChildren().add(node3);
-
             model.getFindings().add(node1);
         }
 

@@ -32,8 +32,8 @@ public class FindingNode implements Comparable<FindingNode> {
     private String relevantPart;
     private String source;
     private Severity severity;
-    public int callStackStep;
-    public int id;
+    public Integer callStackStep;
+    public Integer id;
     private String fileName;
     public String filePath;
     private Map<String, Object> metaDataCache;
@@ -48,10 +48,10 @@ public class FindingNode implements Comparable<FindingNode> {
         private String name;
         private String description;
         private String location;
-        private int line;
-        private int column;
-        private int id;
-        private int callStackStep;
+        private Integer line;
+        private Integer column;
+        private Integer id;
+        private Integer callStackStep;
         private String relevantPart;
         private String source;
         private Severity severity;

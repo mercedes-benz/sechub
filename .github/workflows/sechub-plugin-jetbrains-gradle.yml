@@ -1,20 +1,20 @@
 # SPDX-License-Identifier: MIT
-name: SecHub Jetbrains Plugin Java build
+name: SecHub Jetbrains plugin Java build
 
 on:
   push:
     branches:
-      - develop
-      - hotfix
-      - main
-      - master
+      - 'develop'
+      - 'hotfix'
+      - 'main'
+      - 'master'
     paths:
-      - sechub-plugin-jetbrains-gradle.yml
-      - ide-plugins/jetbrains/**
+      - '.github/workflows/sechub-plugin-jetbrains-gradle.yml'
+      - 'ide-plugins/jetbrains/**'
   pull_request:
     paths:
-      - sechub-plugin-jetbrains-gradle.yml
-      - ide-plugins/jetbrains/**
+      - '.github/workflows/sechub-plugin-jetbrains-gradle.yml'
+      - 'ide-plugins/jetbrains/**'
   # enable manual triggering of workflow
   workflow_dispatch:
 
@@ -22,35 +22,35 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     defaults:
       run:
         working-directory: ide-plugins/jetbrains
     steps:
-    - uses: actions/checkout@v4.2.2
-    - name: Set up JDK 17
-      uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b
-      with:
-        distribution: temurin
-        java-version: 17
+      - uses: actions/checkout@v4.2.2
+      - name: Set up JDK 17
+        uses: actions/setup-java@7a6d8a8234af8eb26422e24e3006232cccaa061b
+        with:
+          distribution: temurin
+          java-version: 17
 
-    - name: Build plugin
-      run: ./gradlew test buildPlugin
+      - name: "Build plugin"
+        run: ./gradlew test buildPlugin
 
-    - name: Archive test results
-      if: always()
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
-      with:
+      - name: "Archive test results"
+        if: always()
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+        with:
           name: test-results
           path: ide-plugins/jetbrains/build/reports
           retention-days: 14
+      - name: "Documentations"
+        run: ./gradlew asciidoc
 
-    - name: Documentations
-      run: ./gradlew asciidoc
-
-    - name: Archive documentation
-      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
-      with:
+      - name: "Archive documentation"
+        if: always()
+        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+        with:
           name: documentation
           path: ide-plugins/jetbrains/build/docs/asciidoc
           retention-days: 14

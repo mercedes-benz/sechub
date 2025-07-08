@@ -55,9 +55,11 @@ final class SechubSettingsConfigurable implements Configurable {
             currentPassword = credentials.getPasswordAsString();
             currentUserName = credentials.getUserName();
         }
-
-        return !sechubSettingsComponent.getUserNameText().equals(currentUserName) || !sechubSettingsComponent.getApiTokenPassword().equals(currentPassword)
-                || !sechubSettingsComponent.getServerUrlText().equals(state.serverURL);
+        /* @formatter:off */
+        return !sechubSettingsComponent.getUserNameText().equals(currentUserName) ||
+                !sechubSettingsComponent.getApiTokenPassword().equals(currentPassword) ||
+                !sechubSettingsComponent.getServerUrlText().equals(state.serverURL);
+        /* @formatter:on */
     }
 
     @Override
