@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.wrapper.infralight.scan.InfralightSarifImportService;
+import com.mercedesbenz.sechub.wrapper.infralight.product.InfralighProductImportService;
 
 import de.jcup.sarif_2_1_0.model.SarifSchema210;
 
@@ -23,27 +23,33 @@ public class InfralightWrapperCLI implements CommandLineRunner {
     private static final Logger LOG = LoggerFactory.getLogger(InfralightWrapperCLI.class);
 
     @Autowired
-    InfralightSarifImportService scanService;
+    InfralighProductImportService scanService;
 
     @Autowired
     InfralightWrapperEnvironment environment;
+
+    @Autowired
+    TextFileWriter textFileWriter;
 
     @Override
     public void run(String... args) throws Exception {
         LOG.info("Infralight wrapper starting");
 
-        String pathAsString = environment.getInfrascanProductsOutputFolder();
-        LOG.info("Import from product output folder: {}", pathAsString);
-        Path productsOutputFolder = Paths.get(pathAsString);
+        String productsOutputFolderAsString = environment.getInfrascanProductsOutputFolder();
+        if (productsOutputFolderAsString == null || productsOutputFolderAsString.isBlank()) {
+            throw new IllegalArgumentException("Path to infrascan products output folder may not be null or empty");
+        }
+        String pdsResultFilePath = environment.getPdsResultFile();
+        if (pdsResultFilePath == null || pdsResultFilePath.isBlank()) {
+            throw new IllegalArgumentException("Path to PDS rsult file may not be null or empty");
+        }
+
+        Path productsOutputFolder = Paths.get(productsOutputFolderAsString);
 
         SarifSchema210 sarifResult = scanService.importProductResultsAsSarif(productsOutputFolder);
-        String sarifAsJson = JSONConverter.get().toJSON(sarifResult);  
-        
-        String pdsResultFilePath = environment.getPdsResultFile();
-        
-        TextFileWriter writer = new TextFileWriter();
-        
-        writer.writeTextToFile(new File(pdsResultFilePath), sarifAsJson, true);
+        String sarifAsJson = JSONConverter.get().toJSON(sarifResult);
+
+        textFileWriter.writeTextToFile(new File(pdsResultFilePath), sarifAsJson, true);
 
     }
 

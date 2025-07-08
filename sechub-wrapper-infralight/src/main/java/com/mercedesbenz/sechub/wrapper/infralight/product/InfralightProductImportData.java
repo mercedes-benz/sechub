@@ -1,16 +1,20 @@
-package com.mercedesbenz.sechub.wrapper.infralight.scan;
+package com.mercedesbenz.sechub.wrapper.infralight.product;
 
 import com.mercedesbenz.sechub.commons.model.Severity;
 
-public class InfraScanProductImportData {
-    
+/**
+ * A simple class to contain minimum data from any infra scan product - used as
+ * interchange format (simpler than sarif) inside Infralight wrapper.
+ */
+public class InfralightProductImportData {
+
     private Severity severity;
-    
+
     private Integer cweId;
-    
+
     private String description;
 
-    public InfraScanProductImportData(Severity severity, Integer cweId, String description) {
+    public InfralightProductImportData(Severity severity, Integer cweId, String description) {
         super();
         this.severity = severity;
         this.cweId = cweId;
@@ -28,6 +32,5 @@ public class InfraScanProductImportData {
     public String getDescription() {
         return description;
     }
-    
-    
+
 }
