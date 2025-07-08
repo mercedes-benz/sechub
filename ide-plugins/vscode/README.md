@@ -27,24 +27,21 @@ NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extens
     * [`deb` and `rpm` packages (Debian/Ubuntu, RHEL/Fedora etc.)](https://github.com/nodesource/distributions/tree/master)
     * [Node.js releases](https://nodejs.dev/en/about/releases/)
 
-2. Install Typescript compiler
+2. Build the Typescript client
+
+   Switch to the `sechub-openapi-ts-client` directory and follow the instructions in the [README.md](../sechub-openapi-ts-client/README.md) to generate the SecHub OpenAPI client.
+
+3. Install the dependencies
 
     ~~~
-    npm install -g typescript
-
-    # or on Linux
-
-    sudo npm install -g typescript
-
-    # check version
-    tsc --version
+    npm install
     ~~~
-
-3. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
+   
+4. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
 
     NOTE: VSCodium and Eclipse Theia distribute free/libre open source software binaries. VS Code, on the other hand, distributes non-free binaries and collects telemetry data.
 
-4. In VSCodium toolbar: `Run -> Start Debugging`.
+5. In VSCodium toolbar: `Run -> Start Debugging`.
 
     ![image](README/start_debugging.png)
 
@@ -52,13 +49,17 @@ NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extens
 
 Prerequisite: The Node package manager NPM needs to be installed.
 
-1. Install dependencies
+1. Build the Typescript client
+
+   Switch to the `sechub-openapi-ts-client` directory and follow the instructions in the [README.md](../sechub-openapi-ts-client/README.md) to generate the SecHub OpenAPI client.
+
+2. Install dependencies (make sure you have generated and build t+he sechub-openapi-typescript client first)
 
     ~~~
     npm install
     ~~~
 
-2. Compile and run tests
+3. Compile and run tests
 
     ~~~
     npm test

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-import { UserDetailInformation } from '@/generated-sources/openapi'
+import { UserDetailInformation } from 'sechub-openapi-ts-client'
 import { defineStore } from 'pinia'
 
 const STORE_NAME = 'userDetailStore'
