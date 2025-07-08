@@ -1,6 +1,12 @@
 <!-- SPDX-License-Identifier: MIT --->
 # Changelog
 
+## [0.4.1]
+## Changed
+- Using new OpenAPI client for robust SecHub server communication
+- Make plugin part of the SecHub repository
+- Update plugin dependencies to latest versions
+
 ## [0.3.0]
 ### Changed
 - Needs now min JRE 11

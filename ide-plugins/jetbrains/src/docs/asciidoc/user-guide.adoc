@@ -28,7 +28,7 @@ TIP: Since V0.4.0 the UI has been improved/changed a bit, but functionality is s
 
 
 === Use call hierarchy view to traverse finding steps
-Double click on an entry inside the report table (marked as [.small]#1.# in figure [.small]#1# ).
+Double-click on an entry inside the report table (marked as [.small]#1.# in figure [.small]#1# ).
 
 When you have done this, you will see the complete call hierarchy from entrypoint to data sink inside call hierarchy
 tree marked as [.small]#2.# in overview picture.

@@ -1,14 +1,17 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.ui;
 
+import java.io.Serial;
+
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
 public class SechubTreeModel extends DefaultTreeModel {
 
-	private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-	public SechubTreeModel() {
+    public SechubTreeModel() {
         super(new SecHubRootTeeNode());
     }
 

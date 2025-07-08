@@ -8,12 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubCodeCallStack;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.commons.model.web.SecHubReportWeb;
-import com.mercedesbenz.sechub.commons.model.web.SecHubReportWebRequest;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 
 public class SecHubFindingToFindingModelTransformer {
 
@@ -24,18 +19,17 @@ public class SecHubFindingToFindingModelTransformer {
         Map<Severity, List<FindingNode>> map = new LinkedHashMap<>();
         for (SecHubFinding finding : findings) {
             addNodesToMapForFinding(map, finding);
-
         }
+
         return createRootNodeWithChildren(map);
     }
 
     private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubFinding finding) {
         Severity severity = finding.getSeverity();
 
-        List<FindingNode> list = map.computeIfAbsent(severity,
-                SecHubFindingToFindingModelTransformer::createFindingNodeList);
+        List<FindingNode> list = map.computeIfAbsent(severity, SecHubFindingToFindingModelTransformer::createFindingNodeList);
 
-        int id = finding.getId();
+        Integer id = finding.getId();
         int callStackStep = 1;
         String description = finding.getDescription();
         Integer cweId = finding.getCweId();
