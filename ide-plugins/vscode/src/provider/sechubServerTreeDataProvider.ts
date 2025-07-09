@@ -1,5 +1,6 @@
 import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
-import { DefaultClient, getDefaultClient } from '../api/defaultClient';
+import { DefaultClient } from '../api/defaultClient';
+import { UserDetailInformation } from 'sechub-openapi-ts-client';
 import * as vscode from 'vscode';
 
 export class SecHubServerTreeProvider implements vscode.TreeDataProvider<ServerItem> {
@@ -27,9 +28,10 @@ export class SecHubServerTreeProvider implements vscode.TreeDataProvider<ServerI
         const serverUrl = this.context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl) || 'No server URL set';
 
         let state: string = 'Unknown';
+        const client: DefaultClient = await DefaultClient.getInstance(this.context);
+        console.log(client);
         try {
-            const client: DefaultClient = await getDefaultClient(this.context);
-            await client.withSystemApi.anonymousCheckAliveGet();
+            const response: UserDetailInformation = await client.withUserSelfServiceApi.userFetchUserDetailInformation();
             state = 'Connected';
         } catch (error) {
             console.error('Error checking SecHub server connection:', error);
