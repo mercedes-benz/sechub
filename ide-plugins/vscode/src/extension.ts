@@ -14,8 +14,11 @@ import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubRepor
 
 import { loadFromFile } from './utils/sechubUtils';
 import { SecHubReport } from 'sechub-openapi-ts-client';
+import { multiStepInput } from './sechubCredentialsMultistepInput';
+import { SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
+import { ServerItem, SecHubServerTreeProvider } from './provider/sechubServerTreeDataProvider';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
 	
 	let loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
@@ -24,15 +27,92 @@ export function activate(context: vscode.ExtensionContext) {
 		report = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
 	}
 
+	setCredentials(context);
+
 	let secHubContext: SecHubContext = new SecHubContext(report, context);
 
+	buildServerView(secHubContext);
 	buildReportView(secHubContext);
 	buildCallHierarchyView(secHubContext);
 	buildInfoView(secHubContext);
 
 	hookActions(secHubContext);
 
+	registerCredentialCommands(context);
+
 	console.log('SecHub plugin has been activated.');
+}
+
+function registerCredentialCommands(context: vscode.ExtensionContext) {
+
+    const changeServerUrlCommand = vscode.commands.registerCommand('sechub.changeServerUrl', async () => {
+        const currentServerUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl) || '';
+        const newServerUrl = await vscode.window.showInputBox({
+            prompt: 'Enter SecHub Server URL',
+            value: currentServerUrl,
+            validateInput: (value: string) => {
+                if (!value) {
+					return 'Server URL cannot be empty';
+				}
+                try { new URL(value); } catch { return 'Invalid URL format'; }
+                return null;
+            }
+        });
+        if (newServerUrl !== undefined) {
+            await context.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, newServerUrl);
+            vscode.window.showInformationMessage(`SecHub Server URL updated to: '${newServerUrl}'`);
+        }
+    });
+
+    const changeCredentialsCommand = vscode.commands.registerCommand('sechub.changeCredentials', async () => {
+        const currentUsername = await context.secrets.get(SECHUB_CREDENTIAL_KEYS.username) || '';
+        const currentApiToken = await context.secrets.get(SECHUB_CREDENTIAL_KEYS.apiToken) || '';
+        const newUsername = await vscode.window.showInputBox({
+            prompt: 'Enter SecHub Username',
+            value: currentUsername,
+            validateInput: (value: string) => !value ? 'Username cannot be empty' : null
+        });
+        if (newUsername !== undefined) {
+            await context.secrets.store(SECHUB_CREDENTIAL_KEYS.username, newUsername);
+        }
+        const newApiToken = await vscode.window.showInputBox({
+            prompt: 'Enter SecHub API Token',
+            value: currentApiToken,
+            password: true,
+            validateInput: (value: string) => !value ? 'API Token cannot be empty' : null
+        });
+        if (newApiToken !== undefined) {
+            await context.secrets.store(SECHUB_CREDENTIAL_KEYS.apiToken, newApiToken);
+        }
+        if (newUsername !== undefined && newApiToken !== undefined) {
+            vscode.window.showInformationMessage('SecHub credentials updated.');
+        }
+    });
+    context.subscriptions.push(changeServerUrlCommand, changeCredentialsCommand);
+}
+
+function setCredentials(context: vscode.ExtensionContext) {
+    const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
+    const username = context.secrets.get(SECHUB_CREDENTIAL_KEYS.username);
+    const apiToken = context.secrets.get(SECHUB_CREDENTIAL_KEYS.apiToken);
+    Promise.all([username, apiToken]).then(([username, apiToken]) => {
+        if (!serverUrl || !username || !apiToken) {
+            multiStepInput(context).then(() => {
+                vscode.window.showInformationMessage('SecHub credentials have been set.');
+            }).catch(err => {
+                vscode.window.showErrorMessage(`Failed to set SecHub credentials: ${err}`);
+            });
+        } else {
+            vscode.window.showInformationMessage('SecHub credentials are already set.');
+        }
+    });
+}
+
+function buildServerView(context: SecHubContext) {
+	var view = vscode.window.createTreeView('sechubServerView', {
+		treeDataProvider: context.serverTreeProvider
+	});
+	context.serverView = view;
 }
 
 function buildReportView(context: SecHubContext) {
@@ -65,6 +145,7 @@ function hookActions(context: SecHubContext) {
 export class SecHubContext {
 	callHierarchyView: vscode.TreeView<HierarchyItem|undefined> | undefined = undefined;
 	reportView: vscode.TreeView<ReportItem> | undefined = undefined;
+	serverView: vscode.TreeView<ServerItem> | undefined = undefined;
 
 	findingNodeLinkBuilder: FindingNodeLinkBuilder;
 	callHierarchyTreeDataProvider: SecHubCallHierarchyTreeDataProvider;
@@ -73,6 +154,7 @@ export class SecHubContext {
 	report: SecHubReport | undefined;
 	extensionContext: vscode.ExtensionContext;
 	fileLocationExplorer: FileLocationExplorer;
+	serverTreeProvider: SecHubServerTreeProvider;
 
 	constructor(report: SecHubReport| undefined, extensionContext: vscode.ExtensionContext,
 	) {
@@ -82,6 +164,7 @@ export class SecHubContext {
 		this.extensionContext = extensionContext;
 		this.fileLocationExplorer = new FileLocationExplorer();
 		this.findingNodeLinkBuilder = new FindingNodeLinkBuilder();
+		this.serverTreeProvider = new SecHubServerTreeProvider(extensionContext);
 
 		/* setup search folders for explorer */
 		let workspaceFolders = vscode.workspace.workspaceFolders; // get the open folder path

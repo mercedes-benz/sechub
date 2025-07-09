@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 export class FileLocationExplorer {
-    searchFolders = new Set<String>();
+    searchFolders = new Set<string>();
 
     /**
      * Searches for given location string. 
@@ -22,9 +22,9 @@ export class FileLocationExplorer {
      * @param location represents known location to search for inside defined search folders
      * @return set of matching file pathes
      */
-    public searchFor(location: string): Set<String> {
+    public searchFor(location: string): Set<string> {
         // var fs = require('fs');
-        var result = new Set<String>();
+        var result = new Set<string>();
         this.searchFolders.forEach((folder) => {
             var strFolder: string = folder.toString();
             this.searchFilesRecursive(location, strFolder, result);
@@ -34,7 +34,7 @@ export class FileLocationExplorer {
         return result;
     }
 
-    private searchFilesRecursive(location: string, folder: string, result: Set<String>) {
+    private searchFilesRecursive(location: string, folder: string, result: Set<string>) {
         
 
         for (const file of fs.readdirSync(folder)) {
@@ -45,7 +45,7 @@ export class FileLocationExplorer {
                 /* check the path is reached */
                 if (fullPath.endsWith(location)){
                     /* found */
-                    result.add(new String(fullPath));
+                    result.add(fullPath);
                     break;
                 }
 

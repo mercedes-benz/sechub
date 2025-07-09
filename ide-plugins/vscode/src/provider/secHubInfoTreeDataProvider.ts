@@ -2,7 +2,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { Command } from 'vscode';
-import * as findingNodeLinkBuilder from '../model/findingNodeLinkBuilder';
+import * as findingNodeLinkBuilder from './../model/findingNodeLinkBuilder';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
 export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoItem> {

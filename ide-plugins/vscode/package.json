@@ -17,7 +17,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/mercedes-benz/sechub-plugin-vscode/"
+		"url": "https://github.com/mercedes-benz/sechub.git"
 	},
 	"engines": {
 		"vscode": "^1.77.0"
@@ -27,7 +27,7 @@
 	],
 	"main": "./out/extension.js",
 	"contributes": {
-		"commands": [
+		"commands": [	
 			{
 				"command": "sechubReportView.importReportFile",
 				"title": "Import SecHub report file",
@@ -40,7 +40,23 @@
 			{
 				"command": "sechubCallHierarchyView.showInEditor",
 				"title": "Show"
-			}
+			},
+            {
+                "command": "sechubServerTreeView.refresh",
+                "title": "Refresh SecHub Server Tree View"
+            },
+            {
+                "command": "sechubServerTreeView.checkConnection",
+                "title": "Check SecHub Server Connection"
+            },
+            {
+                "command": "sechub.changeServerUrl",
+                "title": "SecHub: Change SecHub Server URL"
+            },
+            {
+                "command": "sechub.changeCredentials",
+                "title": "SecHub: Change SecHub Credentials"
+            }
 		],
 		"viewsContainers": {
 			"activitybar": [
@@ -53,6 +69,12 @@
 		},
 		"views": {
 			"sechub-view-container": [
+				{
+					"id": "sechubServerView",
+					"name": "Server",
+					"icon": "media/sechub-logo-vscode-styled.svg",
+					"contextualTitle": "SecHub Server"
+				},
 				{
 					"id": "sechubReportView",
 					"name": "Report",
@@ -99,7 +121,7 @@
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
+		"watch": "tsc -w -p ./",
 		"pretest": "npm run compile && npm run lint",
 		"lint": "eslint src --ext ts",
 		"test": "node ./out/test/runTest.js"
@@ -117,8 +139,5 @@
 		"mocha": "^10.8.2",
 		"mocha-explorer-launcher-scripts": "^0.4.0",
 		"typescript": "^4.9.5"
-	},
-	"dependencies": {
-		"sechub-openapi-ts-client": "file:../../sechub-openapi-ts-client"
 	}
 }
