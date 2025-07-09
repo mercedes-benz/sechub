@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub.provider;
+package com.mercedesbenz.sechub.provider.findings;
 
 import com.mercedesbenz.sechub.model.FindingNode;
 

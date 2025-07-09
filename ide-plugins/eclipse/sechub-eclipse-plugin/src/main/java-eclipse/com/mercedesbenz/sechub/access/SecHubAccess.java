@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.access;
 
+import static org.hamcrest.Matchers.allOf;
+
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -12,6 +16,9 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
+import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
 
 public class SecHubAccess {
 
@@ -23,7 +30,7 @@ public class SecHubAccess {
 		initSecHubClient(secHubServerUrl, userId, apiToken, trustAllCertificates);
 	}
 	
-	public class ServerAccessData{
+	public class ServerAccessStatus{
 		private boolean alive;
 		private boolean loginFailure;
 		private SortedSet<String> userProjectIds = new TreeSet<String>();
@@ -41,8 +48,8 @@ public class SecHubAccess {
 		}
 	}
 
-	public ServerAccessData fetchServerAccessData() {
-		ServerAccessData accessData = new ServerAccessData();
+	public ServerAccessStatus fetchServerAccessStatus() {
+		ServerAccessStatus accessData = new ServerAccessStatus();
 		if (client == null) {
 			LOG.debug("SecHub client is not initialized");
 		}else {
@@ -82,5 +89,25 @@ public class SecHubAccess {
 
 	private boolean isInputMissingOrEmpty(String secHubServerUrl, String userId, String apiToken) {
 		return secHubServerUrl.isBlank() || userId == null || apiToken == null;
+	}
+
+	public List<ProjectData> fetchProjectList() {
+		try {
+			return client.withProjectAdministrationApi().getAssignedProjectDataList();
+		} catch (ApiException e) {
+			LOG.error("Was not abl to retrieve project list");
+			return List.of();
+		}
+	}
+
+	public SecHubJobInfoForUserListPage fetchJobInfoListOrNull(String projectId, int size, int page ) {
+		try {
+			Map<String, String> map = Map.of();
+			return client.withOtherApi().userListsJobsForProject(projectId, String.valueOf(size), String.valueOf(page), false, map);
+		} catch (ApiException e) {
+			LOG.error("Was not abl to retrieve job list");
+			return null;
+		}
+		
 	}
 }

@@ -43,8 +43,8 @@ import com.mercedesbenz.sechub.component.DragAndDropSupport;
 import com.mercedesbenz.sechub.model.FindingModel;
 import com.mercedesbenz.sechub.model.FindingNode;
 import com.mercedesbenz.sechub.model.WorkspaceFindingNodeLocator;
-import com.mercedesbenz.sechub.provider.FindingNodeColumLabelProviderBundle;
 import com.mercedesbenz.sechub.provider.FirstFindingNodesOnlyFindingModelTreeContentProvider;
+import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
 
 public class SecHubReportView extends ViewPart {
 

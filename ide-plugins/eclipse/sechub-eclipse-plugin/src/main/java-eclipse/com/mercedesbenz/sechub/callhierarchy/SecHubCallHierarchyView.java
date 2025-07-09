@@ -45,8 +45,8 @@ import com.mercedesbenz.sechub.model.FindingNode;
 import com.mercedesbenz.sechub.model.WorkspaceFindingNodeLocator;
 import com.mercedesbenz.sechub.provider.CallHierarchyLabelProvider;
 import com.mercedesbenz.sechub.provider.FindingModelTreeContentProvider;
-import com.mercedesbenz.sechub.provider.FindingNodeColumLabelProviderBundle;
 import com.mercedesbenz.sechub.provider.OnlyInputElementItselfTreeContentProvider;
+import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
 
 /**
  * This view shows call hierarchy of sechub report entries - shall look similar

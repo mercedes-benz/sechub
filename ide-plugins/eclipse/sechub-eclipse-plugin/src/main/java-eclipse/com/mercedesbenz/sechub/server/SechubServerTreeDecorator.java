@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 
 import com.mercedesbenz.sechub.EclipseUtil;
-import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.ServerElement;
+import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.SecHubServerConnection;
 
 public class SechubServerTreeDecorator implements ILightweightLabelDecorator {
 
@@ -17,8 +17,8 @@ public class SechubServerTreeDecorator implements ILightweightLabelDecorator {
 	@Override
 	public void decorate(Object element, IDecoration decoration) {
 
-		if (element instanceof ServerElement) {
-			ServerElement server = (ServerElement) element;
+		if (element instanceof SecHubServerConnection) {
+			SecHubServerConnection server = (SecHubServerConnection) element;
 			ImageDescriptor descriptor;
 			if (server.isAlive()) {
 				descriptor = DESC_OVERLAY_OK;
