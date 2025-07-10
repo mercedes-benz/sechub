@@ -11,7 +11,7 @@ export async function changeCredentials(sechubContext: SecHubContext): Promise<v
             value: currentUsername,
             validateInput: (value: string) => !value ? 'Username cannot be empty' : null
         });
-        if (newUsername !== undefined) {
+        if (newUsername) {
             await sechubContext.extensionContext.secrets.store(SECHUB_CREDENTIAL_KEYS.username, newUsername);
         }
         const newApiToken = await vscode.window.showInputBox({
@@ -20,12 +20,14 @@ export async function changeCredentials(sechubContext: SecHubContext): Promise<v
             password: true,
             validateInput: (value: string) => !value ? 'API Token cannot be empty' : null
         });
-        if (newApiToken !== undefined) {
+        if (newApiToken) {
             await sechubContext.extensionContext.secrets.store(SECHUB_CREDENTIAL_KEYS.apiToken, newApiToken);
         }
-        if (newUsername !== undefined && newApiToken !== undefined) {
-            vscode.window.showInformationMessage('SecHub credentials updated.');
-            await DefaultClient.updateClient(sechubContext.extensionContext);
+        if (newUsername && newApiToken) {
+            await DefaultClient.createClient(sechubContext.extensionContext);
             sechubContext.serverTreeProvider.refresh();
+            vscode.window.showInformationMessage('SecHub credentials updated.');
+        } else {
+            vscode.window.showErrorMessage('Failed to update SecHub credentials. Please try again.');
         }
     }

@@ -13,25 +13,19 @@ export class DefaultClient {
     this.apiClient = apiClient;
   }
 
-  public static async initialize(context: vscode.ExtensionContext): Promise<DefaultClient> {
-    if (DefaultClient.instance) {
-      return DefaultClient.instance;
+  public static async getInstance(context: vscode.ExtensionContext): Promise<DefaultClient> {
+    if (!DefaultClient.instance) {
+      const apiClient = await DefaultClient.createApiClient(context);
+      DefaultClient.instance = new DefaultClient(apiClient);
     }
-
-    const apiClient = await DefaultClient.createApiClient(context);
-    DefaultClient.instance = new DefaultClient(apiClient);
-    vscode.window.showInformationMessage('SecHub client initialized successfully.');
     return DefaultClient.instance;
   }
 
-  public static async updateClient(context: vscode.ExtensionContext): Promise<void> {
+  public static async createClient(context: vscode.ExtensionContext): Promise<void> {
     const apiClient = await DefaultClient.createApiClient(context);
-    if (DefaultClient.instance) {
-      DefaultClient.instance.apiClient = apiClient;
-      vscode.window.showInformationMessage('SecHub client updated successfully.');
-    } else {
-      throw new Error('SecHub client is not initialized yet.');
-    }
+    const instance = await DefaultClient.getInstance(context);
+    instance.apiClient = apiClient;
+    vscode.window.showInformationMessage('SecHub client updated successfully.');
   }
 
   // Creates a new ApiClient instance with the current credentials and server URL loaded from the extension context storage
@@ -57,8 +51,6 @@ export class DefaultClient {
         'Content-Type': 'application/json',
       },
     });
-
-    console.log('Creating SecHub API client with configuration:', clientConfig);
 
     return new DefaultApiClient(clientConfig);
   }

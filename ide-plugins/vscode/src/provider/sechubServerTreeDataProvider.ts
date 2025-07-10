@@ -27,8 +27,7 @@ export class SecHubServerTreeProvider implements vscode.TreeDataProvider<ServerI
         const serverUrl = this.context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl) || 'No server URL set';
 
         let state: string = 'Unknown';
-        const client = await DefaultClient.initialize(this.context);
-        console.log('ServerTreeView', client);
+        const client = await DefaultClient.getInstance(this.context);
         try {
             const response = await client.getApiClient().withUserSelfServiceApi().userFetchUserDetailInformation();
             state = 'Connected with ' + (response?.userId || 'Unknown User');

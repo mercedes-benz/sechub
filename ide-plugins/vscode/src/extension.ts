@@ -74,7 +74,7 @@ function setUpApiClient(context: vscode.ExtensionContext) {
     });
 
 	// Initialize the SecHub client
-	DefaultClient.initialize(context).then(() => {
+	DefaultClient.createClient(context).then(() => {
 		vscode.window.showInformationMessage('SecHub client initialized successfully.');
 	}).catch(err => {
 		vscode.window.showErrorMessage(`Failed to initialize SecHub client:	${err}`);
@@ -82,21 +82,21 @@ function setUpApiClient(context: vscode.ExtensionContext) {
 }
 
 function buildServerView(context: SecHubContext) {
-	var view = vscode.window.createTreeView('sechubServerView', {
+	const view = vscode.window.createTreeView('sechubServerView', {
 		treeDataProvider: context.serverTreeProvider
 	});
 	context.serverView = view;
 }
 
 function buildReportView(context: SecHubContext) {
-	var view =vscode.window.createTreeView('sechubReportView', {
+	const view =vscode.window.createTreeView('sechubReportView', {
 		treeDataProvider: context.reportTreeProvider
 	});
 	context.reportView=view;
 }
 
 function buildCallHierarchyView(context: SecHubContext) {
-	var view = vscode.window.createTreeView('sechubCallHierarchyView', {
+	const view = vscode.window.createTreeView('sechubCallHierarchyView', {
 		treeDataProvider: context.callHierarchyTreeDataProvider
 	});
 	context.callHierarchyView=view;

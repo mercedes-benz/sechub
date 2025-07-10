@@ -41,7 +41,6 @@ export async function multiStepInput(context: ExtensionContext) {
     }
 
     async function validateNotEmpty(value: string) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
         return value.trim() === '' ? 'This field cannot be empty' : undefined;
     }
 
