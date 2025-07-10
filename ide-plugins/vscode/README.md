@@ -47,14 +47,16 @@ Note: Example extension to orientate: https://github.com/gitkraken/vscode-gitlen
 
     ![image](README/start_debugging.png)
 
-#### Develop with Server
+#### Develop with SecHub Integrationtest Server
 
-1. Start the SecHub Server as integration test server
+1. Start the SecHub Server as integration test server from your IDE
 
-2. Start the proxy `node devProxy.js` (Proxy on http://localhost:8000 -> https://localhost:8443 (sechub int test serevr)
+2. Start the proxy in a terminal `node devProxy.js` (Proxy on http://localhost:8000 -> https://localhost:8443 (sechub int test serevr)
     This step is necessary because of self singed SSL certificates.
 
 3. Run the extension in toolbar: `Run -> Start Debugging`.
+
+4. Set SecHub Server URL to http://localhost:8000 and the credentials to the default credentials e.g. use the int-test_superadmin user
 
 ### Test
 
