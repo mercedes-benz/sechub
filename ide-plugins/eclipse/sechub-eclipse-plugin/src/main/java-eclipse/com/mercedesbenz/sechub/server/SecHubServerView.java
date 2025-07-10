@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,8 +9,10 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
-import org.eclipse.jface.viewers.IContentProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
@@ -24,17 +27,22 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import com.mercedesbenz.sechub.EclipseUtil;
+import com.mercedesbenz.sechub.SecHubActivator;
 import com.mercedesbenz.sechub.access.SecHubAccess;
 import com.mercedesbenz.sechub.access.SecHubAccess.ServerAccessStatus;
 import com.mercedesbenz.sechub.access.SecHubAccessFactory;
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUser;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.preferences.PreferenceIdConstants;
 import com.mercedesbenz.sechub.preferences.SecHubPreferences;
 import com.mercedesbenz.sechub.provider.joblist.DateTimeColumnLabelProvider;
+import com.mercedesbenz.sechub.provider.joblist.ExecutedByColumnLabelProvider;
 import com.mercedesbenz.sechub.provider.joblist.JobUUIDColumnLabelProvider;
 import com.mercedesbenz.sechub.provider.joblist.TrafficLightLabelProvider;
-import com.mercedesbenz.sechub.provider.joblist.ExecutedByColumnLabelProvider;
 import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.SecHubServerConnection;
 
 public class SecHubServerView extends ViewPart {
@@ -88,6 +96,35 @@ public class SecHubServerView extends ViewPart {
 
 		createJobColumns();
 
+		jobTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
+            @Override
+            public void doubleClick(DoubleClickEvent event) {
+
+            	SecHubAccess access = serverContext.getAccessOrNull();
+            	if (access==null) {
+            		return;
+            	}
+            	
+            	 IStructuredSelection selection = (IStructuredSelection) jobTreeViewer.getSelection();
+                 Object selectedElement = selection.getFirstElement();
+                 
+                 if (selectedElement instanceof SecHubJobInfoForUser info) {
+                	 try {
+                		 
+                		 SecHubReport report = access.downloadJobReport(serverContext.getSelectedProjectId(), info.getJobUUID());
+                		 
+                		 SecHubActivator.getDefault().getImporter().importAndDisplayReport(report);
+                		 
+                	 } catch (ApiException e) {
+                		 EclipseUtil.showErrorDialog("Was not able to download job report.",e);
+					}
+                	 
+                 }
+            	
+            }
+        });
+		
+		
 		SechubServerTreeLabelProvider labelProvider = new SechubServerTreeLabelProvider();
 		ILabelDecorator labelDecorator = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
 		DecoratingStyledCellLabelProvider labelProviderDelegate = new DecoratingStyledCellLabelProvider(labelProvider,
@@ -126,10 +163,18 @@ public class SecHubServerView extends ViewPart {
 			return;
 		}
 		String selectedProjectId = serverContext.getSelectedProjectId();
-		SecHubJobInfoForUserListPage currentPage = access.fetchJobInfoListOrNull(selectedProjectId, 30, 0);
-		serverContext.setCurrentJobPage(currentPage);
-		
-		jobTreeViewer.setInput(currentPage);
+		SecHubJobInfoForUserListPage currentPage;
+		try {
+			currentPage = access.fetchJobInfoList(selectedProjectId, 30, 0);
+			serverContext.setCurrentJobPage(currentPage);
+			jobTreeViewer.setInput(currentPage);
+			
+		} catch (ApiException e) {
+			serverContext.setCurrentJobPage(null);
+			jobTreeViewer.setInput(null);
+			
+			EclipseUtil.showErrorDialog("Was not able to fetch job list for project "+selectedProjectId, e);
+		}
 
 	}
 
@@ -151,13 +196,14 @@ public class SecHubServerView extends ViewPart {
 
 		TreeViewerColumn trafficLight = createTreeViewerColumn(jobTreeViewer, "T.", 20);
 		trafficLight.setLabelProvider(new TrafficLightLabelProvider());
+		trafficLight.getColumn().setToolTipText("Trafficlight");
 
 		TreeViewerColumn jobUUID = createTreeViewerColumn(jobTreeViewer, "UUID", 100);
 		jobUUID.setLabelProvider(new JobUUIDColumnLabelProvider());
 
 		TreeViewerColumn jobOwner = createTreeViewerColumn(jobTreeViewer, "By", 50);
 		jobOwner.setLabelProvider(new ExecutedByColumnLabelProvider());
-
+		jobOwner.getColumn().setToolTipText("The person or system account who started the job");
 	}
 
 	private TreeViewerColumn createTreeViewerColumn(TreeViewer viewer, String title, int width) {
@@ -183,7 +229,7 @@ public class SecHubServerView extends ViewPart {
 		initContext();
 
 		serverTreeViewer.setInput(serverContext.getModel());
-		
+
 		refreshProjectCombo();
 		refreshJobTableForSelectedProject();
 	}
@@ -211,7 +257,13 @@ public class SecHubServerView extends ViewPart {
 		serverContext.getModel().setConnection(connection);
 
 		/* fetch project data */
-		List<ProjectData> projects = secHubAccess.fetchProjectList();
+		List<ProjectData> projects;
+		try {
+			projects = secHubAccess.fetchProjectList();
+		} catch (ApiException e) {
+			projects = Collections.emptyList();
+			EclipseUtil.showErrorDialog("Was not able to retrieve project list", e);
+		}
 		serverContext.getModel().setProjects(projects);
 
 		if (projects.isEmpty()) {
@@ -253,15 +305,15 @@ public class SecHubServerView extends ViewPart {
 		String selection = serverContext.getSelectedProjectId();
 
 		int index = -1;
-		int indexToSelect=-1;
+		int indexToSelect = -1;
 		for (ProjectData data : projects) {
 			index++;
 			String projectId = data.getProjectId();
 			if (Objects.equals(projectId, selection)) {
-				indexToSelect=index;
+				indexToSelect = index;
 			}
 			projectCombo.add(projectId);
-			
+
 		}
 
 		if (indexToSelect > -1) {

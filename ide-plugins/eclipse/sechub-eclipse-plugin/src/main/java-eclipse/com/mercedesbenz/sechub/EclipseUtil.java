@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
@@ -31,6 +32,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
+
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 
 public class EclipseUtil {
 
@@ -68,7 +71,7 @@ public class EclipseUtil {
 		}
 		return image;
 	}
-	
+
 	public static ImageDescriptor createImageDescriptor(String path) {
 		return createImageDescriptor(path, SecHubActivator.PLUGIN_ID);
 	}
@@ -270,5 +273,20 @@ public class EclipseUtil {
 
 	public static IStatus createErrorStatus(String message, Throwable throwable) {
 		return new Status(IStatus.ERROR, SecHubActivator.PLUGIN_ID, message, throwable);
+	}
+
+	public static void showErrorDialog(String message, Exception e) {
+		String title = "Error";
+		String messageToShow = message;
+		if (e instanceof ApiException apiException) {
+			title = "Server communication problem";
+			messageToShow = message + "\nCommunication error:" + apiException.getMessage();
+		} else {
+			if (e != null) {
+				messageToShow = message + "\nReason:" + e.getMessage();
+			}
+		}
+		MessageDialog.openError(getActiveWorkbenchShell(), title, messageToShow);
+
 	}
 }

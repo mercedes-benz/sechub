@@ -14,11 +14,11 @@ import com.mercedesbenz.sechub.model.FindingModel;
 
 public class SecHubReportViewUpdater {
 
-	public void updateReportViewInSWTThread(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
+	public static void updateReportViewInSWTThread(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
 		EclipseUtil.safeAsyncExec(() -> internalUpdateReportView(jobUUID, trafficLight, model));
 	}
 
-	private void internalUpdateReportView(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
+	private static void internalUpdateReportView(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
 		IWorkbenchPage page = EclipseUtil.getActivePage();
 		if (page == null) {
 			throw new IllegalStateException("Workbench page not found");
