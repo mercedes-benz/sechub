@@ -8,8 +8,8 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelP
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
-import com.mercedesbenz.sechub.EclipseUtil;
 import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.SecHubServerConnection;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class SechubServerTreeLabelProvider extends BaseLabelProvider implements IStyledLabelProvider {
 	private static Image IMAGE_SECHUB_SERVER = EclipseUtil.getImage("/icons/sechub-server.png");

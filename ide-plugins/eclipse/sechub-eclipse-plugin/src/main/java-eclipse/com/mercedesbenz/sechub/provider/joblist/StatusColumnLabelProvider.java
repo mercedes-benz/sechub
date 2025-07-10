@@ -1,26 +1,21 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.provider.joblist;
 
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.ExecutionState;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUser;
 
-public class DateTimeColumnLabelProvider extends ColumnLabelProvider {
-	
-	private final static DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+public class StatusColumnLabelProvider extends ColumnLabelProvider {
 
 	@Override
 	public String getText(Object element) {
 		if (element instanceof SecHubJobInfoForUser info) {
-			OffsetDateTime created = info.getCreated();
-			if (created==null) {
+			ExecutionState executionState = info.getExecutionState();
+			if (executionState==null) {
 				return null;
 			}
-			return fmt.format(created);
+			return executionState.getValue();
 		}
 		return super.getText(element);
 	}

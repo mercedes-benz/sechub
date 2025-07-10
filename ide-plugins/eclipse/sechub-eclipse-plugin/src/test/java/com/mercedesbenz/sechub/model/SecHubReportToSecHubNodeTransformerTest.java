@@ -12,15 +12,17 @@ import org.junit.Test;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubResult;
 import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 
-public class SecHubFindingToSecHubNodeTransformerTest {
+public class SecHubReportToSecHubNodeTransformerTest {
 	
-	private SecHubFindingToFindingModelTransformer transformerToTest;
+	private SecHubReportToFindingModelTransformer transformerToTest;
 
 	@Before
 	public void before() {
-		transformerToTest = new SecHubFindingToFindingModelTransformer();
+		transformerToTest = new SecHubReportToFindingModelTransformer();
 	}
 
 	@Test
@@ -51,8 +53,12 @@ public class SecHubFindingToSecHubNodeTransformerTest {
 		
 		findings.add(finding);
 		
+		SecHubReport report = new SecHubReport();
+		report.setResult(new SecHubResult());
+		report.getResult().setFindings(findings);
+		
 		/* execute */
-		FindingModel node = transformerToTest.transform(findings);
+		FindingModel node = transformerToTest.transform(report,"project1");
 		
 		/* test */
 		assertNotNull(node);

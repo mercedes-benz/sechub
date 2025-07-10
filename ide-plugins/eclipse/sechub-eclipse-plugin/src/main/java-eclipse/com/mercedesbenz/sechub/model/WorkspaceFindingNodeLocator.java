@@ -33,9 +33,9 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.mercedesbenz.sechub.EclipseUtil;
-import com.mercedesbenz.sechub.Logging;
 import com.mercedesbenz.sechub.SecHubActivator;
+import com.mercedesbenz.sechub.util.EclipseUtil;
+import com.mercedesbenz.sechub.util.Logging;
 import com.mercedesbenz.sechub.util.SimpleStringUtil;
 
 public class WorkspaceFindingNodeLocator {

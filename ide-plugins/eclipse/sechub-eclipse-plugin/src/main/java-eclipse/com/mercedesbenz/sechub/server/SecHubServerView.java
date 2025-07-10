@@ -19,15 +19,16 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import com.mercedesbenz.sechub.EclipseUtil;
 import com.mercedesbenz.sechub.SecHubActivator;
 import com.mercedesbenz.sechub.access.SecHubAccess;
 import com.mercedesbenz.sechub.access.SecHubAccess.ServerAccessStatus;
@@ -42,11 +43,16 @@ import com.mercedesbenz.sechub.preferences.SecHubPreferences;
 import com.mercedesbenz.sechub.provider.joblist.DateTimeColumnLabelProvider;
 import com.mercedesbenz.sechub.provider.joblist.ExecutedByColumnLabelProvider;
 import com.mercedesbenz.sechub.provider.joblist.JobUUIDColumnLabelProvider;
+import com.mercedesbenz.sechub.provider.joblist.ResultColumnLabelProvider;
+import com.mercedesbenz.sechub.provider.joblist.StatusColumnLabelProvider;
 import com.mercedesbenz.sechub.provider.joblist.TrafficLightLabelProvider;
 import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.SecHubServerConnection;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class SecHubServerView extends ViewPart {
 
+	public static final String ID = "com.mercedesbenz.sechub.views.SecHubServerView";
+	
 	private TreeViewer serverTreeViewer;
 	private SecHubServerTreeViewContentProvider serverTreeContentProvider;
 	private RefreshSecHubServerViewAction refreshServerViewAction;
@@ -56,6 +62,8 @@ public class SecHubServerView extends ViewPart {
 	private TreeViewer jobTreeViewer;
 	private SecHubJobTreeViewContentProvider jobTreeContentProvider;
 
+	private Label projectLabel;
+
 	@Override
 	public void createPartControl(Composite parent) {
 
@@ -64,15 +72,20 @@ public class SecHubServerView extends ViewPart {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 
-		serverTreeContentProvider = new SecHubServerTreeViewContentProvider();
-
-		serverTreeViewer = new TreeViewer(composite, SWT.FULL_SELECTION);
-		serverTreeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		serverTreeViewer.setContentProvider(serverTreeContentProvider);
-
-		projectCombo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
+		Composite composite3 = new Composite(composite, SWT.NONE);
+		composite3.setLayout(new GridLayout(3, false));
+		composite3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		
+//		Composite composite2 = new Composite(composite3, SWT.NONE);
+//		composite2.setLayout(new GridLayout(2, false));
+//		composite2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		
+		projectLabel = new Label(composite3, SWT.None);
+		projectLabel.setText("Project");
+		
+		projectCombo = new Combo(composite3, SWT.DROP_DOWN | SWT.READ_ONLY);
 		projectCombo.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
-
+		
 		projectCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -88,6 +101,13 @@ public class SecHubServerView extends ViewPart {
 				}
 			}
 		});
+
+		serverTreeContentProvider = new SecHubServerTreeViewContentProvider();
+
+		serverTreeViewer = new TreeViewer(composite3, SWT.NO_SCROLL | SWT.V_SCROLL);
+		serverTreeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		serverTreeViewer.setContentProvider(serverTreeContentProvider);
+		serverTreeViewer.getTree().setEnabled(false);
 
 		jobTreeContentProvider = new SecHubJobTreeViewContentProvider();
 		jobTreeViewer = new TreeViewer(composite, SWT.FULL_SELECTION);
@@ -111,9 +131,10 @@ public class SecHubServerView extends ViewPart {
                  if (selectedElement instanceof SecHubJobInfoForUser info) {
                 	 try {
                 		 
-                		 SecHubReport report = access.downloadJobReport(serverContext.getSelectedProjectId(), info.getJobUUID());
+                		 String projectId = serverContext.getSelectedProjectId();
+						 SecHubReport report = access.downloadJobReport(projectId, info.getJobUUID());
                 		 
-                		 SecHubActivator.getDefault().getImporter().importAndDisplayReport(report);
+                		 SecHubActivator.getDefault().getImporter().importAndDisplayReport(report, projectId);
                 		 
                 	 } catch (ApiException e) {
                 		 EclipseUtil.showErrorDialog("Was not able to download job report.",e);
@@ -158,6 +179,11 @@ public class SecHubServerView extends ViewPart {
 	}
 
 	protected void refreshJobTableForSelectedProject() {
+		if (!serverContext.isConnectedWithServer()) {
+			serverContext.setCurrentJobPage(null);
+			jobTreeViewer.setInput(null);
+			return;
+		}
 		SecHubAccess access = serverContext.getAccessOrNull();
 		if (access == null) {
 			return;
@@ -194,16 +220,23 @@ public class SecHubServerView extends ViewPart {
 		TreeViewerColumn id = createTreeViewerColumn(jobTreeViewer, "Created", 100);
 		id.setLabelProvider(new DateTimeColumnLabelProvider());
 
-		TreeViewerColumn trafficLight = createTreeViewerColumn(jobTreeViewer, "T.", 20);
+		TreeViewerColumn trafficLight = createTreeViewerColumn(jobTreeViewer, "", 20);
 		trafficLight.setLabelProvider(new TrafficLightLabelProvider());
 		trafficLight.getColumn().setToolTipText("Trafficlight");
 
 		TreeViewerColumn jobUUID = createTreeViewerColumn(jobTreeViewer, "UUID", 100);
 		jobUUID.setLabelProvider(new JobUUIDColumnLabelProvider());
 
-		TreeViewerColumn jobOwner = createTreeViewerColumn(jobTreeViewer, "By", 50);
+		TreeViewerColumn status = createTreeViewerColumn(jobTreeViewer, "Status", 60);
+		status.setLabelProvider(new StatusColumnLabelProvider());
+		
+		TreeViewerColumn result = createTreeViewerColumn(jobTreeViewer, "Result", 50);
+		result.setLabelProvider(new ResultColumnLabelProvider());
+		
+		TreeViewerColumn jobOwner = createTreeViewerColumn(jobTreeViewer, "Executed by", 80);
 		jobOwner.setLabelProvider(new ExecutedByColumnLabelProvider());
 		jobOwner.getColumn().setToolTipText("The person or system account who started the job");
+		
 	}
 
 	private TreeViewerColumn createTreeViewerColumn(TreeViewer viewer, String title, int width) {
@@ -255,13 +288,15 @@ public class SecHubServerView extends ViewPart {
 		connection.setLoginSuccessful(!status.isLoginFaiure());
 
 		serverContext.getModel().setConnection(connection);
-
 		/* fetch project data */
-		List<ProjectData> projects;
+		List<ProjectData> projects = Collections.emptyList();;
 		try {
-			projects = secHubAccess.fetchProjectList();
+			
+			if (serverContext.isConnectedWithServer()) {
+				projects = secHubAccess.fetchProjectList();
+			}
+			
 		} catch (ApiException e) {
-			projects = Collections.emptyList();
 			EclipseUtil.showErrorDialog("Was not able to retrieve project list", e);
 		}
 		serverContext.getModel().setProjects(projects);
@@ -290,10 +325,12 @@ public class SecHubServerView extends ViewPart {
 		projectCombo.removeAll();
 
 		if (!serverContext.isConnectedWithServer()) {
+			projectLabel.setVisible(false);
 			projectCombo.setVisible(false);
 			return;
 		}
 
+		projectLabel.setVisible(true);
 		projectCombo.setVisible(true);
 
 		// Fetch project list from SecHubAccess or other relevant source

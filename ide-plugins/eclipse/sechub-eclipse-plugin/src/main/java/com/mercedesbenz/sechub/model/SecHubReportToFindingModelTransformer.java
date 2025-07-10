@@ -13,23 +13,30 @@ import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 import com.mercedesbenz.sechub.model.FindingNode.FindingNodeBuilder;
 
-public class SecHubFindingToFindingModelTransformer {
+public class SecHubReportToFindingModelTransformer {
 
-	private static final Logger logger = LoggerFactory.getLogger(SecHubFindingToFindingModelTransformer.class);
+	private static final Logger logger = LoggerFactory.getLogger(SecHubReportToFindingModelTransformer.class);
 	
 	private static final String EMPTY = "";
 
-	public FindingModel transform(List<SecHubFinding> findings) {
+	public FindingModel transform(SecHubReport report, String projectId) {
+		FindingModel model = new FindingModel();
+		model.setProjectId(projectId);
+		
+		List<SecHubFinding> findings = report.getResult().getFindings();
 		/* build severity mapping */
 		Map<Severity, List<FindingNode>> map = new LinkedHashMap<>();
 		for (SecHubFinding finding : findings) {
 			addNodesToMapForFinding(map, finding);
 
 		}
-		return createRootNodeWithChildren(map);
+		addNodesToModel(model, map);
+		
+		return model;
 	}
 
 	private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubFinding finding) {
@@ -39,7 +46,7 @@ public class SecHubFindingToFindingModelTransformer {
 		Severity severity = finding.getSeverity();
 
 		List<FindingNode> list = map.computeIfAbsent(severity,
-				SecHubFindingToFindingModelTransformer::createFindingNodeList);
+				SecHubReportToFindingModelTransformer::createFindingNodeList);
 
 		Integer id = finding.getId();
 		if (id==null) {
@@ -48,8 +55,7 @@ public class SecHubFindingToFindingModelTransformer {
 		}
 		int callStackStep = 1;
 		String description = finding.getName();
-		Integer cweId = finding.getCweId();
-
+		
 		SecHubCodeCallStack code = finding.getCode();
 		if (code == null) {
 			
@@ -61,13 +67,11 @@ public class SecHubFindingToFindingModelTransformer {
 
 		/* @formatter:off */
 		FindingNodeBuilder builder = FindingNode.builder().
-				setId(id).
-				setCweId(cweId).
+				setFinding(finding).
 				setCallStackStep(callStackStep++).
 				setColumn(code.getColumn()).
 				setLine(code.getLine()).
 				setLocation(code.getLocation()).
-				setSeverity(severity).
 				setRelevantPart(code.getRelevantPart()).
 				setSource(code.getSource()).
 				setDescription(description);
@@ -88,7 +92,6 @@ public class SecHubFindingToFindingModelTransformer {
 					setSource(code.getSource()).
 					setRelevantPart(code.getRelevantPart()).
 					setDescription(EMPTY).
-					setSeverity(null).
 				build();
 			/* @formatter:on */
 			parent.addChild(child);
@@ -96,8 +99,8 @@ public class SecHubFindingToFindingModelTransformer {
 		}
 	}
 
-	private FindingModel createRootNodeWithChildren(Map<Severity, List<FindingNode>> map) {
-		FindingModel model = new FindingModel();
+	private void addNodesToModel(FindingModel model, Map<Severity, List<FindingNode>> map) {
+		
 
 		/* Add first level nodes, to model - sorted by severity */
 		List<Severity> severitySortedCriticalFirst = Arrays.asList(Severity.values());
@@ -112,7 +115,6 @@ public class SecHubFindingToFindingModelTransformer {
 			}
 		}
 
-		return model;
 	}
 
 	private static List<FindingNode> createFindingNodeList(Severity severity) {

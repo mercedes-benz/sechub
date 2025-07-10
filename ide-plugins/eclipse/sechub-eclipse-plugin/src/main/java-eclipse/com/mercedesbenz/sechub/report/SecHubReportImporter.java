@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.report;
 
-import static com.mercedesbenz.sechub.EclipseUtil.createErrorStatus;
+import static com.mercedesbenz.sechub.util.EclipseUtil.createErrorStatus;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -13,22 +12,21 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.model.FindingModel;
-import com.mercedesbenz.sechub.model.SecHubFindingToFindingModelTransformer;
+import com.mercedesbenz.sechub.model.SecHubReportToFindingModelTransformer;
 
 public class SecHubReportImporter {
 
-	private SecHubFindingToFindingModelTransformer transformer = new SecHubFindingToFindingModelTransformer();
+	private SecHubReportToFindingModelTransformer transformer = new SecHubReportToFindingModelTransformer();
 	private static final ObjectMapper mapper = new ObjectMapper();
 
 	public void importAndDisplayReport(File reportFile) {
 		importByJob(new SecHubReportFileImportJob(reportFile));
 	}
 
-	public void importAndDisplayReport(SecHubReport report) {
-		importByJob(new SecHubReportImportJob(report));
+	public void importAndDisplayReport(SecHubReport report, String projectId) {
+		importByJob(new SecHubReportImportJob(report, projectId));
 	}
 
 	private void importByJob(Job job) {
@@ -54,7 +52,7 @@ public class SecHubReportImporter {
 				return createErrorStatus("Reportfile importer returned null");
 			}
 			monitor.worked(1);
-			importReport(report, monitor);
+			importReport(report, null, monitor);
 
 			return Status.OK_STATUS;
 
@@ -66,22 +64,20 @@ public class SecHubReportImporter {
 		}
 	}
 
-	private IStatus importAndDisplayReportInsideJob(SecHubReport report, IProgressMonitor monitor) {
+	private IStatus importAndDisplayReportInsideJob(SecHubReport report, String projectId, IProgressMonitor monitor) {
 		monitor.beginTask("Import SecHub report data", 2);
-		importReport(report, monitor);
+		importReport(report, projectId, monitor);
 		return Status.OK_STATUS;
 	}
 
 	/**
 	 * Will do 2 works on progress monitor
 	 */
-	private void importReport(SecHubReport report, IProgressMonitor monitor) {
-		List<SecHubFinding> secHubFindings = report.getResult().getFindings();
-
-		FindingModel model = transformer.transform(secHubFindings);
+	private void importReport(SecHubReport report, String projectId, IProgressMonitor monitor) {
+		FindingModel model = transformer.transform(report, projectId);
 		monitor.worked(1);
 
-		SecHubReportViewUpdater.updateReportViewInSWTThread(report.getJobUUID(), report.getTrafficLight(), model);
+		SecHubReportViewUpdater.updateReportViewInSWTThread(report, model);
 
 		monitor.worked(1);
 	}
@@ -118,15 +114,17 @@ public class SecHubReportImporter {
 	private class SecHubReportImportJob extends Job {
 
 		private SecHubReport report;
+		private String projectId;
 
-		public SecHubReportImportJob(SecHubReport report) {
+		public SecHubReportImportJob(SecHubReport report, String projectId) {
 			super("Start import of report by data");
 			this.report = report;
+			this.projectId = projectId; // currently there is no project information inside the report
 		}
 
 		@Override
 		public IStatus run(IProgressMonitor monitor) {
-			return importAndDisplayReportInsideJob(report, monitor);
+			return importAndDisplayReportInsideJob(report, projectId, monitor);
 		}
 
 	}

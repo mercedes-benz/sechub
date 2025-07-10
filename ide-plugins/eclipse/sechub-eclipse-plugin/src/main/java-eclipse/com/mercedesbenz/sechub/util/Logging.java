@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub;
+package com.mercedesbenz.sechub.util;
 
 import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+
+import com.mercedesbenz.sechub.SecHubActivator;
 
 public class Logging {
 	public static void logInfo(String info) {

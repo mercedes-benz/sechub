@@ -6,8 +6,9 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
-import com.mercedesbenz.sechub.EclipseUtil;
 import com.mercedesbenz.sechub.model.FindingNode;
+import com.mercedesbenz.sechub.util.EclipseUtil;
+
 import static com.mercedesbenz.sechub.util.SimpleStringUtil.*;
 
 public class CallHierarchyLabelProvider extends LabelProvider implements IStyledLabelProvider{

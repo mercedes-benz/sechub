@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.report;
 
-import static com.mercedesbenz.sechub.EclipseUtil.getActivePage;
-import static com.mercedesbenz.sechub.EclipseUtil.getSharedImageDescriptor;
-import static com.mercedesbenz.sechub.EclipseUtil.safeAsyncExec;
+import static com.mercedesbenz.sechub.util.EclipseUtil.getActivePage;
+import static com.mercedesbenz.sechub.util.EclipseUtil.getSharedImageDescriptor;
+import static com.mercedesbenz.sechub.util.EclipseUtil.safeAsyncExec;
 
 import java.io.File;
 
@@ -14,15 +14,20 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
@@ -33,8 +38,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
-import com.mercedesbenz.sechub.EclipseUtil;
-import com.mercedesbenz.sechub.Logging;
 import com.mercedesbenz.sechub.SecHubActivator;
 import com.mercedesbenz.sechub.callhierarchy.SecHubCallHierarchyView;
 import com.mercedesbenz.sechub.component.DragAndDropCallback;
@@ -45,19 +48,19 @@ import com.mercedesbenz.sechub.model.FindingNode;
 import com.mercedesbenz.sechub.model.WorkspaceFindingNodeLocator;
 import com.mercedesbenz.sechub.provider.FirstFindingNodesOnlyFindingModelTreeContentProvider;
 import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
+import com.mercedesbenz.sechub.server.SecHubServerView;
+import com.mercedesbenz.sechub.util.EclipseUtil;
+import com.mercedesbenz.sechub.util.Logging;
+import com.mercedesbenz.sechub.util.TrafficLightImageResolver;
 
 public class SecHubReportView extends ViewPart {
 
 	public static final String ID = "com.mercedesbenz.sechub.views.SecHubReportView";
 
-	private Label reportUUID;
+	private Text reportUUID;
 	private Label trafficLight;
-	private Label numberOfFindings;
+	private Label additionalInfo;
 	private FindingNodeColumLabelProviderBundle columnProviders = new FindingNodeColumLabelProviderBundle();
-
-	private static final String REPORT_UUID_TEXT = "Scan result for Job: ";
-	private static final String TRAFFIC_LIGHT_TEXT = "Traffic Light: ";
-	private static final String NUMBER_OF_FINDINGS_TEXT = "Findings: ";
 
 	private TreeViewer treeViewer;
 	private DragAndDropSupport dragAndDropSupport = new DragAndDropSupport();
@@ -72,6 +75,10 @@ public class SecHubReportView extends ViewPart {
 	private RemoveSelectedReportDataAction removeSelectedReportData;
 
 	private ImportSecHubReportAction importAction;
+	
+	private OpenSecHubServerViewAction openServerViewAction;
+
+	private Composite composite;
 
 	@Override
 	public void setFocus() {
@@ -82,19 +89,24 @@ public class SecHubReportView extends ViewPart {
 	public void createPartControl(Composite parent) {
 
 		locator = new WorkspaceFindingNodeLocator(workbench);
+		
+		composite = new Composite(parent, SWT.BORDER);
+		composite.setLayout(new GridLayout(3, false));
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 
-		reportUUID = new Label(parent, SWT.NONE);
-		reportUUID.setText(REPORT_UUID_TEXT);
+		trafficLight = new Label(composite, SWT.NONE);
+		trafficLight.setText("");
 
-		trafficLight = new Label(parent, SWT.NONE);
-		trafficLight.setText(TRAFFIC_LIGHT_TEXT);
+		reportUUID = new Text(composite, SWT.BORDER | SWT.READ_ONLY);
+		reportUUID.setText("");
 
-		numberOfFindings = new Label(parent, SWT.NONE);
-		numberOfFindings.setText(NUMBER_OF_FINDINGS_TEXT);
+		additionalInfo = new Label(composite, SWT.NONE);
+		additionalInfo.setText("");
 
 		treeViewer = new TreeViewer(parent, SWT.FULL_SELECTION); // we need FULL_SELECTION for windows SWT, otherwise only first column selectable...
 		treeViewer.setContentProvider(new FirstFindingNodesOnlyFindingModelTreeContentProvider());
-
+		ColumnViewerToolTipSupport.enableFor(treeViewer, ToolTip.NO_RECREATE);
+		
 		Tree tree = treeViewer.getTree();
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
@@ -129,6 +141,7 @@ public class SecHubReportView extends ViewPart {
 		removeAllReportData = new RemoveAllReportDataAction();
 		removeSelectedReportData = new RemoveSelectedReportDataAction();
 		importAction = new ImportSecHubReportAction();
+		openServerViewAction= new OpenSecHubServerViewAction();
 	}
 
 	private void contributeToActionBars() {
@@ -150,6 +163,7 @@ public class SecHubReportView extends ViewPart {
 		manager.add(removeSelectedReportData);
 		manager.add(removeAllReportData);
 		manager.add(new Separator());
+		manager.add(openServerViewAction);
 		manager.add(importAction);
 	}
 
@@ -157,6 +171,7 @@ public class SecHubReportView extends ViewPart {
 		manager.add(removeSelectedReportData);
 		manager.add(removeAllReportData);
 		manager.add(new Separator());
+		manager.add(openServerViewAction);
 		manager.add(importAction);
 	}
 
@@ -167,6 +182,10 @@ public class SecHubReportView extends ViewPart {
 		TreeViewerColumn severity = createTreeViewerColumn("Severity", 80);
 		severity.setLabelProvider(columnProviders.severityLabelProvider);
 
+		TreeViewerColumn type = createTreeViewerColumn("", 20);
+		type.setLabelProvider(columnProviders.scanTypeLabelProvider);
+		type.getColumn().setToolTipText("Scan type");
+		
 		TreeViewerColumn description = createTreeViewerColumn("Name", 220);
 		description.setLabelProvider(columnProviders.descriptionLabelProvider);
 
@@ -175,6 +194,7 @@ public class SecHubReportView extends ViewPart {
 
 		TreeViewerColumn line = createTreeViewerColumn("Line", 60);
 		line.setLabelProvider(columnProviders.lineLabelProvider);
+		
 
 	}
 
@@ -241,14 +261,25 @@ public class SecHubReportView extends ViewPart {
 		treeViewer.setInput(model);
 
 		if (model != null) {
-			this.reportUUID.setText(REPORT_UUID_TEXT + model.getJobUUID());
-			this.trafficLight.setText(TRAFFIC_LIGHT_TEXT + model.getTrafficLight());
-			this.numberOfFindings.setText(NUMBER_OF_FINDINGS_TEXT + model.getFindingCount());
+			this.reportUUID.setText(""+model.getJobUUID());
+			this.trafficLight.setImage(TrafficLightImageResolver.resolveImage(model.getTrafficLight()));
+			this.trafficLight.setToolTipText("The traffic light for this report is "+model.getTrafficLight());
+			
+			String info = model.getStatus()+" - "+ model.getFindingCount()+" findings";
+			String projectId = model.getProjectId();
+			if (projectId!=null) {
+				info = info + " for project '"+projectId+"'";
+			}
+			
+			this.additionalInfo.setText(info);
 		} else {
-			this.reportUUID.setText(REPORT_UUID_TEXT + "");
-			this.trafficLight.setText(TRAFFIC_LIGHT_TEXT + "");
-			this.numberOfFindings.setText(NUMBER_OF_FINDINGS_TEXT + 0);
+			this.reportUUID.setText("No report available");
+			this.trafficLight.setImage(null);
+			this.trafficLight.setToolTipText("No traffic light available");
+			this.additionalInfo.setText("");
 		}
+		composite.layout();
+		
 		// select first element - will also refresh call hierarchy view
 		handleDoubleClick(null);
 
@@ -259,13 +290,38 @@ public class SecHubReportView extends ViewPart {
 		dialog.open();
 	}
 
+	private class OpenSecHubServerViewAction extends Action {
+		private OpenSecHubServerViewAction() {
+			setText("Open SecHub server view");
+			setToolTipText("Open SecHub server view");
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/sechub-server.png"));
+		}
+
+		public void run() {
+			IWorkbenchPage page = EclipseUtil.getActivePage();
+			if (page == null) {
+				throw new IllegalStateException("Workbench page not found");
+			}
+			IViewPart view = page.findView(SecHubServerView.ID);
+			/* create and show the server view if it isn't created yet. */
+			if (view == null) {
+				try {
+					view = page.showView(SecHubServerView.ID, null, IWorkbenchPage.VIEW_VISIBLE);
+				} catch (PartInitException e) {
+					Logging.logError("Wasn't able create new SecHub server view", e);
+					return;
+				}
+
+			}
+		}
+	}
 	private class ImportSecHubReportAction extends Action {
 		private ImportSecHubReportAction() {
 			setText("Import SecHub report");
 			setToolTipText("Import SecHub report \n(TIP:You can do this also with drag and drop into findings table!)");
 			setImageDescriptor(EclipseUtil.createDescriptor("icons/import_wiz.png"));
 		}
-
+		
 		public void run() {
 			importReport();
 		}

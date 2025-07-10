@@ -6,7 +6,7 @@ import org.eclipse.jface.preference.PreferenceDialog;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-import com.mercedesbenz.sechub.EclipseUtil;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class SecHubPreferences {
 	

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-package com.mercedesbenz.sechub;
+package com.mercedesbenz.sechub.util;
 
 import java.io.File;
 import java.net.URL;
@@ -33,6 +33,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.Bundle;
 
+import com.mercedesbenz.sechub.SecHubActivator;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 
 public class EclipseUtil {
@@ -246,7 +247,9 @@ public class EclipseUtil {
 		Image image = imageRegistry.get(path);
 		if (image == null) {
 			ImageDescriptor imageDesc = createDescriptor(path);
-			image = imageDesc.createImage();
+			if (imageDesc!=null) {
+				image = imageDesc.createImage();
+			}
 			if (image == null) {
 				image = getSharedImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 			}

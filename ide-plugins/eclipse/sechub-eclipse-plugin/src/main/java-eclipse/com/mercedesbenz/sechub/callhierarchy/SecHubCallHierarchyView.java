@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.callhierarchy;
 
-import static com.mercedesbenz.sechub.EclipseUtil.getSharedImageDescriptor;
+import static com.mercedesbenz.sechub.util.EclipseUtil.getSharedImageDescriptor;
 
 import java.net.URI;
 import java.net.URL;
@@ -39,7 +39,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
-import com.mercedesbenz.sechub.Logging;
 import com.mercedesbenz.sechub.model.FindingModel;
 import com.mercedesbenz.sechub.model.FindingNode;
 import com.mercedesbenz.sechub.model.WorkspaceFindingNodeLocator;
@@ -47,6 +46,7 @@ import com.mercedesbenz.sechub.provider.CallHierarchyLabelProvider;
 import com.mercedesbenz.sechub.provider.FindingModelTreeContentProvider;
 import com.mercedesbenz.sechub.provider.OnlyInputElementItselfTreeContentProvider;
 import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
+import com.mercedesbenz.sechub.util.Logging;
 
 /**
  * This view shows call hierarchy of sechub report entries - shall look similar
@@ -290,8 +290,9 @@ public class SecHubCallHierarchyView extends ViewPart {
 		String text = null;
 		if (node != null) {
 			text = node.getSource();
-		} else {
-			text = "";
+		} 
+		if (text==null) {
+			text=""; // may not be null
 		}
 		rightTreeDescriptionText.setText(text);
 	}
