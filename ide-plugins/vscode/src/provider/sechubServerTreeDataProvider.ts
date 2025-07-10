@@ -1,6 +1,5 @@
 import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
 import { DefaultClient } from '../api/defaultClient';
-import { UserDetailInformation } from 'sechub-openapi-ts-client';
 import * as vscode from 'vscode';
 
 export class SecHubServerTreeProvider implements vscode.TreeDataProvider<ServerItem> {
@@ -28,11 +27,11 @@ export class SecHubServerTreeProvider implements vscode.TreeDataProvider<ServerI
         const serverUrl = this.context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl) || 'No server URL set';
 
         let state: string = 'Unknown';
-        const client: DefaultClient = await DefaultClient.getInstance(this.context);
-        console.log(client);
+        const client = await DefaultClient.initialize(this.context);
+        console.log('ServerTreeView', client);
         try {
-            const response: UserDetailInformation = await client.withUserSelfServiceApi.userFetchUserDetailInformation();
-            state = 'Connected';
+            const response = await client.getApiClient().withUserSelfServiceApi().userFetchUserDetailInformation();
+            state = 'Connected with ' + (response?.userId || 'Unknown User');
         } catch (error) {
             console.error('Error checking SecHub server connection:', error);
             vscode.window.showErrorMessage('Failed to connect to SecHub server. Please check your credentials and server URL.');
@@ -56,11 +55,6 @@ export class ServerItem extends vscode.TreeItem {
         super(key, state);
         this.description = value;
     }
-
-    iconPath = {
-        light: vscode.Uri.file(__dirname + '/resources/light/server.svg'),
-        dark: vscode.Uri.file(__dirname + '/resources/dark/server.svg')
-    };
 
     contextValue = 'serverItem';
 }

@@ -1,59 +1,50 @@
 import * as vscode from 'vscode';
 import {
-  ConfigurationApi,
-  JobManagementApi,
-  OtherApi,
-  ProjectAdministrationApi,
-  SecHubExecutionApi,
-  SecHubExecutionApiWorkaround,
-  SignUpApi,
-  SystemApi,
-  UserSelfServiceApi,
   Configuration,
+  DefaultApiClient,
 } from 'sechub-openapi-ts-client';
 import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
 
 export class DefaultClient {
   private static instance: DefaultClient | null = null;
-  private clientConfig: Configuration | null = null;
+  private apiClient: DefaultApiClient;
 
-  public withProjectApi: ProjectAdministrationApi;
-  public withSignUpApi: SignUpApi;
-  public withUserSelfServiceApi: UserSelfServiceApi;
-  public withSystemApi: SystemApi;
-  public withConfigurationApi: ConfigurationApi;
-  public withOtherApi: OtherApi;
-  public withExecutionApi: SecHubExecutionApiWorkaround;
-  public withSechubExecutionApi: SecHubExecutionApi;
-  public withJobManagementApi: JobManagementApi;
-
-  private constructor(clientConfig: Configuration) {
-    this.clientConfig = clientConfig;
-    this.withProjectApi = new ProjectAdministrationApi(clientConfig);
-    this.withOtherApi = new OtherApi(clientConfig);
-    this.withSignUpApi = new SignUpApi(clientConfig);
-    this.withUserSelfServiceApi = new UserSelfServiceApi(clientConfig);
-    this.withSystemApi = new SystemApi(clientConfig);
-    this.withConfigurationApi = new ConfigurationApi(clientConfig);
-    this.withExecutionApi = new SecHubExecutionApiWorkaround(clientConfig);
-    this.withSechubExecutionApi = new SecHubExecutionApi(clientConfig);
-    this.withJobManagementApi = new JobManagementApi(clientConfig);
+  private constructor(apiClient: DefaultApiClient) {
+    this.apiClient = apiClient;
   }
 
-  public static async getInstance(context: vscode.ExtensionContext): Promise<DefaultClient> {
+  public static async initialize(context: vscode.ExtensionContext): Promise<DefaultClient> {
     if (DefaultClient.instance) {
       return DefaultClient.instance;
     }
 
-    const usernamePromise = context.secrets.get(SECHUB_CREDENTIAL_KEYS.username);
-    const apiTokenPromise = context.secrets.get(SECHUB_CREDENTIAL_KEYS.apiToken);
-    const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
+    const apiClient = await DefaultClient.createApiClient(context);
+    DefaultClient.instance = new DefaultClient(apiClient);
+    vscode.window.showInformationMessage('SecHub client initialized successfully.');
+    return DefaultClient.instance;
+  }
 
-    const [username, apiToken] = await Promise.all([usernamePromise, apiTokenPromise]);
+  public static async updateClient(context: vscode.ExtensionContext): Promise<void> {
+    const apiClient = await DefaultClient.createApiClient(context);
+    if (DefaultClient.instance) {
+      DefaultClient.instance.apiClient = apiClient;
+      vscode.window.showInformationMessage('SecHub client updated successfully.');
+    } else {
+      throw new Error('SecHub client is not initialized yet.');
+    }
+  }
+
+  // Creates a new ApiClient instance with the current credentials and server URL loaded from the extension context storage
+  private static async createApiClient(context: vscode.ExtensionContext): Promise<DefaultApiClient> {
+    const [username, apiToken] = await Promise.all([
+      context.secrets.get(SECHUB_CREDENTIAL_KEYS.username),
+      context.secrets.get(SECHUB_CREDENTIAL_KEYS.apiToken),
+    ]);
+
+    const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
 
     if (!serverUrl || !username || !apiToken) {
       vscode.window.showErrorMessage('SecHub credentials are not set. Please configure them first.');
-      await vscode.commands.executeCommand('sechub.multiStepInput');
       throw new Error('SecHub client is not initialized yet. Please ensure credentials are set.');
     }
 
@@ -62,14 +53,17 @@ export class DefaultClient {
       username: username,
       password: apiToken,
       headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
       },
     });
 
-    DefaultClient.instance = new DefaultClient(clientConfig);
-    console.log('SecHub client initialized successfully.', DefaultClient.instance);
-    vscode.window.showInformationMessage('SecHub client initialized successfully.');
+    console.log('Creating SecHub API client with configuration:', clientConfig);
 
-    return DefaultClient.instance;
+    return new DefaultApiClient(clientConfig);
+  }
+
+  public getApiClient(): DefaultApiClient {
+    return this.apiClient;
   }
 }

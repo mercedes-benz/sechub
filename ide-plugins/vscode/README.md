@@ -21,6 +21,8 @@ NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extens
 
 ### Develop
 
+Note: Example extension to orientate: https://github.com/gitkraken/vscode-gitlens/tree/main/src 
+
 1. Install Node.js
 
     * [Windows, macOS and Linux](https://nodejs.org/en/download)
@@ -44,6 +46,15 @@ NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extens
 5. In VSCodium toolbar: `Run -> Start Debugging`.
 
     ![image](README/start_debugging.png)
+
+#### Develop with Server
+
+1. Start the SecHub Server as integration test server
+
+2. Start the proxy `node devProxy.js` (Proxy on http://localhost:8000 -> https://localhost:8443 (sechub int test serevr)
+    This step is necessary because of self singed SSL certificates.
+
+3. Run the extension in toolbar: `Run -> Start Debugging`.
 
 ### Test
 
