@@ -39,6 +39,7 @@ export class ScanType {
     static CODE_SCAN = 'codescan';
     static LICENSE_SCAN = 'licensescan';
     static SECRET_SCAN = 'secretscan';
+    static IAC_SCAN = 'iacscan';
 
     public static isCodeScan(data: string | undefined): boolean {
         if (!data) {
@@ -59,6 +60,12 @@ export class ScanType {
         }
         return data.toLowerCase() == this.SECRET_SCAN;
     }
+    public static isIacScan(data: string | undefined): boolean {
+        if (!data) {
+            return false;
+        }
+        return data.toLowerCase() == this.IAC_SCAN;
+    }
 
     public static ensureAccepted(data: string[]): string[] {
         const accepted: string[] = [];
@@ -71,6 +78,8 @@ export class ScanType {
                     accepted.push(ScanType.LICENSE_SCAN);
                 } else if (ScanType.isSecretScan(entry)) {
                     accepted.push(ScanType.SECRET_SCAN);
+                } else if (ScanType.isIacScan(entry)){
+                    accepted.push(ScanType.IAC_SCAN);
                 }
             }
         }
@@ -94,6 +103,7 @@ export class SecHubConfigurationModel {
     codeScan?: CodeScan;
     secretScan?: SecretScan;
     licenseScan?: LicenseScan;
+    iacScan?: IacScan;
 }
 
 export class DataSection {
@@ -126,6 +136,10 @@ export class SecretScan {
 }
 
 export class LicenseScan {
+    use: string[] = [];
+}
+
+export class IacScan {
     use: string[] = [];
 }
 

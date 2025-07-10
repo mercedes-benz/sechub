@@ -4608,7 +4608,7 @@ function expand(str, isTop) {
   var isOptions = m.body.indexOf(',') >= 0;
   if (!isSequence && !isOptions) {
     // {a},b}
-    if (m.post.match(/,.*\}/)) {
+    if (m.post.match(/,(?!,).*\}/)) {
       str = m.pre + '{' + m.body + escClose + m.post;
       return expand(str);
     }
@@ -28076,6 +28076,12 @@ class ScanType {
         }
         return data.toLowerCase() == this.SECRET_SCAN;
     }
+    static isIacScan(data) {
+        if (!data) {
+            return false;
+        }
+        return data.toLowerCase() == this.IAC_SCAN;
+    }
     static ensureAccepted(data) {
         const accepted = [];
         if (data) {
@@ -28089,6 +28095,9 @@ class ScanType {
                 else if (ScanType.isSecretScan(entry)) {
                     accepted.push(ScanType.SECRET_SCAN);
                 }
+                else if (ScanType.isIacScan(entry)) {
+                    accepted.push(ScanType.IAC_SCAN);
+                }
             }
         }
         if (accepted.length == 0) {
@@ -28100,6 +28109,7 @@ class ScanType {
 ScanType.CODE_SCAN = 'codescan';
 ScanType.LICENSE_SCAN = 'licensescan';
 ScanType.SECRET_SCAN = 'secretscan';
+ScanType.IAC_SCAN = 'iacscan';
 /**
  * SecHub configuration model
  */
@@ -28135,6 +28145,11 @@ class SecretScan {
     }
 }
 class LicenseScan {
+    constructor() {
+        this.use = [];
+    }
+}
+class IacScan {
     constructor() {
         this.use = [];
     }
