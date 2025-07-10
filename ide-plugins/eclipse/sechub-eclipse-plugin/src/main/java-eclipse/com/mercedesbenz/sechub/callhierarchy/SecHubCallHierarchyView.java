@@ -244,6 +244,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 	}
 
 	private void hookSelectionListener() {
+		/* on selection just show details */
 		treeViewerLeft.addSelectionChangedListener(event -> {
 			ISelection selection = treeViewerLeft.getSelection();
 			if (!(selection instanceof IStructuredSelection)) {
@@ -256,8 +257,26 @@ public class SecHubCallHierarchyView extends ViewPart {
 				return;
 			}
 			selectNodeOnRightTree((FindingNode) element);
-			searchInProjectsForFinding((FindingNode) element);
 
+		});
+		
+		/* On double click open in editor - means 
+		 * when no double click, we can easy look into findings without 
+		 * opening. Interesting to show findings where we do not have the
+		 * correct code - no annoying dialogs on every selection click in this case.
+		 */
+		treeViewerLeft.addDoubleClickListener(event ->{
+			ISelection selection = treeViewerLeft.getSelection();
+			if (!(selection instanceof IStructuredSelection)) {
+				return;
+			}
+
+			IStructuredSelection ss = (IStructuredSelection) selection;
+			Object element = ss.getFirstElement();
+			if (!(element instanceof FindingNode)) {
+				return;
+			}
+			searchInProjectsForFinding((FindingNode) element);
 		});
 
 	}
