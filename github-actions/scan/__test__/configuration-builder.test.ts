@@ -56,8 +56,9 @@ describe('configuration-builder', function() {
         expect(model.codeScan?.use.length).toEqual(1);
         expect(model.codeScan?.use[0]).toEqual('reference-data-1');
 
-        expect(model.secretScan).toBeUndefined();
         expect(model.licenseScan).toBeUndefined();
+        expect(model.secretScan).toBeUndefined();
+        expect(model.iacScan).toBeUndefined();
 
     });
 
@@ -90,8 +91,9 @@ describe('configuration-builder', function() {
         expect(model.codeScan?.use.length).toEqual(1);
         expect(model.codeScan?.use[0]).toEqual('reference-data-1');
 
-        expect(model.secretScan).toBeUndefined();
         expect(model.licenseScan).toBeUndefined();
+        expect(model.secretScan).toBeUndefined();
+        expect(model.iacScan).toBeUndefined();
 
     });
 
@@ -129,6 +131,7 @@ describe('configuration-builder', function() {
 
         expect(model.secretScan).toBeUndefined();
         expect(model.licenseScan).toBeUndefined();
+        expect(model.iacScan).toBeUndefined();
 
     });
 
@@ -164,6 +167,7 @@ describe('configuration-builder', function() {
 
         expect(model.secretScan).toBeUndefined();
         expect(model.licenseScan).toBeUndefined();
+        expect(model.iacScan).toBeUndefined();
     });
 
     test('codescan and license scan - two folders defined', () => {
@@ -198,6 +202,7 @@ describe('configuration-builder', function() {
         expect(model.licenseScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
         
         expect(model.secretScan).toBeUndefined();
+        expect(model.iacScan).toBeUndefined();
 
     });
     test('codescan and secret scan - two folders defined', () => {
@@ -232,6 +237,7 @@ describe('configuration-builder', function() {
         expect(model.secretScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
         
         expect(model.licenseScan).toBeUndefined();
+        expect(model.iacScan).toBeUndefined();
         
     });
     test('secret scan standalone - source, one folder defined, one excluded', () => {
@@ -266,7 +272,83 @@ describe('configuration-builder', function() {
         expect(model.secretScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
         
         expect(model.licenseScan).toBeUndefined();
+        expect(model.codeScan).toBeUndefined();
+        expect(model.iacScan).toBeUndefined();
         
+    });
+
+    test('iacScan standalone - source, one folder defined, one excluded', () => {
+
+        /* prepare */
+        const builderData = new SecHubConfigurationModelBuilderData();
+        builderData.includeFolders= ['folder1'];
+        builderData.excludeFolders= ['folderX'];
+        builderData.scanTypes=[ScanType.IAC_SCAN];
+
+        /* execute */
+        const model= configBuilder.createSecHubConfigurationModel(builderData);
+
+        /* test */
+        logDebug(model);
+
+        expect(model.apiVersion).toEqual('1.0');
+        
+        expect(model.data.sources);
+        expect(model.data.sources?.length).toEqual(1);
+
+        const firstSource = model.data.sources?.[0];
+        expect(firstSource?.fileSystem.folders?.length).toEqual(1);
+        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
+        expect(firstSource?.excludes?.length).toEqual(1);
+        expect(firstSource?.excludes?.[0]).toEqual('folderX');
+
+        expect(model.codeScan).toBeUndefined();
+        
+        expect(model.iacScan).toBeDefined();
+        expect(model.iacScan?.use.length).toEqual(1);
+        expect(model.iacScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+        
+        expect(model.licenseScan).toBeUndefined();
+        expect(model.secretScan).toBeUndefined();
+        expect(model.codeScan).toBeUndefined();
+    });
+
+    test('codeScan, iacScan and secretScan - two folders defined', () => {
+
+        /* prepare */
+        const builderData = new SecHubConfigurationModelBuilderData();
+        builderData.includeFolders= ['folder1','folder2'];
+        builderData.scanTypes=[ScanType.CODE_SCAN,ScanType.IAC_SCAN,ScanType.SECRET_SCAN];
+
+        /* execute */
+        const model= configBuilder.createSecHubConfigurationModel(builderData);
+
+        /* test */
+        logDebug(model);
+
+        expect(model.apiVersion).toEqual('1.0');
+        
+        expect(model.data.sources);
+        expect(model.data.sources?.length).toEqual(1);
+
+        const firstSource = model.data.sources?.[0];
+        expect(firstSource?.fileSystem.folders?.length).toEqual(2);
+        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
+        expect(firstSource?.fileSystem.folders?.[1]).toEqual('folder2');
+
+        expect(model.codeScan).toBeDefined();
+        expect(model.codeScan?.use.length).toEqual(1);
+        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
+
+        expect(model.iacScan).toBeDefined();
+        expect(model.iacScan?.use.length).toEqual(1);
+        expect(model.iacScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+
+        expect(model.secretScan).toBeDefined();
+        expect(model.secretScan?.use.length).toEqual(1);
+        expect(model.secretScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+        
+        expect(model.licenseScan).toBeUndefined();        
     });
 
 });

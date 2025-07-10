@@ -28207,7 +28207,7 @@ SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE = ContentType.SOURCE; /
  * @returns model
  */
 function createSecHubConfigurationModel(builderData) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     const model = new SecHubConfigurationModel();
     const referenceName = 'reference-data-1';
     createSourceOrBinaryDataReference(referenceName, builderData, model);
@@ -28225,6 +28225,11 @@ function createSecHubConfigurationModel(builderData) {
         const secretScan = new SecretScan();
         secretScan.use = [referenceName];
         model.secretScan = secretScan;
+    }
+    if (((_d = builderData.scanTypes) === null || _d === void 0 ? void 0 : _d.indexOf(ScanType.IAC_SCAN)) != -1) {
+        const iacScan = new IacScan();
+        iacScan.use = [referenceName];
+        model.iacScan = iacScan;
     }
     return model;
 }
