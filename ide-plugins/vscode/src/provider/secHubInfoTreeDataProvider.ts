@@ -78,7 +78,10 @@ export class InfoItem extends vscode.TreeItem {
 export class MetaDataInfoItem extends InfoItem {
   children: InfoItem[] = [];
 
-  constructor(key: string, value: string | number | undefined, command: Command | undefined, state: vscode.TreeItemCollapsibleState) {
+  constructor(key: string, 
+    value: string | number | undefined, 
+    command: Command | undefined, 
+    state: vscode.TreeItemCollapsibleState) {
     super(key, state);
 
     var description = "";

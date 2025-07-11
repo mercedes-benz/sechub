@@ -2,6 +2,9 @@ import * as vscode from 'vscode';
 import {
   Configuration,
   DefaultApiClient,
+  ProjectData,
+  UserListsJobsForProjectRequest,
+  SecHubJobInfoForUserListPage,
 } from 'sechub-openapi-ts-client';
 import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
 
@@ -57,5 +60,34 @@ export class DefaultClient {
 
   public getApiClient(): DefaultApiClient {
     return this.apiClient;
+  }
+
+  public async getAssignedProjectDataList(): Promise<ProjectData[]> {
+    try {
+        const response: ProjectData[] = await this.apiClient.withProjectAdministrationApi().getAssignedProjectDataList();
+        return response;
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        vscode.window.showErrorMessage('Failed to fetch projects from the server.');
+        return [];
+    }    
+  }
+
+  public async userListsJobsForProject(projectId: string): Promise<SecHubJobInfoForUserListPage> {
+
+    const requestParameter: UserListsJobsForProjectRequest = {
+      projectId: projectId,
+      size: "10", // Example size, adjust as needed
+      page: "0", // Example page number, adjust as needed
+    };
+
+    try {
+      const response: SecHubJobInfoForUserListPage = await this.apiClient.withOtherApi().userListsJobsForProject(requestParameter);
+      return response;
+    } catch (error) {
+      console.error('Error fetching latest jobs:', error);
+      vscode.window.showErrorMessage('Failed to fetch latest jobs from the server.');
+      return {};
+    }
   }
 }

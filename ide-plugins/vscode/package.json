@@ -33,6 +33,14 @@
 				"title": "SecHub: import report from file",
 				"icon": "media/sechub-import-report.svg"
 			},
+						{
+				"command": "sechubReportView.openCWEinBrowser",
+				"title": "CWE"
+			},
+			{
+				"command": "sechubCallHierarchyView.showInEditor",
+				"title": "Show"
+			},
 			{
 				"command": "sechub.changeServerUrl",
 				"title": "SecHub: Change SecHub Server URL"
@@ -40,6 +48,10 @@
 			{
 				"command": "sechub.changeCredentials",
 				"title": "SecHub: Change SecHub Credentials"
+			},
+			{
+				"command": "sechub.selectProject",
+				"title": "SecHub: Select SecHub Project"
 			}
 		],
 		"viewsContainers": {

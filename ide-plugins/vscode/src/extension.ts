@@ -15,11 +15,12 @@ import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubRepor
 import { loadFromFile } from './utils/sechubUtils';
 import { SecHubReport } from 'sechub-openapi-ts-client';
 import { multiStepInput } from './sechubCredentialsMultistepInput';
-import { SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
+import { SECHUB_COMMANDS, SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
 import { ServerItem, SecHubServerTreeProvider } from './provider/sechubServerTreeDataProvider';
 import { DefaultClient } from './api/defaultClient';
 import { changeServerUrl } from './commands/changeServerUrl';
 import { changeCredentials } from './commands/changeCredentials';
+import { selectProject } from './commands/selectProject';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
@@ -48,11 +49,13 @@ export async function activate(context: vscode.ExtensionContext) {
 
 function registerCommands(sechubContext: SecHubContext) {
 
-    const changeServerUrlCommand = vscode.commands.registerCommand('sechub.changeServerUrl', () => changeServerUrl(sechubContext));
-    const changeCredentialsCommand = vscode.commands.registerCommand('sechub.changeCredentials', () => changeCredentials(sechubContext));
+    const changeServerUrlCommand = vscode.commands.registerCommand(SECHUB_COMMANDS.changeServerUrl, () => changeServerUrl(sechubContext));
+    const changeCredentialsCommand = vscode.commands.registerCommand(SECHUB_COMMANDS.changeCredentials, () => changeCredentials(sechubContext));
+	const selectProjectCommand = vscode.commands.registerCommand(SECHUB_COMMANDS.selectProject, () => selectProject(sechubContext));
 	
 	sechubContext.extensionContext.subscriptions.push(changeServerUrlCommand, 
-		changeCredentialsCommand);
+		changeCredentialsCommand,
+		selectProjectCommand);
 }
 
 function setUpApiClient(context: vscode.ExtensionContext) {
