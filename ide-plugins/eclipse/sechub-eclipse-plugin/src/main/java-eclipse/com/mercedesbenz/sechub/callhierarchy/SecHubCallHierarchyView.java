@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -80,7 +81,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 	private MoveToLastStepAction lastStepAction;
 
-	private Text rightTreeDescriptionText;
+	private StyledText rightTreeDescriptionText;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -172,7 +173,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 		label.setLayoutData(labelSourceLayoutData);
 
 		GridData textSourceLayoutData = GridDataFactory.fillDefaults().grab(true, true).create();
-		rightTreeDescriptionText = new Text(descriptionComposite, SWT.NONE);
+		rightTreeDescriptionText = new StyledText(descriptionComposite, SWT.WRAP | SWT.V_SCROLL);
 		rightTreeDescriptionText.setEditable(false);
 		rightTreeDescriptionText.setLayoutData(textSourceLayoutData);
 
@@ -294,7 +295,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 		if (text==null) {
 			text=""; // may not be null
 		}
-		rightTreeDescriptionText.setText(text);
+		rightTreeDescriptionText.setText(text.trim());
 	}
 
 	public void update(FindingModel model) {
