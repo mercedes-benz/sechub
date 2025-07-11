@@ -44,7 +44,6 @@ public class SechubPreferencePage extends FieldEditorPreferencePage implements I
     	
     	
     	usernameField = new StringFieldEditor(PreferenceIdConstants.USER_ID, "User id:", getFieldEditorParent());
-    	usernameField.getTextControl(getFieldEditorParent()).setEchoChar('*');
         apiTokenField = new StringFieldEditor(PreferenceIdConstants.APITOKEN, "API Token:", getFieldEditorParent());
         apiTokenField.getTextControl(getFieldEditorParent()).setEchoChar('*');
         

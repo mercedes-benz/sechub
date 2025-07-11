@@ -23,9 +23,7 @@ public class SechubServerTreeDecorator implements ILightweightLabelDecorator {
 			if (server.isAlive()) {
 				descriptor = DESC_OVERLAY_OK;
 			} else { 
-				// server not available (or credential problem)
 				descriptor = DESC_OVERLAY_ERROR;
-				decoration.addSuffix("\n(not alive or wrong credentials)");
 			}
 			decoration.addOverlay(descriptor, IDecoration.BOTTOM_RIGHT);
 		}

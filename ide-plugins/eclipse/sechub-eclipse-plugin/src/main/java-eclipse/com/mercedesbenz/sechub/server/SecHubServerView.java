@@ -20,6 +20,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -64,6 +65,14 @@ public class SecHubServerView extends ViewPart {
 
 	private Label projectLabel;
 
+	private Button nextButton;
+
+	private Button previosButton;
+
+	private Label currentPageLabel;
+
+	private Label pagesLabel;
+
 	@Override
 	public void createPartControl(Composite parent) {
 
@@ -72,19 +81,15 @@ public class SecHubServerView extends ViewPart {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
 
-		Composite composite3 = new Composite(composite, SWT.NONE);
-		composite3.setLayout(new GridLayout(3, false));
-		composite3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		Composite headlineComposite = new Composite(composite, SWT.NONE);
+		headlineComposite.setLayout(new GridLayout(3, false));
+		headlineComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		
-//		Composite composite2 = new Composite(composite3, SWT.NONE);
-//		composite2.setLayout(new GridLayout(2, false));
-//		composite2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
-		projectLabel = new Label(composite3, SWT.None);
+		projectLabel = new Label(headlineComposite, SWT.None);
 		projectLabel.setText("Project");
 		
-		projectCombo = new Combo(composite3, SWT.DROP_DOWN | SWT.READ_ONLY);
-		projectCombo.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		projectCombo = new Combo(headlineComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
+		projectCombo.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
 		
 		projectCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -104,10 +109,12 @@ public class SecHubServerView extends ViewPart {
 
 		serverTreeContentProvider = new SecHubServerTreeViewContentProvider();
 
-		serverTreeViewer = new TreeViewer(composite3, SWT.NO_SCROLL | SWT.V_SCROLL);
-		serverTreeViewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		serverTreeViewer = new TreeViewer(headlineComposite, SWT.NO_SCROLL | SWT.V_SCROLL);
+		serverTreeViewer.getControl().setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
 		serverTreeViewer.setContentProvider(serverTreeContentProvider);
-		serverTreeViewer.getTree().setEnabled(false);
+		serverTreeViewer.addDoubleClickListener((event)->{
+			openServerPreferencesAction.run();
+		});
 
 		jobTreeContentProvider = new SecHubJobTreeViewContentProvider();
 		jobTreeViewer = new TreeViewer(composite, SWT.FULL_SELECTION);
@@ -146,6 +153,23 @@ public class SecHubServerView extends ViewPart {
         });
 		
 		
+
+		Composite pagingComposite = new Composite(composite, SWT.NONE);
+		pagingComposite.setLayout(new GridLayout(5, false));
+		pagingComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
+		
+		nextButton = new Button(pagingComposite, SWT.NONE);
+		nextButton.setText("Next");
+		previosButton = new Button(pagingComposite, SWT.NONE);
+		previosButton.setText("Previous");
+		currentPageLabel = new Label(pagingComposite, SWT.NONE);
+		
+		Label pagesdivider = new Label(pagingComposite, SWT.NONE);
+		pagesdivider.setText("/");
+		
+		pagesLabel = new Label(pagingComposite, SWT.NONE);
+		
+		
 		SechubServerTreeLabelProvider labelProvider = new SechubServerTreeLabelProvider();
 		ILabelDecorator labelDecorator = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
 		DecoratingStyledCellLabelProvider labelProviderDelegate = new DecoratingStyledCellLabelProvider(labelProvider,
@@ -180,12 +204,12 @@ public class SecHubServerView extends ViewPart {
 
 	protected void refreshJobTableForSelectedProject() {
 		if (!serverContext.isConnectedWithServer()) {
-			serverContext.setCurrentJobPage(null);
-			jobTreeViewer.setInput(null);
+			resetJobTableAndPaging();
 			return;
 		}
 		SecHubAccess access = serverContext.getAccessOrNull();
 		if (access == null) {
+			resetJobTableAndPaging();
 			return;
 		}
 		String selectedProjectId = serverContext.getSelectedProjectId();
@@ -194,14 +218,24 @@ public class SecHubServerView extends ViewPart {
 			currentPage = access.fetchJobInfoList(selectedProjectId, 30, 0);
 			serverContext.setCurrentJobPage(currentPage);
 			jobTreeViewer.setInput(currentPage);
+			currentPageLabel.setText("1");
+			pagesLabel.setText("1-pseudo");
 			
 		} catch (ApiException e) {
-			serverContext.setCurrentJobPage(null);
-			jobTreeViewer.setInput(null);
+			resetJobTableAndPaging();
 			
 			EclipseUtil.showErrorDialog("Was not able to fetch job list for project "+selectedProjectId, e);
 		}
 
+	}
+
+	private void resetJobTableAndPaging() {
+		serverContext.setCurrentJobPage(null);
+		jobTreeViewer.setInput(null);
+		serverContext.setCurrentJobPage(null);
+		jobTreeViewer.setInput(null);
+		currentPageLabel.setText("0");
+		pagesLabel.setText("0");
 	}
 
 	private void contributeToActionBars() {
@@ -217,7 +251,7 @@ public class SecHubServerView extends ViewPart {
 	}
 
 	private void createJobColumns() {
-		TreeViewerColumn id = createTreeViewerColumn(jobTreeViewer, "Created", 100);
+		TreeViewerColumn id = createTreeViewerColumn(jobTreeViewer, "Created", 160);
 		id.setLabelProvider(new DateTimeColumnLabelProvider());
 
 		TreeViewerColumn trafficLight = createTreeViewerColumn(jobTreeViewer, "", 20);
@@ -262,7 +296,12 @@ public class SecHubServerView extends ViewPart {
 		initContext();
 
 		serverTreeViewer.setInput(serverContext.getModel());
-
+		if (serverContext.isConnectedWithServer()) {
+			serverTreeViewer.getTree().setToolTipText("Connected to SecHub server");
+		}else {
+			serverTreeViewer.getTree().setToolTipText("Not alive or wrong credentials");
+		}
+		
 		refreshProjectCombo();
 		refreshJobTableForSelectedProject();
 	}
@@ -356,6 +395,7 @@ public class SecHubServerView extends ViewPart {
 		if (indexToSelect > -1) {
 			projectCombo.select(indexToSelect);
 		}
+		projectCombo.getParent().layout(true);
 	}
 
 }

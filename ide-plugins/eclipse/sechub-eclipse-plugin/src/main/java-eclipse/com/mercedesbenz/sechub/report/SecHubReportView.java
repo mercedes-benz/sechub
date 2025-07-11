@@ -72,8 +72,6 @@ public class SecHubReportView extends ViewPart {
 
 	private Action removeAllReportData;
 
-	private RemoveSelectedReportDataAction removeSelectedReportData;
-
 	private ImportSecHubReportAction importAction;
 	
 	private OpenSecHubServerViewAction openServerViewAction;
@@ -139,7 +137,6 @@ public class SecHubReportView extends ViewPart {
 
 	private void makeActions() {
 		removeAllReportData = new RemoveAllReportDataAction();
-		removeSelectedReportData = new RemoveSelectedReportDataAction();
 		importAction = new ImportSecHubReportAction();
 		openServerViewAction= new OpenSecHubServerViewAction();
 	}
@@ -150,17 +147,7 @@ public class SecHubReportView extends ViewPart {
 		fillLocalToolBar(bars.getToolBarManager());
 	}
 
-	private void removeSelectedReportData() {
-		ISelection selection = treeViewer.getSelection();
-		if (!(selection instanceof IStructuredSelection)) {
-			return;
-		}
-		IStructuredSelection sse = (IStructuredSelection) selection;
-		treeViewer.remove(sse.toArray());
-	}
-
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(removeSelectedReportData);
 		manager.add(removeAllReportData);
 		manager.add(new Separator());
 		manager.add(openServerViewAction);
@@ -168,7 +155,6 @@ public class SecHubReportView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(removeSelectedReportData);
 		manager.add(removeAllReportData);
 		manager.add(new Separator());
 		manager.add(openServerViewAction);
@@ -338,19 +324,5 @@ public class SecHubReportView extends ViewPart {
 			removeAllReportData();
 		}
 	}
-
-	private class RemoveSelectedReportDataAction extends Action {
-		private RemoveSelectedReportDataAction() {
-			setText("Remove selected data");
-			setToolTipText("Remove selected report data");
-			setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_ELCL_REMOVE));
-		}
-
-		public void run() {
-			removeSelectedReportData();
-		}
-	}
-
-	
 
 }

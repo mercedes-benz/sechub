@@ -309,11 +309,12 @@ public class SecHubCallHierarchyView extends ViewPart {
 				description+=" - <a href=\"https://cwe.mitre.org/data/definitions/"+finding.getCweId()+".html\">CWE-"+finding.getCweId()+"</a>";
 			}
 			linkDescriptionWithLinks.setText(description);
-
+			
 			treeViewerLeft.setSelection(new StructuredSelection(finding));
 		} else {
 			linkDescriptionWithLinks.setText("");
 			treeViewerRight.setInput(null);
+			rightTreeDescriptionText.setText("");
 		}
 	}
 
