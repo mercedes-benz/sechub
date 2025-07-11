@@ -33,7 +33,7 @@ function openInEditor(context: sechubExtension.SecHubContext, element: SecHubCod
 		console.log("No result found for " + element.location);
 		return;
 	}
-	var fileLocation = result.values().next().value;
+	var fileLocation: string = result.values().next().value || '';
 	console.log("File location:" + fileLocation);
 
 	// ensure the column is not negative or zero
@@ -64,6 +64,7 @@ function openInEditor(context: sechubExtension.SecHubContext, element: SecHubCod
 	var openDocumentCallback = (doc: vscode.TextDocument) => {
 		vscode.window.showTextDocument(doc, { selection: selectionRange });
 	};
+
 	var uri = vscode.Uri.file(fileLocation);
 	vscode.workspace.openTextDocument(uri).then(openDocumentCallback);
 }
