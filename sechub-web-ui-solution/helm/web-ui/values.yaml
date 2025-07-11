@@ -45,23 +45,11 @@ web_ui:
 #  This way, you can force deployments e.g. when only secrets have changed.
 deploymentComment: "my deployment comment"
 
-service:
-  loadbalancer:
-    # ip: set ip address. if "" then a new ip is aquired. none -> define no ip for service
-    ip: none
-    port:
-      name: web-ui-https
-      number: 4443
-  # optional: Add annotations (goes to metadata.annotations)
-  #           Can contain multiple lines. Example:
-  # annotations: |-
-  #   loadbalancer.openstack.org/keep-floatingip: "true"
-  #   loadbalancer.openstack.org/proxy-protocol: "true"
-  #
-  # optional: Add finalizers (goes to metadata.finalizers)
-  #           Can contain multiple lines. Example:
-  # finalizers: |-
-  #   - service.kubernetes.io/load-balancer-cleanup
+# Define port for outside access:
+targetPort:
+  # Name must be matched in "sechub-server" Helm chart's 'service.loadbalancer.portmappings'
+  name: "4443-port"
+  port: 4443
 
 # optional: Add annotations to template.metadata.annotations
 #           Can contain multiple lines. Example for Prometheus actuator:

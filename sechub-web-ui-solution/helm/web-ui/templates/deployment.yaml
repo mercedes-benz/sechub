@@ -81,13 +81,13 @@ spec:
         image: {{ .Values.image }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
-        - name: web-ui-https
-          containerPort: 4443
+        - containerPort: 4443
+          name: "4443-port"
         readinessProbe:
           httpGet:
             scheme: HTTPS
             path: /health
-            port: web-ui-https
+            port: 4443-port
           failureThreshold: 2
           periodSeconds: 2
           successThreshold: 1

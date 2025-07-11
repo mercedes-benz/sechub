@@ -113,13 +113,13 @@ spec:
         ports:
           - name: health-port
             containerPort: 10250
-          - name: https-port
-            containerPort: 8443
+          - name: {{ .Values.targetPort.name }}
+            containerPort: {{ .Values.targetPort.port }}
         startupProbe:
           httpGet:
             scheme: HTTPS
             path: /api/anonymous/check/alive
-            port: https-port
+            port: {{ .Values.targetPort.name }}
           initialDelaySeconds: 10
           periodSeconds: 1
           # probe every 1s x 600 = 10 mins before restart of container
@@ -139,7 +139,7 @@ spec:
           httpGet:
             scheme: HTTPS
             path: /api/anonymous/check/alive
-            port: https-port
+            port: {{ .Values.targetPort.name }}
           periodSeconds: 20
           # probe every 20s x 3 = 60s before restart of container
           failureThreshold: 3
@@ -172,6 +172,8 @@ spec:
         # Base url for sechub server - e.g. https://sechub.example.com
         - name: SECHUB_SERVER_BASEURL
           value: "{{ .Values.server.baseURL.userAccess }}"
+        - name: SECHUB_SERVER_PORT
+          value: "{{ .Values.targetPort.port }}"
         # Static resources for login page
         - name: SPRING_WEB_RESOURCES_STATICLOCATIONS
 {{- if .Values.staticResources.enabled }}
