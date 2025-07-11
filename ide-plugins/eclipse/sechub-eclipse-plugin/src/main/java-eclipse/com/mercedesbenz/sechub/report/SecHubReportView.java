@@ -17,7 +17,6 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
@@ -39,6 +38,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.ViewPart;
 
 import com.mercedesbenz.sechub.SecHubActivator;
+import com.mercedesbenz.sechub.api.internal.gen.model.ScanType;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
 import com.mercedesbenz.sechub.callhierarchy.SecHubCallHierarchyView;
 import com.mercedesbenz.sechub.component.DragAndDropCallback;
 import com.mercedesbenz.sechub.component.DragAndDropData;
@@ -52,6 +53,7 @@ import com.mercedesbenz.sechub.server.SecHubServerView;
 import com.mercedesbenz.sechub.util.EclipseUtil;
 import com.mercedesbenz.sechub.util.Logging;
 import com.mercedesbenz.sechub.util.TrafficLightImageResolver;
+import com.mercedesbenz.sechub.webfinding.SecHubWebFindingView;
 
 public class SecHubReportView extends ViewPart {
 
@@ -205,14 +207,32 @@ public class SecHubReportView extends ViewPart {
 		IStructuredSelection selectedFinding = treeViewer.getStructuredSelection();
 		FindingNode finding = (FindingNode) selectedFinding.getFirstElement();
 
-		searchInProjectsForFinding(finding);
+		showFindingInDetailView(finding);
 
 	}
 
-	private void searchInProjectsForFinding(FindingNode finding) {
-		showFindingInCallHierarchyView(finding);
+	private void showFindingInDetailView(FindingNode node) {
+		
+		if (node==null) {
+			// just erase
+			showFindingInCallHierarchyView(null);
+			return;
+		}
+		
+		SecHubFinding finding = node.getFinding();
+		ScanType scanType = finding.getType();
+		if (scanType== ScanType.WEB_SCAN) {
+			
+			showFindingInCallHierarchyView(null);
+			showFindingInWebFindingView(node);
+		}else {
+			
+			showFindingInWebFindingView(null);
+			showFindingInCallHierarchyView(node);
+		}
+		
+		
 	}
-
 	private void showFindingInCallHierarchyView(FindingNode finding) {
 		safeAsyncExec(() -> {
 			try {
@@ -227,6 +247,35 @@ public class SecHubReportView extends ViewPart {
 				}
 				if (view instanceof SecHubCallHierarchyView) {
 					SecHubCallHierarchyView callhierarchyView = (SecHubCallHierarchyView) view;
+
+					FindingModel subModel = new FindingModel();
+					if (finding != null) {
+						page.activate(view); // we ensure view is shown
+						subModel.getFindings().add(finding);
+					}
+
+					callhierarchyView.update(subModel);
+				}
+			} catch (PartInitException pie) {
+				Logging.logError("Was not able to show junit view", pie);
+			}
+		});
+
+	}
+	private void showFindingInWebFindingView(FindingNode finding) {
+		safeAsyncExec(() -> {
+			try {
+				IWorkbenchPage page = getActivePage();
+				if (page == null) {
+					return;
+				}
+				IViewPart view = page.findView(SecHubWebFindingView.ID);
+				if (view == null) {
+					/* create and show the result view if it isn't created yet. */
+					view = page.showView(SecHubWebFindingView.ID, null, IWorkbenchPage.VIEW_VISIBLE);
+				}
+				if (view instanceof SecHubWebFindingView) {
+					SecHubWebFindingView callhierarchyView = (SecHubWebFindingView) view;
 
 					FindingModel subModel = new FindingModel();
 					if (finding != null) {

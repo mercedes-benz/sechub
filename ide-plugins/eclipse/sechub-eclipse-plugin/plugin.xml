@@ -55,36 +55,6 @@
             sequence="M1+6">
       </key>
    </extension>
-   <!--
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu
-               id="com.mercedesbenz.sechub.plugin.menus.sechubMenu"
-               label="SecHub"
-               mnemonic="M">
-            <command
-                  commandId="com.mercedesbenz.sechub.plugin.commands.importCommand"
-                  id="com.mercedesbenz.sechub.plugin.menus.importCommand"
-                  mnemonic="S">
-            </command>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
-         <toolbar
-               id="com.mercedesbenz.sechub.plugin.toolbars.sampleToolbar">
-            <command
-                  id="com.mercedesbenz.sechub.plugin.toolbars.importCommand"
-                  commandId="com.mercedesbenz.sechub.plugin.commands.importCommand"
-                  icon="icons/sechub-logo.png"
-                  tooltip="Import SecHub Report">
-            </command>
-         </toolbar>
-      </menuContribution>
-   </extension>
-   -->
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -112,8 +82,7 @@
          </description>
       </wizard>
    </extension>
-   <extension
-         point="org.eclipse.ui.views">
+   <extension point="org.eclipse.ui.views">
       <category
             name="SecHub"
             id="com.mercedesbenz.sechub.viewcategory">
@@ -139,6 +108,14 @@
             name="SecHub Server"
             icon="icons/sechub-logo.png"
             class="com.mercedesbenz.sechub.server.SecHubServerView"
+            category="com.mercedesbenz.sechub.viewcategory"
+            inject="true">
+      </view>
+      <view
+            id="com.mercedesbenz.sechub.views.SecHubWebFindingView"
+            name="SecHub Web Finding"
+            icon="icons/sechub-logo.png"
+            class="com.mercedesbenz.sechub.webfinding.SecHubWebFindingView"
             category="com.mercedesbenz.sechub.viewcategory"
             inject="true">
       </view>
