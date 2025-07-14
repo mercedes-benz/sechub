@@ -24,6 +24,7 @@ export async function selectProject(sechubContext: SecHubContext): Promise<void>
                 vscode.window.showInformationMessage(`Selected Project: ${projectData.projectId}`);
                 sechubContext.extensionContext.globalState.update(SECHUB_REPORT_KEYS.selectedProject, projectData);
                 sechubContext.serverTreeProvider.refresh();
+                sechubContext.serverWebViewProvider.refresh();
             }
         }
     } catch (error) {

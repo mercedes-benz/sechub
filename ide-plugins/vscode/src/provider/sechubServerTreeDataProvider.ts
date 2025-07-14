@@ -61,17 +61,6 @@ export class SecHubServerTreeProvider implements vscode.TreeDataProvider<ServerI
     refresh(): void {
         this._onDidChangeTreeData.fire();
     }
-
-    private getTableItems(): ServerItem[] {
-        // Example data for the table
-        const tableData = [
-            { col1: 'Row 1 Col 1', col2: 'Row 1 Col 2', col3: 'Row 1 Col 3' },
-            { col1: 'Row 2 Col 1', col2: 'Row 2 Col 2', col3: 'Row 2 Col 3' },
-            { col1: 'Row 3 Col 1', col2: 'Row 3 Col 2', col3: 'Row 3 Col 3' }
-        ];
-
-        return tableData.map(row => new ServerItem(row.col1, `${row.col2} | ${row.col3}`, vscode.TreeItemCollapsibleState.None));
-    }
 }
 
 export class ServerItem extends vscode.TreeItem {

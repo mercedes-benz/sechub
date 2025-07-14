@@ -21,6 +21,7 @@ import { DefaultClient } from './api/defaultClient';
 import { changeServerUrl } from './commands/changeServerUrl';
 import { changeCredentials } from './commands/changeCredentials';
 import { selectProject } from './commands/selectProject';
+import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
@@ -43,6 +44,8 @@ export async function activate(context: vscode.ExtensionContext) {
 	hookActions(secHubContext);
 
 	registerCommands(secHubContext);
+
+	buildServerWebview(secHubContext);
 
 	console.log('SecHub plugin has been activated.');
 }
@@ -111,6 +114,13 @@ function buildInfoView(context: SecHubContext) {
 	});
 }
 
+function buildServerWebview(context: SecHubContext) {
+	const provider = new SecHubServerWebviewProvider(context.extensionContext.extensionUri, context);
+	context.extensionContext.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(SecHubServerWebviewProvider.viewType, provider));
+	context.serverWebViewProvider = provider;
+}
+
 function hookActions(context: SecHubContext) {
 	importActions.hookImportAction(context);
 	reportViewActions.hookReportItemActions(context);
@@ -131,6 +141,7 @@ export class SecHubContext {
 	extensionContext: vscode.ExtensionContext;
 	fileLocationExplorer: FileLocationExplorer;
 	serverTreeProvider: SecHubServerTreeProvider;
+	serverWebViewProvider: SecHubServerWebviewProvider;
 
 	constructor(report: SecHubReport| undefined, extensionContext: vscode.ExtensionContext,
 	) {
@@ -141,6 +152,7 @@ export class SecHubContext {
 		this.fileLocationExplorer = new FileLocationExplorer();
 		this.findingNodeLinkBuilder = new FindingNodeLinkBuilder();
 		this.serverTreeProvider = new SecHubServerTreeProvider(extensionContext);
+		this.serverWebViewProvider = new SecHubServerWebviewProvider(extensionContext.extensionUri, this);
 
 		/* setup search folders for explorer */
 		let workspaceFolders = vscode.workspace.workspaceFolders; // get the open folder path

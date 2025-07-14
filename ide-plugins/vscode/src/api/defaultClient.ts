@@ -73,13 +73,11 @@ export class DefaultClient {
     }    
   }
 
-  public async userListsJobsForProject(projectId: string): Promise<SecHubJobInfoForUserListPage> {
-
-    const requestParameter: UserListsJobsForProjectRequest = {
+  public async userListsJobsForProject(projectId: string, requestParameter: UserListsJobsForProjectRequest = {
       projectId: projectId,
       size: "10", // Example size, adjust as needed
       page: "0", // Example page number, adjust as needed
-    };
+    }): Promise<SecHubJobInfoForUserListPage> {
 
     try {
       const response: SecHubJobInfoForUserListPage = await this.apiClient.withOtherApi().userListsJobsForProject(requestParameter);

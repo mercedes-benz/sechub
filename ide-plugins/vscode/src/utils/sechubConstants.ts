@@ -18,3 +18,7 @@ export const SECHUB_COMMANDS = {
     openCWEinBrowser: 'sechubReportView.openCWEinBrowser',
     showCallHierarchy: 'sechubCallHierarchyView.showInEditor',
 };
+
+export const SECHUB_VIEW_IDS = {
+    serverView: 'sechub.serverWebView'
+};
