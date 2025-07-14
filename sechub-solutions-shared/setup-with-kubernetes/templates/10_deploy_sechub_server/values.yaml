@@ -9,6 +9,11 @@ image:
   pullPolicy: "Always"
 
 server:
+  baseURL:
+    # Base url for SecHub administration server instance (with Spring profile `admin_access`)
+    adminAccess: https://{{ .LOADBALANCER_IP_ADDRESS }}:{{ .SECHUB_SERVER_LB_PORT }}
+    # SecHub base url for users. Can also be an ip address like https://10.10.10.10
+    userAccess: https://{{ .LOADBALANCER_IP_ADDRESS }}:{{ .SECHUB_SERVER_LB_PORT }}
   spring:
     # Set server profiles (See https://mercedes-benz.github.io/sechub/latest/sechub-techdoc.html#section-sechub-spring-profiles)
     #profiles: dev,h2,real_products,mocked_notifications
@@ -41,7 +46,7 @@ security:
     # Defines the URI to which the user is redirected after successful login.
     # replace 'web-ui-ip-placeholder' later with the actual IP address of the web UI:
     # kubectl --namespace=sechub-testing get svc/web-ui -o=jsonpath='{.status.loadBalancer.ingress[0].ip}'
-    redirectUri: https://web-ui-ip-placeholder:4443/index.html
+    redirectUri: https://{{ .LOADBALANCER_IP_ADDRESS }}:{{ .WEBUI_LB_PORT }}/index.html
     # The authentication can be configured in 'classic' or 'oauth2' mode.
     # While both are possible, at least one must be active when login is enabled.
     modes: {{ .SECHUB_SERVER_LOGIN_MODES }}
