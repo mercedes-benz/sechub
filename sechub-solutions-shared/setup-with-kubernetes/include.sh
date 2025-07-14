@@ -10,13 +10,7 @@ REPOSITORY_ROOT="../.."
 #  If you want to set own value, please set an env var without "_DEFAULT".
 #  This will override the default values below
 KUBECONFIG_DEFAULT="$HOME/.kube/config"
-SECHUB_INITIALADMIN_APITOKEN_DEFAULT="demo" # api-token/password of user sechubadm
-SECHUB_NAMESPACE_DEFAULT="sechub-testing" # Kubernetes namespace for the deployments
-SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server" # Where to get the SecHub-server container image from
-SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest" # image tag of above
-SECHUB_SERVER_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
-SECHUB_SERVER_LB_PORT_DEFAULT="8443"
-SECHUB_SERVER_LOGIN_MODES_DEFAULT="classic"
+LOADBALANCER_IP_ADDRESS_DEFAULT="loadbalancer-ip-placeholder"
 PDS_CHECKMARX_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/checkmarx/helm/pds-checkmarx" # directory where the extracted pds-checkmarx Helm chart resides
 PDS_CHECKMARX_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-checkmarx" # Where to get the pds-checkmarx container image from
 PDS_CHECKMARX_IMAGE_TAG_DEFAULT="latest" # image tag of above
@@ -77,6 +71,13 @@ PDS_XRAY_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-xray" # Where 
 PDS_XRAY_IMAGE_TAG_DEFAULT="latest" # image tag of above
 PDS_XRAY_TOKEN_ADMINUSER_DEFAULT="undefined"
 PDS_XRAY_TOKEN_TECHUSER_DEFAULT="undefined"
+SECHUB_INITIALADMIN_APITOKEN_DEFAULT="demo" # api-token/password of user sechubadm
+SECHUB_NAMESPACE_DEFAULT="sechub-testing" # Kubernetes namespace for the deployments
+SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server" # Where to get the SecHub-server container image from
+SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest" # image tag of above
+SECHUB_SERVER_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
+SECHUB_SERVER_LB_PORT_DEFAULT="443"
+SECHUB_SERVER_LOGIN_MODES_DEFAULT="classic"
 WEBUI_IMAGE_DEFAULT="ghcr.io/mercedes-benz/sechub/web-ui:latest" # The SecHub Web-UI container image
 WEBUI_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-web-ui-solution/helm/web-ui" # directory where the extracted SecHub Web-UI Helm chart resides
 WEBUI_LB_PORT_DEFAULT="4443"
@@ -85,13 +86,7 @@ MANDATORY_EXECUTABLES="helm kubectl jq"  # Space separated list
 
 # Environment variable names that will used to replace {{ .MYVAR }} in the template files.
 TEMPLATE_VARIABLES=" \
-  SECHUB_INITIALADMIN_APITOKEN \
-  SECHUB_NAMESPACE \
-  SECHUB_SERVER_HELMCHART \
-  SECHUB_SERVER_IMAGE_REGISTRY \
-  SECHUB_SERVER_IMAGE_TAG \
-  SECHUB_SERVER_LB_PORT \
-  SECHUB_SERVER_LOGIN_MODES \
+  LOADBALANCER_IP_ADDRESS \
   PDS_CHECKMARX_HELMCHART \
   PDS_CHECKMARX_IMAGE_REGISTRY \
   PDS_CHECKMARX_IMAGE_TAG \
@@ -152,8 +147,15 @@ TEMPLATE_VARIABLES=" \
   PDS_XRAY_IMAGE_TAG \
   PDS_XRAY_TOKEN_ADMINUSER \
   PDS_XRAY_TOKEN_TECHUSER \
-  WEBUI_IMAGE \
+  SECHUB_INITIALADMIN_APITOKEN \
+  SECHUB_NAMESPACE \
+  SECHUB_SERVER_HELMCHART \
+  SECHUB_SERVER_IMAGE_REGISTRY \
+  SECHUB_SERVER_IMAGE_TAG \
+  SECHUB_SERVER_LB_PORT \
+  SECHUB_SERVER_LOGIN_MODES \
   WEBUI_HELMCHART \
+  WEBUI_IMAGE \
   WEBUI_LB_PORT \
 "
 
@@ -249,9 +251,39 @@ function pull_and_extract_helm_chart {
   fi
 }
 
+function get_loadbalancer_ip {
+  kubectl $KUBE_FLAGS get svc/sechub -o=jsonpath='{.status.loadBalancer.ingress[0].ip}' 2>&1 || true
+}
+
+function wait_for_loadbalancer_ip {
+  local max_tries=600
+  local lb_ip="unknown"
+  local i=0
+  while true ; do    # It can take some time until the IP is assigned, so we need a loop here
+    lb_ip=$(get_loadbalancer_ip)
+    if [[ "$lb_ip" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]] ; then
+      break
+    elif [[ "$lb_ip" == *"Error from server"* ]] ; then
+      echo "Error while creating load balancer object: \"$lb_ip\""
+      exit 1
+    elif (( $i >= $max_tries )) ; then
+      echo "# Timeout while creating load balancer object"
+      exit 1
+    fi
+    if [ $i -eq 0 ] ; then
+      echo -n "# Waiting until external IP is assigned."
+    else
+      echo -n "."
+    fi
+    sleep 1
+    ((i++))
+  done
+  echo "$lb_ip"
+}
+
 function set_sechub_connection {
   # SecHub server must have been deployed
-  SERVER_IP=$(kubectl $KUBE_FLAGS get svc/sechub-server -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  SERVER_IP=$(get_loadbalancer_ip)
   if [[ "$SERVER_IP" =~ (E|e)rror ]] ; then
     echo "Could not figure out the load balancer IP of SecHub server: $SERVER_IP"
     exit 1
@@ -292,6 +324,17 @@ symlink_sechub_api_script
 for i in $MANDATORY_EXECUTABLES ; do
   check_executable_is_installed $i
 done
+
+# Try to figure out the load balancer's IP address
+if [ -z "$LOADBALANCER_IP_ADDRESS" ] ; then
+  IP_ADDRESS=$(get_loadbalancer_ip)
+  if [[ "$IP_ADDRESS" =~ (E|e)rror ]] ; then
+    echo "### No load balancer IP address yet."
+  else
+    export LOADBALANCER_IP_ADDRESS="$IP_ADDRESS"
+    echo "### Load balancer IP address: $LOADBALANCER_IP_ADDRESS"
+  fi
+fi
 
 # Populate env vars used in templates:
 for var in $TEMPLATE_VARIABLES ; do

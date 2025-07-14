@@ -10,6 +10,6 @@ spec:
     name: {{ .Values.name }}
   ports:
     - protocol: TCP
-      port: 8443
-      targetPort: 8443
+      port: {{ .Values.targetPort.port }}
+      targetPort: {{ .Values.targetPort.port }}
   type: ClusterIP
