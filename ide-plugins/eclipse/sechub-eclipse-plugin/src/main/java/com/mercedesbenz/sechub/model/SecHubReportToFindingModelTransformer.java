@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubStatus;
 import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 import com.mercedesbenz.sechub.model.FindingNode.FindingNodeBuilder;
 
@@ -26,20 +27,26 @@ public class SecHubReportToFindingModelTransformer {
 	public FindingModel transform(SecHubReport report, String projectId) {
 		FindingModel model = new FindingModel();
 		model.setProjectId(projectId);
+		model.setJobUUID(report.getJobUUID());
 		
 		List<SecHubFinding> findings = report.getResult().getFindings();
 		/* build severity mapping */
 		Map<Severity, List<FindingNode>> map = new LinkedHashMap<>();
 		for (SecHubFinding finding : findings) {
-			addNodesToMapForFinding(map, finding);
+			addNodesToMapForFinding(map, report, finding);
 
 		}
 		addNodesToModel(model, map);
 		
+		model.setJobUUID(report.getJobUUID());
+		model.setTrafficLight(report.getTrafficLight());
+		SecHubStatus status = report.getStatus();
+		model.setStatus(status == null ? null: status.getValue());
+		
 		return model;
 	}
 
-	private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubFinding finding) {
+	private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubReport report, SecHubFinding finding) {
 		if (finding==null) {
 			return;
 		}
@@ -67,6 +74,7 @@ public class SecHubReportToFindingModelTransformer {
 
 		/* @formatter:off */
 		FindingNodeBuilder builder = FindingNode.builder().
+				setJobUUID(report.getJobUUID()).
 				setFinding(finding).
 				setCallStackStep(callStackStep++).
 				setColumn(code.getColumn()).

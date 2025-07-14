@@ -151,8 +151,6 @@ public class SecHubServerView extends ViewPart {
             	
             }
         });
-		
-		
 
 		Composite pagingComposite = new Composite(composite, SWT.NONE);
 		pagingComposite.setLayout(new GridLayout(5, false));
@@ -395,6 +393,7 @@ public class SecHubServerView extends ViewPart {
 		if (indexToSelect > -1) {
 			projectCombo.select(indexToSelect);
 		}
+		// avoid layout failures by calling layout method on parent always:
 		projectCombo.getParent().layout(true);
 	}
 

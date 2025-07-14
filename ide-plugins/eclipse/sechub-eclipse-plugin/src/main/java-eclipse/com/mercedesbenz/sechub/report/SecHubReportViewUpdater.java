@@ -41,10 +41,10 @@ public class SecHubReportViewUpdater {
 		SecHubReportView reportView = (SecHubReportView) view;
 		page.activate(reportView); // ensure report view is shown
 
-		model.setJobUUID(report.getJobUUID());
-		model.setTrafficLight(report.getTrafficLight());
-		SecHubStatus status = report.getStatus();
-		model.setStatus(status == null ? null: status.getValue());
+//		model.setJobUUID(report.getJobUUID());
+//		model.setTrafficLight(report.getTrafficLight());
+//		SecHubStatus status = report.getStatus();
+//		model.setStatus(status == null ? null: status.getValue());
 
 		reportView.update(model);
 	}

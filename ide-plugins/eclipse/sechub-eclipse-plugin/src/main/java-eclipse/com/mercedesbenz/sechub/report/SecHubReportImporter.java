@@ -11,15 +11,16 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
+import com.mercedesbenz.sechub.commons.TextFileReader;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.model.FindingModel;
 import com.mercedesbenz.sechub.model.SecHubReportToFindingModelTransformer;
 
 public class SecHubReportImporter {
 
 	private SecHubReportToFindingModelTransformer transformer = new SecHubReportToFindingModelTransformer();
-	private static final ObjectMapper mapper = new ObjectMapper();
+
 
 	public void importAndDisplayReport(File reportFile) {
 		importByJob(new SecHubReportFileImportJob(reportFile));
@@ -47,7 +48,9 @@ public class SecHubReportImporter {
 		monitor.beginTask("Import SecHub report from " + absolutePath, 3);
 
 		try {
-			SecHubReport report = mapper.readValue(reportFile, SecHubReport.class);
+			TextFileReader reader = new TextFileReader();
+			String json = reader.readTextFromFile(reportFile);
+			SecHubReport report = JSONConverter.get().fromJSON(SecHubReport.class, json);
 			if (report == null) {
 				return createErrorStatus("Reportfile importer returned null");
 			}

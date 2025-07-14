@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
 import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
@@ -28,8 +29,9 @@ public class FindingNode implements Comparable<FindingNode> {
 	public String filePath;
 	private Map<String, Object> metaDataCache;
 	public SecHubFinding finding;
+	private UUID jobUUID;
 
-	private FindingNode(String description, String location, Integer line, Integer column, String relevantPart,
+	private FindingNode(UUID jobUUID, String description, String location, Integer line, Integer column, String relevantPart,
 			String source) {
 		this.description = description;
 		this.location = location;
@@ -37,6 +39,7 @@ public class FindingNode implements Comparable<FindingNode> {
 		this.column = column;
 		this.relevantPart = relevantPart;
 		this.source = source;
+		this.jobUUID=jobUUID;
 	}
 
 	public static class FindingNodeBuilder {
@@ -48,11 +51,16 @@ public class FindingNode implements Comparable<FindingNode> {
 		private String relevantPart;
 		private String source;
 		private SecHubFinding finding;
+		private UUID jobUUID;
 
 		private FindingNodeBuilder() {
 
 		}
 
+		public FindingNodeBuilder setJobUUID(UUID jobUUID) {
+			this.jobUUID=jobUUID;
+			return this;
+		}
 		public FindingNodeBuilder setDescription(String description) {
 			this.description = description;
 			return this;
@@ -94,7 +102,7 @@ public class FindingNode implements Comparable<FindingNode> {
 		}
 
 		public FindingNode build() {
-			FindingNode node = new FindingNode(description, location, line, column, relevantPart, source);
+			FindingNode node = new FindingNode(jobUUID, description, location, line, column, relevantPart, source);
 			node.callStackStep = callStackStep;
 			node.finding = finding;
 
@@ -128,6 +136,10 @@ public class FindingNode implements Comparable<FindingNode> {
 		return new FindingNodeBuilder();
 	}
 
+	public UUID getJobUUID() {
+		return jobUUID;
+	}
+	
 	public FindingNode getParent() {
 		return parent;
 	}
@@ -180,10 +192,16 @@ public class FindingNode implements Comparable<FindingNode> {
 	}
 
 	public Severity getSeverity() {
+		if (finding==null) {
+			return null;
+		}
 		return finding.getSeverity();
 	}
 
 	public int getId() {
+		if (finding==null) {
+			return -1;
+		}
 		return finding.getId();
 	}
 

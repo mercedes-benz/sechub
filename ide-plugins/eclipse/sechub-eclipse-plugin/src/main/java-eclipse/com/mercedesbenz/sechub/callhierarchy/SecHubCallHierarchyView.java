@@ -30,7 +30,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
@@ -47,6 +46,7 @@ import com.mercedesbenz.sechub.provider.CallHierarchyLabelProvider;
 import com.mercedesbenz.sechub.provider.FindingModelTreeContentProvider;
 import com.mercedesbenz.sechub.provider.OnlyInputElementItselfTreeContentProvider;
 import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
+import com.mercedesbenz.sechub.util.CweLinkTextCreator;
 import com.mercedesbenz.sechub.util.Logging;
 
 /**
@@ -83,6 +83,8 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 	private StyledText rightTreeDescriptionText;
 
+	private Composite mainComposite;
+
 	@Override
 	public void createPartControl(Composite parent) {
 
@@ -114,7 +116,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 		GridData mainCompositelayoutData1 = GridDataFactory.fillDefaults().grab(true, true).create();
 
-		Composite mainComposite = new Composite(parent, SWT.NONE);
+		mainComposite = new Composite(parent, SWT.NONE);
 		mainComposite.setLayoutData(mainCompositelayoutData1);
 		mainComposite.setLayout(mainCompositeLayout);
 
@@ -304,13 +306,12 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 		FindingNode finding = model.getFirstFinding();
 		if (finding != null) {
-			String description = "Finding " + finding.getId() + " - " + finding.getDescription();
-			if (finding.getCweId() != null) {
-				description+=" - <a href=\"https://cwe.mitre.org/data/definitions/"+finding.getCweId()+".html\">CWE-"+finding.getCweId()+"</a>";
-			}
-			linkDescriptionWithLinks.setText(description);
+			String headDescription =CweLinkTextCreator.createCweLinkTextWithInfos(finding);
 			
+			linkDescriptionWithLinks.setText(headDescription);
 			treeViewerLeft.setSelection(new StructuredSelection(finding));
+			mainComposite.layout();
+			
 		} else {
 			linkDescriptionWithLinks.setText("");
 			treeViewerRight.setInput(null);

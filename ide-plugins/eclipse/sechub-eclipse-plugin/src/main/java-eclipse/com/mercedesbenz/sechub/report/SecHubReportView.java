@@ -216,6 +216,7 @@ public class SecHubReportView extends ViewPart {
 		if (node==null) {
 			// just erase
 			showFindingInCallHierarchyView(null);
+			showFindingInWebFindingView(null);
 			return;
 		}
 		
@@ -233,7 +234,7 @@ public class SecHubReportView extends ViewPart {
 		
 		
 	}
-	private void showFindingInCallHierarchyView(FindingNode finding) {
+	private void showFindingInCallHierarchyView(FindingNode node) {
 		safeAsyncExec(() -> {
 			try {
 				IWorkbenchPage page = getActivePage();
@@ -249,9 +250,10 @@ public class SecHubReportView extends ViewPart {
 					SecHubCallHierarchyView callhierarchyView = (SecHubCallHierarchyView) view;
 
 					FindingModel subModel = new FindingModel();
-					if (finding != null) {
+					if (node != null) {
+						subModel.setJobUUID(node.getJobUUID());
 						page.activate(view); // we ensure view is shown
-						subModel.getFindings().add(finding);
+						subModel.getFindings().add(node);
 					}
 
 					callhierarchyView.update(subModel);
@@ -262,7 +264,7 @@ public class SecHubReportView extends ViewPart {
 		});
 
 	}
-	private void showFindingInWebFindingView(FindingNode finding) {
+	private void showFindingInWebFindingView(FindingNode node) {
 		safeAsyncExec(() -> {
 			try {
 				IWorkbenchPage page = getActivePage();
@@ -278,9 +280,10 @@ public class SecHubReportView extends ViewPart {
 					SecHubWebFindingView callhierarchyView = (SecHubWebFindingView) view;
 
 					FindingModel subModel = new FindingModel();
-					if (finding != null) {
+					if (node != null) {
+						subModel.setJobUUID(node.getJobUUID());
 						page.activate(view); // we ensure view is shown
-						subModel.getFindings().add(finding);
+						subModel.getFindings().add(node);
 					}
 
 					callhierarchyView.update(subModel);
