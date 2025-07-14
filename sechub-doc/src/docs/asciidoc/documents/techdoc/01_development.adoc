@@ -98,13 +98,13 @@ With this setup we will start a {sechub} server instance ready for executing int
 It does use only security product mocks, so we got no long running sessions. We need
 no running security suite... but of course we have no real products and can not make real scans.
 
-===== Start integration test server
+===== Start integration test servers
 ====== IDE
 include::../shared/launchconfig/launchconfig_start_integrationtest_server.adoc[]
 
 ====== Console
 ----
-./gradlew startIntegrationTestServer
+./gradlew startIntegrationTestInstances
 ----
 
 ===== Start integration tests
@@ -132,9 +132,7 @@ If you add a line with `sechub.integrationtest.running=true` to this file, you d
 need to set the system property for every integration test launch configuration...
 ====
 
-====== Console
-Next line starts integration test server, execute tests and automatically stops
-server after done or failed.
+To execute the integration tests, you can use the following command:
 
 ----
 ./gradlew integrationtest
@@ -154,11 +152,11 @@ If you have executed a `clean` task before, you are forced to call
 ====
 
 ===== Stop integration test server
-To stop your running server:
+To stop your running server run:
 
 ====== Console
 ----
-./gradlew stopIntegrationTestServer
+./gradlew stopIntegrationTestInstances
 ----
 
 === Developer Tools

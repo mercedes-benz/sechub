@@ -23,19 +23,25 @@ ____
 === Additional information
 - You should read https://plugins.jetbrains.com/docs/intellij/ide-development-instance.html
 
-=== Import SecHub IntelliJ plugin
-- clone the git repository git@github.com:mercedes-benz/sechub-plugin-intellij.git
-- open the repository as a project in IntelliJ
+=== Import the plugin project in Gradle
+- For easier development you should import the plugin project into your IDE.
+- The plugin module is not managed by the root gradle build file, so you have to import the module manually. This is purposefully done to avoid
+  that the plugin build corrupts the root build.
+- The plugin module has a dependency on the root build.
+- You can manually import the `sechub-ide-plugin-jetbrains` into your IDE.
+
+image::../images/gradle-import.png["Gradle Import"]
 
 == Start the plugin in sandbox mode
 
 === Gradle variant
-Open the gradle toolwindow and execute "Tasks->intellij->runIde"
+Open the gradle toolwindow and execute `Tasks -> intellij -> runIde`
 
-Or execute `./gradlew runIde` from terminal.
+Or execute `./gradlew runIde` from terminal in the `sechub-ide-plugin-jetbrains` folder.
 
 == Development HowTos
-=== IntelliJ Sources not available, only depcompiled
+
+=== IntelliJ Sources not available, only decompiled
 Open the IntelliJ class - now it is opened by the internal
 decompiler. On the right top there is a button "Choose source".
 Click on this. Now select the correct IntelliJ folder and search
@@ -46,18 +52,19 @@ Now you should the sources.
 
 TIP: This comes very handy when you want to look for deprecated classes, e.g. inside `IconLoader`.
 
-=== Intellij SDK Howtos
+=== Intellij SDK HowTos
 ==== Tool windows
 https://plugins.jetbrains.com/docs/intellij/tool-windows.html
 
-Currently we do NOT implement https://github.com/JetBrains/intellij-community/blob/idea/233.11799.241/platform/core-api/src/com/intellij/openapi/project/DumbAware.java[DumbAware] in SecHub Toolwindow,
+Currently, we do NOT implement https://github.com/JetBrains/intellij-community/blob/idea/233.11799.241/platform/core-api/src/com/intellij/openapi/project/DumbAware.java[DumbAware] in SecHub Toolwindow,
 because we want to ensure that we can open
 
 ==== Check plugin and configuration
 
-```
+[source]
+----
 ./gradlew verifyPluginConfiguration verifyPlugin
-```
+----
 
 NOTE: See https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#tasks-verifypluginconfiguration
 
@@ -66,9 +73,11 @@ You receive mails from the marketplace about compatibility information etc. when
 are available.
 
 You could check this locally as well:
-```
+
+[source]
+----
 ./gradlew runPluginVerifier
-```
+----
 WARNING: This takes **much** time and downloads many IntelliJ versions (needs much space)
 
 === UI guide lines

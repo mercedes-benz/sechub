@@ -202,7 +202,7 @@
   import { defineComponent } from 'vue'
   import defaultClient from '@/services/defaultClient'
   import { useI18n } from 'vue-i18n'
-  import { ProjectData, UserDetailInformation } from '@/generated-sources/openapi'
+  import { ProjectData, ResponseError, UserDetailInformation } from 'sechub-openapi-ts-client'
   import { useUserDetailInformationStore } from '@/stores/userDetailInformationStore'
   import '@/styles/sechub.scss'
   import { handleApiError } from '@/services/apiErrorHandler'
@@ -359,7 +359,14 @@
           newMemberId.value = ''
         } catch (err) {
           handleApiError(err)
-          const errMsg = t('PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED')
+          let errMsg = t('PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED')
+
+          if (err instanceof ResponseError) {
+            const responseError = err as ResponseError
+            if (responseError.response.status === 406) {
+              errMsg = t('PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED_USER_NOT_EXIST')
+            }
+          }
           handleSettingsError(errMsg, err)
         }
       }

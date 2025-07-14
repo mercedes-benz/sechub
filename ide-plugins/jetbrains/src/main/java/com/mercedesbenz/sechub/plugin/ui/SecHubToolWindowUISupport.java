@@ -1,25 +1,27 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.ui;
 
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.Severity;
-import com.mercedesbenz.sechub.plugin.model.FindingModel;
-import com.mercedesbenz.sechub.plugin.model.FindingNode;
-import com.mercedesbenz.sechub.plugin.model.SecHubFindingoWebScanDataProvider;
-import com.mercedesbenz.sechub.plugin.util.ErrorLog;
-import org.jetbrains.annotations.NotNull;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URI;
+import java.util.*;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.net.URI;
-import java.util.List;
-import java.util.*;
+
+import org.jetbrains.annotations.NotNull;
+
+import com.mercedesbenz.sechub.api.internal.gen.model.ScanType;
+import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
+import com.mercedesbenz.sechub.plugin.model.FindingModel;
+import com.mercedesbenz.sechub.plugin.model.FindingNode;
+import com.mercedesbenz.sechub.plugin.model.SecHubFindingoWebScanDataProvider;
+import com.mercedesbenz.sechub.plugin.util.ErrorLog;
 
 /**
  * Because its very inconvenient and slow to test and develop the toolwindow
@@ -33,7 +35,8 @@ public class SecHubToolWindowUISupport {
     private static final String COLUMN_NAME_ID = "Id";
     private static final String COLUMN_NAME_NAME = "Name";
     private static final String COLUMN_NAME_LOCATION = "Location";
-    private static final String[] REPORT_TABLE_COLUMN_NAMES = {COLUMN_NAME_ID, COLUMN_NAME_SEVERITY, COLUMN_NAME_TYPE, COLUMN_NAME_NAME, COLUMN_NAME_LOCATION};
+    private static final String[] REPORT_TABLE_COLUMN_NAMES = { COLUMN_NAME_ID, COLUMN_NAME_SEVERITY, COLUMN_NAME_TYPE, COLUMN_NAME_NAME,
+            COLUMN_NAME_LOCATION };
     private final JTable reportTable;
     private final JTree callHierarchyTree;
     private final JTable callStepDetailTable;
@@ -47,7 +50,6 @@ public class SecHubToolWindowUISupport {
     private Set<ReportFindingSelectionChangeListener> reportFindingSelectionChangeListeners;
 
     private SecHubFindingoWebScanDataProvider webRequestDataProvider = new SecHubFindingoWebScanDataProvider();
-
 
     public SecHubToolWindowUISupport(SecHubToolWindowUIContext context) {
         this.context = context;
@@ -91,7 +93,6 @@ public class SecHubToolWindowUISupport {
         initCallHierarchyTree();
         initCallStepDetailTable();
     }
-
 
     private void initCweIdLink() {
         setCweId(null);
@@ -137,7 +138,6 @@ public class SecHubToolWindowUISupport {
         columnModel.getColumn(2).setPreferredWidth(50);
         columnModel.getColumn(3).setPreferredWidth(400);
     }
-
 
     public FindingRenderDataProvider getRenderDataProvider() {
         return context.findingRenderDataProvider;
@@ -208,12 +208,7 @@ public class SecHubToolWindowUISupport {
                 return o1 - o2;
             }
         });
-        rowSorter.setComparator(1, new Comparator<Severity>() {
-            @Override
-            public int compare(Severity o1, Severity o2) {
-                return o1.compareTo(o2);
-            }
-        });
+        rowSorter.setComparator(1, (Comparator<Severity>) Enum::compareTo);
         reportTable.setModel(tableModel);
         reportTable.setRowSorter(rowSorter);
         rowSorter.toggleSortOrder(0); // initial sort on first column
@@ -332,7 +327,8 @@ public class SecHubToolWindowUISupport {
     private void handleAttack(FindingNode findingNode) {
         if (findingNode != null && findingNode.canBeShownInAttack()) {
             JComponent attackTabComponent = context.attackTabComponent;
-            // we must create a new scrollpane all time - otherwise tabbed pane makes problems with viewport handling!
+            // we must create a new scrollpane all time - otherwise tabbed pane makes
+            // problems with viewport handling!
             findingTypeDetailsTabbedPane.add("Attack", context.componentFactory.createScrollPane(attackTabComponent));
             context.attackTextArea.setText(webRequestDataProvider.getWebAttackDescription(findingNode.getSecHubFinding()));
         }
@@ -384,7 +380,7 @@ public class SecHubToolWindowUISupport {
         callStepTableModel.removeAllRows();
 
         if (callStep != null) {
-            Object[] rowData = new Object[]{callStep.getCallStackStep(), callStep.getLine(), callStep.getColumn(), callStep.getLocation()};
+            Object[] rowData = new Object[] { callStep.getCallStackStep(), callStep.getLine(), callStep.getColumn(), callStep.getLocation() };
             callStepTableModel.addRow(rowData);
         }
         callStepTableModel.fireTableDataChanged();
@@ -395,7 +391,6 @@ public class SecHubToolWindowUISupport {
         }
     }
 
-
     public void setFindingModel(FindingModel findingModel) {
         List<Object[]> elements = new ArrayList<>();
         /* fill with new rows */
@@ -404,8 +399,7 @@ public class SecHubToolWindowUISupport {
             if (finding == null) {
                 continue;
             }
-            Object[] rowData = new Object[]{finding.getId(), finding.getSeverity(), finding.getScanType(), finding.getName(),
-                    finding.getLocation()};
+            Object[] rowData = new Object[] { finding.getId(), finding.getSeverity(), finding.getScanType(), finding.getName(), finding.getLocation() };
             elements.add(rowData);
         }
 
@@ -417,9 +411,8 @@ public class SecHubToolWindowUISupport {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focus, int row, int column) {
             super.getTableCellRendererComponent(table, value, selected, focus, row, column);
-            //noinspection unchecked
-            if (value instanceof ScanType) {
-                ScanType scanType = (ScanType) value;
+            // noinspection unchecked
+            if (value instanceof ScanType scanType) {
                 Icon icon = getRenderDataProvider().getIconForScanType(scanType);
                 String text = getRenderDataProvider().getTextForScanType(scanType);
                 setIcon(icon);
@@ -440,7 +433,7 @@ public class SecHubToolWindowUISupport {
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focus, int row, int column) {
             super.getTableCellRendererComponent(table, value, selected, focus, row, column);
-            //noinspection unchecked
+            // noinspection unchecked
             if (value instanceof Severity) {
                 Severity severity = (Severity) value;
                 String text = getRenderDataProvider().getTextForSeverity(severity);

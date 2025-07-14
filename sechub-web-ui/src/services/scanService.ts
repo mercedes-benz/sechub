@@ -4,16 +4,17 @@ import {
   SecHubConfiguration,
   UserApproveJobRequest,
   UserCreateNewJobRequest,
-} from '@/generated-sources/openapi'
-import executionApi from './executionService'
-import { createSha256Checksum } from '../../utils/cryptoUtils'
-import { UserUploadsBinariesWorkaroundRequest, UserUploadSourceCodeWorkaroundRequest } from '@/services/executionService/executionService'
+  UserUploadsBinariesWorkaroundRequest,
+  UserUploadSourceCodeWorkaroundRequest,
+} from 'sechub-openapi-ts-client'
+import { createSha256Checksum } from '../utils/cryptoUtils'
+import defaultClient from './defaultClient'
 import i18n from '@/i18n'
 import {
   UPLOAD_BINARIES_IDENTIFIER,
   UPLOAD_SOURCE_CODE_IDENTIFIER,
 } from '@/utils/applicationConstants'
-import { handleApiError } from '../apiErrorHandler'
+import { handleApiError } from './apiErrorHandler'
 
 // Implements the scan of a file in three steps: creating a Job, uploading the data and approve the job
 class ScanService {
@@ -42,7 +43,7 @@ class ScanService {
     }
 
     try {
-      const result: SchedulerResult = await executionApi.userCreateNewJob(requestParameters)
+      const result: SchedulerResult = await defaultClient.withExecutionApi.userCreateNewJob(requestParameters)
       return result.jobId
     } catch (error) {
       console.error('Job creation failed:', error)
@@ -64,7 +65,7 @@ class ScanService {
       }
 
       try {
-        await executionApi.userUploadSourceCode(requestParameters)
+        await defaultClient.withExecutionApi.userUploadSourceCode(requestParameters)
       } catch (error) {
         console.error('Source code upload failed:', error)
         handleApiError(error)
@@ -84,7 +85,7 @@ class ScanService {
       }
 
       try {
-        await executionApi.userUploadsBinaries(requestParameters)
+        await defaultClient.withExecutionApi.userUploadsBinaries(requestParameters)
       } catch (error) {
         console.error('Binary upload failed:', error)
         handleApiError(error)
@@ -108,7 +109,7 @@ class ScanService {
     }
 
     try {
-      await executionApi.userApproveJob(requestParameters)
+      await defaultClient.withExecutionApi.userApproveJob(requestParameters)
     } catch (error) {
       console.error('Job approval failed:', error)
       handleApiError(error)

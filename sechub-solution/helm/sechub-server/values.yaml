@@ -121,23 +121,37 @@ server:
     # When `true` then Port 5005 will be opened for Java debugging.
     enableJavaDebugging: false
 
+# Define port for outside access to sechub server:
+targetPort:
+  # Name must be matched in 'service.loadbalancer.portmappings' below
+  name: "8443-port"
+  port: 8443
+
+# Load balancer definition for external access:
 service:
   loadbalancer:
-    # ip: set ip address. if "" then a new ip is aquired. none -> define no ip for service
-    ip: none
-    port:
-      name: https
-      number: 8443
-  # optional: Add annotations (goes to metadata.annotations)
-  #           Can contain multiple lines. Example:
-  # annotations: |-
-  #   loadbalancer.openstack.org/keep-floatingip: "true"
-  #   loadbalancer.openstack.org/proxy-protocol: "true"
-  #
-  # optional: Add finalizers (goes to metadata.finalizers)
-  #           Can contain multiple lines. Example:
-  # finalizers: |-
-  #   - service.kubernetes.io/load-balancer-cleanup
+    enabled: true
+    # Here you can add your own services. Selector is: lbtype: external
+    portmappings:
+      - name: sechub-server
+        port: 443
+        targetPort: "8443-port"
+        protocol: TCP
+      - name: web-ui
+        port: 4443
+        targetPort: "4443-port"
+        protocol: TCP
+
+    # optional: Add annotations (goes to metadata.annotations)
+    #           Can contain multiple lines. Example:
+    # annotations: |-
+    #   loadbalancer.openstack.org/keep-floatingip: "true"
+    #   loadbalancer.openstack.org/proxy-protocol: "true"
+    #
+    # optional: Add finalizers (goes to metadata.finalizers)
+    #           Can contain multiple lines. Example:
+    # finalizers: |-
+    #   - service.kubernetes.io/load-balancer-cleanup
 
 # optional: Add annotations to template.metadata.annotations
 #           Can contain multiple lines. Example for Prometheus actuator:

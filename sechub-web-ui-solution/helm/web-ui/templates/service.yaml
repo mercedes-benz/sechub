@@ -1,32 +1,3 @@
 # SPDX-License-Identifier: MIT
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: web-ui
-  labels:
-    name: web-ui
-{{- if .Values.service.annotations }}
-  annotations:
-    {{ .Values.service.annotations | indent 4 | trim }}
-{{- end }}
-{{- if .Values.service.finalizers }}
-  finalizers:
-    {{ .Values.service.finalizers | indent 4 | trim }}
-{{- end }}
-spec:
-  type: LoadBalancer
-{{- if ne .Values.service.loadbalancer.ip "none" }}
-  loadBalancerIP: {{ .Values.service.loadbalancer.ip }}
-{{- end }}
-  selector:
-    name: web-ui
-  ports:
-    - name: {{ .Values.service.loadbalancer.port.name }}
-      port: {{ .Values.service.loadbalancer.port.number }}
-      protocol: TCP
-{{- if .Values.go_mmproxy.enabled }}
-      targetPort: 8080
-{{- else }}
-      targetPort: 4443
-{{- end }}
+# The loadbalancer for the SecHub web-ui is configured within the SecHub server Helm chart (loadbalancer.yaml).

@@ -7,7 +7,8 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "sechub-openapi-ts-client": ["../sechub-openapi-ts-client/dist"]
     },
     "resolveJsonModule": true,
     "types": [

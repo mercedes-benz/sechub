@@ -1,40 +1,43 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.model;
 
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.SecHubReportModel;
-import com.mercedesbenz.sechub.commons.model.SecHubResult;
-import com.mercedesbenz.sechub.plugin.TestFileReader;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubResult;
+import com.mercedesbenz.sechub.plugin.TestFileReader;
 
 public class SecHubFindingoWebScanDataProviderTest {
 
+    private static final ObjectMapper mapper = new ObjectMapper();
     private SecHubFindingoWebScanDataProvider providerToTest;
 
     @Before
-    public void before(){
+    public void before() {
         providerToTest = new SecHubFindingoWebScanDataProvider();
     }
 
     @Test
-    public void finding_null_getWebRequestDescription(){
+    public void finding_null_getWebRequestDescription() {
         /* execute */
         String text = providerToTest.getWebRequestDescription(null);
 
         /* test */
         assertNotNull(text);
-        assertEquals("No SecHub finding available",text);
+        assertEquals("No SecHub finding available", text);
     }
 
     @Test
-    public void finding_not_null_but_no_web_report_data_getWebRequestDescription(){
+    public void finding_not_null_but_no_web_report_data_getWebRequestDescription() {
         /* prepare */
         SecHubFinding sechubFinding = new SecHubFinding();
 
@@ -43,33 +46,32 @@ public class SecHubFindingoWebScanDataProviderTest {
 
         /* test */
         assertNotNull(text);
-        assertEquals("No SecHub web report data available",text);
+        assertEquals("No SecHub web report data available", text);
     }
+
     @Test
-    public void finding_web_data_getWebRequestDescription(){
+    public void finding_web_data_getWebRequestDescription() throws JsonProcessingException {
         /* prepare */
         String json = TestFileReader.readTextFile("./src/test/resources/report/report_pds-solution_zap_mocked.json");
-        SecHubReportModel model = JSONConverter.get().fromJSON(SecHubReportModel.class, json);
+        SecHubReport secHubReport = mapper.readValue(json, SecHubReport.class);
 
-        SecHubResult result = model.getResult();
+        SecHubResult result = secHubReport.getResult();
         List<SecHubFinding> findings = result.getFindings();
         // check precondition
-        assertTrue(findings.size()>0);
+        assertTrue(findings.size() > 0);
 
         Iterator<SecHubFinding> it = findings.iterator();
         SecHubFinding firstFinding = it.next();
-
 
         /* execute */
         String text = providerToTest.getWebRequestDescription(firstFinding);
 
         /* test */
         assertNotNull(text);
-        System.out.println(text);
-        String expected= """
+        String expected = """
                 Method: GET
                 URL: http://localhost:3000/rest/products/search?q=%27%28
-                               
+
                 Headers:
                 ------------------------------------------------
                 Accept=application/json, text/plain, */*
@@ -78,39 +80,38 @@ public class SecHubFindingoWebScanDataProviderTest {
                 Host=localhost:3000
                 Referer=http://localhost:3000/
                 User-Agent=Mozilla/5.0 (X11; Linux x86_64; rv:108.0) Gecko/20100101 Firefox/108.0
-                               
-                               
+
+
                 Body:
                 ------------------------------------------------
                 """;
         assertEquals(expected.trim(), text.trim());
     }
+
     @Test
-    public void finding_web_data_getWebAttackDescription(){
+    public void finding_web_data_getWebAttackDescription() throws JsonProcessingException {
         /* prepare */
         String json = TestFileReader.readTextFile("./src/test/resources/report/report_pds-solution_zap_mocked.json");
-        SecHubReportModel model = JSONConverter.get().fromJSON(SecHubReportModel.class, json);
+        SecHubReport secHubReport = mapper.readValue(json, SecHubReport.class);
 
-        SecHubResult result = model.getResult();
+        SecHubResult result = secHubReport.getResult();
         List<SecHubFinding> findings = result.getFindings();
         // check precondition
-        assertTrue(findings.size()>0);
+        assertTrue(findings.size() > 0);
 
         Iterator<SecHubFinding> it = findings.iterator();
         SecHubFinding firstFinding = it.next();
-
 
         /* execute */
         String text = providerToTest.getWebAttackDescription(firstFinding);
 
         /* test */
         assertNotNull(text);
-        System.out.println(text);
-        String expected= """
+        String expected = """
                 Attack vector: '(
-                                
+
                 Body location: 3
-                                
+
                 Evidence:
                 ------------------------------------------------
                 SQLITE_ERROR""";
@@ -118,29 +119,27 @@ public class SecHubFindingoWebScanDataProviderTest {
     }
 
     @Test
-    public void finding_web_data_getWebResponseDescription(){
+    public void finding_web_data_getWebResponseDescription() throws JsonProcessingException {
         /* prepare */
         String json = TestFileReader.readTextFile("./src/test/resources/report/report_pds-solution_zap_mocked.json");
-        SecHubReportModel model = JSONConverter.get().fromJSON(SecHubReportModel.class, json);
+        SecHubReport secHubReport = mapper.readValue(json, SecHubReport.class);
 
-        SecHubResult result = model.getResult();
+        SecHubResult result = secHubReport.getResult();
         List<SecHubFinding> findings = result.getFindings();
         // check precondition
-        assertTrue(findings.size()>0);
+        assertTrue(findings.size() > 0);
 
         Iterator<SecHubFinding> it = findings.iterator();
         SecHubFinding firstFinding = it.next();
-
 
         /* execute */
         String text = providerToTest.getWebResponseDescription(firstFinding);
 
         /* test */
         assertNotNull(text);
-        System.out.println(text);
-        String expected= """
+        String expected = """
                 HTTP/1.1 500 Internal Server Error
-                              
+
                 Headers:
                 ------------------------------------------------
                 Access-Control-Allow-Origin=*
@@ -153,8 +152,8 @@ public class SecHubFindingoWebScanDataProviderTest {
                 Vary=Accept-Encoding
                 X-Content-Type-Options=nosniff
                 X-Frame-Options=SAMEORIGIN
-                              
-                              
+
+
                 Body:
                 ------------------------------------------------
                 Text:

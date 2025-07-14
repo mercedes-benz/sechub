@@ -70,15 +70,25 @@ export default defineConfig({
       '.json',
       '.jsx',
       '.mjs',
+      '.mts',
       '.ts',
       '.tsx',
       '.vue',
     ],
   },
+  // necessary configuration for custom module as commonjs
+  optimizeDeps: {
+    include: ['sechub-openapi-ts-client'],
+  },
+  build: {
+    commonjsOptions: {
+      include: [/sechub-openapi-ts-client/, /node_modules/],
+    },
+  },
   server: {
     // configuration for local dev server
     port: 3000,
-    // configuration to avoid CORS errors (as long as not impl. in server backend)
+    // configuration to avoid CORS errors
     proxy: {
       '/api': {
         target: 'https://localhost:8443',

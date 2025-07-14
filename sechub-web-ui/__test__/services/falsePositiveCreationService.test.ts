@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import { beforeEach, describe, expect, it } from 'vitest'
 import falsePositiveCreationService from '../../src/services/falsePositiveCreationService'
-import { SecHubFinding, WebscanFalsePositiveProjectData } from '../../src//generated-sources/openapi'
+import { SecHubFinding, WebscanFalsePositiveProjectData } from 'sechub-openapi-typescript'
 
 describe('FalsePositiveCreationService', () => {
   let serviceToTest: typeof falsePositiveCreationService

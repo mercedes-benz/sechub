@@ -1,5 +1,5 @@
 <!-- SPDX-License-Identifier: MIT --->
 ## About libraries
 
-### sechub-client-all.jar
-This library is built by https://github.com/mercedes-benz/sechub/blob/develop/sechub-api-java/build.gradle and contains a sechub java client library and all dependencies.
+All libraries here are dynamically copied by gradle build from /sechub-openapi-java-client/build.gradle (eclipse task) and are not available from git.
+

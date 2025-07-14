@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as sechubExtension from './../extension';
-import { FindingNodeReportItem, ReportItem, SecHubReportTreeDataProvider } from './../provider/secHubReportTreeDataProvider';
+import { FindingNodeReportItem, ReportItem } from './../provider/secHubReportTreeDataProvider';
 
 export function hookReportItemActions(context: sechubExtension.SecHubContext) {
 	let showCallHierarchyCallBack = (reportItem: ReportItem) => {
 		if (reportItem instanceof FindingNodeReportItem) {
-			context.callHierarchyTreeDataProvider.update(reportItem.findingNode);
+			context.callHierarchyTreeDataProvider.update(reportItem.sechubFinding);
 
 			/* fetch first child and select first one in hierarchy view (this will show up info as well*/
 			context.callHierarchyTreeDataProvider.getChildren().then((hierarchyItems) => {
@@ -26,7 +26,7 @@ export function hookReportItemActions(context: sechubExtension.SecHubContext) {
 
 	let openCWEinBrowserCallback = (reportItem: ReportItem) => {
 		if (reportItem instanceof FindingNodeReportItem) {
-			context.findingNodeLinkBuilder.buildCWELinkAndOpenInBrowser(reportItem.findingNode);
+			context.findingNodeLinkBuilder.buildCWELinkAndOpenInBrowser(reportItem.sechubFinding);
 		}
 	};
 

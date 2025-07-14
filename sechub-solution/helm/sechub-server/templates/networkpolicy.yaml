@@ -12,13 +12,9 @@ spec:
           role: sechub-frontend  # Allow SecHub Web-UI access
     ports:
     - protocol: TCP
-      port: 8443
+      port: {{ .Values.targetPort.port }}
   - ports:
-{{- if .Values.go_mmproxy.enabled }}
-    - port: 8080
-{{- else }}
-    - port: 8443
-{{- end }}
+    - port: {{ .Values.targetPort.port }}
       protocol: TCP
   podSelector:
     matchLabels:

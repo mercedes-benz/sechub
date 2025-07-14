@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.model;
 
-import org.junit.Before;
-import org.junit.Test;
+import static com.mercedesbenz.sechub.plugin.model.TestResourceHelper.getEnsuredTestPath;
+import static org.junit.Assert.*;
 
 import java.nio.file.Path;
 import java.util.List;
 
-import static com.mercedesbenz.sechub.plugin.model.TestResourceHelper.getEnsuredTestPath;
-import static org.junit.Assert.*;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FileLocationExplorerTest {
 
@@ -24,7 +24,7 @@ public class FileLocationExplorerTest {
     /* ----------------------------------------------- */
 
     @Test
-    public void path_contains_plusplus_is_correctly_handled() throws Exception{
+    public void path_contains_plusplus_is_correctly_handled() throws Exception {
 
         /* prepare */
         String location = "src/main/C++/os_injection.cpp";
@@ -34,11 +34,11 @@ public class FileLocationExplorerTest {
 
         /* test */
         // remark: \Q start Quoting inside java regexp, \E ends it
-        assertEquals("\\Qsrc\\main\\C++\\os_injection.cpp\\E",osSpecificLocation);
+        assertEquals("\\Qsrc\\main\\C++\\os_injection.cpp\\E", osSpecificLocation);
     }
 
     @Test
-    public void location_converted_from_unix_to_windows_style_when_separator_is_backslash() throws Exception{
+    public void location_converted_from_unix_to_windows_style_when_separator_is_backslash() throws Exception {
 
         /* prepare */
         String location = "src/main/java/com/example/Test1.java";
@@ -47,11 +47,11 @@ public class FileLocationExplorerTest {
         String osSpecificLocation = explorerToTest.convertLocationOSSpecificRegExp(location, "\\");
 
         /* test */
-        assertEquals("\\Qsrc\\main\\java\\com\\example\\Test1.java\\E",osSpecificLocation);
+        assertEquals("\\Qsrc\\main\\java\\com\\example\\Test1.java\\E", osSpecificLocation);
     }
 
     @Test
-    public void location_unconverted_from_unix_when_separator_is_slash() throws Exception{
+    public void location_unconverted_from_unix_when_separator_is_slash() throws Exception {
 
         /* prepare */
         String location = "src/main/java/com/example/Test1.java";
@@ -60,7 +60,7 @@ public class FileLocationExplorerTest {
         String osSpecificLocation = explorerToTest.convertLocationOSSpecificRegExp(location, "/");
 
         /* test */
-        assertEquals("\\Qsrc/main/java/com/example/Test1.java\\E",osSpecificLocation);
+        assertEquals("\\Qsrc/main/java/com/example/Test1.java\\E", osSpecificLocation);
     }
 
     /* ----------------------------------------------- */
@@ -81,7 +81,7 @@ public class FileLocationExplorerTest {
         List<Path> found = explorerToTest.searchFor(locationString);
 
         /* test */
-        assertEquals(1,found.size());
+        assertEquals(1, found.size());
         assertEquals(expectedFile, found.get(0));
     }
 
@@ -100,7 +100,7 @@ public class FileLocationExplorerTest {
         List<Path> found = explorerToTest.searchFor(locationString);
 
         /* test */
-        assertEquals(1,found.size());
+        assertEquals(1, found.size());
         assertEquals(expectedFile, found.get(0));
     }
 
@@ -119,7 +119,7 @@ public class FileLocationExplorerTest {
         List<Path> found = explorerToTest.searchFor(locationString);
 
         /* test */
-        assertEquals(1,found.size());
+        assertEquals(1, found.size());
         assertEquals(expectedFile, found.get(0));
     }
 
@@ -138,7 +138,7 @@ public class FileLocationExplorerTest {
         List<Path> found = explorerToTest.searchFor(locationString);
 
         /* test */
-        assertEquals(1,found.size());
+        assertEquals(1, found.size());
         assertEquals(expectedFile, found.get(0));
     }
 
@@ -157,7 +157,7 @@ public class FileLocationExplorerTest {
         List<Path> found = explorerToTest.searchFor(locationString);
 
         /* test */
-        assertEquals(1,found.size());
+        assertEquals(1, found.size());
         assertEquals(expectedFile, found.get(0));
     }
 
@@ -178,7 +178,7 @@ public class FileLocationExplorerTest {
         List<Path> found = explorerToTest.searchFor(locationString);
 
         /* test */
-        assertEquals(2,found.size());
+        assertEquals(2, found.size());
         assertTrue(found.contains(expectedFile1));
         assertTrue(found.contains(expectedFile2));
         assertFalse(found.contains(unExpectedFile3));
@@ -197,9 +197,8 @@ public class FileLocationExplorerTest {
         List<Path> found = explorerToTest.searchFor(locationString);
 
         /* test */
-        assertEquals(1,found.size());
+        assertEquals(1, found.size());
         assertEquals(expectedFile, found.get(0));
     }
-
 
 }

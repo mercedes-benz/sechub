@@ -5,8 +5,6 @@ import * as fs from 'fs';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
-import * as vscode from 'vscode';
-import * as myExtension from '../../extension';
 import { FileLocationExplorer } from '../../fileLocationExplorer';
 
 suite('FileLocationExplorer Test Suite', () => {
@@ -126,13 +124,13 @@ suite('FileLocationExplorer Test Suite', () => {
 
 	});
 
-	function getEnsuredTestPath(testfile: String): String {
+	function getEnsuredTestPath(testfile: String): string {
 		let testReportLocation = path.dirname(__filename) + "../../../../src/test/resources/" + testfile;
 		var resolved = path.resolve(testReportLocation);
 		if (!fs.existsSync(resolved)) {
 			assert.fail("test report location does not exist:"+resolved);
 		}
-		return new String(resolved);
+		return resolved;
 	}
 
 });

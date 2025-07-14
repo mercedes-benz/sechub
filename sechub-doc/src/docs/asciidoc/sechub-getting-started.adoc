@@ -117,8 +117,8 @@ Some environment variables have to be set. Specifically `SECHUB_SERVER`, `SECHUB
 
 [source, shell]
 --
-SECHUB_IP_ADDRESS=$(kubectl --namespace=sechub-testing get svc/sechub-server -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
-export SECHUB_SERVER=https://$SECHUB_IP_ADDRESS:8443
+SECHUB_IP_ADDRESS=$(kubectl --namespace=sechub-testing get svc/sechub -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export SECHUB_SERVER=https://$SECHUB_IP_ADDRESS:443
 export SECHUB_USERID=sechubadm
 export SECHUB_APITOKEN=demo
 export SECHUB_TRUSTALL=true

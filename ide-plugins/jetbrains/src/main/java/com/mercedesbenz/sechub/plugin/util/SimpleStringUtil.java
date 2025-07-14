@@ -7,14 +7,13 @@ package com.mercedesbenz.sechub.plugin.util;
 public class SimpleStringUtil {
 
     /**
-     * This method removes all space characters (spaces, tabs etc.) from a given string.
+     * This method removes all space characters (spaces, tabs etc.) from a given
+     * string.
      *
      * @return String without any space characters.
      */
     public static String removeAllSpaces(String stringWithSpaces) {
-        String stringWithNoSpaces = stringWithSpaces.replaceAll("\\s+", "");
-
-        return stringWithNoSpaces;
+        return stringWithSpaces.replaceAll("\\s+", "");
     }
 
     /**

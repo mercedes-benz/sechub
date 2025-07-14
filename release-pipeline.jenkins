@@ -116,7 +116,9 @@ pipeline {
             steps {
                 script{
                     // start integration tests and also create combined test report after all
+                    callGradleWrapper("startIntegrationTestInstances -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
                     callGradleWrapper("integrationtest -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
+                    callGradleWrapper("stopIntegrationTestInstances -Psechub.integrationtest.serverport=${env.SERVER_PORT} -Psechub.integrationtest.pdsport=${env.PDS_PORT}")
                 }
             }
         }

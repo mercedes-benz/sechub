@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.provider;
 
-import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 import com.mercedesbenz.sechub.model.FindingNode;
 
 final class SeverityColumnLabelProvider extends AbstractSecHubFindingNodeColumnLabelProvider {

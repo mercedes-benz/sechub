@@ -17,4 +17,15 @@ public class SimpleStringUtil {
 		
 		return stringWithNoSpaces;
 	}
+	
+	public static String stringOrUnknown(String string) {
+		return stringOrFallback(string, "unknown");
+	}
+	
+	public static String stringOrFallback(String string, String fallback) {
+		if (string!=null) {
+			return string;
+		}
+		return fallback;
+	}
 }

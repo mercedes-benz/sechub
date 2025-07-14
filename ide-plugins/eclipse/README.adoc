@@ -1,0 +1,55 @@
+== SecHub Eclipse Plugin
+
+This is an eclipse plugin for a convenient IDE integration of [SecHub](https://github.com/mercedes-benz/sechub)
+
+=== Installation via market place
+
+Please visit the [Eclipse Marketplace](https://marketplace.eclipse.org/content/sechub)
+
+=== Development
+==== Install Eclipse
+
+Download a Eclipse RCP package from https://eclipse.org
+
+NOTE: e.g. https://www.eclipse.org/downloads/packages/release/2025-06/r/eclipse-ide-rcp-and-rap-developers
+
+==== Create workspace and import
+- create a new eclipse workspace for RCP development at a location outside 
+- import the existing eclipse projects inside `${sechub-repo-root}/ide-plugins/eclipse` into the RCP workspace
+ 
+==== Update dependencies
+At sechub repository root level type:
+  `./gradlew eclipse`. 
+
+This will 
+- clean `lib` folder from any existing jars
+- collect libraries via gradle and copy them into `sechub-eclipse-plugin/lib` folder.
+
+[IMPORTANT]
+====
+You must refresh the sechub-eclipse-plugin project in Eclipse to have changes visible.
+====
+[NOTE]
+====
+If there are no comile errors you must not do any further steps.
+====
+
+===== SecHub libraries
+Libraries from SecHub itself will be provided without versions in file names.
+No manual interaction is necessary here.
+
+===== SecHub external dependencies
+If the SecHub dependencies have been updated - e.g. `slf4j`, `jackson` have newer versions, we will have
+errors complaining about missing libraries.
+
+To handle this a manual step is necessary:
+
+- open `sechub-eclipse-plugin/plugin.xml` with standard RCP editor (just double click on file in project explorer)
+- select the `Runtime` tab 
+  * remove old `lib` references 
+  * add new ones
+  
+[NOTE]
+====
+Afterwards eclipse will rebuild the plugin project and compile errors are gone.
+====

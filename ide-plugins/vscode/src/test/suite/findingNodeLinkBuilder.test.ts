@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as assert from 'assert';
 
-import * as secHubModel from '../../model/sechubModel';
+import { Severity, ScanType } from 'sechub-openapi-ts-client';
 import { FindingNodeLinkBuilder } from '../../model/findingNodeLinkBuilder';
 
 suite('FindingNodeLinkBuilder Test Suite', () => {
@@ -13,7 +13,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 		builderToTest = new FindingNodeLinkBuilder();
 
 		/* execute */
-		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: secHubModel.Severity.high,cweId: 4711, type: secHubModel.ScanType.codeScan});
+		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: Severity.High,cweId: 4711, type: ScanType.CodeScan});
 
 		/* test */
 		if (!uri){
@@ -28,7 +28,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 		builderToTest = new FindingNodeLinkBuilder();
 
 		/* execute */
-		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", severity: secHubModel.Severity.high, type: secHubModel.ScanType.codeScan});
+		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", severity: Severity.High, type: ScanType.CodeScan});
 
 		/* test */
 		if (uri){
@@ -41,7 +41,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 		builderToTest = new FindingNodeLinkBuilder();
 
 		/* execute */
-		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: secHubModel.Severity.high, type: secHubModel.ScanType.codeScan});
+		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: Severity.High, type: ScanType.CodeScan});
 
 		/* test */
 		if (uri){
