@@ -2,7 +2,7 @@
 
 import { LaunchContext } from './launcher';
 import * as core from '@actions/core';
-import { execFileSync } from 'child_process';
+import { execFileSync, spawn, SpawnOptions } from 'child_process';
 import { sanitize } from './shell-arg-sanitizer';
 import path from 'path';
 import { tmpdir } from 'os';
@@ -13,10 +13,9 @@ import { readFileSync, openSync, closeSync, mkdtempSync } from './fs-wrapper';
  * Executes the scan method of the SecHub CLI. Sets the client exitcode inside context.
  * @param context launch context
  */
-export function scan(context: LaunchContext) {
-
+export async function scan(context: LaunchContext) {
     const clientExecutablePath = sanitize(context.clientExecutablePath);
-    const configFileArgValue = sanitize(context.configFileLocation ? context.configFileLocation : '');
+    const configFileArgValue = sanitize(context.configFileLocation || '');
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
 
@@ -24,34 +23,62 @@ export function scan(context: LaunchContext) {
     const stdoutFile = path.join(tempDir, `output-${uuidv4()}.txt`);
     const stdoutFd = openSync(stdoutFile, 'a');
     const prefix = 'scan output';
+
+    const args = [
+        '-configfile', configFileArgValue,
+        '-output', outputArgValue,
+        ...(addScmHistoryArg ? [addScmHistoryArg] : []),
+        'scan',
+    ];
+
+    core.info(`Running: ${clientExecutablePath} ${args.join(' ')}`);
+
     try {
-        execFileSync(clientExecutablePath,
-            /* parameters */
-            [
-                '-configfile', configFileArgValue,
-                '-output', outputArgValue, addScmHistoryArg, 'scan'],
+        const exitCode = await spawnAndWait(clientExecutablePath, args, {
+            stdio: ['ignore', stdoutFd, stdoutFd],
+            env: process.env,
+        });
 
-            /* options*/
-            {
-                env: process.env, // Pass all environment variables
-                encoding: 'utf-8',
-                stdio: ['ignore', stdoutFd, stdoutFd],
-            }
-        );
         const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
- 
-        core.info('Scan executed successfully');
-
-        context.lastClientExitCode = 0;
+        context.lastClientExitCode = exitCode;
         context.jobUUID = extractJobUUID(output);
-    } catch (error: any) {
+        core.info('Scan completed successfully');
+    } catch (err: any) {
         const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
-
-        core.error(`Error executing scan command: ${error.message}`);
-
-        context.lastClientExitCode = error.status;
+        context.lastClientExitCode = 1;
         context.jobUUID = extractJobUUID(output);
+        core.error(`Scan failed: ${err.message}`);
+        throw err;
     }
+}
+
+export function spawnAndWait(command: string, args: string[], options: SpawnOptions = {}): Promise<number> {
+    return new Promise((resolve, reject) => {
+        const child = spawn(command, args, options);
+
+        const handleSignal = (signal: NodeJS.Signals) => {
+            console.warn(`Received ${signal}, forwarding to child`);
+            child.kill(signal);
+        };
+
+        process.once('SIGINT', handleSignal);
+        process.once('SIGTERM', handleSignal);
+
+        child.on('exit', (code, signal) => {
+            process.removeListener('SIGINT', handleSignal);
+            process.removeListener('SIGTERM', handleSignal);
+            if (signal) {
+                return reject(new Error(`Process terminated by signal: ${signal}`));
+            }
+            resolve(code ?? 0);
+        });
+
+        child.on('error', (err) => {
+            process.removeListener('SIGINT', handleSignal);
+            process.removeListener('SIGTERM', handleSignal);
+            reject(err);
+        });
+    });
 }
 
 function logAndCloseStdOutFile(prefix: string, stdOutFd:number, stdOutFile: string) : string {
