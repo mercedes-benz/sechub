@@ -14,6 +14,21 @@ server:
     #profiles: dev,h2,real_products,mocked_notifications
     profiles: localserver,initial_admin_predefined,admin_access,h2,real_products,mocked_notifications
 
+# Load balancer definition for external access:
+service:
+  loadbalancer:
+    enabled: true
+    # Here you can add your own services. Selector is: lbtype: external
+    portmappings:
+      - name: sechub-server
+        port: {{ .SECHUB_SERVER_LB_PORT }}
+        targetPort: "8443-port"
+        protocol: TCP
+      - name: web-ui
+        port: {{ .WEBUI_LB_PORT }}
+        targetPort: "4443-port"
+        protocol: TCP
+
 security:
   resourceServer:
     modes: {{ .SECHUB_SERVER_LOGIN_MODES }}

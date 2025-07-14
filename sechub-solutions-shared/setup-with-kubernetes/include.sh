@@ -15,7 +15,7 @@ SECHUB_NAMESPACE_DEFAULT="sechub-testing" # Kubernetes namespace for the deploym
 SECHUB_SERVER_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/sechub-server" # Where to get the SecHub-server container image from
 SECHUB_SERVER_IMAGE_TAG_DEFAULT="latest" # image tag of above
 SECHUB_SERVER_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-solution/helm/sechub-server" # directory where the extracted SecHub-server Helm chart resides
-SECHUB_SERVER_LB_PORT_DEFAULT="8443"
+SECHUB_SERVER_LB_PORT_DEFAULT="443"
 SECHUB_SERVER_LOGIN_MODES_DEFAULT="classic"
 PDS_CHECKMARX_HELMCHART_DEFAULT="$REPOSITORY_ROOT/sechub-pds-solutions/checkmarx/helm/pds-checkmarx" # directory where the extracted pds-checkmarx Helm chart resides
 PDS_CHECKMARX_IMAGE_REGISTRY_DEFAULT="ghcr.io/mercedes-benz/sechub/pds-checkmarx" # Where to get the pds-checkmarx container image from
@@ -251,7 +251,7 @@ function pull_and_extract_helm_chart {
 
 function set_sechub_connection {
   # SecHub server must have been deployed
-  SERVER_IP=$(kubectl $KUBE_FLAGS get svc/sechub-server -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  SERVER_IP=$(kubectl $KUBE_FLAGS get svc/sechub -o=jsonpath='{.status.loadBalancer.ingress[0].ip}')
   if [[ "$SERVER_IP" =~ (E|e)rror ]] ; then
     echo "Could not figure out the load balancer IP of SecHub server: $SERVER_IP"
     exit 1
