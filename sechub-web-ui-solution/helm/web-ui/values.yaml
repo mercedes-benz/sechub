@@ -45,12 +45,6 @@ web_ui:
 #  This way, you can force deployments e.g. when only secrets have changed.
 deploymentComment: "my deployment comment"
 
-# Define port for outside access:
-targetPort:
-  # Name must be matched in "sechub-server" Helm chart's 'service.loadbalancer.portmappings'
-  name: "4443-port"
-  port: 4443
-
 # optional: Add annotations to template.metadata.annotations
 #           Can contain multiple lines. Example for Prometheus actuator:
 # templateMetadataAnnotations: |-
