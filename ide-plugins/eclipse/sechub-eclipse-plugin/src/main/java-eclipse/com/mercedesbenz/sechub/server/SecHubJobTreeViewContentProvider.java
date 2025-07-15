@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.server;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUser;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
 
 public class SecHubJobTreeViewContentProvider implements ITreeContentProvider {

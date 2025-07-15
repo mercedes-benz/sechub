@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -20,7 +21,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -65,18 +65,21 @@ public class SecHubServerView extends ViewPart {
 
 	private Label projectLabel;
 
-	private Button nextButton;
-
-	private Button previosButton;
-
 	private Label currentPageLabel;
 
 	private Label pagesLabel;
 
+	private NextJobPageSecHubServerViewAction nextPageAction;
+
+	private PreviousJobPageSecHubServerViewAction previousPageAction;
+	
+
 	@Override
 	public void createPartControl(Composite parent) {
-
 		serverContext = new SecHubServerContext();
+		String selectedProject = SecHubProjectSelectionStorage.loadSelectedProjectId();
+		
+		serverContext.setSelectedProjectId(selectedProject);
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(GridLayoutFactory.fillDefaults().numColumns(1).create());
@@ -101,6 +104,7 @@ public class SecHubServerView extends ViewPart {
 					if (!Objects.equals(projectId, serverContext.getSelectedProjectId())) {
 						/* change detected - set and reload necessary */
 						serverContext.setSelectedProjectId(projectId);
+						serverContext.resetPages();
 						refreshJobTableForSelectedProject();
 					}
 				}
@@ -156,10 +160,6 @@ public class SecHubServerView extends ViewPart {
 		pagingComposite.setLayout(new GridLayout(5, false));
 		pagingComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
 		
-		nextButton = new Button(pagingComposite, SWT.NONE);
-		nextButton.setText("Next");
-		previosButton = new Button(pagingComposite, SWT.NONE);
-		previosButton.setText("Previous");
 		currentPageLabel = new Label(pagingComposite, SWT.NONE);
 		
 		Label pagesdivider = new Label(pagingComposite, SWT.NONE);
@@ -213,20 +213,23 @@ public class SecHubServerView extends ViewPart {
 		String selectedProjectId = serverContext.getSelectedProjectId();
 		SecHubJobInfoForUserListPage currentPage;
 		try {
-			currentPage = access.fetchJobInfoList(selectedProjectId, 30, 0);
+			currentPage = access.fetchJobInfoList(selectedProjectId, 10, serverContext.getWantedPage());
 			serverContext.setCurrentJobPage(currentPage);
 			jobTreeViewer.setInput(currentPage);
-			currentPageLabel.setText("1");
-			pagesLabel.setText("1-pseudo");
+			currentPageLabel.setText(""+serverContext.getShownPage());
+			pagesLabel.setText(""+serverContext.getShownTotalPages());
 			
 		} catch (ApiException e) {
 			resetJobTableAndPaging();
 			
 			EclipseUtil.showErrorDialog("Was not able to fetch job list for project "+selectedProjectId, e);
 		}
+		
+		nextPageAction.setEnabled(isNextPageEnabled());
+		previousPageAction.setEnabled(isPreviousPageEnabled());
 
 	}
-
+	
 	private void resetJobTableAndPaging() {
 		serverContext.setCurrentJobPage(null);
 		jobTreeViewer.setInput(null);
@@ -241,10 +244,18 @@ public class SecHubServerView extends ViewPart {
 
 		IToolBarManager toolBarManager = actionBars.getToolBarManager();
 		toolBarManager.add(refreshServerViewAction);
+		toolBarManager.add(new Separator());
+		toolBarManager.add(previousPageAction);
+		toolBarManager.add(nextPageAction);
+		toolBarManager.add(new Separator());
 		toolBarManager.add(openServerPreferencesAction);
 
 		IMenuManager menuManager = actionBars.getMenuManager();
 		menuManager.add(refreshServerViewAction);
+		menuManager.add(new Separator());
+		menuManager.add(nextPageAction);
+		menuManager.add(previousPageAction);
+		menuManager.add(new Separator());
 		menuManager.add(openServerPreferencesAction);
 	}
 
@@ -283,8 +294,10 @@ public class SecHubServerView extends ViewPart {
 	private void createActions() {
 		refreshServerViewAction = new RefreshSecHubServerViewAction(this);
 		openServerPreferencesAction = new OpenSecHubServerPreferencesAction();
+		nextPageAction = new NextJobPageSecHubServerViewAction(this);
+		previousPageAction = new PreviousJobPageSecHubServerViewAction(this);
 	}
-
+	
 	@Override
 	public void setFocus() {
 		serverTreeViewer.getControl().setFocus();
@@ -395,6 +408,30 @@ public class SecHubServerView extends ViewPart {
 		}
 		// avoid layout failures by calling layout method on parent always:
 		projectCombo.getParent().layout(true);
+	}
+
+	public void nextPage() {
+		if (serverContext.incrementWantedPage()) {
+			refreshJobTableForSelectedProject();
+		}
+	}
+
+	public void previousPage() {
+		if (serverContext.decrementWantedPage()) {
+			refreshJobTableForSelectedProject();
+		}
+	}
+
+	public boolean isNextPageEnabled() {
+		return serverContext.canGoNextPage();
+	}
+	
+	public boolean isPreviousPageEnabled() {
+		return serverContext.canGoPreviousPage();
+	}
+
+	public String getSelectedProjectId() {
+		return serverContext.getSelectedProjectId();
 	}
 
 }

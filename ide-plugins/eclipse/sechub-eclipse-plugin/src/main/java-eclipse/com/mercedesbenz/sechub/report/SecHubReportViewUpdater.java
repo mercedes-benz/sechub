@@ -6,7 +6,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubStatus;
 import com.mercedesbenz.sechub.model.FindingModel;
 import com.mercedesbenz.sechub.util.EclipseUtil;
 import com.mercedesbenz.sechub.util.Logging;

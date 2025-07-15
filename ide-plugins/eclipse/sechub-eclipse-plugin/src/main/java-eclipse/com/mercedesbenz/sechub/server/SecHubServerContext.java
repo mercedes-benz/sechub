@@ -12,6 +12,7 @@ public class SecHubServerContext {
 	private ServerAccessStatus status;
 	private String selectedProjectId;
 	private SecHubJobInfoForUserListPage currentJobPage;
+	private int wantedPage;
 
 	public SecHubServerContext() {
 		reset();
@@ -19,6 +20,7 @@ public class SecHubServerContext {
 
 	public void reset() {
 		model = new SecHubServerDataModel();
+		resetPages();
 	}
 
 	public SecHubServerDataModel getModel() {
@@ -56,4 +58,80 @@ public class SecHubServerContext {
 	public SecHubJobInfoForUserListPage getCurrentJobPage() {
 		return currentJobPage;
 	}
+
+	public void resetPages() {
+		this.wantedPage = 0;
+		this.currentJobPage = null;
+	}
+
+	public boolean incrementWantedPage() {
+		if (!canGoNextPage()) {
+			return false;
+		}
+		this.wantedPage += 1;
+		return true;
+	}
+
+	public boolean decrementWantedPage() {
+		if (!canGoPreviousPage()) {
+			return false;
+		}
+		this.wantedPage -= 1;
+		return true;
+	}
+
+	public boolean canGoNextPage() {
+		if (currentJobPage == null) {
+			return false;
+		}
+		return getShownPage() < getShownTotalPages();
+
+	}
+
+	public boolean canGoPreviousPage() {
+		if (currentJobPage == null) {
+			return false;
+		}
+		return getShownPage() > 1;
+
+	}
+
+	public void setWantedPage(int wantedPage) {
+		this.wantedPage = wantedPage;
+	}
+
+	public int getWantedPage() {
+		return wantedPage;
+	}
+
+	public int getShownTotalPages() {
+		SecHubJobInfoForUserListPage listPage = currentJobPage;
+		if (listPage == null) {
+			return 0;
+		}
+		Integer totalPages = listPage.getTotalPages();
+		if (totalPages == null) {
+			return 0;
+		}
+		return totalPages;
+	}
+
+	public int getShownPage() {
+		SecHubJobInfoForUserListPage listPage = currentJobPage;
+		if (listPage == null) {
+			return 0;
+		}
+		Integer page = listPage.getPage();
+		if (page == null) {
+			return 0;
+		}
+		if (page==0) {
+			if (getShownTotalPages()==0){
+				// we need to show 0/0
+				return 0;
+			}
+		}
+		return page + 1;
+	}
+
 }
