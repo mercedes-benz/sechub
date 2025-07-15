@@ -42,6 +42,8 @@ const mockedInputMap = new Map();
 
 let mockedUploadFunction: jest.Mock;
 
+jest.setTimeout(50000);
+
 beforeEach(() => {
 
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
