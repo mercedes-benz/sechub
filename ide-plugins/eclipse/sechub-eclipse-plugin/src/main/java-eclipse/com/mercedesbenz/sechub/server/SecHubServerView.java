@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
@@ -29,6 +32,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.progress.UIJob;
 
 import com.mercedesbenz.sechub.SecHubActivator;
 import com.mercedesbenz.sechub.access.SecHubAccess;
@@ -53,7 +57,7 @@ import com.mercedesbenz.sechub.util.EclipseUtil;
 public class SecHubServerView extends ViewPart {
 
 	public static final String ID = "com.mercedesbenz.sechub.views.SecHubServerView";
-	
+
 	private TreeViewer serverTreeViewer;
 	private SecHubServerTreeViewContentProvider serverTreeContentProvider;
 	private RefreshSecHubServerViewAction refreshServerViewAction;
@@ -72,13 +76,12 @@ public class SecHubServerView extends ViewPart {
 	private NextJobPageSecHubServerViewAction nextPageAction;
 
 	private PreviousJobPageSecHubServerViewAction previousPageAction;
-	
 
 	@Override
 	public void createPartControl(Composite parent) {
 		serverContext = new SecHubServerContext();
 		String selectedProject = SecHubProjectSelectionStorage.loadSelectedProjectId();
-		
+
 		serverContext.setSelectedProjectId(selectedProject);
 
 		Composite composite = new Composite(parent, SWT.NONE);
@@ -87,13 +90,13 @@ public class SecHubServerView extends ViewPart {
 		Composite headlineComposite = new Composite(composite, SWT.NONE);
 		headlineComposite.setLayout(new GridLayout(3, false));
 		headlineComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
+
 		projectLabel = new Label(headlineComposite, SWT.None);
 		projectLabel.setText("Project");
-		
+
 		projectCombo = new Combo(headlineComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
 		projectCombo.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
-		
+
 		projectCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -116,7 +119,7 @@ public class SecHubServerView extends ViewPart {
 		serverTreeViewer = new TreeViewer(headlineComposite, SWT.NO_SCROLL | SWT.V_SCROLL);
 		serverTreeViewer.getControl().setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false));
 		serverTreeViewer.setContentProvider(serverTreeContentProvider);
-		serverTreeViewer.addDoubleClickListener((event)->{
+		serverTreeViewer.addDoubleClickListener((event) -> {
 			openServerPreferencesAction.run();
 		});
 
@@ -128,46 +131,45 @@ public class SecHubServerView extends ViewPart {
 		createJobColumns();
 
 		jobTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
-            @Override
-            public void doubleClick(DoubleClickEvent event) {
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
 
-            	SecHubAccess access = serverContext.getAccessOrNull();
-            	if (access==null) {
-            		return;
-            	}
-            	
-            	 IStructuredSelection selection = (IStructuredSelection) jobTreeViewer.getSelection();
-                 Object selectedElement = selection.getFirstElement();
-                 
-                 if (selectedElement instanceof SecHubJobInfoForUser info) {
-                	 try {
-                		 
-                		 String projectId = serverContext.getSelectedProjectId();
-						 SecHubReport report = access.downloadJobReport(projectId, info.getJobUUID());
-                		 
-                		 SecHubActivator.getDefault().getImporter().importAndDisplayReport(report, projectId);
-                		 
-                	 } catch (ApiException e) {
-                		 EclipseUtil.showErrorDialog("Was not able to download job report.",e);
+				SecHubAccess access = serverContext.getAccessOrNull();
+				if (access == null) {
+					return;
+				}
+
+				IStructuredSelection selection = (IStructuredSelection) jobTreeViewer.getSelection();
+				Object selectedElement = selection.getFirstElement();
+
+				if (selectedElement instanceof SecHubJobInfoForUser info) {
+					try {
+
+						String projectId = serverContext.getSelectedProjectId();
+						SecHubReport report = access.downloadJobReport(projectId, info.getJobUUID());
+
+						SecHubActivator.getDefault().getImporter().importAndDisplayReport(report, projectId);
+
+					} catch (ApiException e) {
+						EclipseUtil.showErrorDialog("Was not able to download job report.", e);
 					}
-                	 
-                 }
-            	
-            }
-        });
+
+				}
+
+			}
+		});
 
 		Composite pagingComposite = new Composite(composite, SWT.NONE);
 		pagingComposite.setLayout(new GridLayout(5, false));
 		pagingComposite.setLayoutData(new GridData(SWT.RIGHT, SWT.NONE, false, false));
-		
+
 		currentPageLabel = new Label(pagingComposite, SWT.NONE);
-		
+
 		Label pagesdivider = new Label(pagingComposite, SWT.NONE);
 		pagesdivider.setText("/");
-		
+
 		pagesLabel = new Label(pagingComposite, SWT.NONE);
-		
-		
+
 		SechubServerTreeLabelProvider labelProvider = new SechubServerTreeLabelProvider();
 		ILabelDecorator labelDecorator = PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
 		DecoratingStyledCellLabelProvider labelProviderDelegate = new DecoratingStyledCellLabelProvider(labelProvider,
@@ -201,6 +203,12 @@ public class SecHubServerView extends ViewPart {
 	}
 
 	protected void refreshJobTableForSelectedProject() {
+		RefreshServerJobTableViewJob job = new RefreshServerJobTableViewJob();
+		job.schedule();
+
+	}
+
+	private void refreshJobTableByJob() {
 		if (!serverContext.isConnectedWithServer()) {
 			resetJobTableAndPaging();
 			return;
@@ -216,20 +224,19 @@ public class SecHubServerView extends ViewPart {
 			currentPage = access.fetchJobInfoList(selectedProjectId, 10, serverContext.getWantedPage());
 			serverContext.setCurrentJobPage(currentPage);
 			jobTreeViewer.setInput(currentPage);
-			currentPageLabel.setText(""+serverContext.getShownPage());
-			pagesLabel.setText(""+serverContext.getShownTotalPages());
-			
+			currentPageLabel.setText("" + serverContext.getShownPage());
+			pagesLabel.setText("" + serverContext.getShownTotalPages());
+
 		} catch (ApiException e) {
 			resetJobTableAndPaging();
-			
-			EclipseUtil.showErrorDialog("Was not able to fetch job list for project "+selectedProjectId, e);
+
+			EclipseUtil.showErrorDialog("Was not able to fetch job list for project " + selectedProjectId, e);
 		}
-		
+
 		nextPageAction.setEnabled(isNextPageEnabled());
 		previousPageAction.setEnabled(isPreviousPageEnabled());
-
 	}
-	
+
 	private void resetJobTableAndPaging() {
 		serverContext.setCurrentJobPage(null);
 		jobTreeViewer.setInput(null);
@@ -272,14 +279,14 @@ public class SecHubServerView extends ViewPart {
 
 		TreeViewerColumn status = createTreeViewerColumn(jobTreeViewer, "Status", 60);
 		status.setLabelProvider(new StatusColumnLabelProvider());
-		
+
 		TreeViewerColumn result = createTreeViewerColumn(jobTreeViewer, "Result", 50);
 		result.setLabelProvider(new ResultColumnLabelProvider());
-		
+
 		TreeViewerColumn jobOwner = createTreeViewerColumn(jobTreeViewer, "Executed by", 80);
 		jobOwner.setLabelProvider(new ExecutedByColumnLabelProvider());
 		jobOwner.getColumn().setToolTipText("The person or system account who started the job");
-		
+
 	}
 
 	private TreeViewerColumn createTreeViewerColumn(TreeViewer viewer, String title, int width) {
@@ -297,7 +304,7 @@ public class SecHubServerView extends ViewPart {
 		nextPageAction = new NextJobPageSecHubServerViewAction(this);
 		previousPageAction = new PreviousJobPageSecHubServerViewAction(this);
 	}
-	
+
 	@Override
 	public void setFocus() {
 		serverTreeViewer.getControl().setFocus();
@@ -309,10 +316,10 @@ public class SecHubServerView extends ViewPart {
 		serverTreeViewer.setInput(serverContext.getModel());
 		if (serverContext.isConnectedWithServer()) {
 			serverTreeViewer.getTree().setToolTipText("Connected to SecHub server");
-		}else {
+		} else {
 			serverTreeViewer.getTree().setToolTipText("Not alive or wrong credentials");
 		}
-		
+
 		refreshProjectCombo();
 		refreshJobTableForSelectedProject();
 	}
@@ -339,13 +346,14 @@ public class SecHubServerView extends ViewPart {
 
 		serverContext.getModel().setConnection(connection);
 		/* fetch project data */
-		List<ProjectData> projects = Collections.emptyList();;
+		List<ProjectData> projects = Collections.emptyList();
+		;
 		try {
-			
+
 			if (serverContext.isConnectedWithServer()) {
 				projects = secHubAccess.fetchProjectList();
 			}
-			
+
 		} catch (ApiException e) {
 			EclipseUtil.showErrorDialog("Was not able to retrieve project list", e);
 		}
@@ -425,13 +433,27 @@ public class SecHubServerView extends ViewPart {
 	public boolean isNextPageEnabled() {
 		return serverContext.canGoNextPage();
 	}
-	
+
 	public boolean isPreviousPageEnabled() {
 		return serverContext.canGoPreviousPage();
 	}
 
 	public String getSelectedProjectId() {
 		return serverContext.getSelectedProjectId();
+	}
+
+	private class RefreshServerJobTableViewJob extends UIJob {
+
+		public RefreshServerJobTableViewJob() {
+			super("Refreshing SecHub server job table ");
+		}
+
+		@Override
+		public IStatus runInUIThread(IProgressMonitor monitor) {
+			refreshJobTableByJob();
+			return Status.OK_STATUS;
+		}
+
 	}
 
 }

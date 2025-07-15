@@ -226,7 +226,7 @@ public class WorkspaceFindingNodeLocator {
 	}
 
 	/**
-	 * We have much UI changes here, so we use a UIJob where we have access to UI directly withyout display
+	 * We have much UI changes here, so we use a UIJob where we have access to UI directly without display
 	 * async etc.
 	 *
 	 */
