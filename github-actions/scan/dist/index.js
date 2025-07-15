@@ -28646,8 +28646,8 @@ function spawnAndWait(command, args, options = {}) {
             console.warn(`Received ${signal}, forwarding to child`);
             child.kill(signal);
         };
-        process.once('SIGINT', handleSignal);
-        process.once('SIGTERM', handleSignal);
+        process.on('SIGINT', handleSignal);
+        process.on('SIGTERM', handleSignal);
         child.on('exit', (code, signal) => {
             process.removeListener('SIGINT', handleSignal);
             process.removeListener('SIGTERM', handleSignal);

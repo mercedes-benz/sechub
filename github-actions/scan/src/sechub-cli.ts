@@ -61,8 +61,8 @@ export function spawnAndWait(command: string, args: string[], options: SpawnOpti
             child.kill(signal);
         };
 
-        process.once('SIGINT', handleSignal);
-        process.once('SIGTERM', handleSignal);
+        process.on('SIGINT', handleSignal);
+        process.on('SIGTERM', handleSignal);
 
         child.on('exit', (code, signal) => {
             process.removeListener('SIGINT', handleSignal);
