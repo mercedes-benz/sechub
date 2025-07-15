@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import { window, Disposable, ExtensionContext, QuickInputButton, QuickInputButtons, QuickInput } from 'vscode';
 import { SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
 

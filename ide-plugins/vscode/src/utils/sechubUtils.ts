@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import { SecHubReport } from 'sechub-openapi-ts-client';
 import * as fs from 'fs';
 
