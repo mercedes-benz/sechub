@@ -105,7 +105,7 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Run SecHub Scan
-      run: "$GITHUB_ACTION_PATH/scripts/sechub_scan.sh"
+      run: exec node "$GITHUB_ACTION_PATH"/dist/index.js
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}
