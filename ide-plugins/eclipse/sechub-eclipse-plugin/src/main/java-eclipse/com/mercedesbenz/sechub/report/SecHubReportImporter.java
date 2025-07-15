@@ -68,7 +68,7 @@ public class SecHubReportImporter {
 	}
 
 	private IStatus importAndDisplayReportInsideJob(SecHubReport report, String projectId, IProgressMonitor monitor) {
-		monitor.beginTask("Import SecHub report data", 2);
+		monitor.beginTask("Import SecHub report data from project: "+projectId, 2);
 		importReport(report, projectId, monitor);
 		return Status.OK_STATUS;
 	}

@@ -330,9 +330,9 @@ public class SecHubReportView extends ViewPart {
 
 	private class OpenSecHubServerViewAction extends Action {
 		private OpenSecHubServerViewAction() {
-			setText("Open SecHub server view");
-			setToolTipText("Open SecHub server view");
-			setImageDescriptor(EclipseUtil.createDescriptor("icons/sechub-server.png"));
+			setText("Open job from server");
+			setToolTipText("Open job from SecHub server");
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/load-from-server.png"));
 		}
 
 		public void run() {
@@ -350,6 +350,9 @@ public class SecHubReportView extends ViewPart {
 					return;
 				}
 
+			}
+			if (view instanceof SecHubServerView serverView) {
+				serverView.searchJobDirectly();
 			}
 		}
 	}

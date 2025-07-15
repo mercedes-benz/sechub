@@ -21,6 +21,7 @@ public class SecHubServerContext {
 	public void reset() {
 		model = new SecHubServerDataModel();
 		resetPages();
+		status=null;
 	}
 
 	public SecHubServerDataModel getModel() {
@@ -40,7 +41,7 @@ public class SecHubServerContext {
 	}
 
 	public boolean isConnectedWithServer() {
-		return access != null && status.isAlive();
+		return access != null && status!=null && status.isAlive();
 	}
 
 	public void setSelectedProjectId(String selectedProjectId) {

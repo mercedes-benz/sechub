@@ -20,9 +20,6 @@ public class SecHubJobTreeViewContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-//		if (parentElement instanceof SecHubJobInfoForUser infoForUser) {
-//			return new Object[] {infoForUser.getCreated(), infoForUser.getTrafficLight(), infoForUser.getExecutedBy(), infoForUser.getJobUUID()};
-//		}
 		return NO_CONTENT;
 	}
 
