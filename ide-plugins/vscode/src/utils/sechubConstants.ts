@@ -1,5 +1,3 @@
-import { changeCredentials } from "src/commands/changeCredentials";
-
 export const SECHUB_CREDENTIAL_KEYS = {
     serverUrl: 'sechubServerUrl',
     username: 'sechubUsername',
@@ -14,6 +12,9 @@ export const SECHUB_COMMANDS = {
     changeCredentials: 'sechub.changeCredentials',
     changeServerUrl: 'sechub.changeServerUrl',
     selectProject: 'sechub.selectProject',
+    refreshServerView: 'sechub.refreshServerView',
+    fetchReportByUUID: 'sechub.fetchReportByUUID',
+    clearSecHubData: 'sechub.clearSecHubData',
     importReport: 'sechubReportView.importReportFile',
     openCWEinBrowser: 'sechubReportView.openCWEinBrowser',
     showCallHierarchy: 'sechubCallHierarchyView.showInEditor',
@@ -21,4 +22,5 @@ export const SECHUB_COMMANDS = {
 
 export const SECHUB_VIEW_IDS = {
     serverView: 'sechub.serverWebView'
+
 };

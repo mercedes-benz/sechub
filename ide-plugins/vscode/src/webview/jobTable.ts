@@ -7,20 +7,23 @@ export class JobListTable {
 
     private noJobsRunnedMessage = '<p>No jobs have been started for your project.</p>';
     private failedToFetchJobsMessage = '<p>Failed to retrieve job list. You are either not allowed to view them or facing server connection issues.</p>';
+    private noProjectSelectedMessage = '<p>Please select a project first.</p>';
     
     public async createJobTable(context: vscode.ExtensionContext) : Promise<string> {
 
         const project: ProjectData | undefined = context.globalState.get(SECHUB_REPORT_KEYS.selectedProject);
-        if (!project) {
-            return this.noJobsRunnedMessage;
-        }
-        const projectId = project.projectId;
+
+        const projectId = project?.projectId || 'No Project Selected';
         const title = `<div id="jobTableTitleContainer">
-            <p id="sechubJobTableTitle">Project 
-            <span>${projectId}</span>
-            </p>
-            <button id="changeProjectBtn" class="sechubButton">Change Project</button>
-    </div>`;
+                <p id="sechubJobTableTitle">Project 
+                <span>${projectId}</span>
+                </p>
+                <button id="changeProjectBtn" class="sechubButton">Change Project</button>
+        </div>`;
+
+        if (!project) {
+            return `${title}${this.noProjectSelectedMessage}`;
+        }
 
         const client = await DefaultClient.getInstance(context);
         const data = await client.userListsJobsForProject(projectId);

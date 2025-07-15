@@ -19,7 +19,6 @@ export async function changeServerUrl(sechubContext: SecHubContext): Promise<voi
         if (newServerUrl) {
             await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, newServerUrl);
             await DefaultClient.createClient(sechubContext.extensionContext);
-            sechubContext.serverTreeProvider.refresh();
             sechubContext.serverWebViewProvider.refresh();
             vscode.window.showInformationMessage(`SecHub Server URL updated to: '${newServerUrl}'`);
         }

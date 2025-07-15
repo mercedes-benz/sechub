@@ -45,7 +45,8 @@ export class DefaultClient {
 
     if (!serverUrl || !username || !apiToken) {
       vscode.window.showErrorMessage('SecHub credentials are not set. Please configure them first.');
-      throw new Error('SecHub client is not initialized yet. Please ensure credentials are set.');
+      console.error('SecHub credentials are not set to create an API client. Createing empty client.');
+      return new DefaultApiClient(new Configuration());
     }
 
     const clientConfig = new Configuration({
@@ -92,14 +93,13 @@ export class DefaultClient {
     }
   }
 
-  public async userFetchUserDetailInformation(): Promise<UserDetailInformation> {
+  public async userFetchUserDetailInformation(): Promise<UserDetailInformation | undefined> {
     try {
       const response: UserDetailInformation = await this.apiClient.withUserSelfServiceApi().userFetchUserDetailInformation();
       return response;
     } catch (error) {
-      console.error('Error fetching user details:', error);
-      vscode.window.showErrorMessage('Failed to fetch user details from the server.');
-      return {};
+      console.error('Error: could not fetch User Details from Server', error);
+      return undefined;
     }
   }
 

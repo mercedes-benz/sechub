@@ -15,13 +15,10 @@ import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubRepor
 import { loadFromFile } from './utils/sechubUtils';
 import { SecHubReport } from 'sechub-openapi-ts-client';
 import { multiStepInput } from './sechubCredentialsMultistepInput';
-import { SECHUB_COMMANDS, SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
-import { ServerItem, SecHubServerTreeProvider } from './provider/sechubServerTreeDataProvider';
+import { SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
 import { DefaultClient } from './api/defaultClient';
-import { changeServerUrl } from './commands/changeServerUrl';
-import { changeCredentials } from './commands/changeCredentials';
-import { selectProject } from './commands/selectProject';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
+import { commands } from './commands/commands';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
@@ -36,7 +33,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	let secHubContext: SecHubContext = new SecHubContext(report, context);
 
-	buildServerView(secHubContext);
+	buildServerWebview(secHubContext);
 	buildReportView(secHubContext);
 	buildCallHierarchyView(secHubContext);
 	buildInfoView(secHubContext);
@@ -45,20 +42,17 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	registerCommands(secHubContext);
 
-	buildServerWebview(secHubContext);
 
 	console.log('SecHub plugin has been activated.');
 }
 
 function registerCommands(sechubContext: SecHubContext) {
 
-    const changeServerUrlCommand = vscode.commands.registerCommand(SECHUB_COMMANDS.changeServerUrl, () => changeServerUrl(sechubContext));
-    const changeCredentialsCommand = vscode.commands.registerCommand(SECHUB_COMMANDS.changeCredentials, () => changeCredentials(sechubContext));
-	const selectProjectCommand = vscode.commands.registerCommand(SECHUB_COMMANDS.selectProject, () => selectProject(sechubContext));
-	
-	sechubContext.extensionContext.subscriptions.push(changeServerUrlCommand, 
-		changeCredentialsCommand,
-		selectProjectCommand);
+	const registeredCommands = commands.map(({ command, action}) =>
+		vscode.commands.registerCommand(command, () => action(sechubContext))
+	);
+
+	sechubContext.extensionContext.subscriptions.push(...registeredCommands);
 }
 
 function setUpApiClient(context: vscode.ExtensionContext) {
@@ -85,13 +79,6 @@ function setUpApiClient(context: vscode.ExtensionContext) {
 	}).catch(err => {
 		vscode.window.showErrorMessage(`Failed to initialize SecHub client:	${err}`);
 	});
-}
-
-function buildServerView(context: SecHubContext) {
-	const view = vscode.window.createTreeView('sechubServerView', {
-		treeDataProvider: context.serverTreeProvider
-	});
-	context.serverView = view;
 }
 
 function buildReportView(context: SecHubContext) {
@@ -131,7 +118,6 @@ function hookActions(context: SecHubContext) {
 export class SecHubContext {
 	callHierarchyView: vscode.TreeView<HierarchyItem|undefined> | undefined = undefined;
 	reportView: vscode.TreeView<ReportItem> | undefined = undefined;
-	serverView: vscode.TreeView<ServerItem> | undefined = undefined;
 
 	findingNodeLinkBuilder: FindingNodeLinkBuilder;
 	callHierarchyTreeDataProvider: SecHubCallHierarchyTreeDataProvider;
@@ -140,7 +126,6 @@ export class SecHubContext {
 	report: SecHubReport | undefined;
 	extensionContext: vscode.ExtensionContext;
 	fileLocationExplorer: FileLocationExplorer;
-	serverTreeProvider: SecHubServerTreeProvider;
 	serverWebViewProvider: SecHubServerWebviewProvider;
 
 	constructor(report: SecHubReport| undefined, extensionContext: vscode.ExtensionContext,
@@ -151,7 +136,6 @@ export class SecHubContext {
 		this.extensionContext = extensionContext;
 		this.fileLocationExplorer = new FileLocationExplorer();
 		this.findingNodeLinkBuilder = new FindingNodeLinkBuilder();
-		this.serverTreeProvider = new SecHubServerTreeProvider(extensionContext);
 		this.serverWebViewProvider = new SecHubServerWebviewProvider(extensionContext.extensionUri, this);
 
 		/* setup search folders for explorer */

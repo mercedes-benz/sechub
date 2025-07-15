@@ -30,8 +30,8 @@
 		"commands": [
 			{
 				"command": "sechubReportView.importReportFile",
-				"title": "SecHub: import report from file",
-				"icon": "media/sechub-import-report.svg"
+				"title": "SecHub: Import Report from File",
+				"icon": "$(file)"
 			},
 			{
 				"command": "sechubReportView.openCWEinBrowser",
@@ -42,16 +42,31 @@
 				"title": "Show"
 			},
 			{
+				"command": "sechub.fetchReportByUUID",
+				"title": "SecHub: Fetch Report by UUID from Server",
+				"icon": "$(cloud-download)"
+			},
+			{
+				"command": "sechub.clearSecHubData",
+				"title": "SecHub: Clear SecHub Data",
+				"icon": "$(clear-all)"
+			},
+						{
+				"command": "sechub.refreshServerView",
+				"title": "SecHub: Refresh Server View",
+				"icon": "$(refresh)"
+			},
+			{
 				"command": "sechub.changeServerUrl",
-				"title": "SecHub: Change SecHub Server URL"
+				"title": "SecHub: Change Server URL"
 			},
 			{
 				"command": "sechub.changeCredentials",
-				"title": "SecHub: Change SecHub Credentials"
+				"title": "SecHub: Change Credentials"
 			},
 			{
 				"command": "sechub.selectProject",
-				"title": "SecHub: Select SecHub Project"
+				"title": "SecHub: Select Project"
 			}
 		],
 		"viewsContainers": {
@@ -69,12 +84,6 @@
 					"type": "webview",
 					"id": "sechub.serverWebView",
 					"name": "Server"
-				},
-				{
-					"id": "sechubServerView",
-					"name": "Server",
-					"icon": "media/sechub-logo-vscode-styled.svg",
-					"contextualTitle": "SecHub Server"
 				},
 				{
 					"id": "sechubReportView",
@@ -107,6 +116,21 @@
 				{
 					"command": "sechubReportView.importReportFile",
 					"when": "view == sechubReportView",
+					"group": "navigation"
+				},
+				{
+					"command": "sechub.fetchReportByUUID",
+					"when": "view == sechubReportView",
+					"group": "navigation"
+				},
+								{
+					"command": "sechub.clearSecHubData",
+					"when": "view == sechub.serverWebView",
+					"group": "navigation"
+				},
+				{
+					"command": "sechub.refreshServerView",
+					"when": "view == sechub.serverWebView",
 					"group": "navigation"
 				}
 			],

@@ -1,9 +1,6 @@
 const vscode = acquireVsCodeApi();
 
-document.getElementById('changeProjectBtn').addEventListener('click', () => {
-  vscode.postMessage({ type: 'changeProject' });
-});
-
+/* serverStateContainer */
 document.getElementById('serverUrlContainer').addEventListener('click', () => {
   vscode.postMessage({ type: 'changeServerUrl' });
 });
@@ -11,6 +8,14 @@ document.getElementById('serverUrlContainer').addEventListener('click', () => {
 document.getElementById('serverUserContainer').addEventListener('click', () => {
   vscode.postMessage({ type: 'changeCredentials' });
 });
+
+/* jobTable */
+const changeProjectBtn = document.getElementById('changeProjectBtn');
+if (changeProjectBtn) {
+  changeProjectBtn.addEventListener('click', () => {
+    vscode.postMessage({ type: 'changeProject' });
+  });
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.sechub-job-row').forEach(row => {

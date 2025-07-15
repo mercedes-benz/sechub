@@ -13,6 +13,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 	private _sechubContext: SecHubContext;
 	private jobListDataTable = new JobListTable();
 	private serverStateContainer = new ServerStateContainer();
+	private isConnected: boolean = false;
 
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
@@ -67,7 +68,6 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 	public async refresh() {
 		if (this._view) {
 			this._view.show?.(true);
-			this._view.webview.postMessage({ type: 'fetchJobs' });
 			this._view.webview.html = await this._getHtmlForWebview(this._view.webview);
 		}
 	}
@@ -91,8 +91,14 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
 		const javascriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'main.js'));
 
-		const serverStateHtml = await this.serverStateContainer.createServerStateContainer(this._sechubContext.extensionContext);
-		const dataTable = await this.jobListDataTable.createJobTable(this._sechubContext.extensionContext);
+		const serverState = await this.serverStateContainer.createServerStateContainer(this._sechubContext.extensionContext);
+		const serverStateHtml = serverState.html;
+		this.isConnected = serverState.isConnected;
+		let dataTableHtml = '<div> Can not load Data without SecHub connection. </div>';
+		// render the job list table only if connected
+		if (this.isConnected) {
+			dataTableHtml = await this.jobListDataTable.createJobTable(this._sechubContext.extensionContext);
+		}
 		
 		const htmlSource = `
 		<!DOCTYPE html>
@@ -114,8 +120,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 			</head>
 			<body class="vscode-light">
 				${serverStateHtml}
-				${dataTable}
-
+				${dataTableHtml}
 			<script nonce="${nonce}" src="${javascriptUri}" script-src 'nonce-${nonce}'></script>
 			</body>
 			</html>
