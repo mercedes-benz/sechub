@@ -47,5 +47,17 @@ public class SecHubPreferences {
 	public ScopedPreferenceStore getScopedPreferenceStore() {
 		return scopedPreferenceStore;
 	}
+
+	public boolean getTrustAll() {
+		 return scopedPreferenceStore.getBoolean(PreferenceIdConstants.TRUST_ALL);
+	}
+
+	public boolean isUsingCustomWebUIUrl() {
+		return scopedPreferenceStore.getBoolean(PreferenceIdConstants.USE_CUSTOM_WEBUI_LOCATION);
+	}
+
+	public String getCustomWebUIUrl() {
+		return  scopedPreferenceStore.getString(PreferenceIdConstants.CUSTOM_WEBUI_LOCATION);
+	}
 	
 }

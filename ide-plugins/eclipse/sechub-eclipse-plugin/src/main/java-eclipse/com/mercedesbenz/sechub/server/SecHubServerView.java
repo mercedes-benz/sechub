@@ -84,6 +84,8 @@ public class SecHubServerView extends ViewPart {
 
 	private Composite composite;
 
+	private OpenWebUIServerViewAction openWebUIAction;
+
 	@Override
 	public void createPartControl(Composite parent) {
 		serverContext = new SecHubServerContext();
@@ -199,6 +201,7 @@ public class SecHubServerView extends ViewPart {
 			boolean serverSetupChanged = false;
 			serverSetupChanged = serverSetupChanged || event.getProperty().equals(PreferenceIdConstants.SERVER);
 			serverSetupChanged = serverSetupChanged || event.getProperty().equals(PreferenceIdConstants.CREDENTIALS_CHANGED);
+			serverSetupChanged = serverSetupChanged || event.getProperty().equals(PreferenceIdConstants.TRUST_ALL);
 
 			/* @formatter:on*/
 			if (serverSetupChanged) {
@@ -280,8 +283,8 @@ public class SecHubServerView extends ViewPart {
 
 		toolBarManager.add(searchJobDirectlyAction);
 		toolBarManager.add(new Separator());
-
-		toolBarManager.add(openServerPreferencesAction);
+		
+		toolBarManager.add(openWebUIAction);
 
 		IMenuManager menuManager = actionBars.getMenuManager();
 		menuManager.add(refreshServerViewAction);
@@ -293,7 +296,8 @@ public class SecHubServerView extends ViewPart {
 
 		menuManager.add(searchJobDirectlyAction);
 		menuManager.add(new Separator());
-
+		
+		menuManager.add(openWebUIAction);
 		menuManager.add(openServerPreferencesAction);
 	}
 
@@ -336,6 +340,8 @@ public class SecHubServerView extends ViewPart {
 		previousPageAction = new PreviousJobPageSecHubServerViewAction(this);
 
 		searchJobDirectlyAction = new SearchJobDirectlyServerViewAction(this);
+		
+		openWebUIAction = new OpenWebUIServerViewAction(this);
 	}
 
 	@Override
@@ -352,8 +358,10 @@ public class SecHubServerView extends ViewPart {
 
 		if (serverContext.isConnectedWithServer()) {
 			serverTreeViewer.getTree().setToolTipText("Connected to SecHub server");
+			openWebUIAction.setEnabled(true);
 		} else {
-			serverTreeViewer.getTree().setToolTipText("Not alive or wrong credentials");
+			serverTreeViewer.getTree().setToolTipText("Not alive or wrong credentials\n(double click to change prefereces)");
+			openWebUIAction.setEnabled(false);
 		}
 
 		serverTreeViewer.refresh(true);

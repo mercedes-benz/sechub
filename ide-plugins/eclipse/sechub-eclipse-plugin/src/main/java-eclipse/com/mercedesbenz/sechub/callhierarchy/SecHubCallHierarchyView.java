@@ -3,9 +3,6 @@ package com.mercedesbenz.sechub.callhierarchy;
 
 import static com.mercedesbenz.sechub.util.EclipseUtil.getSharedImageDescriptor;
 
-import java.net.URI;
-import java.net.URL;
-
 import javax.inject.Inject;
 
 import org.eclipse.jface.action.Action;
@@ -35,7 +32,6 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
@@ -46,8 +42,8 @@ import com.mercedesbenz.sechub.provider.CallHierarchyLabelProvider;
 import com.mercedesbenz.sechub.provider.FindingModelTreeContentProvider;
 import com.mercedesbenz.sechub.provider.OnlyInputElementItselfTreeContentProvider;
 import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
+import com.mercedesbenz.sechub.util.BrowserUtil;
 import com.mercedesbenz.sechub.util.CweLinkTextCreator;
-import com.mercedesbenz.sechub.util.Logging;
 
 /**
  * This view shows call hierarchy of sechub report entries - shall look similar
@@ -136,12 +132,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 				if (selectedText==null) {
 					return;
 				}
-				try {
-					URL url = new URI(selectedText).toURL();
-					PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(url);
-				}catch(Exception ex) {
-					Logging.logError("Was not able to open url in external browser:"+selectedText,ex);
-				}
+				BrowserUtil.openInExternalBrowser(selectedText);
 
 			}
 		});

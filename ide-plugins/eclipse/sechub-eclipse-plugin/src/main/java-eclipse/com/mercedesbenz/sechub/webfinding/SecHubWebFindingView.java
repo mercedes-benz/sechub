@@ -1,8 +1,5 @@
 package com.mercedesbenz.sechub.webfinding;
 
-import java.net.URI;
-import java.net.URL;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -16,13 +13,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.model.FindingModel;
 import com.mercedesbenz.sechub.model.FindingNode;
+import com.mercedesbenz.sechub.util.BrowserUtil;
 import com.mercedesbenz.sechub.util.CweLinkTextCreator;
 
 public class SecHubWebFindingView extends ViewPart {
@@ -74,14 +71,7 @@ public class SecHubWebFindingView extends ViewPart {
 				if (selectedText == null) {
 					return;
 				}
-				try {
-					URL url = new URI(selectedText).toURL();
-					PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(url);
-				} catch (Exception ex) {
-					// Logging.logError("Was not able to open url in external browser:" +
-					// selectedText, ex);
-					ex.printStackTrace();
-				}
+				BrowserUtil.openInExternalBrowser(selectedText);
 			}
 		});
 		linkDescriptionWithLinks.setText("");

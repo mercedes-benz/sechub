@@ -203,8 +203,14 @@
             name="SecHub">
       </page>
    </extension>
+   <extension
+    point="org.eclipse.core.runtime.preferences">
+    <initializer
+        class="com.mercedesbenz.sechub.preferences.SechubPreferenceInitializer">
+    </initializer>
+</extension>
    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-   <!--                          PERSPECITVE                                 -->
+   <!--                          PERSPECTIVE                                 -->
    <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
    <extension
       point="org.eclipse.ui.perspectives">
@@ -215,4 +221,5 @@
          class="com.mercedesbenz.sechub.SecHubPerspective">
    </perspective>
   </extension>
+  
 </plugin>
