@@ -5,6 +5,9 @@ import {
   ProjectData,
   UserListsJobsForProjectRequest,
   SecHubJobInfoForUserListPage,
+  UserDetailInformation,
+  UserDownloadJobReportRequest,
+  SecHubReport,
 } from 'sechub-openapi-ts-client';
 import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
 
@@ -85,6 +88,34 @@ export class DefaultClient {
     } catch (error) {
       console.error('Error fetching latest jobs:', error);
       vscode.window.showErrorMessage('Failed to fetch latest jobs from the server.');
+      return {};
+    }
+  }
+
+  public async userFetchUserDetailInformation(): Promise<UserDetailInformation> {
+    try {
+      const response: UserDetailInformation = await this.apiClient.withUserSelfServiceApi().userFetchUserDetailInformation();
+      return response;
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      vscode.window.showErrorMessage('Failed to fetch user details from the server.');
+      return {};
+    }
+  }
+
+  public async fetchReport(projectId:string, jobUUID: string): Promise<SecHubReport> {
+
+    const requestParameter: UserDownloadJobReportRequest = {
+      projectId: projectId,
+      jobUUID: jobUUID,
+    };
+
+    try {
+      const response = await this.apiClient.withSecHubExecutionApi().userDownloadJobReport(requestParameter);
+      return response;
+    } catch (error) {
+      console.error('Error fetching report:', error);
+      vscode.window.showErrorMessage('Failed to fetch report from the server.');
       return {};
     }
   }

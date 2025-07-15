@@ -29,6 +29,6 @@ export async function changeCredentials(sechubContext: SecHubContext): Promise<v
             sechubContext.serverWebViewProvider.refresh();
             vscode.window.showInformationMessage('SecHub credentials updated.');
         } else {
-            vscode.window.showErrorMessage('Failed to update SecHub credentials. Please try again.');
+            vscode.window.showInformationMessage('SecHub credentials not updated.');
         }
     }

@@ -5,17 +5,22 @@ import * as vscode from 'vscode';
 
 export class JobListTable {
 
-    private noJobsRunnedMessage = '<p>No jobs have been started for your project or you are not allowed to view them.</p>';
-    private failedToFetchJobsMessage = '<p>Failed to retrieve job list. Please check your project selection and connection.</p>';
+    private noJobsRunnedMessage = '<p>No jobs have been started for your project.</p>';
+    private failedToFetchJobsMessage = '<p>Failed to retrieve job list. You are either not allowed to view them or facing server connection issues.</p>';
     
-    public async createJobListTable(context: vscode.ExtensionContext) : Promise<string> {
+    public async createJobTable(context: vscode.ExtensionContext) : Promise<string> {
 
         const project: ProjectData | undefined = context.globalState.get(SECHUB_REPORT_KEYS.selectedProject);
         if (!project) {
             return this.noJobsRunnedMessage;
         }
         const projectId = project.projectId;
-        const title = `<p>SecHub Job List for Project: ${projectId}</p>`;
+        const title = `<div id="jobTableTitleContainer">
+            <p id="sechubJobTableTitle">Project 
+            <span>${projectId}</span>
+            </p>
+            <button id="changeProjectBtn" class="sechubButton">Change Project</button>
+    </div>`;
 
         const client = await DefaultClient.getInstance(context);
         const data = await client.userListsJobsForProject(projectId);
@@ -27,7 +32,7 @@ export class JobListTable {
                         <th>Created</th>
                         <th>Status</th>
                         <th>Result</th>
-                        <th>Traffic Light</th>
+                        <th></th>
                         <th>Job UUID</th>
                         <th>Executed By</th>
                     </tr>
@@ -37,24 +42,24 @@ export class JobListTable {
                 data.content.forEach(job => {
                     const date = this.formatDate(job.created + '');
                     tableContent += `<tbody>
-                                <tr>
+                                    <tr class="sechub-job-row" data-job-uuid="${job.jobUUID}" data-project-id="${projectId}">
                                     <td>${date}</td>
                                     <td>${job.executionState}</td>
                                     <td>${job.executionResult}</td>
-                                    <td>${job.trafficLight}</td>
+                                    <td id="sechubJobTableTrafficLight"><span class="traffic-light ${job.trafficLight?.toLowerCase()}"></span></td>
                                     <td>${job.jobUUID}</td>
                                     <td>${job.executedBy}</td>
                                 </tr>
                                 </tbody>`;
                 });
                 
-                const table: string = `${title}<table>${haeder}${tableContent}</table>`;
+                const table: string = `${title}<table id="sechubJobTable">${haeder}${tableContent}</table>`;
                 return table;
             } else {
-                return this.noJobsRunnedMessage;
+                return `${title}${this.noJobsRunnedMessage}`;
             }
         }
-        return this.failedToFetchJobsMessage;
+        return `${title}${this.failedToFetchJobsMessage}`;
     }
 
     private formatDate(dateString: string | undefined) {
@@ -69,4 +74,4 @@ export class JobListTable {
         return `${day}.${month}.${year} ${time}`;
     }
 
-}   
+}

@@ -1,6 +1,8 @@
 import { SecHubContext } from '../extension';
-import { SECHUB_VIEW_IDS } from '../utils/sechubConstants';
-import { JobListTable } from '../webview/jobListTable';
+import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
+import { JobListTable } from '../webview/jobTable';
+import { ServerStateContainer } from '../webview/serverStateContainer';
+import { DefaultClient } from '../api/defaultClient';
 import * as vscode from 'vscode';
 
 export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
@@ -10,6 +12,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 	private _view?: vscode.WebviewView;
 	private _sechubContext: SecHubContext;
 	private jobListDataTable = new JobListTable();
+	private serverStateContainer = new ServerStateContainer();
 
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
@@ -37,11 +40,26 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
 		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
-				case 'colorSelected':
+				case 'changeProject':
 					{
-						vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
-						break;
+						vscode.commands.executeCommand(SECHUB_COMMANDS.selectProject);
 					}
+					break;
+				case 'changeServerUrl':
+					{
+						vscode.commands.executeCommand(SECHUB_COMMANDS.changeServerUrl);
+					}
+					break;
+				case 'changeCredentials':
+					{
+						vscode.commands.executeCommand(SECHUB_COMMANDS.changeCredentials);
+					}
+					break;
+				case 'fetchReport':
+					{
+						this.syncReportFromServer(data.jobUUID, data.projectId);
+					}
+					break;
 			}
 		});
 	}
@@ -54,11 +72,27 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 		}
 	}
 
+	private async syncReportFromServer(jobUUID: string, projectId: string) {
+		const client = await DefaultClient.getInstance(this._sechubContext.extensionContext);
+		const report = await client.fetchReport(projectId, jobUUID);
+		if (report) {
+			this._sechubContext.reportTreeProvider.update(report);
+			this._sechubContext.report = report;
+		} else {
+			vscode.window.showErrorMessage('Failed to fetch report from the server.');
+		}
+	}
+
 	private async _getHtmlForWebview(webview: vscode.Webview) {
 		// Use a nonce to only allow a specific script to be run.
 		const nonce = getNonce();
-		
-		const dataTable = await this.jobListDataTable.createJobListTable(this._sechubContext.extensionContext);
+
+		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
+
+		const javascriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'main.js'));
+
+		const serverStateHtml = await this.serverStateContainer.createServerStateContainer(this._sechubContext.extensionContext);
+		const dataTable = await this.jobListDataTable.createJobTable(this._sechubContext.extensionContext);
 		
 		const htmlSource = `
 		<!DOCTYPE html>
@@ -73,11 +107,16 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				
+				<link href="${styleMainUri}" rel="stylesheet">
 
 				<title>Server</title>
 			</head>
 			<body class="vscode-light">
+				${serverStateHtml}
 				${dataTable}
+
+			<script nonce="${nonce}" src="${javascriptUri}" script-src 'nonce-${nonce}'></script>
 			</body>
 			</html>
 		`;

@@ -1,0 +1,125 @@
+/* CSS main */
+.sechubButton {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.sechubButton:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.sechubButton:active {
+    background-color: var(--vscode-button-activeBackground);
+}
+
+.traffic-light {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.off {
+    background-color: grey;
+}
+
+/* jobTable */
+#sechubJobTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#sechubJobTable td,
+#sechubJobTable th {
+    padding: 8px;
+}
+
+#sechubJobTable tbody tr:hover {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    cursor: pointer;
+}
+
+#sechubJobTable tbody tr:active {
+    background-color: var(--vscode-inputOption-activeBackground);
+}
+
+#sechubJobTable th {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: left;
+    background-color: var(--vscode-button-background);
+}
+
+#jobTableTitleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: left;
+    margin-bottom: 4px;
+}
+
+#sechubJobTableTitle {
+    font-weight: bold;
+}
+
+#sechubJobTableTrafficLight {
+    text-align: center;
+}
+
+/* serverStateContainer */
+
+#serverUrlContainer {
+    align-items: left;
+    padding: 2px;
+    margin: 2px;
+}
+
+#serverUrlContainer:hover {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    cursor: pointer;
+}
+
+#serverUrlContainer:active {
+    background-color: var(--vscode-inputOption-activeBackground);
+}
+
+#serverUrl {
+    padding: 0;
+    margin: 0;
+}
+
+#serverUserContainer {
+    align-items: left;
+    padding: 2px;
+}
+
+#serverUserContainer:hover {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    cursor: pointer;
+}
+
+#serverUserContainer:active {
+    background-color: var(--vscode-inputOption-activeBackground);
+}
+
+#connectionState{
+    padding: 0;
+    margin: 0;
+}
