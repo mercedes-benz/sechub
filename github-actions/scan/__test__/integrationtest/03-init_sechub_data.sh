@@ -53,7 +53,6 @@ function createData(){
    
    echo "> Create test project:$project for user:$user"
    ./sechub-api.sh project_create "$project" "$user" "Testproject $number for integration tests"
-   ./sechub-api.sh project_assign_user "$project" "$user" # assign user to project
 
    echo "> Create executor config: '${executor}'"
    ./sechub-api.sh executor_create "$SCRIPT_DIR/test-config/${executor}.json"
@@ -82,5 +81,6 @@ createData 4 webscan red
 createData 5 secretscan yellow
 createData 6 licensescan green
 createData 7 codescan red-def-fp
+createData 8 iacscan red
 
 ./sechub-api.sh project_set_whitelist_uris test-project-4 https://vulnerable.demo.example.com

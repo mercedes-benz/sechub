@@ -1,0 +1,1106 @@
+{
+	"$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+	"version": "2.1.0",
+	"runs": [
+	  {
+		"tool": {
+		  "driver": {
+			"name": "KICS",
+			"version": "development",
+			"fullName": "Keeping Infrastructure as Code Secure",
+			"informationUri": "https://www.kics.io/",
+			"rules": [
+			  {
+				"id": "62232513-b16f-4010-83d7-51d0e1d45426",
+				"name": "OSS Bucket Public Access Enabled",
+				"shortDescription": {
+				  "text": "OSS Bucket Public Access Enabled"
+				},
+				"fullDescription": {
+				  "text": "OSS Bucket should have public access disabled"
+				},
+				"defaultConfiguration": {
+				  "level": "error"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/oss_bucket#acl",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT001",
+					  "index": 5,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "1b4565c0-4877-49ac-ab03-adebbccd42ae",
+				"name": "RDS DB Instance Publicly Accessible",
+				"shortDescription": {
+				  "text": "RDS DB Instance Publicly Accessible"
+				},
+				"fullDescription": {
+				  "text": "'0.0.0.0' or '0.0.0.0/0' should not be in 'security_ips' list"
+				},
+				"defaultConfiguration": {
+				  "level": "error"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/db_instance#security_ips",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT007",
+					  "index": 12,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "7a1ee8a9-71be-4b11-bb70-efb62d16863b",
+				"name": "RDS Instance SSL Action Disabled",
+				"shortDescription": {
+				  "text": "RDS Instance SSL Action Disabled"
+				},
+				"fullDescription": {
+				  "text": "ssl_action parameter should be set to Open for RDS instances"
+				},
+				"defaultConfiguration": {
+				  "level": "error"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/db_instance#ssl_action",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT009",
+					  "index": 14,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "c065b98e-1515-4991-9dca-b602bd6a2fbb",
+				"name": "Action Trail Logging For All Regions Disabled",
+				"shortDescription": {
+				  "text": "Action Trail Logging For All Regions Disabled"
+				},
+				"fullDescription": {
+				  "text": "Action Trail Logging for all regions should be enabled"
+				},
+				"defaultConfiguration": {
+				  "level": "warning"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/actiontrail_trail#trail_region",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT010",
+					  "index": 1,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "f20e97f9-4919-43f1-9be9-f203cd339cdd",
+				"name": "OSS Bucket Encryption Using CMK Disabled",
+				"shortDescription": {
+				  "text": "OSS Bucket Encryption Using CMK Disabled"
+				},
+				"fullDescription": {
+				  "text": "OSS Bucket should have encryption enabled using Customer Master Key"
+				},
+				"defaultConfiguration": {
+				  "level": "warning"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/oss_bucket#server_side_encryption_rule",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT006",
+					  "index": 11,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "05db341e-de7d-4972-a106-3e2bd5ee53e1",
+				"name": "OSS Bucket Logging Disabled",
+				"shortDescription": {
+				  "text": "OSS Bucket Logging Disabled"
+				},
+				"fullDescription": {
+				  "text": "OSS Bucket should have logging enabled, for better visibility of resources and objects."
+				},
+				"defaultConfiguration": {
+				  "level": "warning"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/oss_bucket#logging",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT010",
+					  "index": 1,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "70919c0b-2548-4e6b-8d7a-3d84ab6dabba",
+				"name": "OSS Bucket Versioning Disabled",
+				"shortDescription": {
+				  "text": "OSS Bucket Versioning Disabled"
+				},
+				"fullDescription": {
+				  "text": "OSS Bucket should have versioning enabled"
+				},
+				"defaultConfiguration": {
+				  "level": "warning"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/oss_bucket#versioning",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT003",
+					  "index": 6,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "dc158941-28ce-481d-a7fa-dc80761edf46",
+				"name": "RDS Instance Retention Period Not Recommended",
+				"shortDescription": {
+				  "text": "RDS Instance Retention Period Not Recommended"
+				},
+				"fullDescription": {
+				  "text": "RDS Instance SQL Retention Period should be greater than 180"
+				},
+				"defaultConfiguration": {
+				  "level": "warning"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/db_instance#sql_collector_config_value",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT010",
+					  "index": 1,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "7db8bd7e-9772-478c-9ec5-4bc202c5686f",
+				"name": "OSS Bucket Lifecycle Rule Disabled",
+				"shortDescription": {
+				  "text": "OSS Bucket Lifecycle Rule Disabled"
+				},
+				"fullDescription": {
+				  "text": "OSS Bucket should have lifecycle rule enabled and set to true"
+				},
+				"defaultConfiguration": {
+				  "level": "note"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/oss_bucket#lifecycle_rule",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT003",
+					  "index": 6,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "8f98334a-99aa-4d85-b72a-1399ca010413",
+				"name": "OSS Bucket Transfer Acceleration Disabled",
+				"shortDescription": {
+				  "text": "OSS Bucket Transfer Acceleration Disabled"
+				},
+				"fullDescription": {
+				  "text": "OSS Bucket should have transfer acceleration enabled"
+				},
+				"defaultConfiguration": {
+				  "level": "note"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/oss_bucket#transfer_acceleration",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT002",
+					  "index": 10,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "140869ea-25f2-40d4-a595-0c0da135114e",
+				"name": "RDS Instance Log Connections Disabled",
+				"shortDescription": {
+				  "text": "RDS Instance Log Connections Disabled"
+				},
+				"fullDescription": {
+				  "text": "'log_connections' parameter should be set to ON for RDS instances"
+				},
+				"defaultConfiguration": {
+				  "level": "note"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/db_instance#parameters",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT010",
+					  "index": 1,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "d53f4123-f8d8-4224-8cb3-f920b151cc98",
+				"name": "RDS Instance Log Disconnections Disabled",
+				"shortDescription": {
+				  "text": "RDS Instance Log Disconnections Disabled"
+				},
+				"fullDescription": {
+				  "text": "log_disconnections parameter should be set to ON for RDS instances"
+				},
+				"defaultConfiguration": {
+				  "level": "note"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/db_instance#parameters",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT010",
+					  "index": 1,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  },
+			  {
+				"id": "a597e05a-c065-44e7-9cc8-742f572a504a",
+				"name": "RDS Instance Log Duration Disabled",
+				"shortDescription": {
+				  "text": "RDS Instance Log Duration Disabled"
+				},
+				"fullDescription": {
+				  "text": "log_duration parameter should be set to ON for RDS instances"
+				},
+				"defaultConfiguration": {
+				  "level": "note"
+				},
+				"helpUri": "https://registry.terraform.io/providers/aliyun/alicloud/latest/docs/resources/db_instance#parameters",
+				"relationships": [
+				  {
+					"target": {
+					  "id": "CAT010",
+					  "index": 1,
+					  "toolComponent": {
+						"name": "Categories",
+						"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+						"index": 0
+					  }
+					}
+				  },
+				  {
+					"target": {
+					  "id": "1349",
+					  "guid": "33333333-0000-1111-8888-111111111111",
+					  "toolComponent": {
+						"name": "CWE",
+						"guid": "33333333-0000-1111-8888-000000000000"
+					  }
+					}
+				  }
+				]
+			  }
+			]
+		  }
+		},
+		"results": [
+		  {
+			"ruleId": "62232513-b16f-4010-83d7-51d0e1d45426",
+			"ruleIndex": 0,
+			"kind": "fail",
+			"message": {
+			  "text": "'acl' is public-read-write"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/bucket.tf"
+				  },
+				  "region": {
+					"startLine": 7
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "1b4565c0-4877-49ac-ab03-adebbccd42ae",
+			"ruleIndex": 1,
+			"kind": "fail",
+			"message": {
+			  "text": "'0.0.0.0' is in 'security_ips' list"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/rds.tf"
+				  },
+				  "region": {
+					"startLine": 9
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "7a1ee8a9-71be-4b11-bb70-efb62d16863b",
+			"ruleIndex": 2,
+			"kind": "fail",
+			"message": {
+			  "text": "'ssl_action' is not defined"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/rds.tf"
+				  },
+				  "region": {
+					"startLine": 1
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "c065b98e-1515-4991-9dca-b602bd6a2fbb",
+			"ruleIndex": 3,
+			"kind": "fail",
+			"message": {
+			  "text": "'event_rw' is not set to All"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/trail.tf"
+				  },
+				  "region": {
+					"startLine": 7
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "c065b98e-1515-4991-9dca-b602bd6a2fbb",
+			"ruleIndex": 3,
+			"kind": "fail",
+			"message": {
+			  "text": "'trail_region' is not set to All"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/trail.tf"
+				  },
+				  "region": {
+					"startLine": 8
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "f20e97f9-4919-43f1-9be9-f203cd339cdd",
+			"ruleIndex": 4,
+			"kind": "fail",
+			"message": {
+			  "text": "[trail].policy does not have server side encryption rule and kms master key id defined"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/trail.tf"
+				  },
+				  "region": {
+					"startLine": 11
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "f20e97f9-4919-43f1-9be9-f203cd339cdd",
+			"ruleIndex": 4,
+			"kind": "fail",
+			"message": {
+			  "text": "[bad_bucket].policy does not have server side encryption rule and kms master key id defined"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/bucket.tf"
+				  },
+				  "region": {
+					"startLine": 1
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "05db341e-de7d-4972-a106-3e2bd5ee53e1",
+			"ruleIndex": 5,
+			"kind": "fail",
+			"message": {
+			  "text": "bad_bucket does not have logging enabled"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/bucket.tf"
+				  },
+				  "region": {
+					"startLine": 1
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "05db341e-de7d-4972-a106-3e2bd5ee53e1",
+			"ruleIndex": 5,
+			"kind": "fail",
+			"message": {
+			  "text": "trail does not have logging enabled"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/trail.tf"
+				  },
+				  "region": {
+					"startLine": 11
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "70919c0b-2548-4e6b-8d7a-3d84ab6dabba",
+			"ruleIndex": 6,
+			"kind": "fail",
+			"message": {
+			  "text": "'versioning' is missing"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/trail.tf"
+				  },
+				  "region": {
+					"startLine": 11
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "70919c0b-2548-4e6b-8d7a-3d84ab6dabba",
+			"ruleIndex": 6,
+			"kind": "fail",
+			"message": {
+			  "text": "'versioning' is missing"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/bucket.tf"
+				  },
+				  "region": {
+					"startLine": 1
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "dc158941-28ce-481d-a7fa-dc80761edf46",
+			"ruleIndex": 7,
+			"kind": "fail",
+			"message": {
+			  "text": "'sql_collector_status' is not defined"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/rds.tf"
+				  },
+				  "region": {
+					"startLine": 1
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "dc158941-28ce-481d-a7fa-dc80761edf46",
+			"ruleIndex": 7,
+			"kind": "fail",
+			"message": {
+			  "text": "'sql_collector_config_value' is not defined"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/rds.tf"
+				  },
+				  "region": {
+					"startLine": 1
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "7db8bd7e-9772-478c-9ec5-4bc202c5686f",
+			"ruleIndex": 8,
+			"kind": "fail",
+			"message": {
+			  "text": "'lifecycle_rule' is not set"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/bucket.tf"
+				  },
+				  "region": {
+					"startLine": 1
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "7db8bd7e-9772-478c-9ec5-4bc202c5686f",
+			"ruleIndex": 8,
+			"kind": "fail",
+			"message": {
+			  "text": "'lifecycle_rule' is not set"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/trail.tf"
+				  },
+				  "region": {
+					"startLine": 11
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "8f98334a-99aa-4d85-b72a-1399ca010413",
+			"ruleIndex": 9,
+			"kind": "fail",
+			"message": {
+			  "text": "'transfer_acceleration' is missing"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/bucket.tf"
+				  },
+				  "region": {
+					"startLine": 1
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "8f98334a-99aa-4d85-b72a-1399ca010413",
+			"ruleIndex": 9,
+			"kind": "fail",
+			"message": {
+			  "text": "'transfer_acceleration' is missing"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/trail.tf"
+				  },
+				  "region": {
+					"startLine": 11
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "140869ea-25f2-40d4-a595-0c0da135114e",
+			"ruleIndex": 10,
+			"kind": "fail",
+			"message": {
+			  "text": "'log_connections' parameter is not defined"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/rds.tf"
+				  },
+				  "region": {
+					"startLine": 16
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "d53f4123-f8d8-4224-8cb3-f920b151cc98",
+			"ruleIndex": 11,
+			"kind": "fail",
+			"message": {
+			  "text": "'log_disconnections' parameter is not defined"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/rds.tf"
+				  },
+				  "region": {
+					"startLine": 16
+				  }
+				}
+			  }
+			]
+		  },
+		  {
+			"ruleId": "a597e05a-c065-44e7-9cc8-742f572a504a",
+			"ruleIndex": 12,
+			"kind": "fail",
+			"message": {
+			  "text": "'log_duration' parameter is not defined"
+			},
+			"locations": [
+			  {
+				"physicalLocation": {
+				  "artifactLocation": {
+					"uri": "alicloud/rds.tf"
+				  },
+				  "region": {
+					"startLine": 16
+				  }
+				}
+			  }
+			]
+		  }
+		],
+		"taxonomies": [
+		  {
+			"guid": "58cdcc6f-fe41-4724-bfb3-131a93df4c3f",
+			"name": "Categories",
+			"fullDescription": {
+			  "text": "This taxonomy contains the types an issue can assume"
+			},
+			"shortDescription": {
+			  "text": "Vulnerabilities categories"
+			},
+			"taxa": [
+			  {
+				"id": "CAT000",
+				"name": "Undefined Category",
+				"shortDescription": {
+				  "text": "Category is not defined"
+				},
+				"fullDescription": {
+				  "text": "Category is not defined"
+				}
+			  },
+			  {
+				"id": "CAT010",
+				"name": "Observability",
+				"shortDescription": {
+				  "text": "Logging and Monitoring"
+				},
+				"fullDescription": {
+				  "text": "Logging and Monitoring"
+				}
+			  },
+			  {
+				"id": "CAT008",
+				"name": "Insecure Defaults",
+				"shortDescription": {
+				  "text": "Configurations that are insecure by default"
+				},
+				"fullDescription": {
+				  "text": "Configurations that are insecure by default"
+				}
+			  },
+			  {
+				"id": "CAT012",
+				"name": "Secret Management",
+				"shortDescription": {
+				  "text": "Secret and Key management"
+				},
+				"fullDescription": {
+				  "text": "Secret and Key management"
+				}
+			  },
+			  {
+				"id": "CAT014",
+				"name": "Structure and Semantics",
+				"shortDescription": {
+				  "text": "Malformed document structure or inadequate semantics"
+				},
+				"fullDescription": {
+				  "text": "Malformed document structure or inadequate semantics"
+				}
+			  },
+			  {
+				"id": "CAT001",
+				"name": "Access Control",
+				"shortDescription": {
+				  "text": "Service permission and identity management"
+				},
+				"fullDescription": {
+				  "text": "Service permission and identity management"
+				}
+			  },
+			  {
+				"id": "CAT003",
+				"name": "Backup",
+				"shortDescription": {
+				  "text": "Survivability and Recovery"
+				},
+				"fullDescription": {
+				  "text": "Survivability and Recovery"
+				}
+			  },
+			  {
+				"id": "CAT004",
+				"name": "Best Practices",
+				"shortDescription": {
+				  "text": "Metadata management"
+				},
+				"fullDescription": {
+				  "text": "Metadata management"
+				}
+			  },
+			  {
+				"id": "CAT011",
+				"name": "Resource Management",
+				"shortDescription": {
+				  "text": "Resource and privilege limit configuration"
+				},
+				"fullDescription": {
+				  "text": "Resource and privilege limit configuration"
+				}
+			  },
+			  {
+				"id": "CAT015",
+				"name": "Bill Of Materials",
+				"shortDescription": {
+				  "text": "List of resources provisioned"
+				},
+				"fullDescription": {
+				  "text": "List of resources provisioned"
+				}
+			  },
+			  {
+				"id": "CAT002",
+				"name": "Availability",
+				"shortDescription": {
+				  "text": "Reliability and Scalability"
+				},
+				"fullDescription": {
+				  "text": "Reliability and Scalability"
+				}
+			  },
+			  {
+				"id": "CAT006",
+				"name": "Encryption",
+				"shortDescription": {
+				  "text": "Data Security and Encryption configuration"
+				},
+				"fullDescription": {
+				  "text": "Data Security and Encryption configuration"
+				}
+			  },
+			  {
+				"id": "CAT007",
+				"name": "Insecure Configurations",
+				"shortDescription": {
+				  "text": "Configurations which expose the application unnecessarily"
+				},
+				"fullDescription": {
+				  "text": "Configurations which expose the application unnecessarily"
+				}
+			  },
+			  {
+				"id": "CAT005",
+				"name": "Build Process",
+				"shortDescription": {
+				  "text": "Insecure configurations when building/deploying"
+				},
+				"fullDescription": {
+				  "text": "Insecure configurations when building/deploying"
+				}
+			  },
+			  {
+				"id": "CAT009",
+				"name": "Networking and Firewall",
+				"shortDescription": {
+				  "text": "Network port exposure and firewall configuration"
+				},
+				"fullDescription": {
+				  "text": "Network port exposure and firewall configuration"
+				}
+			  },
+			  {
+				"id": "CAT013",
+				"name": "Supply-Chain",
+				"shortDescription": {
+				  "text": "Dependency version management"
+				},
+				"fullDescription": {
+				  "text": "Dependency version management"
+				}
+			  }
+			]
+		  },
+		  {
+			"name": "CWE",
+			"version": "4.13",
+			"releaseDateUtc": "2023-12-08",
+			"guid": "33333333-0000-1111-8888-000000000000",
+			"informationUri": "https://cwe.mitre.org/data/published/cwe_v4.13.pdf/",
+			"downloadUri": "https://cwe.mitre.org/data/xml/cwec_v4.13.xml.zip",
+			"organization": "MITRE",
+			"shortDescription": {
+			  "text": "The MITRE Common Weakness Enumeration"
+			},
+			"contents": [
+			  "localizedData",
+			  "nonLocalizedData"
+			],
+			"isComprehensive": true,
+			"minimumRequiredLocalizedDataSemanticVersion": "4.13",
+			"taxa": [
+			  {
+				"id": "1349",
+				"guid": "33333333-0000-1111-8888-111111111111",
+				"name": "OWASP Top Ten 2021 Category A05:2021 - Security Misconfiguration",
+				"shortDescription": {
+				  "text": "Weaknesses in this category are related to the A05 category Security Misconfiguration in the OWASP Top Ten 2021."
+				},
+				"defaultConfiguration": {
+				  "level": "warning"
+				}
+			  }
+			]
+		  }
+		]
+	  }
+	]
+  }

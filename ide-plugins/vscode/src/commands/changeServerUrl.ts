@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from "../extension";
 import { SECHUB_CREDENTIAL_KEYS } from "../utils/sechubConstants";

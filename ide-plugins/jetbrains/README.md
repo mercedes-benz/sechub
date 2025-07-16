@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT --->
 # SecHub IntelliJ Plugin
 
 ![SecHub Logo](other/images/sechub-logo-big.png)
