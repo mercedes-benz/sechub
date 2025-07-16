@@ -55,7 +55,7 @@ public class SecHubReportImporter {
 				return createErrorStatus("Reportfile importer returned null");
 			}
 			monitor.worked(1);
-			importReport(report, null, monitor);
+			importReportAndDisplay(report, null, monitor);
 
 			return Status.OK_STATUS;
 
@@ -69,14 +69,14 @@ public class SecHubReportImporter {
 
 	private IStatus importAndDisplayReportInsideJob(SecHubReport report, String projectId, IProgressMonitor monitor) {
 		monitor.beginTask("Import SecHub report data from project: "+projectId, 2);
-		importReport(report, projectId, monitor);
+		importReportAndDisplay(report, projectId, monitor);
 		return Status.OK_STATUS;
 	}
 
 	/**
 	 * Will do 2 works on progress monitor
 	 */
-	private void importReport(SecHubReport report, String projectId, IProgressMonitor monitor) {
+	private void importReportAndDisplay(SecHubReport report, String projectId, IProgressMonitor monitor) {
 		FindingModel model = transformer.transform(report, projectId);
 		monitor.worked(1);
 

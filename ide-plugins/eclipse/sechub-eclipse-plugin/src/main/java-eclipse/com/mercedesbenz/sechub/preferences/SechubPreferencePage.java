@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.equinox.security.storage.StorageException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -18,6 +19,8 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+
+import com.mercedesbenz.sechub.util.Logging;
 
 public class SechubPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
@@ -60,8 +63,7 @@ public class SechubPreferencePage extends FieldEditorPreferencePage implements I
 				"Use custom Web UI Location", getFieldEditorParent());
 		customWebUILocationEditorField = new StringFieldEditor(PreferenceIdConstants.CUSTOM_WEBUI_LOCATION,
 				"Web UI location:", getFieldEditorParent());
-		trustAllField = new BooleanFieldEditor(PreferenceIdConstants.TRUST_ALL,
-				"Trust all", getFieldEditorParent());
+		trustAllField = new BooleanFieldEditor(PreferenceIdConstants.TRUST_ALL, "Trust all", getFieldEditorParent());
 
 		addField(serverUrlField);
 		addField(usernameField);
@@ -71,7 +73,8 @@ public class SechubPreferencePage extends FieldEditorPreferencePage implements I
 		addField(customWebUILocationEditorField);
 		addField(trustAllField);
 
-		Control useCustomWebUILocationCheckbox = useCustomWebUiLocationField.getDescriptionControl(getFieldEditorParent());
+		Control useCustomWebUILocationCheckbox = useCustomWebUiLocationField
+				.getDescriptionControl(getFieldEditorParent());
 		if (useCustomWebUILocationCheckbox instanceof Button btn) {
 			btn.addSelectionListener(new SelectionAdapter() {
 				@Override
@@ -82,10 +85,11 @@ public class SechubPreferencePage extends FieldEditorPreferencePage implements I
 		}
 		useCustomWebUILocationCheckbox.setToolTipText(
 				"When enabled, the custom url will be used to open Web UI by toolbar action. \nWhen disabled '{sechubServerUrl}/login' is used instead");
-		
+
 		Control trustAllCheckbox = trustAllField.getDescriptionControl(getFieldEditorParent());
-		trustAllCheckbox.setToolTipText("When enabled, every SecHub server certifcate is accepted.\nOnly necessary when SecHub server uses a self signed certificate.");
-		
+		trustAllCheckbox.setToolTipText(
+				"When enabled, every SecHub server certifcate is accepted.\nOnly necessary when SecHub server uses a self signed certificate.");
+
 		updateCustomWebUIUrlField();
 	}
 
@@ -151,6 +155,11 @@ public class SechubPreferencePage extends FieldEditorPreferencePage implements I
 
 			secureStorageAccess.storeSecureStorage(userId, apitoken);
 		} catch (StorageException e) {
+			Logging.logError("Storage problem", e);
+			MessageDialog.openError(getShell(), "Secure storage problem",
+					"Cannot store your credentials.\nPlease check your secure storage settings in eclipse preferences.\nReason: "
+							+ e.getMessage());
+
 			return false;
 		}
 
