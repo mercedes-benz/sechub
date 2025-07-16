@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { SecHubContext } from "../extension";
 import { SECHUB_COMMANDS, SECHUB_CREDENTIAL_KEYS, SECHUB_REPORT_KEYS } from "../utils/sechubConstants";
 import { DefaultClient } from "../api/defaultClient";
-import { ProjectData, SecHubReport } from 'sechub-openapi-ts-client';
-import { multiStepInput } from '../sechubCredentialsMultistepInput';
+import { ProjectData, ScanType, SecHubReport } from 'sechub-openapi-ts-client';
+import { multiStepInput } from '../utils/sechubCredentialsMultistepInput';
 
 export async function fetchReportByUUID(sechubContext: SecHubContext): Promise<void>{
 
@@ -38,10 +38,9 @@ export async function fetchReportByUUID(sechubContext: SecHubContext): Promise<v
     const client = await DefaultClient.getInstance(sechubContext.extensionContext);
 
     try {
-        const data: SecHubReport = await client.fetchReport(project.projectId, jobUUID);
+        const data = await client.fetchReport(project.projectId, jobUUID);
         if (data) {
-            sechubContext.reportTreeProvider.update(data);
-            sechubContext.report = data;
+            sechubContext.setReport(data);
             vscode.window.showInformationMessage(`Report for job ${jobUUID} fetched successfully.`);
         } else {
             vscode.window.showErrorMessage(`No report found for job ${jobUUID}.`);

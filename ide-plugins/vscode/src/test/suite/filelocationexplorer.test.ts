@@ -5,7 +5,7 @@ import * as fs from 'fs';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
-import { FileLocationExplorer } from '../../fileLocationExplorer';
+import { FileLocationExplorer } from '../../utils/fileLocationExplorer';
 
 suite('FileLocationExplorer Test Suite', () => {
 

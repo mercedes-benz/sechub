@@ -103,7 +103,7 @@ export class DefaultClient {
     }
   }
 
-  public async fetchReport(projectId:string, jobUUID: string): Promise<SecHubReport> {
+  public async fetchReport(projectId:string, jobUUID: string): Promise<SecHubReport | undefined> {
 
     const requestParameter: UserDownloadJobReportRequest = {
       projectId: projectId,
@@ -116,7 +116,7 @@ export class DefaultClient {
     } catch (error) {
       console.error('Error fetching report:', error);
       vscode.window.showErrorMessage('Failed to fetch report from the server.');
-      return {};
+      return undefined;
     }
   }
 }

@@ -2,7 +2,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { Command } from 'vscode';
-import * as findingNodeLinkBuilder from './../model/findingNodeLinkBuilder';
+import * as findingNodeLinkBuilder from '../utils/findingNodeLinkBuilder';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
 export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoItem> {
@@ -27,7 +27,6 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
 
   getChildren(element?: InfoItem): Thenable<InfoItem[]> {
     if (!this.callStack) {
-      vscode.window.showInformationMessage('No call stack data available');
       return Promise.resolve([]);
     }
 
@@ -45,7 +44,7 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
   }
 
 
-  public update(findingNode: SecHubFinding | undefined, callStack: SecHubCodeCallStack) {
+  public update(findingNode: SecHubFinding | undefined, callStack: SecHubCodeCallStack | undefined) {
     this.findingNode = findingNode;
     this.callStack = callStack;
     this.refresh();

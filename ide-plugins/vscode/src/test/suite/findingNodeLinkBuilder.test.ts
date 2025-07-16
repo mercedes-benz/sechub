@@ -2,7 +2,7 @@
 import * as assert from 'assert';
 
 import { Severity, ScanType } from 'sechub-openapi-ts-client';
-import { FindingNodeLinkBuilder } from '../../model/findingNodeLinkBuilder';
+import { FindingNodeLinkBuilder } from '../../utils/findingNodeLinkBuilder';
 
 suite('FindingNodeLinkBuilder Test Suite', () => {
 

@@ -6,15 +6,15 @@ import * as vscode from 'vscode';
 import * as callHierarchyViewActions from './action/callHierarchyViewActions';
 import * as importActions from './action/importActions';
 import * as reportViewActions from './action/reportViewActions';
-import { FileLocationExplorer } from './fileLocationExplorer';
-import { FindingNodeLinkBuilder } from './model/findingNodeLinkBuilder';
+import { FileLocationExplorer } from './utils/fileLocationExplorer';
+import { FindingNodeLinkBuilder } from './utils/findingNodeLinkBuilder';
 import { HierarchyItem, SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
 import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvider';
 import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
 
 import { loadFromFile } from './utils/sechubUtils';
-import { SecHubReport } from 'sechub-openapi-ts-client';
-import { multiStepInput } from './sechubCredentialsMultistepInput';
+import { SecHubReport, ScanType } from 'sechub-openapi-ts-client';
+import { multiStepInput } from './utils/sechubCredentialsMultistepInput';
 import { SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
 import { DefaultClient } from './api/defaultClient';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
@@ -119,11 +119,12 @@ export class SecHubContext {
 	callHierarchyView: vscode.TreeView<HierarchyItem|undefined> | undefined = undefined;
 	reportView: vscode.TreeView<ReportItem> | undefined = undefined;
 
+	private report: SecHubReport | undefined;
+
 	findingNodeLinkBuilder: FindingNodeLinkBuilder;
 	callHierarchyTreeDataProvider: SecHubCallHierarchyTreeDataProvider;
 	reportTreeProvider: SecHubReportTreeDataProvider;
 	infoTreeProvider: SecHubInfoTreeDataProvider;
-	report: SecHubReport | undefined;
 	extensionContext: vscode.ExtensionContext;
 	fileLocationExplorer: FileLocationExplorer;
 	serverWebViewProvider: SecHubServerWebviewProvider;
@@ -143,7 +144,34 @@ export class SecHubContext {
 		workspaceFolders?.forEach((workspaceFolder) => {
 			this.fileLocationExplorer.searchFolders.add(workspaceFolder.uri.fsPath);
 		});
+	}
 
+	public setReport(report: SecHubReport) {
+		try{
+			this.checkReport(report);
+			this.report = report;
+			this.reportTreeProvider.update(report);
+		}catch (error) {
+			this.report = undefined;
+			this.reportTreeProvider.update({});
+		}
+
+		this.callHierarchyTreeDataProvider.update(undefined);
+		this.infoTreeProvider.update(undefined, undefined);
+	}
+
+	private checkReport(report: SecHubReport) {
+
+		const scanTypes: Array<ScanType> = report.metaData?.executed || [];
+		
+		if(scanTypes.length === 0){
+			vscode.window.showErrorMessage("No scan was executed in loaded report.");
+		}
+
+		if (scanTypes.includes(ScanType.WebScan) && scanTypes.length === 1) {
+			vscode.window.showErrorMessage("WebScan is not supported in this IDE plugin. Please use the SecHub Web UI to view WebScan results.");
+			throw new Error("WebScan is not supported in this IDE plugin.");
+		}
 	}
 }
 

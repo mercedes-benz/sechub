@@ -1,5 +1,5 @@
 import { window, Disposable, ExtensionContext, QuickInputButton, QuickInputButtons, QuickInput } from 'vscode';
-import { SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
+import { SECHUB_CREDENTIAL_KEYS } from './sechubConstants';
 
 export async function multiStepInput(context: ExtensionContext) {
 

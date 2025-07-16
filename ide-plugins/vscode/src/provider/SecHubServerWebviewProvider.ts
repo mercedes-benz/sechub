@@ -61,6 +61,11 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 						this.syncReportFromServer(data.jobUUID, data.projectId);
 					}
 					break;
+				case 'changePage':
+					{
+						this.jobListDataTable.changePageDirectory(data.direction);
+						this.refresh();
+					}
 			}
 		});
 	}
@@ -76,8 +81,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 		const client = await DefaultClient.getInstance(this._sechubContext.extensionContext);
 		const report = await client.fetchReport(projectId, jobUUID);
 		if (report) {
-			this._sechubContext.reportTreeProvider.update(report);
-			this._sechubContext.report = report;
+			this._sechubContext.setReport(report);
 		} else {
 			vscode.window.showErrorMessage('Failed to fetch report from the server.');
 		}
@@ -91,13 +95,16 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
 		const javascriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'main.js'));
 
-		const serverState = await this.serverStateContainer.createServerStateContainer(this._sechubContext.extensionContext);
+		const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')));
+
+
+		const serverState = await this.serverStateContainer.renderServerStateContainer(this._sechubContext.extensionContext);
 		const serverStateHtml = serverState.html;
 		this.isConnected = serverState.isConnected;
 		let dataTableHtml = '<div> Can not load Data without SecHub connection. </div>';
 		// render the job list table only if connected
 		if (this.isConnected) {
-			dataTableHtml = await this.jobListDataTable.createJobTable(this._sechubContext.extensionContext);
+			dataTableHtml = await this.jobListDataTable.renderJobTable(this._sechubContext.extensionContext);
 		}
 		
 		const htmlSource = `
@@ -110,11 +117,12 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 					and only allow scripts that have a specific nonce.
 					(See the 'webview-sample' extension sample for img-src content security policy examples)
 				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none';  font-src ${webview.cspSource}; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				
 				<link href="${styleMainUri}" rel="stylesheet">
+				<link href="${codiconsUri}" rel="stylesheet" />
 
 				<title>Server</title>
 			</head>

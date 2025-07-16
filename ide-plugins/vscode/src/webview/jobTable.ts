@@ -1,19 +1,26 @@
-import { ProjectData } from 'sechub-openapi-ts-client';
+import { ProjectData, UserListsJobsForProjectRequest } from 'sechub-openapi-ts-client';
 import { DefaultClient } from '../api/defaultClient';
 import { SECHUB_REPORT_KEYS } from '../utils/sechubConstants';
+import { Pagination } from './pagination';
 import * as vscode from 'vscode';
 
 export class JobListTable {
+
+    private pagination: Pagination = new Pagination(1, 0, 10, '');
 
     private noJobsRunnedMessage = '<p>No jobs have been started for your project.</p>';
     private failedToFetchJobsMessage = '<p>Failed to retrieve job list. You are either not allowed to view them or facing server connection issues.</p>';
     private noProjectSelectedMessage = '<p>Please select a project first.</p>';
     
-    public async createJobTable(context: vscode.ExtensionContext) : Promise<string> {
+    async renderJobTable(context: vscode.ExtensionContext) : Promise<string> {
 
         const project: ProjectData | undefined = context.globalState.get(SECHUB_REPORT_KEYS.selectedProject);
-
         const projectId = project?.projectId || 'No Project Selected';
+        if (projectId !== this.pagination.getCurrentProject()){
+            this.resetPagination();
+            this.pagination.setCurrentProject(projectId);
+        }
+        
         const title = `<div id="jobTableTitleContainer">
                 <p id="sechubJobTableTitle">Project 
                 <span>${projectId}</span>
@@ -26,8 +33,14 @@ export class JobListTable {
         }
 
         const client = await DefaultClient.getInstance(context);
-        const data = await client.userListsJobsForProject(projectId);
+            const requestParameter: UserListsJobsForProjectRequest = {
+            projectId: projectId,
+            size: this.pagination.getPageSize().toString(),
+            page: (this.pagination.getCurrentPage() - 1).toString() // API expects zero-based page index
+        };
+        const data = await client.userListsJobsForProject(projectId, requestParameter);
         if(data){
+            this.pagination.setTotalPages(data.totalPages || 0);
             if(data.content && data.content.length > 0) {
                 const haeder  = `
                 <thead>
@@ -57,13 +70,32 @@ export class JobListTable {
                 });
                 
                 const table: string = `${title}<table id="sechubJobTable">${haeder}${tableContent}</table>`;
-                return table;
+                const paginationControls = this.pagination.renderPaginationControls();
+
+                return `${table}${paginationControls}`;
             } else {
                 return `${title}${this.noJobsRunnedMessage}`;
             }
         }
         return `${title}${this.failedToFetchJobsMessage}`;
     }
+
+    changePageDirectory(direction: string) {
+        if (direction === 'next') {
+            if (this.pagination.getCurrentPage() < this.pagination.getTotalPages()) {
+                this.pagination.setCurrentPage(this.pagination.getCurrentPage() + 1);
+            }
+        } else if (direction === 'prev') {
+            if (this.pagination.getCurrentPage() > 1) {
+                this.pagination.setCurrentPage(this.pagination.getCurrentPage() - 1);
+            }
+        }
+    }
+
+    resetPagination() {
+        this.pagination = new Pagination(1, 0, 10);
+    }
+
 
     private formatDate(dateString: string | undefined) {
         if (dateString === '' || dateString === undefined) {

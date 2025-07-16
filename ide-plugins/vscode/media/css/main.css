@@ -4,11 +4,19 @@
     color: var(--vscode-button-foreground);
     border: none;
     padding: 4px 8px;
-    border-radius: 5px;
+    border-radius: 2px;
     cursor: pointer;
     margin-top: 8px;
     margin-bottom: 8px;
 }
+
+.sechubButton:disabled,
+.sechubButton:disabled:hover {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    cursor: default;
+}
+
 
 .sechubButton:hover {
     background-color: var(--vscode-button-hoverBackground);
@@ -39,6 +47,20 @@
 
 .off {
     background-color: grey;
+}
+
+/* pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#prevPageBtn,
+#nextPageBtn {
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 /* jobTable */

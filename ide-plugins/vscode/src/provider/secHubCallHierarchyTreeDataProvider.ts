@@ -5,7 +5,7 @@ import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
 export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvider<HierarchyItem> {
 
-  public update(findingNode: SecHubFinding) {
+  public update(findingNode: SecHubFinding | undefined) {
     this.finding = findingNode;
     this.refresh();
   }
@@ -26,7 +26,6 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
 
   getChildren(element?: HierarchyItem): Thenable<HierarchyItem[]> {
     if (!this.finding) {
-      vscode.window.showInformationMessage('No finding available');
       return Promise.resolve([]);
     }
 

@@ -26,3 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+/* pagination */
+const prevPageBtn = document.getElementById('prevPageBtn');
+const nextPageBtn = document.getElementById('nextPageBtn');
+if (prevPageBtn) {
+  prevPageBtn.addEventListener('click', () => {
+    vscode.postMessage({ type: 'changePage', direction: 'prev' });
+  });
+}
+if (nextPageBtn) {
+  nextPageBtn.addEventListener('click', () => {
+    vscode.postMessage({ type: 'changePage', direction: 'next' });
+  });
+}

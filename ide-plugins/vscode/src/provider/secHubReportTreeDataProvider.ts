@@ -39,7 +39,7 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
   }
 
 
-  public update(report: SecHubReport) {
+  public update(report: SecHubReport | undefined) {
     this.report = report;
     this.refresh();
   }
@@ -50,14 +50,17 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
   private getReportItems(): ReportItem[] {
     let rootItems: ReportItem[] = [];
 
+    if(!this.report) {
+      return rootItems;
+    }
+
     if(!this.report?.result){
-      vscode.window.showInformationMessage('No result in your SecHub report to show!');
-      return [];
+      return rootItems;
     }
 
     if (!this.report?.result.findings){
       vscode.window.showInformationMessage('No findings in your SecHub report to show!');
-      return [];
+      return rootItems;
     }
 
     rootItems.push(new FindingModelMetaDataReportItem("Report UUID:", this.report?.jobUUID, vscode.TreeItemCollapsibleState.None));

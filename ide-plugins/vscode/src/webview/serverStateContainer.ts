@@ -9,7 +9,7 @@ export interface ServerState {
 
 export class ServerStateContainer {
 
-    public async createServerStateContainer(context: vscode.ExtensionContext): Promise<ServerState> {
+    async renderServerStateContainer(context: vscode.ExtensionContext): Promise<ServerState> {
 
         const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl) || 'No server URL set';
 
