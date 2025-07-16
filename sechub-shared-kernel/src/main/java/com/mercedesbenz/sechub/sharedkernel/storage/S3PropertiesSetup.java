@@ -28,6 +28,11 @@ public class S3PropertiesSetup implements S3Setup {
     @Value("${sechub.storage.s3.endpoint:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String endpoint;
 
+    @MustBeDocumented(value = "S3 client region. Supported are offical AWS region names and additionally: `default` and `current`. When"
+            + " `current` is used, the implementation will try to resolve the current region automatically.", scope = DocumentationScopeConstants.SCOPE_STORAGE)
+    @Value("${sechub.storage.s3.region:" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
+    private String region;
+
     /* timeout */
 
     @MustBeDocumented(value = "S3 client timeout (in milliseconds) for creating new connections.", scope = DocumentationScopeConstants.SCOPE_STORAGE)
@@ -98,6 +103,7 @@ public class S3PropertiesSetup implements S3Setup {
         inValid = inValid || UNDEFINED.equals(secretKey);
         inValid = inValid || UNDEFINED.equals(endpoint);
         inValid = inValid || UNDEFINED.equals(bucketName);
+        inValid = inValid || UNDEFINED.equals(region);
 
         return !inValid;
     }
@@ -145,6 +151,11 @@ public class S3PropertiesSetup implements S3Setup {
     @Override
     public String getSignerOverride() {
         return signerOverride;
+    }
+
+    @Override
+    public String getRegion() {
+        return region;
     }
 
 }
