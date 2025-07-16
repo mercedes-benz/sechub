@@ -27,7 +27,7 @@ export async function scan(context: LaunchContext) {
     const args = [
         '-configfile', configFileArgValue,
         '-output', outputArgValue,
-        ...(addScmHistoryArg ? [addScmHistoryArg] : []),
+        addScmHistoryArg,
         'scan',
     ];
 

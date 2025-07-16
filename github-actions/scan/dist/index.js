@@ -28617,7 +28617,7 @@ async function scan(context) {
     const args = [
         '-configfile', configFileArgValue,
         '-output', outputArgValue,
-        ...(addScmHistoryArg ? [addScmHistoryArg] : []),
+        addScmHistoryArg,
         'scan',
     ];
     lib_core.info(`Running: ${clientExecutablePath} ${args.join(' ')}`);

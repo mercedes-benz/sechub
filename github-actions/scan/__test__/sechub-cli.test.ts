@@ -147,7 +147,7 @@ describe('scan', () => {
 
         expect(spawnArgs[1]).toEqual([
             '-configfile', '/path/to/config.json',
-            '-output', '/path/to/workspace',
+            '-output', '/path/to/workspace', '',
             'scan',
         ]);
     });
