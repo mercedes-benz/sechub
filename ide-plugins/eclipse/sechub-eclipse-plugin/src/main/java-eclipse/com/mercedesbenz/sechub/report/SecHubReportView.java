@@ -80,6 +80,8 @@ public class SecHubReportView extends ViewPart {
 
 	private Composite composite;
 
+	private ReportInfoAction showInformationAction;
+
 	@Override
 	public void setFocus() {
 		treeViewer.getControl().setFocus();
@@ -133,6 +135,11 @@ public class SecHubReportView extends ViewPart {
 		});
 	}
 
+	
+	public FindingModel getModel() {
+		return (FindingModel) treeViewer.getInput();
+	}
+	
 	protected void removeAllReportData() {
 		update(null);
 	}
@@ -141,6 +148,8 @@ public class SecHubReportView extends ViewPart {
 		removeAllReportData = new RemoveAllReportDataAction();
 		importAction = new ImportSecHubReportAction();
 		openServerViewAction= new OpenSecHubServerViewAction();
+		
+		showInformationAction = new ReportInfoAction(this);
 	}
 
 	private void contributeToActionBars() {
@@ -150,17 +159,21 @@ public class SecHubReportView extends ViewPart {
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(removeAllReportData);
+		manager.add(showInformationAction);
 		manager.add(new Separator());
 		manager.add(openServerViewAction);
 		manager.add(importAction);
+		manager.add(new Separator());
+		manager.add(removeAllReportData);
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(removeAllReportData);
+		manager.add(showInformationAction);
 		manager.add(new Separator());
 		manager.add(openServerViewAction);
 		manager.add(importAction);
+		manager.add(new Separator());
+		manager.add(removeAllReportData);
 	}
 
 	private void createColumns() {

@@ -37,7 +37,7 @@ public class SecHubReportToFindingModelTransformer {
 
 		}
 		addNodesToModel(model, map);
-		
+		model.setReport(report);
 		model.setJobUUID(report.getJobUUID());
 		model.setTrafficLight(report.getTrafficLight());
 		SecHubStatus status = report.getStatus();

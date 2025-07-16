@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 
 public class FindingModel {
@@ -14,9 +15,18 @@ public class FindingModel {
 	private TrafficLight trafficLight;
 	private String status;
 	private String projectId;
+	private SecHubReport report;
 
 	public UUID getJobUUID() {
 		return jobUUID;
+	}
+	
+	public SecHubReport getReport() {
+		return report;
+	}
+	
+	public void setReport(SecHubReport report) {
+		this.report = report;
 	}
 
 	public void setTrafficLight(TrafficLight trafficLight) {
