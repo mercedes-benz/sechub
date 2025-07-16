@@ -3,9 +3,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as path from 'path';
 import * as vscode from 'vscode';
-import * as callHierarchyViewActions from './action/callHierarchyViewActions';
-import * as importActions from './action/importActions';
-import * as reportViewActions from './action/reportViewActions';
 import { FileLocationExplorer } from './utils/fileLocationExplorer';
 import { FindingNodeLinkBuilder } from './utils/findingNodeLinkBuilder';
 import { HierarchyItem, SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
@@ -13,12 +10,12 @@ import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvide
 import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
 
 import { loadFromFile } from './utils/sechubUtils';
-import { SecHubReport, ScanType } from 'sechub-openapi-ts-client';
+import { SecHubReport, ScanType, ProjectData } from 'sechub-openapi-ts-client';
 import { multiStepInput } from './utils/sechubCredentialsMultistepInput';
-import { SECHUB_CREDENTIAL_KEYS } from './utils/sechubConstants';
+import { SECHUB_CREDENTIAL_KEYS, SECHUB_REPORT_KEYS, SECHUB_VIEW_IDS } from './utils/sechubConstants';
 import { DefaultClient } from './api/defaultClient';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
-import { commands } from './commands/commands';
+import { commands, hierachyCommands, reportItemCommands } from './commands/commands';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
@@ -29,7 +26,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		report = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
 	}
 
-	setUpApiClient(context);
+	await setUpApiClient(context);
+	await preSelectedProjectValid(context);
 
 	let secHubContext: SecHubContext = new SecHubContext(report, context);
 
@@ -38,10 +36,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	buildCallHierarchyView(secHubContext);
 	buildInfoView(secHubContext);
 
-	hookActions(secHubContext);
-
 	registerCommands(secHubContext);
-
 
 	console.log('SecHub plugin has been activated.');
 }
@@ -52,10 +47,21 @@ function registerCommands(sechubContext: SecHubContext) {
 		vscode.commands.registerCommand(command, () => action(sechubContext))
 	);
 
-	sechubContext.extensionContext.subscriptions.push(...registeredCommands);
+	const registeredHierachyCommands = hierachyCommands.map(({ command, action }) =>
+		vscode.commands.registerCommand(command, (hierarchyItem: HierarchyItem) => action(sechubContext, hierarchyItem))
+	);
+
+	const registerReportItemCommands = reportItemCommands.map(({ command, action }) =>
+		vscode.commands.registerCommand(command, (reportItem: ReportItem) => action(sechubContext, reportItem))
+	);
+
+	sechubContext.extensionContext.subscriptions.push(
+		...registeredCommands,
+		...registeredHierachyCommands,
+		...registerReportItemCommands);
 }
 
-function setUpApiClient(context: vscode.ExtensionContext) {
+async function setUpApiClient(context: vscode.ExtensionContext) {
 	// Check if SecHub credentials are already set
 	// If not, prompt the user to set them up
     const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
@@ -68,35 +74,49 @@ function setUpApiClient(context: vscode.ExtensionContext) {
             }).catch(err => {
                 vscode.window.showErrorMessage(`Failed to set SecHub credentials: ${err}`);
             });
-        } else {
-            vscode.window.showInformationMessage('SecHub credentials are already set.');
         }
     });
 
 	// Initialize the SecHub client
-	DefaultClient.createClient(context).then(() => {
+	await DefaultClient.createClient(context).then(() => {
 		vscode.window.showInformationMessage('SecHub client initialized successfully.');
 	}).catch(err => {
 		vscode.window.showErrorMessage(`Failed to initialize SecHub client:	${err}`);
 	});
 }
 
+async function preSelectedProjectValid(context: vscode.ExtensionContext): Promise<void> {
+	const project = context.globalState.get<ProjectData>(SECHUB_REPORT_KEYS.selectedProject);
+	if (!project) {
+		return;
+	}
+
+	const client = await DefaultClient.getInstance(context);
+	const projects = await client.getAssignedProjectDataList();
+
+	if(!projects || !projects.some(p => p.projectId === project.projectId)) {
+		vscode.window.showErrorMessage(`Selected project ${project.projectId} is not valid. Please select a valid project.`);
+		await context.globalState.update(SECHUB_REPORT_KEYS.selectedProject, undefined);
+		return;
+	}
+}
+
 function buildReportView(context: SecHubContext) {
-	const view =vscode.window.createTreeView('sechubReportView', {
+	const view =vscode.window.createTreeView(SECHUB_VIEW_IDS.reportView, {
 		treeDataProvider: context.reportTreeProvider
 	});
 	context.reportView=view;
 }
 
 function buildCallHierarchyView(context: SecHubContext) {
-	const view = vscode.window.createTreeView('sechubCallHierarchyView', {
+	const view = vscode.window.createTreeView(SECHUB_VIEW_IDS.callHierarchyView, {
 		treeDataProvider: context.callHierarchyTreeDataProvider
 	});
 	context.callHierarchyView=view;
 }
 
 function buildInfoView(context: SecHubContext) {
-	vscode.window.createTreeView('sechubInfoView', {
+	vscode.window.createTreeView(SECHUB_VIEW_IDS.infoView, {
 		treeDataProvider: context.infoTreeProvider
 	});
 }
@@ -107,13 +127,6 @@ function buildServerWebview(context: SecHubContext) {
 		vscode.window.registerWebviewViewProvider(SecHubServerWebviewProvider.viewType, provider));
 	context.serverWebViewProvider = provider;
 }
-
-function hookActions(context: SecHubContext) {
-	importActions.hookImportAction(context);
-	reportViewActions.hookReportItemActions(context);
-	callHierarchyViewActions.hookHierarchyItemActions(context);
-}
-
 
 export class SecHubContext {
 	callHierarchyView: vscode.TreeView<HierarchyItem|undefined> | undefined = undefined;
@@ -146,7 +159,7 @@ export class SecHubContext {
 		});
 	}
 
-	public setReport(report: SecHubReport) {
+	public setReport(report: SecHubReport | undefined) {
 		try{
 			this.checkReport(report);
 			this.report = report;
@@ -160,7 +173,10 @@ export class SecHubContext {
 		this.infoTreeProvider.update(undefined, undefined);
 	}
 
-	private checkReport(report: SecHubReport) {
+	private checkReport(report: SecHubReport | undefined) {
+		if (!report) {
+			throw new Error("Report is undefined");
+		}
 
 		const scanTypes: Array<ScanType> = report.metaData?.executed || [];
 		
@@ -168,8 +184,16 @@ export class SecHubContext {
 			vscode.window.showErrorMessage("No scan was executed in loaded report.");
 		}
 
+		const serverUrl = this.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
+		const webUiUrl = serverUrl ? `${serverUrl}/login` : undefined;
+
 		if (scanTypes.includes(ScanType.WebScan) && scanTypes.length === 1) {
-			vscode.window.showErrorMessage("WebScan is not supported in this IDE plugin. Please use the SecHub Web UI to view WebScan results.");
+			const message = "WebScan is not supported in this IDE plugin. Please use the SecHub Web UI to view WebScan results.";
+			vscode.window.showInformationMessage(message, 'Open SecHub Web UI').then(selection => {
+				if (selection === 'Open SecHub Web UI' && webUiUrl) {
+					vscode.env.openExternal(vscode.Uri.parse(webUiUrl));
+				}
+			});
 			throw new Error("WebScan is not supported in this IDE plugin.");
 		}
 	}

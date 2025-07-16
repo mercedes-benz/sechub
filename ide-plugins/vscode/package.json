@@ -29,17 +29,13 @@
 	"contributes": {
 		"commands": [
 			{
-				"command": "sechubReportView.importReportFile",
+				"command": "sechub.importReportFile",
 				"title": "SecHub: Import Report from File",
 				"icon": "$(file)"
 			},
 			{
-				"command": "sechubReportView.openCWEinBrowser",
-				"title": "CWE"
-			},
-			{
-				"command": "sechubCallHierarchyView.showInEditor",
-				"title": "Show"
+				"command": "sechub.openCWEinBrowser",
+				"title": "SecHub: open CWE in Browser"
 			},
 			{
 				"command": "sechub.fetchReportByUUID",
@@ -86,19 +82,19 @@
 					"name": "Server"
 				},
 				{
-					"id": "sechubReportView",
+					"id": "sechub.reportView",
 					"name": "Report",
 					"icon": "media/sechub-logo-vscode-styled.svg",
 					"contextualTitle": "SecHub Report"
 				},
 				{
-					"id": "sechubCallHierarchyView",
+					"id": "sechub.callHierarchyView",
 					"name": "Call Hierarchy",
 					"icon": "media/sechub-logo-vscode-styled.svg",
 					"contextualTitle": "SecHub Call Hierarchy"
 				},
 				{
-					"id": "sechubInfoView",
+					"id": "sechub.infoView",
 					"name": "Info",
 					"icon": "media/sechub-logo-vscode-styled.svg",
 					"contextualTitle": "SecHub Call Hierarchy"
@@ -107,20 +103,20 @@
 		},
 		"viewsWelcome": [
 			{
-				"view": "sechubReportView",
+				"view": "sechub.reportView",
 				"contents": "No report view data loaded"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "sechubReportView.importReportFile",
-					"when": "view == sechubReportView",
+					"command": "sechub.importReportFile",
+					"when": "view == sechub.reportView",
 					"group": "navigation"
 				},
 				{
 					"command": "sechub.fetchReportByUUID",
-					"when": "view == sechubReportView",
+					"when": "view == sechub.reportView",
 					"group": "navigation"
 				},
 				{
@@ -136,8 +132,8 @@
 			],
 			"view/item/context": [
 				{
-					"command": "sechubReportView.openCWEinBrowser",
-					"when": "view == sechubReportView && viewItem == reportItem",
+					"command": "sechub.openCWEinBrowser",
+					"when": "view == sechub.reportView && viewItem == reportItem",
 					"group": "inline"
 				}
 			]

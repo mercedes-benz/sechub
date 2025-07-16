@@ -23,10 +23,10 @@ export class FileLocationExplorer {
      * @return set of matching file pathes
      */
     public searchFor(location: string): Set<string> {
-        // var fs = require('fs');
-        var result = new Set<string>();
+
+        const result = new Set<string>();
         this.searchFolders.forEach((folder) => {
-            var strFolder: string = folder.toString();
+            const strFolder: string = folder.toString();
             this.searchFilesRecursive(location, strFolder, result);
         });
 

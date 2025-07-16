@@ -9,7 +9,7 @@ import { FileLocationExplorer } from '../../utils/fileLocationExplorer';
 
 suite('FileLocationExplorer Test Suite', () => {
 
-	var explorerToTest: FileLocationExplorer;
+	let explorerToTest: FileLocationExplorer;
 
 	test('scenario1_projects_TestMe_java_found', () => {
 		/* prepare */
@@ -24,7 +24,7 @@ suite('FileLocationExplorer Test Suite', () => {
 
 		/* execute */
 		const locationString = "example/TestMe.java";
-		var found = explorerToTest.searchFor(locationString);
+		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
 		assert.strictEqual(1, found.size,"Not expected size of locations returned");
@@ -45,7 +45,7 @@ suite('FileLocationExplorer Test Suite', () => {
 
 		/* execute */
 		const locationString = "source/TestMe.c";
-		var found = explorerToTest.searchFor(locationString);
+		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
 		assert.strictEqual(1, found.size,"Not expected size of locations returned");
@@ -67,7 +67,7 @@ suite('FileLocationExplorer Test Suite', () => {
 
 		/* execute */
 		const locationString = "TestMe.c";
-		var found = explorerToTest.searchFor(locationString);
+		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
 		assert.strictEqual(1, found.size,"Not expected size of locations returned");
@@ -89,7 +89,7 @@ suite('FileLocationExplorer Test Suite', () => {
 
 		/* execute */
 		const locationString = "com/example/TestMe.java";
-		var found = explorerToTest.searchFor(locationString);
+		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
 		assert.strictEqual(1, found.size,"Not expected size of locations returned");
@@ -112,7 +112,7 @@ suite('FileLocationExplorer Test Suite', () => {
 
 		/* execute */
 		const locationString = "SameName.java";
-		var found = explorerToTest.searchFor(locationString);
+		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
 		assert.strictEqual(2, found.size,"Not expected size of locations returned");
@@ -126,7 +126,7 @@ suite('FileLocationExplorer Test Suite', () => {
 
 	function getEnsuredTestPath(testfile: String): string {
 		let testReportLocation = path.dirname(__filename) + "../../../../src/test/resources/" + testfile;
-		var resolved = path.resolve(testReportLocation);
+		const resolved = path.resolve(testReportLocation);
 		if (!fs.existsSync(resolved)) {
 			assert.fail("test report location does not exist:"+resolved);
 		}

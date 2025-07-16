@@ -83,13 +83,13 @@ export class MetaDataInfoItem extends InfoItem {
     state: vscode.TreeItemCollapsibleState) {
     super(key, state);
 
-    var description = "";
+    let description = "";
 
     if (value) {
       description = "" + value;
     }
 
-    this.description = "" + description;
+    this.description = description;
 
     this.command = command;
     if (SecHubInfoTreeDataProvider.cweIdKey === key) {

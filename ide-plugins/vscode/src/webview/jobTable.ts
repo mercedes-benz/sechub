@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import { ProjectData, UserListsJobsForProjectRequest } from 'sechub-openapi-ts-client';
 import { DefaultClient } from '../api/defaultClient';
 import { SECHUB_REPORT_KEYS } from '../utils/sechubConstants';

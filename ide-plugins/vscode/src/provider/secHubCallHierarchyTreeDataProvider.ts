@@ -2,11 +2,12 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
+import { SECHUB_COMMANDS } from '../utils/sechubConstants';
 
 export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvider<HierarchyItem> {
 
-  public update(findingNode: SecHubFinding | undefined) {
-    this.finding = findingNode;
+  public update(finding: SecHubFinding | undefined) {
+    this.finding = finding;
     this.refresh();
   }
 
@@ -20,17 +21,17 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem(element: HierarchyItem): vscode.TreeItem {
-    return element;
+  getTreeItem(item: HierarchyItem): vscode.TreeItem {
+    return item;
   }
 
-  getChildren(element?: HierarchyItem): Thenable<HierarchyItem[]> {
+  getChildren(item?: HierarchyItem): Thenable<HierarchyItem[]> {
     if (!this.finding) {
       return Promise.resolve([]);
     }
 
-    if (element) {
-      return Promise.resolve(element.children);
+    if (item) {
+      return Promise.resolve(item.children);
     } else {
       // no element found, so create...
       return Promise.resolve(
@@ -39,15 +40,15 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
     }
   }
 
-  getParent(element?: HierarchyItem): vscode.ProviderResult<HierarchyItem> {
+  getParent(item?: HierarchyItem): vscode.ProviderResult<HierarchyItem> {
     if (!this.finding) {
       return undefined;
     }
 
-    if (!element) {
+    if (!item) {
       return undefined;
     } else {
-      return element.parent;
+      return item.parent;
     }
   }
 
@@ -55,18 +56,18 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
 
     let items: HierarchyItem[] = [];
 
-    let codeCallStackElement: SecHubCodeCallStack | undefined = this.finding?.code;
-    let state: vscode.TreeItemCollapsibleState = codeCallStackElement?.calls ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None;
+    let codeCallStack: SecHubCodeCallStack | undefined = this.finding?.code;
+    let state: vscode.TreeItemCollapsibleState = codeCallStack?.calls ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None;
 
-    if (!(codeCallStackElement)) {
+    if (!(codeCallStack)) {
       return items;
     }
     let parent: HierarchyItem | undefined;
 
     do {
-      let item: HierarchyItem = new HierarchyItem(this.finding, codeCallStackElement, state);
+      let item: HierarchyItem = new HierarchyItem(this.finding, codeCallStack, state);
       item.command = {
-        command: "sechubCallHierarchyView.selectNode",
+        command: SECHUB_COMMANDS.openFinding,
         title: "Select Node",
         arguments: [item]
       };
@@ -79,13 +80,12 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
         item.parent = parent;
       }
       /* go deeper ...*/
-      codeCallStackElement = codeCallStackElement.calls;
+      codeCallStack = codeCallStack.calls;
       parent = item;
 
-    } while (codeCallStackElement);
+    } while (codeCallStack);
 
     return items;
-
   }
 
 }
@@ -93,21 +93,21 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
 export class HierarchyItem extends vscode.TreeItem {
 
   readonly children: HierarchyItem[] = [];
-  callstackElement: SecHubCodeCallStack;
-  findingNode: SecHubFinding | undefined;
+  codeCallstack: SecHubCodeCallStack;
+  finding: SecHubFinding | undefined;
   parent: HierarchyItem | undefined;
 
-  constructor(findingNode: SecHubFinding | undefined, callstackElement: SecHubCodeCallStack, state: vscode.TreeItemCollapsibleState
+  constructor(finding: SecHubFinding | undefined, codeCallstack: SecHubCodeCallStack, state: vscode.TreeItemCollapsibleState
   ) {
-    if(!callstackElement.relevantPart){
-      callstackElement.relevantPart = "";
+    if(!codeCallstack.relevantPart){
+      codeCallstack.relevantPart = "";
     }
-    super(callstackElement.relevantPart, state);
+    super(codeCallstack.relevantPart, state);
 
-    this.description = callstackElement.location;
+    this.description = codeCallstack.location;
     this.tooltip = `${this.label}-${this.description}`;
-    this.callstackElement = callstackElement;
-    this.findingNode = findingNode;
+    this.codeCallstack = codeCallstack;
+    this.finding = finding;
   }
 
   iconPath = {

@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+import { report } from "process";
+
 export const SECHUB_CREDENTIAL_KEYS = {
     serverUrl: 'sechubServerUrl',
     username: 'sechubUsername',
@@ -15,12 +18,15 @@ export const SECHUB_COMMANDS = {
     refreshServerView: 'sechub.refreshServerView',
     fetchReportByUUID: 'sechub.fetchReportByUUID',
     clearSecHubData: 'sechub.clearSecHubData',
-    importReport: 'sechubReportView.importReportFile',
-    openCWEinBrowser: 'sechubReportView.openCWEinBrowser',
-    showCallHierarchy: 'sechubCallHierarchyView.showInEditor',
+    importReport: 'sechub.importReportFile',
+    openCWEinBrowser: 'sechub.openCWEinBrowser',
+    openFindingCallStack: 'sechub-intern.openFindingCallStack',
+    openFinding: 'sechub-intern.openFinding',
 };
 
 export const SECHUB_VIEW_IDS = {
-    serverView: 'sechub.serverWebView'
-
+    serverView: 'sechub.serverWebView',
+    reportView: 'sechub.reportView',
+    callHierarchyView: 'sechub.callHierarchyView',
+    infoView: 'sechub.infoView',
 };

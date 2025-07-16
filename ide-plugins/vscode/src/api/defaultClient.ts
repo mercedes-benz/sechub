@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import {
   Configuration,
@@ -44,7 +45,7 @@ export class DefaultClient {
     const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
 
     if (!serverUrl || !username || !apiToken) {
-      vscode.window.showErrorMessage('SecHub credentials are not set. Please configure them first.');
+      vscode.window.showErrorMessage('SecHub credentials are not set. Please configure them to connect to the SecHub server.');
       console.error('SecHub credentials are not set to create an API client. Createing empty client.');
       return new DefaultApiClient(new Configuration());
     }
@@ -66,14 +67,14 @@ export class DefaultClient {
     return this.apiClient;
   }
 
-  public async getAssignedProjectDataList(): Promise<ProjectData[]> {
+  public async getAssignedProjectDataList(): Promise<ProjectData[] | undefined> {
     try {
         const response: ProjectData[] = await this.apiClient.withProjectAdministrationApi().getAssignedProjectDataList();
         return response;
     } catch (error) {
         console.error('Error fetching projects:', error);
         vscode.window.showErrorMessage('Failed to fetch projects from the server.');
-        return [];
+        return undefined;
     }    
   }
 

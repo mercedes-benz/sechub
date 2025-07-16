@@ -2,6 +2,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { SecHubReport, SecHubFinding } from 'sechub-openapi-ts-client';
+import { SECHUB_COMMANDS } from '../utils/sechubConstants';
 
 export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<ReportItem> {
 
@@ -74,7 +75,7 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
       let item: ReportItem = new FindingNodeReportItem(finding);
       item.contextValue = "reportItem";
       item.command = {
-        command: "sechubReportView.selectNode",
+        command: SECHUB_COMMANDS.openFindingCallStack,
         title: "Select Node",
         arguments: [item]
       };

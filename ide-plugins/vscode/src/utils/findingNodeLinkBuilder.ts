@@ -26,7 +26,7 @@ export class FindingNodeLinkBuilder {
         if (!findingNode) {
             return undefined;
         }
-        var uri = this.buildCWELink(findingNode);
+        const uri = this.buildCWELink(findingNode);
         if (!uri) {
             return undefined;
         }

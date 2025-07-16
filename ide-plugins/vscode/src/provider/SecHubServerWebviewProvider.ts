@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import { SecHubContext } from '../extension';
 import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
 import { JobListTable } from '../webview/jobTable';

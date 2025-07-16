@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from "../extension";
 import { SECHUB_CREDENTIAL_KEYS } from "../utils/sechubConstants";
@@ -17,9 +18,12 @@ export async function changeServerUrl(sechubContext: SecHubContext): Promise<voi
             }
         });
         if (newServerUrl) {
-            await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, newServerUrl);
+            // Remove trailing slashes
+            const trimmedUrl = newServerUrl.replace(/\/+$/, '');
+
+            await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, trimmedUrl);
             await DefaultClient.createClient(sechubContext.extensionContext);
             sechubContext.serverWebViewProvider.refresh();
-            vscode.window.showInformationMessage(`SecHub Server URL updated to: '${newServerUrl}'`);
+            vscode.window.showInformationMessage(`SecHub Server URL updated to: '${trimmedUrl}'`);
         }
     }

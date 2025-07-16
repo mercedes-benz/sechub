@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 // Pagination.ts
 export class Pagination {
     private currentProject: string | undefined;
