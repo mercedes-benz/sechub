@@ -16,9 +16,9 @@ PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Define global variables for GitHub action apts
-gha_sechub_server_version=1.7.0
+gha_sechub_server_version=2.11.1
 gha_sechub_server_port=8443
-gha_pds_version=1.4.0
+gha_pds_version=2.3.0
 gha_pds_port=8444
 
 
