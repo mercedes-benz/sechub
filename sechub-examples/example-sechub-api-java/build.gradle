@@ -31,7 +31,7 @@ dependencies {
     implementation spring_boot_dependency.logback_classic
     
     // later we can use here jitpack or other maven dependency (when published)
-	implementation project(':sechub-api-java') 
+	implementation project(':sechub-openapi-java-client') 
 }
 
 task buildOpenAPITestTool(type: Jar, dependsOn: build) {
