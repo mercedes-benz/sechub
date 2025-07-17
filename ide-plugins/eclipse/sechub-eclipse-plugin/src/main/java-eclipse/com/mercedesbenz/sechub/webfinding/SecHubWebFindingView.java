@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.webfinding;
 
 import org.eclipse.jface.layout.GridDataFactory;
