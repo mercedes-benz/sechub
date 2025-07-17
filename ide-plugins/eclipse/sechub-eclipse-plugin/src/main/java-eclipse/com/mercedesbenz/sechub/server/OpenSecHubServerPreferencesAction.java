@@ -4,8 +4,8 @@ package com.mercedesbenz.sechub.server;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 
-import com.mercedesbenz.sechub.EclipseUtil;
 import com.mercedesbenz.sechub.preferences.SecHubPreferences;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class OpenSecHubServerPreferencesAction extends Action {
 	

@@ -12,8 +12,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import com.mercedesbenz.sechub.EclipseUtil;
 import com.mercedesbenz.sechub.SecHubActivator;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 /**
  * The SecHub Job handler opens an import dialog to import the SecHub report.

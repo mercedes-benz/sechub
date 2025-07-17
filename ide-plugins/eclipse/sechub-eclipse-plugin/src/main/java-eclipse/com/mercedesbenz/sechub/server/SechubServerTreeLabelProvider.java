@@ -8,15 +8,15 @@ import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelP
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
-import com.mercedesbenz.sechub.EclipseUtil;
-import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.ServerElement;
+import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.SecHubServerConnection;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class SechubServerTreeLabelProvider extends BaseLabelProvider implements IStyledLabelProvider {
 	private static Image IMAGE_SECHUB_SERVER = EclipseUtil.getImage("/icons/sechub-server.png");
 
 	@Override
 	public Image getImage(Object element) {
-		if (element instanceof ServerElement) {
+		if (element instanceof SecHubServerConnection) {
 			return IMAGE_SECHUB_SERVER;
 		}
 		return null;
@@ -25,8 +25,8 @@ public class SechubServerTreeLabelProvider extends BaseLabelProvider implements 
 	@Override
 	public StyledString getStyledText(Object element) {
 		StyledString string = new StyledString();
-		if (element instanceof ServerElement) {
-			ServerElement server = (ServerElement) element;
+		if (element instanceof SecHubServerConnection) {
+			SecHubServerConnection server = (SecHubServerConnection) element;
 			string.append(server.getUrl());
 		}else {
 			string.append(Objects.toString(element));

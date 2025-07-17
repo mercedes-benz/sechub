@@ -43,14 +43,15 @@ describe('configuration-model:ScanType', function() {
     test('ScanType.ensureAccepted - wellknown params accepted case insensitive but converted', () => {
 
         /* execute */
-        const result = ScanType.ensureAccepted(['licensescan','SECRETscan','codeScan']);
+        const result = ScanType.ensureAccepted(['licensescan','SECRETscan','codeScan', 'iacScan']);
 
         /* test */
         expect(result).toContain(ScanType.LICENSE_SCAN);
         expect(result).toContain(ScanType.CODE_SCAN);
         expect(result).toContain(ScanType.SECRET_SCAN);
+        expect(result).toContain(ScanType.IAC_SCAN);
 
-        expect(result.length).toBe(3);
+        expect(result.length).toBe(4);
 
     });
 

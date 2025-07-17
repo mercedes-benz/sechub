@@ -61,21 +61,19 @@ init_scheduler_settings() {
   export SECHUB_CONFIG_TRIGGER_NEXTJOB_INITIALDELAY=$(( $SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY / 10 * $(shuf -i 0-10 -n 1) ))
 }
 
-init_s3_settings() {
+verify_s3_settings() {
   # Set storage variables for Java Spring app:
-  check_variable "$S3_ENDPOINT" "S3_ENDPOINT"
-  export SECHUB_STORAGE_S3_ENDPOINT="$S3_ENDPOINT"
-  check_variable "$S3_BUCKETNAME" "S3_BUCKETNAME"
-  export SECHUB_STORAGE_S3_BUCKETNAME="$S3_BUCKETNAME"
-  check_variable "$S3_ACCESSKEY" "S3_ACCESSKEY"
-  export SECHUB_STORAGE_S3_ACCESSKEY="$S3_ACCESSKEY"
-  check_variable "$S3_SECRETKEY" "S3_SECRETKEY"
-  export SECHUB_STORAGE_S3_SECRETKEY="$S3_SECRETKEY"
+  check_variable "$SECHUB_STORAGE_S3_ENDPOINT" "SECHUB_STORAGE_S3_ENDPOINT"
+  check_variable "$SECHUB_STORAGE_S3_BUCKETNAME" "SECHUB_STORAGE_S3_BUCKETNAME"
+  check_variable "$SECHUB_STORAGE_S3_ACCESSKEY" "SECHUB_STORAGE_S3_ACCESSKEY"
+  check_variable "$SECHUB_STORAGE_S3_SECRETKEY" "SECHUB_STORAGE_S3_SECRETKEY"
+  check_variable "$SECHUB_STORAGE_S3_REGION" "SECHUB_STORAGE_S3_REGION"
 
   cat - <<EOF
 Using S3 object storage:
-- Endpoint: $S3_ENDPOINT
-- Bucket: $S3_BUCKETNAME
+- Endpoint: $SECHUB_STORAGE_S3_ENDPOINT
+- Bucket: $SECHUB_STORAGE_S3_BUCKETNAME
+- Region: $SECHUB_STORAGE_S3_REGION
 EOF
 }
 
@@ -204,7 +202,7 @@ if [ "$JAVA_ENABLE_DEBUG" = "true" ] ; then
 fi
 
 if [ "$S3_ENABLED" = "true" ] ; then
-  init_s3_settings
+  verify_s3_settings
 fi
 
 # check if key is set

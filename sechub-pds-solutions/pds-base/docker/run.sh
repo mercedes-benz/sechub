@@ -49,16 +49,14 @@ start_server() {
     export SPRING_DATASOURCE_PASSWORD="$DATABASE_PASSWORD"
   fi
 
-  if [ "$S3_ENABLED" = true ] ; then
-    echo "Using S3 object storage:"
-    echo " * Endpoint: $S3_ENDPOINT"
-    echo " * Bucketname: $S3_BUCKETNAME"
+  if [ "$S3_ENABLED" = "true" ] ; then
+    cat - <<EOF
+Using S3 object storage:
+- Endpoint: $PDS_STORAGE_S3_ENDPOINT
+- Bucket: $PDS_STORAGE_S3_BUCKETNAME
+- Region: $PDS_STORAGE_S3_REGION
+EOF
 
-    # Set variables for Java Spring app:
-    export PDS_STORAGE_S3_ENDPOINT="$S3_ENDPOINT"
-    export PDS_STORAGE_S3_BUCKETNAME="$S3_BUCKETNAME"
-    export PDS_STORAGE_S3_ACCESSKEY="$S3_ACCESSKEY"
-    export PDS_STORAGE_S3_SECRETKEY="$S3_SECRETKEY"
   else
     echo "Using shared upload directory: $SHARED_VOLUME_UPLOAD_DIR"
     # Set variable for Java Spring app:

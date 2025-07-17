@@ -325,17 +325,6 @@ for i in $MANDATORY_EXECUTABLES ; do
   check_executable_is_installed $i
 done
 
-# Try to figure out the load balancer's IP address
-if [ -z "$LOADBALANCER_IP_ADDRESS" ] ; then
-  IP_ADDRESS=$(get_loadbalancer_ip)
-  if [[ "$IP_ADDRESS" =~ (E|e)rror ]] ; then
-    echo "### No load balancer IP address yet."
-  else
-    export LOADBALANCER_IP_ADDRESS="$IP_ADDRESS"
-    echo "### Load balancer IP address: $LOADBALANCER_IP_ADDRESS"
-  fi
-fi
-
 # Populate env vars used in templates:
 for var in $TEMPLATE_VARIABLES ; do
   export $var=$(env_var_or_default $var)
@@ -345,3 +334,14 @@ done
 export KUBE_FLAGS="--namespace=$SECHUB_NAMESPACE"
 export KUBECONFIG=$(env_var_or_default KUBECONFIG)
 export HELM_FLAGS="--kubeconfig=$KUBECONFIG --namespace=$SECHUB_NAMESPACE"
+
+# Try to figure out the load balancer's IP address
+if [ "$LOADBALANCER_IP_ADDRESS" = "$LOADBALANCER_IP_ADDRESS_DEFAULT" ] ; then
+  IP_ADDRESS=$(get_loadbalancer_ip)
+  if [[ "$IP_ADDRESS" =~ (E|e)rror ]] ; then
+    echo "### No load balancer IP address yet."
+  else
+    export LOADBALANCER_IP_ADDRESS="$IP_ADDRESS"
+    echo "### Load balancer IP address: $LOADBALANCER_IP_ADDRESS"
+  fi
+fi

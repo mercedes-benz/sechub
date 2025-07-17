@@ -6,8 +6,8 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 
-import com.mercedesbenz.sechub.EclipseUtil;
-import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.ServerElement;
+import com.mercedesbenz.sechub.server.data.SecHubServerDataModel.SecHubServerConnection;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class SechubServerTreeDecorator implements ILightweightLabelDecorator {
 
@@ -17,15 +17,13 @@ public class SechubServerTreeDecorator implements ILightweightLabelDecorator {
 	@Override
 	public void decorate(Object element, IDecoration decoration) {
 
-		if (element instanceof ServerElement) {
-			ServerElement server = (ServerElement) element;
+		if (element instanceof SecHubServerConnection) {
+			SecHubServerConnection server = (SecHubServerConnection) element;
 			ImageDescriptor descriptor;
 			if (server.isAlive()) {
 				descriptor = DESC_OVERLAY_OK;
 			} else { 
-				// server not available (or credential problem)
 				descriptor = DESC_OVERLAY_ERROR;
-				decoration.addSuffix(" (not alive or wrong credentials)");
 			}
 			decoration.addOverlay(descriptor, IDecoration.BOTTOM_RIGHT);
 		}

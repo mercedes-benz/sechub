@@ -34,6 +34,11 @@ public class PDSS3PropertiesSetup implements S3Setup {
     @Value("${" + PDS_STORAGE_S3_ENDPOINT + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String endpoint = UNDEFINED;
 
+    @PDSMustBeDocumented(value = "S3 client region. Supported are offical AWS region names and additionally: `default` and `current`. When"
+            + " `current` is used, the implementation will try to resolve the current region automatically.", scope = "storage")
+    @Value("${" + PDS_STORAGE_S3_REGION + ":" + UNDEFINED + "}")
+    private String region = UNDEFINED;
+
     /* timeout */
 
     @PDSMustBeDocumented(value = "S3 client timeout (in milliseconds) for creating new connections.", scope = "storage")
@@ -104,6 +109,7 @@ public class PDSS3PropertiesSetup implements S3Setup {
         inValid = inValid || UNDEFINED.equals(secretKey);
         inValid = inValid || UNDEFINED.equals(endpoint);
         inValid = inValid || UNDEFINED.equals(bucketName);
+        inValid = inValid || UNDEFINED.equals(region);
 
         return !inValid;
     }
@@ -113,6 +119,7 @@ public class PDSS3PropertiesSetup implements S3Setup {
         register(registry, PDS_STORAGE_S3_BUCKETNAME, bucketName);
         register(registry, PDS_STORAGE_S3_ENDPOINT, endpoint);
         register(registry, PDS_STORAGE_S3_SECRETKEY, secretKey);
+        register(registry, PDS_STORAGE_S3_REGION, region);
     }
 
     private void register(SecureEnvironmentVariableKeyValueRegistry registry, String key, String value) {
@@ -166,6 +173,11 @@ public class PDSS3PropertiesSetup implements S3Setup {
     @Override
     public String getSignerOverride() {
         return signerOverride;
+    }
+
+    @Override
+    public String getRegion() {
+        return region;
     }
 
 }
