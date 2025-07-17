@@ -104,8 +104,8 @@ describe('scan', () => {
         await scan(context);
 
         /* test */
-        expect(context.lastClientExitCode).toBe(0);
-        expect(context.jobUUID).toBe('6880e518-88db-406a-bc67-851933e7e5b7');
+        expect(context.lastClientExitCode).toEqual(0);
+        expect(context.jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
     });
 
     it('with addScmHistory flag true - executes SecHub client with -addScmHistory', async () => {
