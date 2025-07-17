@@ -86,6 +86,7 @@ storage:
     bucketname: "<my-bucketname>"
     accesskey: "<my-accesskey>"
     secretkey: "<my-secretkey>"
+    region: "current"
   sharedVolume:
     enabled: false
     upload:

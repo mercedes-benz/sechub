@@ -24,7 +24,10 @@
         },
         "stop" : [ {
           "script" : {
-            "path" : "./01-stop-single-docker-compose.sh"
+            "path" : "./01-stop-single-docker-compose.sh",
+            "process" : {
+              "stageWaits" : true
+            }
           }
         } ]
       },
