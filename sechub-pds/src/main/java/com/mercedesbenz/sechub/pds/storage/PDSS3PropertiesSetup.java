@@ -37,7 +37,7 @@ public class PDSS3PropertiesSetup implements S3Setup {
     @PDSMustBeDocumented(value = "S3 client region. Supported are offical AWS region names and additionally: `default` and `current`. When"
             + " `current` is used, the implementation will try to resolve the current region automatically.", scope = "storage")
     @Value("${" + PDS_STORAGE_S3_REGION + ":" + UNDEFINED + "}")
-    private String region;
+    private String region = UNDEFINED;
 
     /* timeout */
 
