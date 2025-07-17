@@ -21,7 +21,13 @@ jest.mock('../src/fs-wrapper', () => ({
 
 const output = `
         WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!
+        2024-03-08 13:58:18 (+01:00) Zipping folder: __test__/integrationtest/test-sources (/home/xyzgithub-actions/scan/__test__/integrationtest/test-sources)
         2024-03-08 13:58:18 (+01:00) Creating new SecHub job: 6880e518-88db-406a-bc67-851933e7e5b7
+        2024-03-08 13:58:18 (+01:00) Uploading source zip file
+        2024-03-08 13:58:18 (+01:00) Approve sechub job
+        2024-03-08 13:58:18 (+01:00) Waiting for job 6880e518-88db-406a-bc67-851933e7e5b7 to be done
+                                     .
+        2024-03-08 13:58:20 (+01:00) Fetching result (format=json) for job 6880e518-88db-406a-bc67-851933e7e5b7
         other
         `;
 
@@ -77,10 +83,10 @@ describe('scan', () => {
 
         /* test */
         expect(sanitize).toBeCalledTimes(4);
-        expect(sanitize).toHaveBeenCalledWith('/path/to/sechub-cli');
-        expect(sanitize).toHaveBeenCalledWith('/path/to/config.json');
-        expect(sanitize).toHaveBeenCalledWith('/path/to/workspace');
-        expect(sanitize).toHaveBeenCalledWith('');
+        expect(sanitize).toBeCalledWith('/path/to/sechub-cli');
+        expect(sanitize).toBeCalledWith('/path/to/config.json');
+        expect(sanitize).toBeCalledWith('/path/to/workspace');
+        expect(sanitize).toBeCalledWith('');
     });
 
     it('returns correct job id', async () => {
@@ -102,7 +108,7 @@ describe('scan', () => {
         expect(context.jobUUID).toBe('6880e518-88db-406a-bc67-851933e7e5b7');
     });
 
-    it('with addScmHistory=true includes the flag in arguments', async () => {
+    it('with addScmHistory flag true - executes SecHub client with -addScmHistory', async () => {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
@@ -128,7 +134,7 @@ describe('scan', () => {
         ]);
     });
 
-    it('with addScmHistory=false does NOT include the flag', async () => {
+    it('with addScmHistory flag false - executes SecHub client without -addScmHistory', async () => {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
