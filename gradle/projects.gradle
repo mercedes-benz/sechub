@@ -2,7 +2,6 @@
 
 
 ext {
-secHubBuildStage = new BuildStage()
 projectType = [
 
             goProjects: [
