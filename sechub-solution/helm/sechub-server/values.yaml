@@ -48,6 +48,11 @@ server:
     smtp:
       host: mailhost.to.be.defined
       port: 25
+      # Java mail config options. See https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html
+      config: mail.smtp.auth=false,mail.transport.protocol=smtp
+      # Optional: SMTP user credentials
+      # user: exampleuser
+      # password: example
   initialAdminUser:
     # Define initial admin user. The link to get the api token will be sent to this email address.
     id: sechubadm

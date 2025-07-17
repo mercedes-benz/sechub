@@ -461,6 +461,18 @@ spec:
         # Port of SMTP server
         - name: SECHUB_NOTIFICATION_SMTP_PORT
           value: "{{ .Values.server.email.smtp.port }}"
+        # Java mail configs
+        - name: SECHUB_NOTIFICATION_SMTP_CONFIG
+          value: "{{ .Values.server.email.smtp.config }}"
+{{- if .Values.server.email.smtp.user }}
+        # SMTP user
+        - name: SECHUB_NOTIFICATION_SMTP_CREDENTIAL_USERNAME
+          value: "{{ .Values.server.email.smtp.user }}"
+{{- end }}
+{{- if .Values.server.email.smtp.password }}
+        - name: SECHUB_NOTIFICATION_SMTP_CREDENTIAL_PASSWORD
+          value: "{{ .Values.server.email.smtp.password }}"
+{{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: scheduler
 # --------------------------------------------------------------------------------------------- #
