@@ -19,16 +19,7 @@ dependencies {
     implementation library.findbugs
     implementation library.jacksonDatatypeJsr310
     implementation library.jacksonDatabindNullable
-    implementation library.httpmime
-
-
-    // SecHub
-    implementation project(':sechub-commons-archive')
-    implementation project(':sechub-openapi-java-model')
 }
-
-
-
 
 clean.doFirst {
     delete 'gen'
@@ -40,7 +31,6 @@ openApiGenerate {
     generatorName = 'java'
     inputSpec = openApiSpecPath
     outputDir = "${projectDir}/gen"
-    apiPackage = 'com.mercedesbenz.sechub.api.internal.gen'
     invokerPackage = 'com.mercedesbenz.sechub.api.internal.gen.invoker'
     modelPackage = 'com.mercedesbenz.sechub.api.internal.gen.model'
     packageName = 'com.mercedesbenz.sechub.api.internal.gen'
@@ -50,9 +40,9 @@ openApiGenerate {
     globalProperties = [
             validateSpec   : 'true',
             modelDocs      : 'false',
-            models         : 'false',
-            apis           : '', // generate all
-            supportingFiles: 'false',
+            models         : '',  // generate all
+            apis           : 'false',
+            supportingFiles: '',  // generate all
     ]
     // java generator: https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md
     configOptions = [
@@ -68,8 +58,8 @@ openApiGenerate {
             useInnerModel              : 'false' ,
             serializableModel          : 'true',
             serializationLibrary       : 'jackson',
-            artifactId                 : 'sechub-openapi-java-client',
-            artifactDescription        : 'The SecHub API Java client',
+            artifactId                 : 'sechub-openapi-java-model',
+            artifactDescription        : 'The SecHub API Java model',
             artifactUrl                : 'https://github.com/mercedes-benz/sechub',
             legacyDiscriminatorBehavior: 'false',
             library                    : 'native', // Uses the Java HTTP Client (available in Java 11+)
@@ -119,57 +109,29 @@ tasks.named('compileJava') {
 * the assemble task before importing projects/modules, so it should work there always.
 */
 tasks.named('eclipse') {
-    dependsOn('provideOpenAPIJavaClientForEclipse')
+    dependsOn('assemble')
 }
 
 /**
- * Custom gradle task to cleanup all existing library jars inside eclipse lib folder 
+ * Custom gradle task to build a 'fatJar'.
  */
-task cleanEclipseLibFolder(type: Delete) {
+tasks.register('buildJavaApiModel', Jar) {
     group 'sechub'
-    description 'Deletes all JAR files in the eclipse lib folder.'
-    delete fileTree(dir: "${rootProject.projectDir}/ide-plugins/eclipse/sechub-eclipse-plugin/lib", include: '*.jar')
-}
-
-
-/**
- * Custom gradle task to provide a library inside the lib folder for eclipse PDE (without a version number - avoids changes in project PDE setup files 
- */
-task provideOpenAPIJavaClientForEclipse(type: Copy) {
-    dependsOn("assemble", cleanEclipseLibFolder)
-    
-    group 'sechub'
-    description 'Copies the built JAR file to eclipse lib folder without version number in filename.'
-    from("$buildDir/libs") {
-        include "sechub-openapi-java-client-${project.version}.jar" 
+    description 'Builds the java api library as standalone library.'
+    archivesBaseName = 'sechub-java-api-model'
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
     }
-    
-    // copy all necessary runtime dependencies
-    from(configurations.runtimeClasspath) {
-    }
-    into("${rootProject.projectDir}/ide-plugins/eclipse/sechub-eclipse-plugin/lib")
-	
-	rename { 
-		String fileName -> 
-		 if (fileName.startsWith('sechub-openapi-java-client')) {
-			return "sechub-openapi-java-client.jar" // rename to jar file without version
-		 } else if (fileName.startsWith('sechub-commons-archive')) {
-			return "sechub-commons-archive.jar" // rename to jar file without version
-		 } else if (fileName.startsWith('sechub-commons-core')) {
-			return "sechub-commons-core.jar" // rename to jar file without version
-		 } else if (fileName.startsWith('sechub-commons-model')) {
-			return "sechub-commons-model.jar" // rename to jar file without version
-		 }
-		 // in all cases we use the library name as is
-		 return fileName;
-    }
-    
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    with jar
 }
 
 sourceSets {
     main {
         java {
-            srcDir "$rootDir/sechub-openapi-java-client/gen/src/main/java"
+            srcDir "$rootDir/sechub-openapi-java-model/gen/src/main/java"
         }
     }
 }

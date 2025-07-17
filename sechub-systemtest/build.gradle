@@ -15,6 +15,7 @@ dependencies {
 
     implementation project(':sechub-pds-commons-core')
     implementation project(':sechub-openapi-java-client')
+    implementation project(':sechub-openapi-java-model')
     implementation project(':sechub-commons-pds')
     implementation project(':sechub-commons-archive')
 
