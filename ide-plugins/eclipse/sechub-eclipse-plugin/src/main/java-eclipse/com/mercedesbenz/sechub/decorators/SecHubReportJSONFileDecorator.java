@@ -7,7 +7,7 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 
-import com.mercedesbenz.sechub.EclipseUtil;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class SecHubReportJSONFileDecorator implements ILightweightLabelDecorator {
 

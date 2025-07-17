@@ -18,7 +18,7 @@ NOTE: e.g. https://www.eclipse.org/downloads/packages/release/2025-06/r/eclipse-
 - create a new eclipse workspace for RCP development at a location outside 
 - import the existing eclipse projects inside `${sechub-repo-root}/ide-plugins/eclipse` into the RCP workspace
  
-==== Update dependencies
+==== Update SecHub dependencies
 At sechub repository root level type:
   `./gradlew eclipse`. 
 
@@ -54,3 +54,27 @@ To handle this a manual step is necessary:
 ====
 Afterwards eclipse will rebuild the plugin project and compile errors are gone.
 ====
+
+==== Set eclipse target platform
+Open file `sechub.target` from project `sechub-eclipse-target-platform` with IDE default editor.
+You will see the target definition editor. On the top right you see the `Set as active target platform` link.
+
+After pressing the link, this will 
+
+- download the minimum target platform (2023-03) and all plugins
+- set this for development inside RCP environment
+
+==== Start Eclipse plugin 
+Select project `sechub-eclipse-plugin` , press right mouse button and call `Run as... Eclipse application`.
+
+This will start the target platform with the SecHub plugin activated.
+
+  
+[NOTE]
+====
+When you start with `Debug` you must close views and open them again to have hot code replacement when changing
+`createPartControl(Composite parent)` methods.
+====
+
+
+
