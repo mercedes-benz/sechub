@@ -360,7 +360,7 @@ public class SecHubServerView extends ViewPart {
 			serverTreeViewer.getTree().setToolTipText("Connected to SecHub server");
 			openWebUIAction.setEnabled(true);
 		} else {
-			serverTreeViewer.getTree().setToolTipText("Not alive or wrong credentials\n(double click to change prefereces)");
+			serverTreeViewer.getTree().setToolTipText("Not alive or wrong credentials\n(double click to change preferences)");
 			openWebUIAction.setEnabled(false);
 		}
 
