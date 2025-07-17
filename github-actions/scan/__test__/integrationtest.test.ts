@@ -42,7 +42,10 @@ const mockedInputMap = new Map();
 
 let mockedUploadFunction: jest.Mock;
 
-jest.setTimeout(50000);
+// Set the timeout for each test of this file to 15 seconds: https://jestjs.io/docs/jest-object#jestsettimeouttimeout
+// This is more than enough, but the default of 5 seconds is not enough sometimes.
+// If timeout values need to be configured for each test individually refer to: https://jestjs.io/docs/api#testname-fn-timeout
+jest.setTimeout(15000);
 
 beforeEach(() => {
 
