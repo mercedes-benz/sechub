@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 
 import { AxiosProxyConfig } from "axios";
-import { handleError } from "./action-helper";
+import { ScanType } from 'sechub-openapi-ts-client'
 import * as core from '@actions/core';
+import { SecHubConfigurationModelBuilderData } from "./configuration-builder";
 
 const COMMA = ',';
 
@@ -19,6 +20,27 @@ export function split(input: string): string[] {
         .split(COMMA)
         .map(item => item.trim())
         .filter(item => item.length > 0);
+}
+
+export function ensureAcceptedScanType(data: string[]): string[] {
+    const accepted: string[] = [];
+    if (data){
+        for (const entry of data) {
+            if (equalIgnoreCase(entry, ScanType.CodeScan)) {
+                accepted.push(ScanType.CodeScan);
+            } else if (equalIgnoreCase(entry, ScanType.LicenseScan)) {
+                accepted.push(ScanType.LicenseScan);
+            } else if (equalIgnoreCase(entry, ScanType.SecretScan)) {
+                accepted.push(ScanType.SecretScan);
+            } else if (equalIgnoreCase(entry, ScanType.IacScan)){
+                accepted.push(ScanType.IacScan);
+            }
+        }
+    }
+    if (accepted.length == 0) {
+        accepted.push(ScanType.CodeScan);
+    }
+    return accepted;
 }
 
 /**
@@ -83,3 +105,9 @@ function getProtocolDefaultPort(protocol: string) {
         throw new Error('Accepted protocols are "http" and "https"');
     }
 }
+
+
+function equalIgnoreCase(string1: string, string2: string) {
+    return string1.toLowerCase() === string2.toLowerCase();
+}
+

@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 
 import * as configBuilder from '../src/configuration-builder';
-import { SecHubConfigurationModel, ContentType, ScanType } from '../src/configuration-model';
+import { ScanType, SecHubConfiguration } from 'sechub-openapi-ts-client';
 import { SecHubConfigurationModelBuilderData } from '../src/configuration-builder';
 
 jest.mock('@actions/core');
 
 const debugEnabled = false;
 
-function logDebug(model: SecHubConfigurationModel){
+function logDebug(model: SecHubConfiguration){
     if (! debugEnabled){
         return;
     }
@@ -25,8 +25,8 @@ describe('configuration-builder', function() {
 
         /* test */
         expect(model.apiVersion).toEqual('1.0');
-        expect(model.data.sources).toBeDefined();
-        expect(model.data.binaries).toBeUndefined();
+        expect(model.data?.sources).toBeDefined();
+        expect(model.data?.binaries).toBeUndefined();
     });
 
     test('codescan generated per default - source,one folder defined', () => {
@@ -43,18 +43,18 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources).toBeDefined();
-        expect(model.data.binaries).toBeUndefined();
+        expect(model.data?.sources).toBeDefined();
+        expect(model.data?.binaries).toBeUndefined();
 
-        expect(model.data.sources?.length).toEqual(1);
+        expect(model.data?.sources?.length).toEqual(1);
 
-        const firstSource = model.data.sources?.[0];
-        expect(firstSource?.fileSystem.folders?.length).toEqual(1);
-        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
+        const firstSource = model.data?.sources?.[0];
+        expect(firstSource?.fileSystem?.folders?.length).toEqual(1);
+        expect(firstSource?.fileSystem?.folders?.[0]).toEqual('folder1');
 
         expect(model.codeScan).toBeDefined();
-        expect(model.codeScan?.use.length).toEqual(1);
-        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
+        expect(model.codeScan?.use?.length).toEqual(1);
+        expect((model.codeScan?.use ?? [])[0]).toEqual('reference-data-1');
 
         expect(model.licenseScan).toBeUndefined();
         expect(model.secretScan).toBeUndefined();
@@ -76,20 +76,20 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources).toBeDefined();
-        expect(model.data.binaries).toBeUndefined();
+        expect(model.data?.sources).toBeDefined();
+        expect(model.data?.binaries).toBeUndefined();
       
-        expect(model.data.sources?.length).toEqual(1);
+        expect(model.data?.sources?.length).toEqual(1);
 
-        const firstSource = model.data.sources?.[0];
-        expect(firstSource?.fileSystem.folders?.length).toEqual(2);
-        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
-        expect(firstSource?.fileSystem.folders?.[1]).toEqual('folder2');
+        const firstSource = model.data?.sources?.[0];
+        expect(firstSource?.fileSystem?.folders?.length).toEqual(2);
+        expect(firstSource?.fileSystem?.folders?.[0]).toEqual('folder1');
+        expect(firstSource?.fileSystem?.folders?.[1]).toEqual('folder2');
         expect(firstSource?.excludes?.length).toEqual(0);
 
         expect(model.codeScan).toBeDefined();
-        expect(model.codeScan?.use.length).toEqual(1);
-        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
+        expect(model.codeScan?.use?.length).toEqual(1);
+        expect((model.codeScan?.use ?? [])[0]).toEqual('reference-data-1');
 
         expect(model.licenseScan).toBeUndefined();
         expect(model.secretScan).toBeUndefined();
@@ -112,22 +112,22 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources).toBeDefined();
-        expect(model.data.binaries).toBeUndefined();
+        expect(model.data?.sources).toBeDefined();
+        expect(model.data?.binaries).toBeUndefined();
       
-        expect(model.data.sources?.length).toEqual(1);
+        expect(model.data?.sources?.length).toEqual(1);
 
-        const firstSource = model.data.sources?.[0];
-        expect(firstSource?.fileSystem.folders?.length).toEqual(2);
-        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
-        expect(firstSource?.fileSystem.folders?.[1]).toEqual('folder2');
+        const firstSource = model.data?.sources?.[0];
+        expect(firstSource?.fileSystem?.folders?.length).toEqual(2);
+        expect(firstSource?.fileSystem?.folders?.[0]).toEqual('folder1');
+        expect(firstSource?.fileSystem?.folders?.[1]).toEqual('folder2');
 
         expect(firstSource?.excludes?.length).toEqual(1);
         expect(firstSource?.excludes?.[0]).toEqual('folder3');
 
         expect(model.codeScan).toBeDefined();
-        expect(model.codeScan?.use.length).toEqual(1);
-        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
+        expect(model.codeScan?.use?.length).toEqual(1);
+        expect((model.codeScan?.use ?? [])[0]).toEqual('reference-data-1');
 
         expect(model.secretScan).toBeUndefined();
         expect(model.licenseScan).toBeUndefined();
@@ -140,7 +140,7 @@ describe('configuration-builder', function() {
         /* prepare */
         const builderData = new SecHubConfigurationModelBuilderData();
         builderData.includeFolders= ['folder1','folder2'];
-        builderData.contentType=ContentType.BINARIES;
+        builderData.contentType="binaries";
 
         /* execute */
         const model= configBuilder.createSecHubConfigurationModel(builderData);
@@ -150,20 +150,20 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources).toBeUndefined();
-        expect(model.data.binaries).toBeDefined();
+        expect(model.data?.sources).toBeUndefined();
+        expect(model.data?.binaries).toBeDefined();
       
-        expect(model.data.binaries?.length).toEqual(1);
+        expect(model.data?.binaries?.length).toEqual(1);
 
-        const firstBinary = model.data.binaries?.[0];
-        expect(firstBinary?.fileSystem.folders?.length).toEqual(2);
-        expect(firstBinary?.fileSystem.folders?.[0]).toEqual('folder1');
-        expect(firstBinary?.fileSystem.folders?.[1]).toEqual('folder2');
+        const firstBinary = model.data?.binaries?.[0];
+        expect(firstBinary?.fileSystem?.folders?.length).toEqual(2);
+        expect(firstBinary?.fileSystem?.folders?.[0]).toEqual('folder1');
+        expect(firstBinary?.fileSystem?.folders?.[1]).toEqual('folder2');
         expect(firstBinary?.excludes?.length).toEqual(0);
 
         expect(model.codeScan).toBeDefined();
-        expect(model.codeScan?.use.length).toEqual(1);
-        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
+        expect(model.codeScan?.use?.length).toEqual(1);
+        expect((model.codeScan?.use ?? [])[0]).toEqual('reference-data-1');
 
         expect(model.secretScan).toBeUndefined();
         expect(model.licenseScan).toBeUndefined();
@@ -175,7 +175,7 @@ describe('configuration-builder', function() {
         /* prepare */
         const builderData = new SecHubConfigurationModelBuilderData();
         builderData.includeFolders= ['folder1','folder2'];
-        builderData.scanTypes=[ScanType.CODE_SCAN,ScanType.LICENSE_SCAN];
+        builderData.scanTypes=[ScanType.CodeScan,ScanType.LicenseScan];
 
         /* execute */
         const model= configBuilder.createSecHubConfigurationModel(builderData);
@@ -185,21 +185,21 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources);
-        expect(model.data.sources?.length).toEqual(1);
+        expect(model.data?.sources);
+        expect(model.data?.sources?.length).toEqual(1);
 
-        const firstSource = model.data.sources?.[0];
-        expect(firstSource?.fileSystem.folders?.length).toEqual(2);
-        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
-        expect(firstSource?.fileSystem.folders?.[1]).toEqual('folder2');
+        const firstSource = model.data?.sources?.[0];
+        expect(firstSource?.fileSystem?.folders?.length).toEqual(2);
+        expect(firstSource?.fileSystem?.folders?.[0]).toEqual('folder1');
+        expect(firstSource?.fileSystem?.folders?.[1]).toEqual('folder2');
 
         expect(model.codeScan).toBeDefined();
-        expect(model.codeScan?.use.length).toEqual(1);
-        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
+        expect(model.codeScan?.use?.length).toEqual(1);
+        expect((model.codeScan?.use ?? [])[0]).toEqual('reference-data-1');
 
         expect(model.licenseScan).toBeDefined();
-        expect(model.licenseScan?.use.length).toEqual(1);
-        expect(model.licenseScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+        expect(model.licenseScan?.use?.length).toEqual(1);
+        expect((model.licenseScan?.use ?? [])[0]).toEqual('reference-data-1'); // same data refererenced
         
         expect(model.secretScan).toBeUndefined();
         expect(model.iacScan).toBeUndefined();
@@ -210,7 +210,7 @@ describe('configuration-builder', function() {
         /* prepare */
         const builderData = new SecHubConfigurationModelBuilderData();
         builderData.includeFolders= ['folder1','folder2'];
-        builderData.scanTypes=[ScanType.CODE_SCAN,ScanType.SECRET_SCAN];
+        builderData.scanTypes=[ScanType.CodeScan,ScanType.SecretScan];
 
         /* execute */
         const model= configBuilder.createSecHubConfigurationModel(builderData);
@@ -220,21 +220,21 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources);
-        expect(model.data.sources?.length).toEqual(1);
+        expect(model.data?.sources);
+        expect(model.data?.sources?.length).toEqual(1);
 
-        const firstSource = model.data.sources?.[0];
-        expect(firstSource?.fileSystem.folders?.length).toEqual(2);
-        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
-        expect(firstSource?.fileSystem.folders?.[1]).toEqual('folder2');
+        const firstSource = model.data?.sources?.[0];
+        expect(firstSource?.fileSystem?.folders?.length).toEqual(2);
+        expect(firstSource?.fileSystem?.folders?.[0]).toEqual('folder1');
+        expect(firstSource?.fileSystem?.folders?.[1]).toEqual('folder2');
 
         expect(model.codeScan).toBeDefined();
-        expect(model.codeScan?.use.length).toEqual(1);
-        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
+        expect(model.codeScan?.use?.length).toEqual(1);
+        expect((model.codeScan?.use ?? [])[0]).toEqual('reference-data-1');
 
         expect(model.secretScan).toBeDefined();
-        expect(model.secretScan?.use.length).toEqual(1);
-        expect(model.secretScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+        expect(model.secretScan?.use?.length).toEqual(1);
+        expect((model.secretScan?.use ?? [])[0]).toEqual('reference-data-1'); // same data refererenced
         
         expect(model.licenseScan).toBeUndefined();
         expect(model.iacScan).toBeUndefined();
@@ -246,7 +246,7 @@ describe('configuration-builder', function() {
         const builderData = new SecHubConfigurationModelBuilderData();
         builderData.includeFolders= ['folder1'];
         builderData.excludeFolders= ['folderX'];
-        builderData.scanTypes=[ScanType.SECRET_SCAN];
+        builderData.scanTypes=[ScanType.SecretScan];
 
         /* execute */
         const model= configBuilder.createSecHubConfigurationModel(builderData);
@@ -256,20 +256,20 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources);
-        expect(model.data.sources?.length).toEqual(1);
+        expect(model.data?.sources);
+        expect(model.data?.sources?.length).toEqual(1);
 
-        const firstSource = model.data.sources?.[0];
-        expect(firstSource?.fileSystem.folders?.length).toEqual(1);
-        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
+        const firstSource = model.data?.sources?.[0];
+        expect(firstSource?.fileSystem?.folders?.length).toEqual(1);
+        expect(firstSource?.fileSystem?.folders?.[0]).toEqual('folder1');
         expect(firstSource?.excludes?.length).toEqual(1);
         expect(firstSource?.excludes?.[0]).toEqual('folderX');
 
         expect(model.codeScan).toBeUndefined();
         
         expect(model.secretScan).toBeDefined();
-        expect(model.secretScan?.use.length).toEqual(1);
-        expect(model.secretScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+        expect(model.secretScan?.use?.length).toEqual(1);
+        expect((model.secretScan?.use ?? [])[0]).toEqual('reference-data-1'); // same data refererenced
         
         expect(model.licenseScan).toBeUndefined();
         expect(model.codeScan).toBeUndefined();
@@ -283,7 +283,7 @@ describe('configuration-builder', function() {
         const builderData = new SecHubConfigurationModelBuilderData();
         builderData.includeFolders= ['folder1'];
         builderData.excludeFolders= ['folderX'];
-        builderData.scanTypes=[ScanType.IAC_SCAN];
+        builderData.scanTypes=[ScanType.IacScan];
 
         /* execute */
         const model= configBuilder.createSecHubConfigurationModel(builderData);
@@ -293,20 +293,20 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources);
-        expect(model.data.sources?.length).toEqual(1);
+        expect(model?.data?.sources);
+        expect(model.data?.sources?.length).toEqual(1);
 
-        const firstSource = model.data.sources?.[0];
-        expect(firstSource?.fileSystem.folders?.length).toEqual(1);
-        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
+        const firstSource = model?.data?.sources?.[0];
+        expect(firstSource?.fileSystem?.folders?.length).toEqual(1);
+        expect(firstSource?.fileSystem?.folders?.[0]).toEqual('folder1');
         expect(firstSource?.excludes?.length).toEqual(1);
         expect(firstSource?.excludes?.[0]).toEqual('folderX');
 
         expect(model.codeScan).toBeUndefined();
         
         expect(model.iacScan).toBeDefined();
-        expect(model.iacScan?.use.length).toEqual(1);
-        expect(model.iacScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+        expect(model.iacScan?.use?.length).toEqual(1);
+        expect((model.iacScan?.use ?? [])[0]).toEqual('reference-data-1'); // same data refererenced
         
         expect(model.licenseScan).toBeUndefined();
         expect(model.secretScan).toBeUndefined();
@@ -318,7 +318,7 @@ describe('configuration-builder', function() {
         /* prepare */
         const builderData = new SecHubConfigurationModelBuilderData();
         builderData.includeFolders= ['folder1','folder2'];
-        builderData.scanTypes=[ScanType.CODE_SCAN,ScanType.IAC_SCAN,ScanType.SECRET_SCAN];
+        builderData.scanTypes=[ScanType.CodeScan,ScanType.IacScan,ScanType.SecretScan];
 
         /* execute */
         const model= configBuilder.createSecHubConfigurationModel(builderData);
@@ -328,25 +328,25 @@ describe('configuration-builder', function() {
 
         expect(model.apiVersion).toEqual('1.0');
         
-        expect(model.data.sources);
-        expect(model.data.sources?.length).toEqual(1);
+        expect(model.data?.sources);
+        expect(model.data?.sources?.length).toEqual(1);
 
-        const firstSource = model.data.sources?.[0];
-        expect(firstSource?.fileSystem.folders?.length).toEqual(2);
-        expect(firstSource?.fileSystem.folders?.[0]).toEqual('folder1');
-        expect(firstSource?.fileSystem.folders?.[1]).toEqual('folder2');
+        const firstSource = model.data?.sources?.[0];
+        expect(firstSource?.fileSystem?.folders?.length).toEqual(2);
+        expect(firstSource?.fileSystem?.folders?.[0]).toEqual('folder1');
+        expect(firstSource?.fileSystem?.folders?.[1]).toEqual('folder2');
 
         expect(model.codeScan).toBeDefined();
-        expect(model.codeScan?.use.length).toEqual(1);
-        expect(model.codeScan?.use[0]).toEqual('reference-data-1');
+        expect(model.codeScan?.use?.length).toEqual(1);
+        expect((model.codeScan?.use ?? [])[0]).toEqual('reference-data-1');
 
         expect(model.iacScan).toBeDefined();
-        expect(model.iacScan?.use.length).toEqual(1);
-        expect(model.iacScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+        expect(model.iacScan?.use?.length).toEqual(1);
+        expect((model.iacScan?.use ?? [])[0]).toEqual('reference-data-1'); // same data refererenced
 
         expect(model.secretScan).toBeDefined();
-        expect(model.secretScan?.use.length).toEqual(1);
-        expect(model.secretScan?.use[0]).toEqual('reference-data-1'); // same data refererenced
+        expect(model.secretScan?.use?.length).toEqual(1);
+        expect((model.codeScan?.use ?? [])[0]).toEqual('reference-data-1'); // same data refererenced
         
         expect(model.licenseScan).toBeUndefined();        
     });
