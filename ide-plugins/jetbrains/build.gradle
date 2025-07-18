@@ -1,43 +1,40 @@
 // SPDX-License-Identifier: MIT
-import org.jetbrains.changelog.ExtensionsKt
-import java.text.SimpleDateFormat
 
 plugins {
-    id 'java'
     // see https://github.com/JetBrains/gradle-intellij-plugin and
     // https://plugins.gradle.org/plugin/org.jetbrains.intellij
-    id 'org.jetbrains.intellij' version '1.14.2'
+    id 'org.jetbrains.intellij' version '1.17.2'
 
     // https://github.com/JetBrains/gradle-changelog-plugin#initializechangelog
-    id("org.jetbrains.changelog") version "1.2.1"
+    id("org.jetbrains.changelog") version "2.2.1"
 
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 repositories {
-
     // intellij plugin adds www.jetbrains.com/intellij-repository/releases in a redirected way over
     // https://cache-redirector.jetbrains.com/www.jetbrains.com/intellij-repository/releases
     mavenCentral()
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.release = 17
+}
+
 // Info: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html#configuration-intellij-extension
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'lib')
+    implementation 'com.mercedesbenz.sechub:sechub-openapi-java-client'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
 }
 
-apply plugin: "org.jetbrains.intellij"
-// apply plugin: 'org.jetbrains.changelog'
+apply plugin: 'org.jetbrains.intellij'
 
 group 'com.mercedesbenz.sechub'
-version '0.4.0'
+version '0.4.1'
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
-
-tasks.withType(JavaCompile) {
-    options.release = 17
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 sourceSets{
@@ -54,31 +51,13 @@ intellij {
     // https://developer.android.com/studio/releases/
     // https://plugins.jetbrains.com/docs/intellij/android-studio-releases-list.html#2023
     version= '2023.1.1'
+    type = 'IC'
+    plugins = ['java']
 }
-
-/*
- // changenotes plugin does currently not work well in combination
- // with intellij plugin 1.1.6 - so currently not used
-tasks {
-    patchPluginXml {
-        changeNotes.set({ changelog.getLatest().toHTML() })
-    }
-}
-*/
 
 patchPluginXml {
     sinceBuild = '231'
-    untilBuild =''
-}
-
-signPlugin {
-    certificateChain = System.getenv("SECHUB_CERTIFICATE_CHAIN")
-    privateKey = System.getenv("SECHUB_PRIVATE_KEY")
-    password = System.getenv("SECHUB_PRIVATE_KEY_PASSWORD")
-}
-
-publishPlugin {
-    token = System.getenv("SECHUB_INTELLIJ_PUBLISH_TOKEN")
+    untilBuild = ''
 }
 
 asciidoctor {
@@ -100,31 +79,14 @@ asciidoctor {
             'sectnums': 'true',
             'sectnumlevels': '5',
             'version': rootProject.version
-
 }
 
-/*
-changelog {
-    version = "0.3.0"
-    path = "${project.projectDir}/CHANGELOG.md"
-    header = "[${-> version.get()}] - ${new SimpleDateFormat("yyyy-MM-dd").format(new Date())}"
-    headerParserRegex = ~/\d+\.\d+/
-    itemPrefix = "-"
-    keepUnreleasedSection = true
-    unreleasedTerm = "[Unreleased]"
-    groups = ["Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"]
-}
- */
- 
-task checkAndBuildDependencies {
-    def arg = project.hasProperty('arg') ? project.property('arg') : ''
-    exec {
-        commandLine '/bin/bash', './build-dependencies.sh', arg
-    }
+signPlugin {
+    certificateChain = System.getenv('SECHUB_CERTIFICATE_CHAIN')
+    privateKey = System.getenv('SECHUB_PRIVATE_KEY')
+    password = System.getenv('SECHUB_PRIVATE_KEY_PASSWORD')
 }
 
-// Use ./gradlew compileJava -Parg=rebuildJar, to rebuild 'lib/sechub-java-api-all-0.0.0.jar' automatically.
-// Alternatively the jar file can be deleted manually and it will be rebuild from sources whenever compileJava is used
-tasks.named('compileJava') {
-    dependsOn checkAndBuildDependencies
+publishPlugin {
+    token = System.getenv('SECHUB_INTELLIJ_PUBLISH_TOKEN')
 }

@@ -21,44 +21,58 @@ NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extens
 
 ### Develop
 
+Note: Example extension to orientate: https://github.com/gitkraken/vscode-gitlens/tree/main/src 
+
 1. Install Node.js
 
     * [Windows, macOS and Linux](https://nodejs.org/en/download)
     * [`deb` and `rpm` packages (Debian/Ubuntu, RHEL/Fedora etc.)](https://github.com/nodesource/distributions/tree/master)
     * [Node.js releases](https://nodejs.dev/en/about/releases/)
 
-2. Install Typescript compiler
+2. Build the Typescript client
+
+   Switch to the `sechub-openapi-ts-client` directory and follow the instructions in the [README.md](../sechub-openapi-ts-client/README.md) to generate the SecHub OpenAPI client.
+
+3. Install the dependencies
 
     ~~~
-    npm install -g typescript
-
-    # or on Linux
-
-    sudo npm install -g typescript
-
-    # check version
-    tsc --version
+    npm install
     ~~~
-
-3. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
+   
+4. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
 
     NOTE: VSCodium and Eclipse Theia distribute free/libre open source software binaries. VS Code, on the other hand, distributes non-free binaries and collects telemetry data.
 
-4. In VSCodium toolbar: `Run -> Start Debugging`.
+5. In VSCodium toolbar: `Run -> Start Debugging`.
 
     ![image](README/start_debugging.png)
+
+#### Develop with SecHub Integrationtest Server
+
+1. Start the SecHub Server as integration test server from your IDE
+
+2. Start the proxy in a terminal `node devProxy.js` (Proxy on http://localhost:8000 -> https://localhost:8443 (sechub int test serevr)
+    This step is necessary because of self singed SSL certificates.
+
+3. Run the extension in toolbar: `Run -> Start Debugging`.
+
+4. Set SecHub Server URL to http://localhost:8000 and the credentials to the default credentials e.g. use the int-test_superadmin user
 
 ### Test
 
 Prerequisite: The Node package manager NPM needs to be installed.
 
-1. Install dependencies
+1. Build the Typescript client
+
+   Switch to the `sechub-openapi-ts-client` directory and follow the instructions in the [README.md](../sechub-openapi-ts-client/README.md) to generate the SecHub OpenAPI client.
+
+2. Install dependencies (make sure you have generated and build t+he sechub-openapi-typescript client first)
 
     ~~~
     npm install
     ~~~
 
-2. Compile and run tests
+3. Compile and run tests
 
     ~~~
     npm test

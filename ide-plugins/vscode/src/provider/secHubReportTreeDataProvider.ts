@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as sechubModel from '../model/sechubModel';
+import { SecHubReport, SecHubFinding } from 'sechub-openapi-ts-client';
 
 export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<ReportItem> {
 
-  constructor(private findingModel: sechubModel.FindingModel | undefined) { }
+  constructor(private report: SecHubReport | undefined) { }
 
   /* refresh mechanism for tree:*/
   private _onDidChangeTreeData: vscode.EventEmitter<ReportItem | undefined | null | void> = new vscode.EventEmitter<ReportItem | undefined | null | void>();
@@ -20,7 +20,7 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
   }
 
   getChildren(element?: ReportItem): Thenable<ReportItem[]> {
-    if (!this.findingModel) {
+    if (!this.report) {
       vscode.window.showInformationMessage('No finding model available');
       return Promise.resolve([]);
     }
@@ -39,8 +39,8 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
   }
 
 
-  public update(findingModel: sechubModel.FindingModel) {
-    this.findingModel = findingModel;
+  public update(report: SecHubReport) {
+    this.report = report;
     this.refresh();
   }
 
@@ -49,12 +49,25 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
    */
   private getReportItems(): ReportItem[] {
     let rootItems: ReportItem[] = [];
-    rootItems.push(new FindingModelMetaDataReportItem("Report UUID:", this.findingModel?.jobUUID, vscode.TreeItemCollapsibleState.None));
-    rootItems.push(new FindingModelMetaDataReportItem("Traffic light:", this.findingModel?.trafficLight, vscode.TreeItemCollapsibleState.None));
-    let findings: FindingModelMetaDataReportItem = new FindingModelMetaDataReportItem("Findings:", "" + this.findingModel?.result.findings.length, vscode.TreeItemCollapsibleState.Expanded);
-    rootItems.push(findings);
 
-    this.findingModel?.result.findings.forEach((finding) => {
+    if(!this.report?.result){
+      vscode.window.showInformationMessage('No result in your SecHub report to show!');
+      return [];
+    }
+
+    if (!this.report?.result.findings){
+      vscode.window.showInformationMessage('No findings in your SecHub report to show!');
+      return [];
+    }
+
+    rootItems.push(new FindingModelMetaDataReportItem("Report UUID:", this.report?.jobUUID, vscode.TreeItemCollapsibleState.None));
+    rootItems.push(new FindingModelMetaDataReportItem("Traffic light:", this.report?.trafficLight, vscode.TreeItemCollapsibleState.None));
+
+
+    let findingItems: FindingModelMetaDataReportItem = new FindingModelMetaDataReportItem("Findings:", "" + this.report?.result?.findings.length, vscode.TreeItemCollapsibleState.Expanded);
+    rootItems.push(findingItems);
+
+    this.report?.result?.findings.forEach((finding) => {
       let item: ReportItem = new FindingNodeReportItem(finding);
       item.contextValue = "reportItem";
       item.command = {
@@ -62,7 +75,7 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
         title: "Select Node",
         arguments: [item]
       };
-      findings.children.push(item);
+      findingItems.children.push(item);
     });
     return rootItems;
 
@@ -84,15 +97,15 @@ export class FindingModelMetaDataReportItem extends ReportItem {
 }
 
 export class FindingNodeReportItem extends ReportItem {
-  readonly findingNode: sechubModel.FindingNode;
+  readonly sechubFinding: SecHubFinding;
 
-  constructor(findingNode: sechubModel.FindingNode
+  constructor(sechubFinding: SecHubFinding
   ) {
-    super(findingNode.id + " - " + findingNode.severity, vscode.TreeItemCollapsibleState.None);
+    super(sechubFinding.id + " - " + sechubFinding.severity, vscode.TreeItemCollapsibleState.None);
 
-    this.description = findingNode.name;
+    this.description = sechubFinding.name;
     this.tooltip = `${this.label}-${this.description}`;
-    this.findingNode = findingNode;
+    this.sechubFinding = sechubFinding;
   }
 
 

@@ -16,9 +16,9 @@ PURPLE='\033[0;35m'
 NC='\033[0m' # No Color
 
 # Define global variables for GitHub action apts
-gha_sechub_server_version=1.7.0
+gha_sechub_server_version=2.11.1
 gha_sechub_server_port=8443
-gha_pds_version=1.4.0
+gha_pds_version=2.3.0
 gha_pds_port=8444
 
 
@@ -375,10 +375,10 @@ if [[ "$FULL_BUILD" = "YES" ]]; then
     ./gradlew spotlessCheck :sechub-cli:buildGo :sechub-cli:testGo
     
     step "Build Server, DAUI and generate OpenAPI file"
-    ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
+    ./gradlew ensureLocalhostCertificate build -x :sechub-cli:build
     
-    step "Generate and build Java projects related to SecHub Java API"
-    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI 
+    step "Generate PDS tool cli"
+    ./gradlew :sechub-pds-tools:buildPDSToolsCLI 
     
     step "Start Integration Test Instances"
     eval "${CMD_START_INTEGRATION_TEST_INSTANCES}"
@@ -403,7 +403,7 @@ fi
 if [[ "$PDS_TOOLS_BUILD" = "YES" ]]; then
      startJob "Execute build pds tools"
      step "Generate and build Java projects related to SecHub Java API"
-    ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI 
+    ./gradlew :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI 
   
 fi
 

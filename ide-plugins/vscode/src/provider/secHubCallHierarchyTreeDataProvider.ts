@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as path from 'path';
-import * as sechubModel from '../model/sechubModel';
+import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
 export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvider<HierarchyItem> {
 
-  public update(findingNode: sechubModel.FindingNode) {
+  public update(findingNode: SecHubFinding) {
     this.finding = findingNode;
     this.refresh();
   }
@@ -14,7 +14,7 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
   private _onDidChangeTreeData: vscode.EventEmitter<HierarchyItem | undefined | null | void> = new vscode.EventEmitter<HierarchyItem | undefined | null | void>();
   readonly onDidChangeTreeData: vscode.Event<HierarchyItem | undefined | null | void> = this._onDidChangeTreeData.event;
 
-  constructor(private finding: sechubModel.FindingNode | undefined) { }
+  constructor(private finding: SecHubFinding | undefined) { }
 
   private refresh(): void {
     this._onDidChangeTreeData.fire();
@@ -56,7 +56,7 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
 
     let items: HierarchyItem[] = [];
 
-    let codeCallStackElement: sechubModel.CodeCallStackElement | undefined = this.finding?.code;
+    let codeCallStackElement: SecHubCodeCallStack | undefined = this.finding?.code;
     let state: vscode.TreeItemCollapsibleState = codeCallStackElement?.calls ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None;
 
     if (!(codeCallStackElement)) {
@@ -94,12 +94,15 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
 export class HierarchyItem extends vscode.TreeItem {
 
   readonly children: HierarchyItem[] = [];
-  callstackElement: sechubModel.CodeCallStackElement;
-  findingNode: sechubModel.FindingNode | undefined;
+  callstackElement: SecHubCodeCallStack;
+  findingNode: SecHubFinding | undefined;
   parent: HierarchyItem | undefined;
 
-  constructor(findingNode: sechubModel.FindingNode | undefined, callstackElement: sechubModel.CodeCallStackElement, state: vscode.TreeItemCollapsibleState
+  constructor(findingNode: SecHubFinding | undefined, callstackElement: SecHubCodeCallStack, state: vscode.TreeItemCollapsibleState
   ) {
+    if(!callstackElement.relevantPart){
+      callstackElement.relevantPart = "";
+    }
     super(callstackElement.relevantPart, state);
 
     this.description = callstackElement.location;

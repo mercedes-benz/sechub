@@ -1,30 +1,33 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.ui;
 
-import javax.swing.table.DefaultTableModel;
+import java.io.Serial;
 import java.util.List;
+
+import javax.swing.table.DefaultTableModel;
 
 public class SecHubTableModel extends DefaultTableModel {
 
-	private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-	public SecHubTableModel(String... columnNames) {
-		super(columnNames, 0);
-	}
+    public SecHubTableModel(String... columnNames) {
+        super(columnNames, 0);
+    }
 
-	public boolean isCellEditable(int row, int column) {
-		return false;
-	}
+    public boolean isCellEditable(int row, int column) {
+        return false;
+    }
 
-	public void setDataList(List<Object[]> rows) {
-		removeAllRows();
+    public void setDataList(List<Object[]> rows) {
+        removeAllRows();
 
-		for (Object[] row: rows){
-			addRow(row);
-		}
-	}
+        for (Object[] row : rows) {
+            addRow(row);
+        }
+    }
 
-	public void removeAllRows() {
-		setRowCount(0); // see javadoc, this deletes all rows in one step...
-	}
+    public void removeAllRows() {
+        setRowCount(0); // see javadoc, this deletes all rows in one step...
+    }
 }

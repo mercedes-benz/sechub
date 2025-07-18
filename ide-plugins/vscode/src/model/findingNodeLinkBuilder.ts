@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
+import { SecHubFinding } from 'sechub-openapi-ts-client';
 import * as vscode from 'vscode';
-import * as secHubModel from './sechubModel';
 
 export class FindingNodeLinkBuilder {
 
-    public buildCWELinkAndOpenInBrowser(findingNode: secHubModel.FindingNode | undefined) {
+    public buildCWELinkAndOpenInBrowser(findingNode: SecHubFinding | undefined) {
         const uri = this.buildCWELink(findingNode);
         if (!uri) {
             return;
@@ -12,7 +12,7 @@ export class FindingNodeLinkBuilder {
         vscode.commands.executeCommand("vscode.open", uri);
     }
 
-    public buildCWELink(findingNode: secHubModel.FindingNode | undefined): vscode.Uri | undefined {
+    public buildCWELink(findingNode: SecHubFinding | undefined): vscode.Uri | undefined {
         if (!findingNode) {
             return undefined;
         }
@@ -22,7 +22,7 @@ export class FindingNodeLinkBuilder {
         return vscode.Uri.parse("https://cwe.mitre.org/data/definitions/" + findingNode.cweId + ".html");
     }
 
-    public buildCWEOpenInBrowserCommand(findingNode: secHubModel.FindingNode | undefined): vscode.Command | undefined {
+    public buildCWEOpenInBrowserCommand(findingNode: SecHubFinding | undefined): vscode.Command | undefined {
         if (!findingNode) {
             return undefined;
         }

@@ -5,41 +5,41 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
+import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 
 /**
- * The FindingNode represents data structure required in
- * SecHubReportView
+ * The FindingNode represents data structure required in SecHubReportView
  */
 public class FindingNode implements Comparable<FindingNode> {
 
 	private FindingNode parent = null;
 	private List<FindingNode> children = new LinkedList<FindingNode>();
 
-	private Integer cweId;
 	private String description;
 	private String location;
 	private Integer line;
 	private Integer column;
 	private String relevantPart;
 	private String source;
-	private Severity severity;
 	public int callStackStep;
-	public int id;
 	private String fileName;
 	public String filePath;
-	private Map<String,Object> metaDataCache;
+	private Map<String, Object> metaDataCache;
+	public SecHubFinding finding;
+	private UUID jobUUID;
 
-	private FindingNode(String description, String location, Integer line, Integer column, String relevantPart,
-			String source, Severity severity) {
+	private FindingNode(UUID jobUUID, String description, String location, Integer line, Integer column, String relevantPart,
+			String source) {
 		this.description = description;
 		this.location = location;
 		this.line = line;
 		this.column = column;
 		this.relevantPart = relevantPart;
 		this.source = source;
-		this.severity = severity;
+		this.jobUUID=jobUUID;
 	}
 
 	public static class FindingNodeBuilder {
@@ -47,17 +47,20 @@ public class FindingNode implements Comparable<FindingNode> {
 		private String location;
 		private int line;
 		private int column;
-		private int id;
 		private int callStackStep;
 		private String relevantPart;
 		private String source;
-		private Severity severity;
-		private Integer cweId;
+		private SecHubFinding finding;
+		private UUID jobUUID;
 
 		private FindingNodeBuilder() {
 
 		}
 
+		public FindingNodeBuilder setJobUUID(UUID jobUUID) {
+			this.jobUUID=jobUUID;
+			return this;
+		}
 		public FindingNodeBuilder setDescription(String description) {
 			this.description = description;
 			return this;
@@ -83,8 +86,8 @@ public class FindingNode implements Comparable<FindingNode> {
 			return this;
 		}
 
-		public FindingNodeBuilder setId(int id) {
-			this.id = id;
+		public FindingNodeBuilder setFinding(SecHubFinding finding) {
+			this.finding = finding;
 			return this;
 		}
 
@@ -98,21 +101,10 @@ public class FindingNode implements Comparable<FindingNode> {
 			return this;
 		}
 
-		public FindingNodeBuilder setSeverity(Severity severity) {
-			this.severity = severity;
-			return this;
-		}
-
-		public FindingNodeBuilder setCweId(Integer cweId) {
-			this.cweId=cweId;
-			return this;
-		}
-		
 		public FindingNode build() {
-			FindingNode node = new FindingNode(description, location, line, column, relevantPart, source, severity);
+			FindingNode node = new FindingNode(jobUUID, description, location, line, column, relevantPart, source);
 			node.callStackStep = callStackStep;
-			node.id = id;
-			node.cweId=cweId;
+			node.finding = finding;
 
 			calculateFileNameAndPath(node);
 
@@ -138,13 +130,16 @@ public class FindingNode implements Comparable<FindingNode> {
 			}
 		}
 
-
 	}
 
 	public static FindingNodeBuilder builder() {
 		return new FindingNodeBuilder();
 	}
 
+	public UUID getJobUUID() {
+		return jobUUID;
+	}
+	
 	public FindingNode getParent() {
 		return parent;
 	}
@@ -197,15 +192,25 @@ public class FindingNode implements Comparable<FindingNode> {
 	}
 
 	public Severity getSeverity() {
-		return severity;
+		if (finding==null) {
+			return null;
+		}
+		return finding.getSeverity();
 	}
 
 	public int getId() {
-		return id;
+		if (finding==null) {
+			return -1;
+		}
+		return finding.getId();
 	}
-	
+
+	public SecHubFinding getFinding() {
+		return finding;
+	}
+
 	public Integer getCweId() {
-		return cweId;
+		return finding.getCweId();
 	}
 
 	public int getCallStackStep() {
@@ -219,41 +224,56 @@ public class FindingNode implements Comparable<FindingNode> {
 	public String getFilePath() {
 		return filePath;
 	}
-	
+
 	public void setCachedMetaData(String key, Object value) {
-		 synchronized(monitor) {
-			 if (metaDataCache==null) {
-				 metaDataCache= new HashMap<>();
-			 }
-			 metaDataCache.put(key, value);
-		 }
+		synchronized (monitor) {
+			if (metaDataCache == null) {
+				metaDataCache = new HashMap<>();
+			}
+			metaDataCache.put(key, value);
+		}
 	}
-	
+
 	public Object getCachedMetaData(String key) {
-		 synchronized(monitor) {
-			 if (metaDataCache==null) {
-				 metaDataCache= new HashMap<>();
-			 }
-			 return metaDataCache.get(key);
-		 }
+		synchronized (monitor) {
+			if (metaDataCache == null) {
+				metaDataCache = new HashMap<>();
+			}
+			return metaDataCache.get(key);
+		}
 	}
-	
-	private Object monitor= new Object();
+
+	private Object monitor = new Object();
 
 	@Override
 	public String toString() {
 		return "FindingNode [parent=" + parent + ", children=" + children + ", description=" + description
 				+ ", location=" + location + ", line=" + line + ", column=" + column + ", relevantPart=" + relevantPart
-				+ ", source=" + source + ", severity=" + severity + ", callStackStep=" + callStackStep + ", id=" + id
-				+ "]";
+				+ ", source=" + source + ", callStackStep=" + callStackStep + ", finding=" + finding + "]";
 	}
 
 	@Override
-	public int compareTo(FindingNode o) {
-		if (o == null) {
+	public int compareTo(FindingNode other) {
+		if (other == null || other.finding == null) {
 			return 1;
 		}
-		return id - o.id;
+
+		if (this.finding == null) {
+			return -1;
+		}
+
+		Integer thisId = this.finding.getId();
+		Integer otherId = other.finding.getId();
+
+		if (thisId == null && otherId == null) {
+			return 0;
+		} else if (thisId == null) {
+			return -1;
+		} else if (otherId == null) {
+			return 1;
+		} else {
+			return thisId.compareTo(otherId);
+		}
 	}
 
 }

@@ -27,8 +27,14 @@ public class ArchUnitImportOptions {
         return !location.contains("/test/"); // ignore any URI to sources that contains '/test/'
     };
 
-    static ImportOption ignoreAllMain = location -> {
-        return !location.contains("/main/"); // ignore any URI to sources that contains '/main/'
+    static ImportOption ignoreAllSrc = location -> {
+        /* @formatter:off */
+        return !location.contains("/main/") &&
+                !location.contains("/production/") &&
+                /* ignore plugin src files */
+                !location.contains("/instrumented/") &&
+                !location.contains("/instrumentCode/");
+        /* @formatter:on */
     };
 
     static ImportOption ignoreNonSecHubPackages = location -> {

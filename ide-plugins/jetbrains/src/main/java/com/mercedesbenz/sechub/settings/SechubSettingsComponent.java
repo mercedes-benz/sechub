@@ -1,16 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.settings;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.swing.*;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPasswordField;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class SechubSettingsComponent {
 
@@ -20,11 +22,9 @@ public class SechubSettingsComponent {
     private final JBPasswordField apiTokenPassword = new JBPasswordField();
 
     public SechubSettingsComponent() {
-        mainPanel = FormBuilder.createFormBuilder()
-                .addLabeledComponent(new JBLabel("Server URL:"), serverUrlText, 1, false)
+        mainPanel = FormBuilder.createFormBuilder().addLabeledComponent(new JBLabel("Server URL:"), serverUrlText, 1, false)
                 .addLabeledComponent(new JBLabel("User name:"), userNameText, 1, false)
-                .addLabeledComponent(new JBLabel("API token:"), apiTokenPassword, 1, false)
-                .addComponentFillVertically(new JPanel(), 0).getPanel();
+                .addLabeledComponent(new JBLabel("API token:"), apiTokenPassword, 1, false).addComponentFillVertically(new JPanel(), 0).getPanel();
     }
 
     public JPanel getPanel() {

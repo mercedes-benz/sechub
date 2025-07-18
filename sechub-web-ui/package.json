@@ -7,19 +7,18 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore",
-    "test": "vitest",
-    "generate-api-client": "rm -rf src/generated-sources/openapi; openapi-generator-cli generate -i ../sechub-openapi/src/main/resources/openapi.yaml -o src/generated-sources/openapi -g typescript-fetch --additional-properties=supportsES6=true,npmVersion=10.8.3"
+    "test": "vitest"
   },
   "dependencies": {
     "@mdi/font": "7.4.47",
-    "@openapitools/openapi-generator-cli": "^2.20.0",
     "core-js": "^3.37.1",
     "crypto-js": "^4.2.0",
     "pinia": "^2.3.0",
     "roboto-fontface": "*",
+    "sechub-openapi-ts-client": "file:../sechub-openapi-ts-client",
     "uuid": "^11.0.3",
     "vue": "^3.4.31",
-    "vue-i18n": "^10.0.5",
+    "vue-i18n": "^10.0.8",
     "vuetify": "^3.6.11"
   },
   "devDependencies": {

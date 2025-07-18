@@ -1,0 +1,24 @@
+{
+  "apiVersion": "1.0",
+  "project" : "test-project-8",
+  "data": {
+    "sources": [
+      {
+        "name": "reference-data-1",
+        "fileSystem": {
+          "folders": [
+            "__test__/integrationtest/test-sources"
+          ]
+        },
+        "excludes": [
+          "**/.sechub-gha/**"
+        ]
+      }
+    ]
+  },
+  "iacScan": {
+    "use": [
+      "reference-data-1"
+    ]
+  }
+}

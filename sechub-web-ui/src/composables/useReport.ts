@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: MIT */
 import defaultClient from '@/services/defaultClient'
-import { SecHubReport } from '@/generated-sources/openapi'
+import { SecHubReport } from 'sechub-openapi-ts-client'
 import { useReportStore } from '@/stores/reportStore'
 import { handleApiError } from '@/services/apiErrorHandler'
 

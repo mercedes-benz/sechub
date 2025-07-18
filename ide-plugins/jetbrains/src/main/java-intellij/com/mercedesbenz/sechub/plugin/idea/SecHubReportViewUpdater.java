@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea;
 
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-import com.mercedesbenz.sechub.plugin.idea.window.SecHubReportPanel;
-import com.mercedesbenz.sechub.plugin.model.FindingModel;
+import java.util.UUID;
+
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.progress.ProgressManager;
@@ -11,8 +10,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
-
-import java.util.UUID;
+import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
+import com.mercedesbenz.sechub.plugin.idea.window.SecHubReportPanel;
+import com.mercedesbenz.sechub.plugin.model.FindingModel;
 
 public class SecHubReportViewUpdater {
 
@@ -20,7 +20,8 @@ public class SecHubReportViewUpdater {
 
     public void updateReportViewInAWTThread(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
 
-        ProgressManager.getInstance().executeProcessUnderProgress(() -> internalUpdateReportView(jobUUID, trafficLight, model), ProgressIndicatorProvider.getGlobalProgressIndicator());
+        ProgressManager.getInstance().executeProcessUnderProgress(() -> internalUpdateReportView(jobUUID, trafficLight, model),
+                ProgressIndicatorProvider.getGlobalProgressIndicator());
     }
 
     private void internalUpdateReportView(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
@@ -34,19 +35,18 @@ public class SecHubReportViewUpdater {
         }
         ToolWindowManager windowManager = ToolWindowManager.getInstance(project);
         ToolWindow toolWindow = windowManager.getToolWindow("SecHub");
-        if (toolWindow==null){
+        if (toolWindow == null) {
             LOG.error("Did not found Tool window with id 'SecHub' !");
             return;
         }
         toolWindow.show(() -> {
-                    // at this point the factory must have created and registered the SecHubToolWindow instance
-                   /* SecHubToolWindow sechubToolWindow = SecHubToolWindow.getInstance();
-                    if (sechubToolWindow == null) {
-                        LOG.error("Did not found SecHub tool window!");
-                        return;
-                    }
-                    sechubToolWindow.update(model);
-                    */
+            // at this point the factory must have created and registered the
+            // SecHubToolWindow instance
+            /*
+             * SecHubToolWindow sechubToolWindow = SecHubToolWindow.getInstance(); if
+             * (sechubToolWindow == null) { LOG.error("Did not found SecHub tool window!");
+             * return; } sechubToolWindow.update(model);
+             */
 
             SecHubReportPanel reportPanel = SecHubReportPanel.getInstance();
             if (reportPanel == null) {
@@ -54,9 +54,7 @@ public class SecHubReportViewUpdater {
                 return;
             }
             reportPanel.update(model);
-                }
-        );
-
+        });
 
     }
 }

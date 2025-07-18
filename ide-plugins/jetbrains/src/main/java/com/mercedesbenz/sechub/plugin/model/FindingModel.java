@@ -1,47 +1,46 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.model;
 
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
+
 public class FindingModel {
 
-	private List<FindingNode> findings = new ArrayList<>();
-	private UUID jobUUID;
-	private TrafficLight trafficLight;
+    private List<FindingNode> findings = new ArrayList<>();
+    private UUID jobUUID;
+    private TrafficLight trafficLight;
 
-	public UUID getJobUUID() {
-		return jobUUID;
-	}
-	
-	public void setTrafficLight(TrafficLight trafficLight) {
-		this.trafficLight = trafficLight;
-	}
+    public UUID getJobUUID() {
+        return jobUUID;
+    }
 
-	public TrafficLight getTrafficLight() {
-		return trafficLight;
-	}
-	
-	public void setJobUUID(UUID jobUUID) {
-		this.jobUUID = jobUUID;
-	}
-	
-	public int getFindingCount() {
-		return findings.size();
-	}
-	
-	public List<FindingNode> getFindings() {
-		return findings;
-	}
+    public void setTrafficLight(TrafficLight trafficLight) {
+        this.trafficLight = trafficLight;
+    }
 
-	public FindingNode getFirstFinding() {
-		if (findings.size()>0) {
-			return findings.get(0);
-		}
-		return null;
-	}
+    public TrafficLight getTrafficLight() {
+        return trafficLight;
+    }
+
+    public void setJobUUID(UUID jobUUID) {
+        this.jobUUID = jobUUID;
+    }
+
+    public int getFindingCount() {
+        return findings.size();
+    }
+
+    public List<FindingNode> getFindings() {
+        return findings;
+    }
+
+    public FindingNode getFirstFinding() {
+        if (!findings.isEmpty()) {
+            return findings.get(0);
+        }
+        return null;
+    }
 }

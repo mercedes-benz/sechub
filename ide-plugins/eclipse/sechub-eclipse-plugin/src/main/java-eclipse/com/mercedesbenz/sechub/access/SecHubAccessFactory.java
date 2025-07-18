@@ -23,6 +23,6 @@ public class SecHubAccessFactory {
 			apiToken = "";
 		}
 
-		return new SecHubAccess(serverURL, username, apiToken, true);
+		return new SecHubAccess(serverURL, username, apiToken, SecHubPreferences.get().getTrustAll());
 	}
 }

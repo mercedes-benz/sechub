@@ -25,26 +25,6 @@ dependencies {
 
 }
 
-task importEclipseProjectsNeedingOpenApiFile(type: Exec){
-
-    workingDir "$rootDir"
-    commandLine './gradlew', ':sechub-systemtest:cleanEclipse',':sechub-systemtest:eclipse', ':sechub-api-java:cleanEclipse',':sechub-api-java:eclipse', ':sechub-pds-tools:cleanEclipse',':sechub-pds-tools:eclipse',':sechub-examples:example-sechub-api-java:cleanEclipse',':sechub-examples:example-sechub-api-java:eclipse','-Dsechub.build.stage=all'
-}
-
-/*
- * Here we handle the situation with the missing parts from "non default" projects.
- * 
- * Why is this added here? 
- * We need a project which is configured in "default" eclipse import. 
- * Because we do not want to add an artificial project like "sechub-include-missing" we just
- * reused the existing "sechub-developertools" project.
- * 
- */
-if (!secHubBuildStage.providesGeneratedOpenApiFile()){
-    /* in this case, those projects are not initialized by gradle at this point. We must trigger this special:*/
-    tasks.eclipse.dependsOn(importEclipseProjectsNeedingOpenApiFile)
-}
-
 tasks.register('runLocalTestKeycloakStarter', JavaExec) {
     group = "Keycloak"
     description = "Run LocalTestKeycloakStarter with optional arguments (use -PkeycloakArgs=\"8081 myadmin mypass myClientSecret\")"

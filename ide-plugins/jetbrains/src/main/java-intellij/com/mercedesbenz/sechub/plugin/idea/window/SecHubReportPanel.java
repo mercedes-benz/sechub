@@ -1,6 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea.window;
 
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.UUID;
+
+import javax.swing.*;
+import javax.swing.text.Caret;
+import javax.swing.text.DefaultCaret;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import org.jetbrains.annotations.NotNull;
+
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.Splitter;
@@ -14,7 +26,7 @@ import com.intellij.ui.components.panels.HorizontalLayout;
 import com.intellij.ui.components.panels.VerticalLayout;
 import com.intellij.ui.table.JBTable;
 import com.intellij.ui.treeStructure.Tree;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 import com.mercedesbenz.sechub.plugin.idea.IntellijComponentFactory;
 import com.mercedesbenz.sechub.plugin.idea.IntellijRenderDataProvider;
 import com.mercedesbenz.sechub.plugin.idea.IntellijShowInEditorSupport;
@@ -25,16 +37,6 @@ import com.mercedesbenz.sechub.plugin.ui.SecHubToolWindowUIContext;
 import com.mercedesbenz.sechub.plugin.ui.SecHubToolWindowUISupport;
 import com.mercedesbenz.sechub.plugin.ui.SecHubTreeNode;
 import com.mercedesbenz.sechub.plugin.util.SimpleStringUtil;
-import org.jetbrains.annotations.NotNull;
-
-import javax.swing.*;
-import javax.swing.text.Caret;
-import javax.swing.text.DefaultCaret;
-import javax.swing.tree.DefaultMutableTreeNode;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.UUID;
 
 public class SecHubReportPanel implements SecHubPanel {
     private static final Logger LOG = Logger.getInstance(SecHubReportPanel.class);
@@ -68,7 +70,6 @@ public class SecHubReportPanel implements SecHubPanel {
     private JTextArea attackTextArea;
     private JPanel callHierarchyPanel;
     private JPanel attackPanel;
-
 
     public SecHubReportPanel(ToolWindow toolWindow) {
         this.toolWindow = toolWindow;
@@ -113,20 +114,19 @@ public class SecHubReportPanel implements SecHubPanel {
         JLabel trafficLightIconLabel = new JLabel();
         JLabel amountOfFindingsLabel = new JLabel();
 
-
         JPanel secHubReportTablePanel = new JBPanel();
         secHubReportTablePanel.setLayout(new BorderLayout());
 
         JBTextField scanResultForJobText = new JBTextField();
         scanResultForJobText.setEditable(false);
-        scanResultForJobText.setBorder(null); // avoid jumping field in UI - looks now like a label, but people can select and copy the job uuid if wanted...
+        scanResultForJobText.setBorder(null); // avoid jumping field in UI - looks now like a label, but people can select and
+                                              // copy the job uuid if wanted...
 
         JPanel secHubReportHeaderPanel = new JBPanel();
         secHubReportHeaderPanel.setLayout(new HorizontalLayout(SECHUB_REPORT_DEFAULT_GAP));
         secHubReportHeaderPanel.add(trafficLightIconLabel);
         secHubReportHeaderPanel.add(amountOfFindingsLabel);
         secHubReportHeaderPanel.add(scanResultForJobText);
-
 
         JPanel secHubReportContentPanel = new JBPanel();
         secHubReportContentPanel.setLayout(new BorderLayout());
@@ -165,7 +165,6 @@ public class SecHubReportPanel implements SecHubPanel {
 
         JBLabel findingLabel = new JBLabel();
 
-
         JPanel cweAndFindingPanel = new JBPanel<>();
         cweAndFindingPanel.setLayout(new HorizontalLayout(SECHUB_REPORT_DEFAULT_GAP));
         cweAndFindingPanel.add(findingLabel);
@@ -192,14 +191,13 @@ public class SecHubReportPanel implements SecHubPanel {
         return northPanel;
     }
 
-    private JBTextArea prepareNonEditLargeTextArea(JBTextArea textArea){
+    private JBTextArea prepareNonEditLargeTextArea(JBTextArea textArea) {
         textArea.setEditable(false);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
 
         Caret caret = textArea.getCaret();
-        if (caret instanceof DefaultCaret){
-            DefaultCaret defaultCaret = (DefaultCaret) caret;
+        if (caret instanceof DefaultCaret defaultCaret) {
             defaultCaret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
         }
 
@@ -231,6 +229,7 @@ public class SecHubReportPanel implements SecHubPanel {
         webRequestPanel.setLayout(new BorderLayout());
         webRequestPanel.add(new JBScrollPane(webRequestTextArea), BorderLayout.CENTER);
     }
+
     private void createAttackComponents() {
         attackTextArea = prepareNonEditLargeTextArea(new JBTextArea());
         attackPanel = new JBPanel<>();
@@ -250,7 +249,6 @@ public class SecHubReportPanel implements SecHubPanel {
         reportSourceCodePanel.add(reportSourceCodeLabel);
         reportSourceCodePanel.add(reportSourceCodeTextArea);
 
-
         JBTable callStepDetailTable = new JBTable();
         JBPanel callStepDetailPanel = new JBPanel();
         callStepDetailPanel.setLayout(new VerticalLayout(SECHUB_REPORT_DEFAULT_GAP));
@@ -267,7 +265,7 @@ public class SecHubReportPanel implements SecHubPanel {
         /* now set as fields */
         this.callStepDetailTable = callStepDetailTable;
         this.callHierarchyTree = callHierarchyTree;
-        this.callHierarchyPanel=callHierarchySplitterPanel;
+        this.callHierarchyPanel = callHierarchySplitterPanel;
         this.reportSourceCodeTextArea = reportSourceCodeTextArea;
     }
 
@@ -277,8 +275,7 @@ public class SecHubReportPanel implements SecHubPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) {
                     Object component = callHierarchyTree.getLastSelectedPathComponent();
-                    if (component instanceof DefaultMutableTreeNode) {
-                        DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) component;
+                    if (component instanceof DefaultMutableTreeNode treeNode) {
                         Object userObject = treeNode.getUserObject();
                         if (userObject instanceof FindingNode) {
                             showInEditor((FindingNode) userObject);
@@ -291,7 +288,7 @@ public class SecHubReportPanel implements SecHubPanel {
 
     private void createAndInstallSupport() {
 
-        showInEditorSupport=new IntellijShowInEditorSupport();
+        showInEditorSupport = new IntellijShowInEditorSupport();
 
         SecHubToolWindowUIContext context = new SecHubToolWindowUIContext();
         context.findingTable = reportTable;
@@ -303,11 +300,10 @@ public class SecHubReportPanel implements SecHubPanel {
         context.errorLog = ErrorLogger.getInstance();
         context.cweIdLabel = cweIdLabel;
         context.findingRenderDataProvider = new IntellijRenderDataProvider();
-        context.componentFactory =new IntellijComponentFactory();
+        context.componentFactory = new IntellijComponentFactory();
         context.findingTypeDetailsTabbedPane = southTabPane;
 
         context.descriptionAndSolutionTabbedPane = descriptionAndSolutionTabbedPane;
-
 
         context.webResponseTabComponent = webResponsePanel;
         context.webResponseTextArea = webResponseTextArea;

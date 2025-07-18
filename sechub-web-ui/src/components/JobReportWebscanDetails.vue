@@ -230,7 +230,7 @@
 <script lang="ts">
   import { defineComponent, toRefs } from 'vue'
   import { getTrafficLightClass } from '@/utils/projectUtils'
-  import { SecHubFinding, SecHubReportWeb } from '@/generated-sources/openapi'
+  import { SecHubFinding, SecHubReportWeb } from 'sechub-openapi-ts-client'
   import '@/styles/sechub.scss'
 
   interface Props {

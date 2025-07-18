@@ -880,7 +880,7 @@ components:
 
         trafficLight:
           description: Traffic light of job after completion. Possible states are GREEN, YELLOW, RED, OFF.
-          type: string
+          $ref: '#/components/schemas/TrafficLight'
         messages:
           description: List of messages
           type: array
@@ -918,7 +918,9 @@ components:
         - GREEN
         - YELLOW
         - RED
-        - OFF
+        # on, off, y, n, yes and no may be interpreted as boolean values
+        # quoting these values is recommended
+        - 'OFF'
 
     Severity:
       title: Severity

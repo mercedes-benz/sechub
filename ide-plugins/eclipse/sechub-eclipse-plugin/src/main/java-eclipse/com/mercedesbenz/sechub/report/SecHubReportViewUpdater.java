@@ -1,24 +1,22 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.report;
 
-import java.util.UUID;
-
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
-import com.mercedesbenz.sechub.EclipseUtil;
-import com.mercedesbenz.sechub.Logging;
-import com.mercedesbenz.sechub.commons.model.TrafficLight;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.model.FindingModel;
+import com.mercedesbenz.sechub.util.EclipseUtil;
+import com.mercedesbenz.sechub.util.Logging;
 
 public class SecHubReportViewUpdater {
 
-	public void updateReportViewInSWTThread(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
-		EclipseUtil.safeAsyncExec(() -> internalUpdateReportView(jobUUID, trafficLight, model));
+	public static void updateReportViewInSWTThread(SecHubReport report, FindingModel model) {
+		EclipseUtil.safeAsyncExec(() -> internalUpdateReportView(report, model));
 	}
 
-	private void internalUpdateReportView(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
+	private static void internalUpdateReportView(SecHubReport report, FindingModel model) {
 		IWorkbenchPage page = EclipseUtil.getActivePage();
 		if (page == null) {
 			throw new IllegalStateException("Workbench page not found");
@@ -41,9 +39,6 @@ public class SecHubReportViewUpdater {
 
 		SecHubReportView reportView = (SecHubReportView) view;
 		page.activate(reportView); // ensure report view is shown
-
-		model.setJobUUID(jobUUID);
-		model.setTrafficLight(trafficLight);
 
 		reportView.update(model);
 	}

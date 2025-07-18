@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.provider;
 
+import static com.mercedesbenz.sechub.util.SimpleStringUtil.stringOrUnknown;
+
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
-import com.mercedesbenz.sechub.EclipseUtil;
 import com.mercedesbenz.sechub.model.FindingNode;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class CallHierarchyLabelProvider extends LabelProvider implements IStyledLabelProvider{
 
@@ -25,9 +27,9 @@ public class CallHierarchyLabelProvider extends LabelProvider implements IStyled
 		FindingNode node = (FindingNode) element;
 		StyledString str = new StyledString();
 		
-		StyledString relevantPartString = new StyledString(node.getRelevantPart());
+		StyledString relevantPartString = new StyledString(stringOrUnknown(node.getRelevantPart()));
 		
-		StyledString fileNameString = new StyledString(node.getFileName());
+		StyledString fileNameString = new StyledString(stringOrUnknown(node.getFileName()));
 		fileNameString.setStyle(0, fileNameString.length(), StyledString.QUALIFIER_STYLER);
 		
 		str.append(relevantPartString);
@@ -35,6 +37,7 @@ public class CallHierarchyLabelProvider extends LabelProvider implements IStyled
 		str.append(fileNameString);
 		return str;
 	}
+
 	@Override
 	public Image getImage(Object element) {
 		return image;

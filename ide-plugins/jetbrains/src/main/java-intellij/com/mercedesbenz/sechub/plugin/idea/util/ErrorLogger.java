@@ -13,7 +13,7 @@ public class ErrorLogger implements ErrorLog {
         return INSTANCE;
     }
 
-    public void error(String message,Throwable t) {
-        LOG.error(message,t);
+    public void error(String message, Throwable t) {
+        LOG.error(message, t);
     }
 }

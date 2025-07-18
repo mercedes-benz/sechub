@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.model;
 
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.web.*;
-
 import java.util.Map;
+
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 
 public class SecHubFindingoWebScanDataProvider {
 
@@ -44,23 +43,20 @@ public class SecHubFindingoWebScanDataProvider {
         if (bodyLocationText == null) {
             bodyLocationText = "";
         }
-        if (evidenceSnippet==null){
-            evidenceSnippet="";
+        if (evidenceSnippet == null) {
+            evidenceSnippet = "";
         }
         String text = """
                 Attack vector: %s
-                          
+
                 Body location: %s
-                                
+
                 Evidence:
                 ------------------------------------------------
                 %s
-                               
-                                
-                """.formatted(
-                attackVector,
-                bodyLocationText,
-                evidenceSnippet);
+
+
+                """.formatted(attackVector, bodyLocationText, evidenceSnippet);
         return text;
     }
 
@@ -80,7 +76,7 @@ public class SecHubFindingoWebScanDataProvider {
         String method = request.getMethod();
         String url = request.getTarget();
         StringBuilder headers = new StringBuilder();
-        for (Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
+        for (Map.Entry<String, Object> entry : request.getHeaders().entrySet()) {
             headers.append(entry.getKey()).append("=").append(entry.getValue());
             headers.append("\n");
         }
@@ -101,22 +97,17 @@ public class SecHubFindingoWebScanDataProvider {
         String text = """
                 Method: %s
                 URL: %s
-                                
+
                 Headers:
                 ------------------------------------------------
                 %s
-                                
+
                 Body:
                 ------------------------------------------------
                 %s
-                               
-                                
-                """.formatted(
-                method,
-                url,
-                headers.toString(),
-                bodyString
-        );
+
+
+                """.formatted(method, url, headers.toString(), bodyString);
         return text;
     }
 
@@ -134,7 +125,7 @@ public class SecHubFindingoWebScanDataProvider {
         }
 
         StringBuilder headers = new StringBuilder();
-        for (Map.Entry<String, String> entry : response.getHeaders().entrySet()) {
+        for (Map.Entry<String, Object> entry : response.getHeaders().entrySet()) {
             headers.append(entry.getKey()).append("=").append(entry.getValue());
             headers.append("\n");
         }
@@ -155,21 +146,17 @@ public class SecHubFindingoWebScanDataProvider {
 
         String text = """
                 %s
-                                                
+
                 Headers:
                 ------------------------------------------------
                 %s
-                                
+
                 Body:
                 ------------------------------------------------
                 %s
-                               
-                                
-                """.formatted(
-                resultInfoText,
-                headers.toString(),
-                bodyString
-        );
+
+
+                """.formatted(resultInfoText, headers.toString(), bodyString);
         return text;
     }
 }

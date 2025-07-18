@@ -33,4 +33,6 @@ public class PDSStorageConstants {
 
     public static final String PDS_STORAGE_S3_SIGNER_OVERRIDE = "pds.storage.s3.signer.override";
 
+    public static final String PDS_STORAGE_S3_REGION = "pds.storage.s3.region";
+
 }

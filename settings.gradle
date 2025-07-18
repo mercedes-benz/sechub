@@ -7,7 +7,6 @@ include 'sechub-cli',
 /* openapi */
 'sechub-openapi',
 'sechub-openapi-java-client',
-'sechub-api-java', // DEPRECATED
 
 /* commons */
 'sechub-commons-core',
@@ -114,6 +113,8 @@ include 'sechub-cli',
 
 // Examples (are below 'sechub-examples' folder)
 'sechub-examples:example-sechub-api-java'
+
+
 
 buildCache {
     def useTempCache = System.getenv('SECHUB_BUILD_USE_TMP_CACHE')

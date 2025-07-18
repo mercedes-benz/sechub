@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea;
 
+import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -16,12 +23,6 @@ import com.intellij.openapi.wm.WindowManager;
 import com.mercedesbenz.sechub.plugin.idea.compatiblity.VirtualFileCompatibilityLayer;
 import com.mercedesbenz.sechub.plugin.model.FileLocationExplorer;
 import com.mercedesbenz.sechub.plugin.model.FindingNode;
-import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 
 public class IntellijShowInEditorSupport {
 
@@ -61,9 +62,9 @@ public class IntellijShowInEditorSupport {
         }
         if (pathes.isEmpty()) {
             ToolWindowBalloonShowOptions options = new ToolWindowBalloonShowOptions(toolWindow.getId(), MessageType.WARNING,
-                    "No source found for location: " + callStep.getLocation()+"<br>Search folder path: "+searchFolderPath, null, null, (builder) -> {
-                builder.setFadeoutTime(2000);
-            });
+                    "No source found for location: " + callStep.getLocation() + "<br>Search folder path: " + searchFolderPath, null, null, (builder) -> {
+                        builder.setFadeoutTime(2000);
+                    });
             ToolWindowManager.getInstance(activeProject).notifyByBalloon(options);
             return;
         }
@@ -71,7 +72,8 @@ public class IntellijShowInEditorSupport {
             LOG.warn("Multiple paths found using only first one");
         }
         Path first = pathes.get(0);
-        @Nullable VirtualFile firstAsVirtualFile = VirtualFileManager.getInstance().findFileByUrl(first.toUri().toString());
+        @Nullable
+        VirtualFile firstAsVirtualFile = VirtualFileManager.getInstance().findFileByUrl(first.toUri().toString());
         if (firstAsVirtualFile == null) {
             LOG.error("Found in normal filesystem but not in virtual one:" + first);
             return;

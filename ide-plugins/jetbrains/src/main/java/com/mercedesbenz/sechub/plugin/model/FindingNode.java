@@ -6,337 +6,339 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import com.mercedesbenz.sechub.commons.model.ScanType;
-import com.mercedesbenz.sechub.commons.model.SecHubFinding;
-import com.mercedesbenz.sechub.commons.model.Severity;
+import com.mercedesbenz.sechub.api.internal.gen.model.ScanType;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
+import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 
 /**
- * The FindingNode represents data structure required in
- * SecHubReportView
+ * The FindingNode represents data structure required in SecHubReportView
  */
 public class FindingNode implements Comparable<FindingNode> {
 
-	private Object monitor= new Object();
-	private FindingNode parent = null;
+    private Object monitor = new Object();
+    private FindingNode parent = null;
 
-	private SecHubFinding secHubFinding;
+    private SecHubFinding secHubFinding;
 
-	private List<FindingNode> children = new LinkedList<FindingNode>();
+    private List<FindingNode> children = new LinkedList<FindingNode>();
 
-	private Integer cweId;
-	private String name;
+    private Integer cweId;
+    private String name;
 
-	private String description;
-	String location;
-	private Integer line;
-	private Integer column;
-	private String relevantPart;
-	private String source;
-	private Severity severity;
-	public int callStackStep;
-	public int id;
-	private String fileName;
-	public String filePath;
-	private Map<String,Object> metaDataCache;
+    private String description;
+    String location;
+    private Integer line;
+    private Integer column;
+    private String relevantPart;
+    private String source;
+    private Severity severity;
+    public Integer callStackStep;
+    public Integer id;
+    private String fileName;
+    public String filePath;
+    private Map<String, Object> metaDataCache;
 
-	private ScanType scanType;
-	private String solution;
+    private ScanType scanType;
+    private String solution;
 
-	private FindingNode() {
-	}
+    private FindingNode() {
+    }
 
-	public static class FindingNodeBuilder {
-		private String name;
-		private String description;
-		private String location;
-		private int line;
-		private int column;
-		private int id;
-		private int callStackStep;
-		private String relevantPart;
-		private String source;
-		private Severity severity;
-		private Integer cweId;
+    public static class FindingNodeBuilder {
+        private String name;
+        private String description;
+        private String location;
+        private Integer line;
+        private Integer column;
+        private Integer id;
+        private Integer callStackStep;
+        private String relevantPart;
+        private String source;
+        private Severity severity;
+        private Integer cweId;
 
-		private ScanType scanType;
-		private String solution;
-		private SecHubFinding secHubFinding;
+        private ScanType scanType;
+        private String solution;
+        private SecHubFinding secHubFinding;
 
-		private FindingNodeBuilder() {
+        private FindingNodeBuilder() {
 
-		}
+        }
 
-		public FindingNodeBuilder setScanType(ScanType scanType){
-			this.scanType=scanType;
-			return this;
-		}
-		public FindingNodeBuilder setName(String name) {
-			this.name=name;
-			return this;
-		}
+        public FindingNodeBuilder setScanType(ScanType scanType) {
+            this.scanType = scanType;
+            return this;
+        }
 
-		public FindingNodeBuilder setDescription(String description) {
-			this.description = description;
-			return this;
-		}
-		public FindingNodeBuilder setSolution(String solution) {
-			this.solution = solution;
-			return this;
-		}
+        public FindingNodeBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
 
-		public FindingNodeBuilder setLocation(String location) {
-			this.location = location;
-			return this;
-		}
+        public FindingNodeBuilder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
 
-		public FindingNodeBuilder setLine(int line) {
-			this.line = line;
-			return this;
-		}
+        public FindingNodeBuilder setSolution(String solution) {
+            this.solution = solution;
+            return this;
+        }
 
-		public FindingNodeBuilder setColumn(int column) {
-			this.column = column;
-			return this;
-		}
+        public FindingNodeBuilder setLocation(String location) {
+            this.location = location;
+            return this;
+        }
 
-		public FindingNodeBuilder setCallStackStep(int callStackStep) {
-			this.callStackStep = callStackStep;
-			return this;
-		}
+        public FindingNodeBuilder setLine(Integer line) {
+            this.line = line;
+            return this;
+        }
 
-		public FindingNodeBuilder setId(int id) {
-			this.id = id;
-			return this;
-		}
+        public FindingNodeBuilder setColumn(Integer column) {
+            this.column = column;
+            return this;
+        }
 
-		public FindingNodeBuilder setRelevantPart(String relevantPart) {
-			this.relevantPart = relevantPart;
-			return this;
-		}
+        public FindingNodeBuilder setCallStackStep(Integer callStackStep) {
+            this.callStackStep = callStackStep;
+            return this;
+        }
 
-		public FindingNodeBuilder setSource(String source) {
-			this.source = source;
-			return this;
-		}
+        public FindingNodeBuilder setId(Integer id) {
+            this.id = id;
+            return this;
+        }
 
-		public FindingNodeBuilder setSeverity(Severity severity) {
-			this.severity = severity;
-			return this;
-		}
+        public FindingNodeBuilder setRelevantPart(String relevantPart) {
+            this.relevantPart = relevantPart;
+            return this;
+        }
 
-		public FindingNodeBuilder setCweId(Integer cweId) {
-			this.cweId=cweId;
-			return this;
-		}
-		public FindingNodeBuilder setSecHubFinding(SecHubFinding secHubFinding) {
-			this.secHubFinding=secHubFinding;
-			return this;
-		}
+        public FindingNodeBuilder setSource(String source) {
+            this.source = source;
+            return this;
+        }
 
-		public FindingNode build() {
-			FindingNode node = new FindingNode();
-			node.description=description;
-			node.location=location;
-			node.name=name;
-			node.line=line;
-			node.column=column;
-			node.relevantPart=relevantPart;
-			node.source=source;
-			node.severity=severity;
-			node.callStackStep = callStackStep;
-			node.id = id;
-			node.cweId=cweId;
-			node.scanType=scanType;
-			node.solution=solution;
-			node.secHubFinding=secHubFinding;
+        public FindingNodeBuilder setSeverity(Severity severity) {
+            this.severity = severity;
+            return this;
+        }
 
-			calculateFileNameAndPath(node);
+        public FindingNodeBuilder setCweId(Integer cweId) {
+            this.cweId = cweId;
+            return this;
+        }
 
-			return node;
-		}
+        public FindingNodeBuilder setSecHubFinding(SecHubFinding secHubFinding) {
+            this.secHubFinding = secHubFinding;
+            return this;
+        }
 
-		private void calculateFileNameAndPath(FindingNode node) {
-			String location = node.getLocation();
-			if (location == null) {
-				return;
-			}
-			int lastIndex = location.lastIndexOf('/');
-			if (lastIndex == -1) {
-				node.fileName = location;
-				node.filePath = "";
-				return;
-			}
-			node.filePath = location.substring(0, lastIndex);
-			if (lastIndex >= location.length()) {
-				node.fileName = "";
-			} else {
-				node.fileName = location.substring(lastIndex + 1);
-			}
-		}
+        public FindingNode build() {
+            FindingNode node = new FindingNode();
+            node.description = description;
+            node.location = location;
+            node.name = name;
+            node.line = line;
+            node.column = column;
+            node.relevantPart = relevantPart;
+            node.source = source;
+            node.severity = severity;
+            node.callStackStep = callStackStep;
+            node.id = id;
+            node.cweId = cweId;
+            node.scanType = scanType;
+            node.solution = solution;
+            node.secHubFinding = secHubFinding;
 
+            calculateFileNameAndPath(node);
 
-	}
+            return node;
+        }
 
-	public static FindingNodeBuilder builder() {
-		return new FindingNodeBuilder();
-	}
+        private void calculateFileNameAndPath(FindingNode node) {
+            String location = node.getLocation();
+            if (location == null) {
+                return;
+            }
+            int lastIndex = location.lastIndexOf('/');
+            if (lastIndex == -1) {
+                node.fileName = location;
+                node.filePath = "";
+                return;
+            }
+            node.filePath = location.substring(0, lastIndex);
+            if (lastIndex >= location.length()) {
+                node.fileName = "";
+            } else {
+                node.fileName = location.substring(lastIndex + 1);
+            }
+        }
 
-	public FindingNode getParent() {
-		return parent;
-	}
+    }
 
-	public boolean addChild(FindingNode finding) {
-		if (this == finding) {
-			throw new IllegalStateException("finding cannot be parent of itself!");
-		}
-		finding.parent = this;
+    public static FindingNodeBuilder builder() {
+        return new FindingNodeBuilder();
+    }
 
-		return children.add(finding);
-	}
+    public FindingNode getParent() {
+        return parent;
+    }
 
-	public List<FindingNode> getChildren() {
-		return this.children;
-	}
+    public boolean addChild(FindingNode finding) {
+        if (this == finding) {
+            throw new IllegalStateException("finding cannot be parent of itself!");
+        }
+        finding.parent = this;
 
-	public boolean hasChildren() {
-		boolean hasChildren = false;
+        return children.add(finding);
+    }
 
-		if (this.children.size() > 0) {
-			hasChildren = true;
-		}
+    public List<FindingNode> getChildren() {
+        return this.children;
+    }
 
-		return hasChildren;
-	}
+    public boolean hasChildren() {
+        boolean hasChildren = false;
 
-	public String getDescription() {
-		return description;
-	}
+        if (this.children.size() > 0) {
+            hasChildren = true;
+        }
 
-	public String getSolution(){
-		return solution;
-	}
+        return hasChildren;
+    }
 
-	public SecHubFinding getSecHubFinding() {
-		return secHubFinding;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public String getLocation() {
-		return location;
-	}
+    public String getSolution() {
+        return solution;
+    }
 
-	public Integer getLine() {
-		return line;
-	}
+    public SecHubFinding getSecHubFinding() {
+        return secHubFinding;
+    }
 
-	public Integer getColumn() {
-		return column;
-	}
+    public String getLocation() {
+        return location;
+    }
 
-	public String getRelevantPart() {
-		return relevantPart;
-	}
+    public Integer getLine() {
+        return line;
+    }
 
-	public String getSource() {
-		return source;
-	}
+    public Integer getColumn() {
+        return column;
+    }
 
-	public Severity getSeverity() {
-		return severity;
-	}
+    public String getRelevantPart() {
+        return relevantPart;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public String getSource() {
+        return source;
+    }
 
-	public Integer getCweId() {
-		return cweId;
-	}
+    public Severity getSeverity() {
+        return severity;
+    }
 
-	public int getCallStackStep() {
-		return callStackStep;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getFileName() {
-		return fileName;
-	}
+    public Integer getCweId() {
+        return cweId;
+    }
 
-	public String getFilePath() {
-		return filePath;
-	}
+    public int getCallStackStep() {
+        return callStackStep;
+    }
 
-	public void setCachedMetaData(String key, Object value) {
-		synchronized(monitor) {
-			if (metaDataCache==null) {
-				metaDataCache= new HashMap<>();
-			}
-			metaDataCache.put(key, value);
-		}
-	}
+    public String getFileName() {
+        return fileName;
+    }
 
-	public Object getCachedMetaData(String key) {
-		synchronized(monitor) {
-			if (metaDataCache==null) {
-				metaDataCache= new HashMap<>();
-			}
-			return metaDataCache.get(key);
-		}
-	}
+    public String getFilePath() {
+        return filePath;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setCachedMetaData(String key, Object value) {
+        synchronized (monitor) {
+            if (metaDataCache == null) {
+                metaDataCache = new HashMap<>();
+            }
+            metaDataCache.put(key, value);
+        }
+    }
 
-	public ScanType getScanType() {
-		return scanType;
-	}
+    public Object getCachedMetaData(String key) {
+        synchronized (monitor) {
+            if (metaDataCache == null) {
+                metaDataCache = new HashMap<>();
+            }
+            return metaDataCache.get(key);
+        }
+    }
 
-	public boolean canBeShownInCallHierarchy() {
-		ScanType scanType = getScanType();
-		if (ScanType.WEB_SCAN.equals(scanType)) {
-			return false;
-		}
-		if (ScanType.INFRA_SCAN.equals(scanType)) {
-			return false;
-		}
-		return true;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public boolean canBeShownInWebRequest() {
-		ScanType scanType = getScanType();
-		if (ScanType.WEB_SCAN.equals(scanType)) {
-			return true;
-		}
-		return false;
-	}
-	public boolean canBeShownInWebResponse() {
-		ScanType scanType = getScanType();
-		if (ScanType.WEB_SCAN.equals(scanType)) {
-			return true;
-		}
-		return false;
-	}
-	public boolean canBeShownInAttack() {
-		ScanType scanType = getScanType();
-		if (ScanType.WEB_SCAN.equals(scanType)) {
-			return true;
-		}
-		return false;
-	}
+    public ScanType getScanType() {
+        return scanType;
+    }
 
-	@Override
-	public String toString() {
-		return "FindingNode [parent=" + parent + ", children=" + children + ", description=" + description
-				+ ", location=" + location + ", line=" + line + ", column=" + column + ", relevantPart=" + relevantPart
-				+ ", source=" + source + ", severity=" + severity + ", callStackStep=" + callStackStep + ", id=" + id
-				+ "]";
-	}
+    public boolean canBeShownInCallHierarchy() {
+        ScanType scanType = getScanType();
+        if (ScanType.WEB_SCAN.equals(scanType)) {
+            return false;
+        }
+        if (ScanType.INFRA_SCAN.equals(scanType)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public int compareTo(FindingNode o) {
-		if (o == null) {
-			return 1;
-		}
-		return id - o.id;
-	}
+    public boolean canBeShownInWebRequest() {
+        ScanType scanType = getScanType();
+        if (ScanType.WEB_SCAN.equals(scanType)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canBeShownInWebResponse() {
+        ScanType scanType = getScanType();
+        if (ScanType.WEB_SCAN.equals(scanType)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean canBeShownInAttack() {
+        ScanType scanType = getScanType();
+        if (ScanType.WEB_SCAN.equals(scanType)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "FindingNode [parent=" + parent + ", children=" + children + ", description=" + description + ", location=" + location + ", line=" + line
+                + ", column=" + column + ", relevantPart=" + relevantPart + ", source=" + source + ", severity=" + severity + ", callStackStep=" + callStackStep
+                + ", id=" + id + "]";
+    }
+
+    @Override
+    public int compareTo(FindingNode o) {
+        if (o == null) {
+            return 1;
+        }
+        return id - o.id;
+    }
 
 }
