@@ -28,10 +28,12 @@ export class ServerStateContainer {
         }
 
         serverStateContainer = `<div id="serverStateContainer">
-            <div id="serverUrlContainer">
+            <div id="serverUrlContainer" class="tooltip">
+              <span class="tooltiptext">Configure SecHub Server URL</span>
                 <p id="serverUrl">Server URL: <span>${serverUrl}</span></p>
             </div>
-            <div id="serverUserContainer">
+            <div id="serverUserContainer" class="tooltip">
+                <span class="tooltiptext">Configure SecHub Username and APIToken</span>
                 <p id="connectionState">${serverState}</span></p>
             </div>
         </div>`;

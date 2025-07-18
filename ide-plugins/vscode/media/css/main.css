@@ -1,4 +1,7 @@
 /* CSS main */
+/* vscode theme variables */
+/* https://gist.github.com/estruyf/ba49203e1a7d6868e9320a4ea480c27a */
+
 .sechubButton {
     background-color: var(--vscode-button-background);
     color: var(--vscode-button-foreground);
@@ -47,6 +50,36 @@
 
 .off {
     background-color: grey;
+}
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.tooltip .tooltiptext {
+    border: 1px solid var(--vscode-editorHoverWidget-border);
+    border-radius: 3px;
+    color: var(--vscode-editorHoverWidget-foreground);
+    background-color: var(--vscode-editorHoverWidget-background);
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    /* position bottom right */
+    top: 105%;
+    left: 10%; 
+    white-space: nowrap; 
+    padding: 4px 8px;
+    /* fade in */
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
 }
 
 /* pagination */
@@ -103,6 +136,18 @@
 
 #sechubJobTableTrafficLight {
     text-align: center;
+    width: 20px;
+}
+
+#sechubJobTableResult {
+    max-width: fit-content;
+}
+
+.column-max-width {
+    max-width: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* serverStateContainer */
@@ -141,7 +186,7 @@
     background-color: var(--vscode-inputOption-activeBackground);
 }
 
-#connectionState{
+#connectionState {
     padding: 0;
     margin: 0;
 }

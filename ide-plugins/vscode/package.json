@@ -35,7 +35,8 @@
 			},
 			{
 				"command": "sechub.openCWEinBrowser",
-				"title": "SecHub: open CWE in Browser"
+				"title": "SecHub: open CWE in Browser",
+				"icon": "$(info)"
 			},
 			{
 				"command": "sechub.fetchReportByUUID",
