@@ -31,15 +31,9 @@ public class TestPortProvider {
     private static final String PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT = "sechub.test.restdoc.https.port";
     private static final String PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT = "sechub.test.mvcmock.https.port";
 
-    private static final String PROPERTY_SECHUB_TEST_S3MOCK_HTTP_PORT = "sechub.test.s3mock.http.port";
-    private static final String PROPERTY_SECHUB_TEST_S3MOCK_HTTPS_PORT = "sechub.test.s3mock.https.port";
-
     // integration tests
     private static final String PROPERTY_SECHUB_INTEGRATIONTEST_SERVER_PORT = "sechub.integrationtest.serverport";
     private static final String PROPERTY_SECHUB_INTEGRATIONTEST_PDS_PORT = "sechub.integrationtest.pdsport";
-
-    private static final int DEFAULT_S3MOCK_HTTP_PORT = 9090;
-    private static final int DEFAULT_S3MOCK_HTTPS_PORT = 9190;
 
     private SystemPropertyProvider systemPropertyProvider = new TestEnvironmentProvider();
 
@@ -48,8 +42,6 @@ public class TestPortProvider {
     private int integrationTestServerPort;
     private int restDocPort;
     private int mvcMockPort;
-    private int s3MockHttpPort;
-    private int s3MockHttpsPort;
     private int integrationTestPDSPort;
 
     private static final Logger LOG = LoggerFactory.getLogger(TestPortProvider.class);
@@ -66,14 +58,10 @@ public class TestPortProvider {
         integrationTestServerPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_SERVER_PORT, DEFAULT_INTEGRATIONTEST_SERVER_PORT);
         integrationTestPDSPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_PDS_PORT, DEFAULT_INTEGRATIONTEST_PDS_PORT);
 
-        s3MockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_S3MOCK_HTTP_PORT, DEFAULT_S3MOCK_HTTP_PORT);
-        s3MockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_S3MOCK_HTTPS_PORT, DEFAULT_S3MOCK_HTTPS_PORT);
-
         LOG.info("Test port provider created");
         LOG.info("Wiremock                https: {}, http: {}", wireMockHttpsPort, wireMockHttpPort);
         LOG.info("Restdoc                 https: {}", restDocPort);
         LOG.info("MVCmock                 https: {}", mvcMockPort);
-        LOG.info("S3mock                  https: {}, http: {}", s3MockHttpsPort, s3MockHttpPort);
         LOG.info("Integration test server https: {}", integrationTestServerPort);
         LOG.info("Integration test PDS    https: {}", integrationTestPDSPort);
 
@@ -153,14 +141,6 @@ public class TestPortProvider {
 
     SystemPropertyProvider getSystemPropertyProvider() {
         return systemPropertyProvider;
-    }
-
-    public int getS3MockServerHttpPort() {
-        return s3MockHttpPort;
-    }
-
-    public int getS3MockServerHttpsPort() {
-        return s3MockHttpsPort;
     }
 
 }
