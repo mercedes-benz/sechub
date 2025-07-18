@@ -82,8 +82,11 @@ jobs:
         with:
           node-version: 22
           
+      - name: Generate openapi client
+        run: npm --prefix ../../sechub-openapi-ts-client/ run generate-api-client
+
       - name: Setup npm build
-        run: npm ci 
+        run: npm ci
         
       - name: Build action
         run: npm run build

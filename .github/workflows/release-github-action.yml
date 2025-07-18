@@ -100,6 +100,8 @@ jobs:
           cd $GHACTION
           echo "# $GHACTION - Update package version to ${{ inputs.ghaction-version }}"
           echo "$( jq --arg a "${{ inputs.ghaction-version }}" '.version = $a' package.json )" > package.json
+          echo "# ../../sechub-openapi-ts-client/ - Generate openapi client
+          npm --prefix ../../sechub-openapi-ts-client/ run generate-api-client
           echo "# $GHACTION - Install dependencies"
           npm ci
           echo "# $GHACTION - Run build"
