@@ -37,7 +37,7 @@ export async function launch(): Promise<LaunchContext> {
         return context;
     }
 
-    executeScan(context);
+    await executeScan(context);
 
     await postScan(context);
 
@@ -183,8 +183,8 @@ async function init(context: LaunchContext) {
  * Executes the scan.
  * @param context launch context
  */
-function executeScan(context: LaunchContext) {
-    scan(context);
+async function executeScan(context: LaunchContext) {
+    await scan(context);
 
     logExitCode(context.lastClientExitCode);
 }
