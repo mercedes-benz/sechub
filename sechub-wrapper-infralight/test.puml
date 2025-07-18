@@ -1,0 +1,61 @@
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+'You can find more examles at https://plantuml.com/class-diagram
+
+
+package java.util {
+
+    interface Collection
+    interface List extends Collection
+
+    abstract class AbstractList extends AbstractCollection implements List
+    abstract AbstractCollection  implements Collection
+    
+    class ArrayList extends AbstractList{
+      Object[] elementData
+      size()
+    }
+    package java.util.concurrent {
+        enum TimeUnit {
+          DAYS
+          HOURS
+          MINUTES
+        }
+    }
+}
+
+package de.jcup.example #cccccc { 
+    
+    annotation PathExampleAnnotation {
+      String path
+      String getPath()
+    }
+    
+    class PathFinder{
+        + int publicField
+        ~ int packagePrivateField
+        - int privateField
+        
+        + List<String> getCollectPathes();
+        ~ clearCache()
+        - inspectClasspath()
+    }
+    
+}
+database DB {
+
+}
+PathFinder *-- List #line:green;line.dashed;text:orange : contains 
+PathFinder ..> PathExampleAnnotation : collects
+
+PathFinder --> DB #line:black;line.bold;text:blue : "Writes into\ndatabase."
+
+note top of PathFinder
+    You can define notes at classes, interfaces etc.
+end note
+
+@enduml
