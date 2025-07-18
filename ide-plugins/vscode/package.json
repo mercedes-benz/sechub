@@ -3,7 +3,7 @@
 	"name": "sechub",
 	"displayName": "SecHub",
 	"description": "SecHub plugin for VSCode/VSCodium/Eclipse Theia",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"license": "MIT",
 	"icon": "other/images/sechub-logo-big.png",
 	"galleryBanner": {

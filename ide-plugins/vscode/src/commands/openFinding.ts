@@ -29,7 +29,7 @@ function openInEditor(context: SecHubContext, codeCallStack: SecHubCodeCallStack
 
     const result = context.fileLocationExplorer.searchFor(codeCallStack.location);
     if (result.size === 0) {
-        console.error("Can not calculate file location for " + codeCallStack.location + ", can not open in editor.");
+        console.log("Can not calculate file location for " + codeCallStack.location + ", can not open in editor.");
         return;
     }
     const fileLocation: string = result.values().next().value || '';

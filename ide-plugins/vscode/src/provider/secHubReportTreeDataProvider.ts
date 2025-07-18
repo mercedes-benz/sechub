@@ -111,10 +111,4 @@ export class FindingNodeReportItem extends ReportItem {
     this.tooltip = `${this.label}-${this.description}`;
     this.sechubFinding = sechubFinding;
   }
-
-
-  iconPath = {
-    light: path.join(__filename, '..', '..', 'resources', 'light', 'ReportItem.svg'),
-    dark: path.join(__filename, '..', '..', 'resources', 'dark', 'ReportItem.svg')
-  };
 }

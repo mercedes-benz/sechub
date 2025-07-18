@@ -65,7 +65,7 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
     rootItems.push(new MetaDataInfoItem("Line:", this.callStack?.line, undefined, vscode.TreeItemCollapsibleState.None));
     rootItems.push(new MetaDataInfoItem("Column:", this.callStack?.column, undefined, vscode.TreeItemCollapsibleState.None));
     rootItems.push(new MetaDataInfoItem("Type:", this.findingNode?.type, undefined, vscode.TreeItemCollapsibleState.None));
-    
+
     return rootItems;
   }
 
@@ -77,9 +77,9 @@ export class InfoItem extends vscode.TreeItem {
 export class MetaDataInfoItem extends InfoItem {
   children: InfoItem[] = [];
 
-  constructor(key: string, 
-    value: string | number | undefined, 
-    command: Command | undefined, 
+  constructor(key: string,
+    value: string | number | undefined,
+    command: Command | undefined,
     state: vscode.TreeItemCollapsibleState) {
     super(key, state);
 
@@ -111,10 +111,4 @@ export class FindingMetaInfoItem extends InfoItem {
     this.tooltip = `${this.label}-${this.description}`;
     this.findingNode = findingNode;
   }
-
-
-  iconPath = {
-    light: path.join(__filename, '..', '..', 'resources', 'light', 'ReportItem.svg'),
-    dark: path.join(__filename, '..', '..', 'resources', 'dark', 'ReportItem.svg')
-  };
 }

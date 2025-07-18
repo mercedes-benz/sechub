@@ -110,11 +110,6 @@ export class HierarchyItem extends vscode.TreeItem {
     this.finding = finding;
   }
 
-  iconPath = {
-    light: path.join(__filename, '..', '..', 'resources', 'light', 'HierarchyItem.svg'),
-    dark: path.join(__filename, '..', '..', 'resources', 'dark', 'HierarchyItem.svg')
-  };
-
   add(child: HierarchyItem) {
     this.children.push(child);
   }
