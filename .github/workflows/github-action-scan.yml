@@ -81,7 +81,10 @@ jobs:
         uses: actions/setup-node@1d0ff469b7ec7b3cb9d8673fde0c81c44821de2a
         with:
           node-version: 22
-          
+      
+      - name: Setup openapi client npm build
+        run: npm --prefix ../../sechub-openapi-ts-client/ ci
+
       - name: Generate openapi client
         run: npm --prefix ../../sechub-openapi-ts-client/ run generate-api-client
 
