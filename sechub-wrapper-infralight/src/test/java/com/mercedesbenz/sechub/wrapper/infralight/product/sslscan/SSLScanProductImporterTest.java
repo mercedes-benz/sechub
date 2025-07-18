@@ -16,7 +16,7 @@ class SSLScanProductImporterTest {
 
     @Test
     void name_is_defined() {
-        assertThat(importerToTest.getName()).isNotNull().isNotBlank();
+        assertThat(importerToTest.getProductName()).isNotNull().isNotBlank();
     }
 
     @Test

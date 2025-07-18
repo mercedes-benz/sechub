@@ -13,19 +13,22 @@ public class NmapProductImporter implements InfralightProductImporter {
 
     @Override
     public List<InfralightProductImportData> startImport(String data) {
+        
+//        XMLmapper (jackson...)
+        
         List<InfralightProductImportData> list = new ArrayList<>();
 
         return list;
     }
 
     @Override
-    public String getName() {
+    public String getProductName() {
         return "sslscan";
     }
 
     @Override
     public String getImportFileName() {
-        return "ssl-scan.output";
+        return "nmap-output.txt";
     }
 
 }

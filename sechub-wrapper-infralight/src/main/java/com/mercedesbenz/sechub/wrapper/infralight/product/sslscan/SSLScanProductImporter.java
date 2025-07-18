@@ -19,7 +19,7 @@ public class SSLScanProductImporter implements InfralightProductImporter {
     }
 
     @Override
-    public String getName() {
+    public String getProductName() {
         return "sslscan";
     }
 

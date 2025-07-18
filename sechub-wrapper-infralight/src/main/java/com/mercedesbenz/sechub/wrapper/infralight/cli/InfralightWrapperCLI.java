@@ -35,6 +35,7 @@ public class InfralightWrapperCLI implements CommandLineRunner {
     public void run(String... args) throws Exception {
         LOG.info("Infralight wrapper starting");
 
+        /* validate */
         String productsOutputFolderAsString = environment.getInfrascanProductsOutputFolder();
         if (productsOutputFolderAsString == null || productsOutputFolderAsString.isBlank()) {
             throw new IllegalArgumentException("Path to infrascan products output folder may not be null or empty");
@@ -44,11 +45,12 @@ public class InfralightWrapperCLI implements CommandLineRunner {
             throw new IllegalArgumentException("Path to PDS rsult file may not be null or empty");
         }
 
+        /* import product results from script output folder - result is already in SARIF */
         Path productsOutputFolder = Paths.get(productsOutputFolderAsString);
-
         SarifSchema210 sarifResult = scanService.importProductResultsAsSarif(productsOutputFolder);
+        
+        /* export SARIF as result file */
         String sarifAsJson = JSONConverter.get().toJSON(sarifResult);
-
         textFileWriter.writeTextToFile(new File(pdsResultFilePath), sarifAsJson, true);
 
     }

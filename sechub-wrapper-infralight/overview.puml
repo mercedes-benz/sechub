@@ -22,9 +22,9 @@ node InfralightPDS as "Infralight PDS" {
 	
 	component product2 {
 	}
-	script --> product1 : calls
-	script --> product2 : calls
-	script --> wrapper : calls
+	script --> product1 : calls (1a)
+	script --> product2 : calls (1b)
+	script --> wrapper : calls (2)
 	
 	product1 ....> filesystem
 	product2 ....> filesystem
@@ -43,13 +43,12 @@ node InfralightPDS as "Infralight PDS" {
 		class InfralightProductImportFilter {
 		}
 		
-		InfralightProductImporter -> InfralightProductImportData : imports
+		InfralightProductImporter -> InfralightProductImportData : imports 
 		InfralightProductImportFilter ..> InfralightProductImportData : filters
-		InfralighProductImportService --> InfralightProductImportStringDataProvider
 		
-		
-		InfralighProductImportService --> InfralightProductImporter : uses
-		InfralighProductImportService -> InfralightProductImportFilter: uses
+		InfralighProductImportService --> InfralightProductImportStringDataProvider : reads stringdata (1)
+		InfralighProductImportService --> InfralightProductImporter : uses (2)
+		InfralighProductImportService -> InfralightProductImportFilter: uses (3)
 	}
 
 }

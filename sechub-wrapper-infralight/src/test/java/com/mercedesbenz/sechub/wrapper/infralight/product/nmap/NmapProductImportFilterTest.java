@@ -10,16 +10,16 @@ import com.mercedesbenz.sechub.wrapper.infralight.product.InfralightProductImpor
 
 class NmapProductImportFilterTest {
 
-    private NmapProductImportFilter importerToTest;
+    private NmapProductImportFilter importFilterToTest;
 
     @BeforeEach
     void beforeEach() {
-        importerToTest = new NmapProductImportFilter();
+        importFilterToTest = new NmapProductImportFilter();
     }
 
     @Test
     void can_filter_NmapProductImporter() {
-        assertThat(importerToTest.canFilter(new NmapProductImporter())).isTrue();
+        assertThat(importFilterToTest.canFilter(new NmapProductImporter())).isTrue();
     }
 
     @Test
@@ -28,7 +28,7 @@ class NmapProductImportFilterTest {
         InfralightProductImporter importer = mock(InfralightProductImporter.class);
 
         /* execute + test */
-        assertThat(importerToTest.canFilter(importer)).isFalse();
+        assertThat(importFilterToTest.canFilter(importer)).isFalse();
     }
 
 }

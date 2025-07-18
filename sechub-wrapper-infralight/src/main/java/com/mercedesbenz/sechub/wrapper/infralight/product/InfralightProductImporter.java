@@ -11,7 +11,7 @@ public interface InfralightProductImporter {
      *
      * @return product name
      */
-    public String getName();
+    public String getProductName();
 
     /**
      * Returns the name of the output file of the product
