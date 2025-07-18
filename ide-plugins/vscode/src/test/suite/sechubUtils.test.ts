@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 import * as assert from 'assert';
 import * as path from 'path';
-import { SecHubReport, Severity, ScanType } from 'sechub-openapi-ts-client';
+import { Severity, ScanType } from 'sechub-openapi-ts-client';
 import { loadFromFile } from '../../utils/sechubUtils';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from 'vscode';
-import * as myExtension from '../../extension';
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');

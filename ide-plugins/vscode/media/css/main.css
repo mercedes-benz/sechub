@@ -1,0 +1,192 @@
+/* CSS main */
+/* vscode theme variables */
+/* https://gist.github.com/estruyf/ba49203e1a7d6868e9320a4ea480c27a */
+
+.sechubButton {
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.sechubButton:disabled,
+.sechubButton:disabled:hover {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    cursor: default;
+}
+
+
+.sechubButton:hover {
+    background-color: var(--vscode-button-hoverBackground);
+}
+
+.sechubButton:active {
+    background-color: var(--vscode-button-activeBackground);
+}
+
+.traffic-light {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+.off {
+    background-color: grey;
+}
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.tooltip .tooltiptext {
+    border: 1px solid var(--vscode-editorHoverWidget-border);
+    border-radius: 3px;
+    color: var(--vscode-editorHoverWidget-foreground);
+    background-color: var(--vscode-editorHoverWidget-background);
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    /* position bottom right */
+    top: 105%;
+    left: 10%; 
+    white-space: nowrap; 
+    padding: 4px 8px;
+    /* fade in */
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#prevPageBtn,
+#nextPageBtn {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* jobTable */
+#sechubJobTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#sechubJobTable td,
+#sechubJobTable th {
+    padding: 8px;
+}
+
+#sechubJobTable tbody tr:hover {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    cursor: pointer;
+}
+
+#sechubJobTable tbody tr:active {
+    background-color: var(--vscode-inputOption-activeBackground);
+}
+
+#sechubJobTable th {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: left;
+    background-color: var(--vscode-button-background);
+}
+
+#jobTableTitleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: left;
+    margin-bottom: 4px;
+}
+
+#sechubJobTableTitle {
+    font-weight: bold;
+}
+
+#sechubJobTableTrafficLight {
+    text-align: center;
+    width: 20px;
+}
+
+#sechubJobTableResult {
+    max-width: fit-content;
+}
+
+.column-max-width {
+    max-width: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* serverStateContainer */
+
+#serverUrlContainer {
+    align-items: left;
+    padding: 2px;
+    margin: 2px;
+}
+
+#serverUrlContainer:hover {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    cursor: pointer;
+}
+
+#serverUrlContainer:active {
+    background-color: var(--vscode-inputOption-activeBackground);
+}
+
+#serverUrl {
+    padding: 0;
+    margin: 0;
+}
+
+#serverUserContainer {
+    align-items: left;
+    padding: 2px;
+}
+
+#serverUserContainer:hover {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    cursor: pointer;
+}
+
+#serverUserContainer:active {
+    background-color: var(--vscode-inputOption-activeBackground);
+}
+
+#connectionState {
+    padding: 0;
+    margin: 0;
+}

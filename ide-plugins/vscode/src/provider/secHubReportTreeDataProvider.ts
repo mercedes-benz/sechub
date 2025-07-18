@@ -2,6 +2,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { SecHubReport, SecHubFinding } from 'sechub-openapi-ts-client';
+import { SECHUB_COMMANDS } from '../utils/sechubConstants';
 
 export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<ReportItem> {
 
@@ -39,7 +40,7 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
   }
 
 
-  public update(report: SecHubReport) {
+  public update(report: SecHubReport | undefined) {
     this.report = report;
     this.refresh();
   }
@@ -50,14 +51,17 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
   private getReportItems(): ReportItem[] {
     let rootItems: ReportItem[] = [];
 
+    if(!this.report) {
+      return rootItems;
+    }
+
     if(!this.report?.result){
-      vscode.window.showInformationMessage('No result in your SecHub report to show!');
-      return [];
+      return rootItems;
     }
 
     if (!this.report?.result.findings){
       vscode.window.showInformationMessage('No findings in your SecHub report to show!');
-      return [];
+      return rootItems;
     }
 
     rootItems.push(new FindingModelMetaDataReportItem("Report UUID:", this.report?.jobUUID, vscode.TreeItemCollapsibleState.None));
@@ -71,7 +75,7 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
       let item: ReportItem = new FindingNodeReportItem(finding);
       item.contextValue = "reportItem";
       item.command = {
-        command: "sechubReportView.selectNode",
+        command: SECHUB_COMMANDS.openFindingCallStack,
         title: "Select Node",
         arguments: [item]
       };
@@ -107,10 +111,4 @@ export class FindingNodeReportItem extends ReportItem {
     this.tooltip = `${this.label}-${this.description}`;
     this.sechubFinding = sechubFinding;
   }
-
-
-  iconPath = {
-    light: path.join(__filename, '..', '..', 'resources', 'light', 'ReportItem.svg'),
-    dark: path.join(__filename, '..', '..', 'resources', 'dark', 'ReportItem.svg')
-  };
 }
