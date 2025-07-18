@@ -4,8 +4,6 @@ apply plugin: 'com.epages.restdocs-api-spec' //see https://github.com/ePages-de/
 apply plugin: 'org.asciidoctor.jvm.convert'
 apply plugin: 'org.asciidoctor.jvm.pdf'
 
-apply from: "openapi-workaround.gradle"
-
 dependencies {
     def wanted = []
     def unwanted = [
