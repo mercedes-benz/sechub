@@ -24,32 +24,18 @@ public class TestPortProvider {
     private static final int DEFAULT_INTEGRATIONTEST_SERVER_PORT = 8443;
     private static final int DEFAULT_INTEGRATIONTEST_PDS_PORT = 8444;
 
-    // "normal" tests
-    private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT = "sechub.test.wiremock.http_port";
-    private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT = "sechub.test.wiremock.https_port";
-
     private static final String PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT = "sechub.test.restdoc.https.port";
     private static final String PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT = "sechub.test.mvcmock.https.port";
-
-    private static final String PROPERTY_SECHUB_TEST_S3MOCK_HTTP_PORT = "sechub.test.s3mock.http.port";
-    private static final String PROPERTY_SECHUB_TEST_S3MOCK_HTTPS_PORT = "sechub.test.s3mock.https.port";
 
     // integration tests
     private static final String PROPERTY_SECHUB_INTEGRATIONTEST_SERVER_PORT = "sechub.integrationtest.serverport";
     private static final String PROPERTY_SECHUB_INTEGRATIONTEST_PDS_PORT = "sechub.integrationtest.pdsport";
 
-    private static final int DEFAULT_S3MOCK_HTTP_PORT = 9090;
-    private static final int DEFAULT_S3MOCK_HTTPS_PORT = 9190;
-
     private SystemPropertyProvider systemPropertyProvider = new TestEnvironmentProvider();
 
-    private int wireMockHttpPort;
-    private int wireMockHttpsPort;
     private int integrationTestServerPort;
     private int restDocPort;
     private int mvcMockPort;
-    private int s3MockHttpPort;
-    private int s3MockHttpsPort;
     private int integrationTestPDSPort;
 
     private static final Logger LOG = LoggerFactory.getLogger(TestPortProvider.class);
@@ -57,23 +43,16 @@ public class TestPortProvider {
     public static final TestPortProvider DEFAULT_INSTANCE = new TestPortProvider();
 
     TestPortProvider() {
-        wireMockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT, findFreePort());
-        wireMockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT, findFreePort());
-
         restDocPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT, findFreePort());
         mvcMockPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT, findFreePort());
 
         integrationTestServerPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_SERVER_PORT, DEFAULT_INTEGRATIONTEST_SERVER_PORT);
         integrationTestPDSPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_PDS_PORT, DEFAULT_INTEGRATIONTEST_PDS_PORT);
 
-        s3MockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_S3MOCK_HTTP_PORT, DEFAULT_S3MOCK_HTTP_PORT);
-        s3MockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_S3MOCK_HTTPS_PORT, DEFAULT_S3MOCK_HTTPS_PORT);
-
         LOG.info("Test port provider created");
-        LOG.info("Wiremock                https: {}, http: {}", wireMockHttpsPort, wireMockHttpPort);
+        LOG.info("Wiremock                https: {}, http: {}", "dynamic", "dynamic");
         LOG.info("Restdoc                 https: {}", restDocPort);
         LOG.info("MVCmock                 https: {}", mvcMockPort);
-        LOG.info("S3mock                  https: {}, http: {}", s3MockHttpsPort, s3MockHttpPort);
         LOG.info("Integration test server https: {}", integrationTestServerPort);
         LOG.info("Integration test PDS    https: {}", integrationTestPDSPort);
 
@@ -114,11 +93,11 @@ public class TestPortProvider {
     }
 
     public final int getWireMockTestHTTPPort() {
-        return wireMockHttpPort;
+        return findFreePort();
     }
 
     public final int getWireMockTestHTTPSPort() {
-        return wireMockHttpsPort;
+        return findFreePort();
     }
 
     public final int getIntegrationTestServerPort() {
@@ -153,14 +132,6 @@ public class TestPortProvider {
 
     SystemPropertyProvider getSystemPropertyProvider() {
         return systemPropertyProvider;
-    }
-
-    public int getS3MockServerHttpPort() {
-        return s3MockHttpPort;
-    }
-
-    public int getS3MockServerHttpsPort() {
-        return s3MockHttpsPort;
     }
 
 }
