@@ -87,6 +87,9 @@ jobs:
 
       - name: Generate openapi client
         run: npm --prefix ../../sechub-openapi-ts-client/ run generate-api-client
+      
+      - name: Build the generated openapi client
+        run: npm --prefix ../../sechub-openapi-ts-client/ build
 
       - name: Setup npm build
         run: npm ci
