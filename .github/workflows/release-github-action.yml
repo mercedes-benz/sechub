@@ -105,7 +105,7 @@ jobs:
           echo "# ../../sechub-openapi-ts-client/ - Generate openapi client
           npm --prefix ../../sechub-openapi-ts-client/ run generate-api-client
           echo "# ../../sechub-openapi-ts-client/ - Build the generated openapi client
-          npm --prefix ../../sechub-openapi-ts-client/ build
+          npm --prefix ../../sechub-openapi-ts-client/ run build
           echo "# $GHACTION - Install dependencies"
           npm ci
           echo "# $GHACTION - Run build"

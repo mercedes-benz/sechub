@@ -32,7 +32,7 @@ npm run generate-api-client
 ### build the generated client
 
 ```bash
-npm build
+npm run build
 ```
 
 After building the client, you can find the generated code in the `dist` directory.
