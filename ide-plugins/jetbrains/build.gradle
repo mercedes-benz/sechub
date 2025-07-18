@@ -25,12 +25,13 @@ tasks.withType(JavaCompile).configureEach {
 dependencies {
     implementation 'com.mercedesbenz.sechub:sechub-openapi-java-client'
     testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+    testImplementation 'com.github.tomakehurst:wiremock-jre8:3.0.1'
 }
 
 apply plugin: 'org.jetbrains.intellij'
 
 group 'com.mercedesbenz.sechub'
-version '0.4.1'
+version '1.0.0'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

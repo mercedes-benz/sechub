@@ -32,6 +32,11 @@ public final class SechubSettings implements PersistentStateComponent<SechubSett
 
         @NonNls
         public String serverURL = "";
+
+        @NonNls
+        public String webUiURL = "";
+
+        public boolean sslTrustAll = false;
     }
 
 }

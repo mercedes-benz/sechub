@@ -47,7 +47,7 @@ public class SecHubReportPanel implements SecHubPanel {
     private IntellijShowInEditorSupport showInEditorSupport;
     private Icon callHierarchyElementIcon;
 
-    private ToolWindow toolWindow;
+    private final ToolWindow toolWindow;
     private JLabel trafficLightIconLabel;
     private JLabel amountOfFindingsLabel;
     private JBTextField scanResultForJobText;
@@ -85,7 +85,6 @@ public class SecHubReportPanel implements SecHubPanel {
         reset();
     }
 
-    @NotNull
     private void createComponents() {
 
         JPanel contentNorth = createReportTablePanel();
