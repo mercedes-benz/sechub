@@ -13,6 +13,6 @@ public class SecHubAccessFactory {
         Credentials credentials = sechubSettingsCredentialsSupport.retrieveCredentials();
         SechubSettings.State state = Objects.requireNonNull(SechubSettings.getInstance().getState());
 
-        return new SecHubAccess(state.serverURL, credentials.getUserName(), credentials.getPasswordAsString(), true);
+        return new SecHubAccess(state.serverURL, credentials.getUserName(), credentials.getPasswordAsString(), state.sslTrustAll);
     }
 }

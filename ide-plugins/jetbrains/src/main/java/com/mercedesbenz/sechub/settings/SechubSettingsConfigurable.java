@@ -10,8 +10,6 @@ import org.jetbrains.annotations.Nullable;
 
 import com.intellij.credentialStore.Credentials;
 import com.intellij.openapi.options.Configurable;
-import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccess;
-import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccessFactory;
 import com.mercedesbenz.sechub.plugin.idea.window.SecHubServerPanel;
 
 /*
@@ -19,7 +17,7 @@ import com.mercedesbenz.sechub.plugin.idea.window.SecHubServerPanel;
  */
 final class SechubSettingsConfigurable implements Configurable {
 
-    private SechubSettingsComponent sechubSettingsComponent;
+    private SecHubSettingsComponent sechubSettingsComponent;
     private SechubSettingsCredentialsSupport sechubSettingsCredentialsSupport;
 
     // A default constructor with no arguments is required because
@@ -39,7 +37,7 @@ final class SechubSettingsConfigurable implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        sechubSettingsComponent = new SechubSettingsComponent();
+        sechubSettingsComponent = new SecHubSettingsComponent();
         sechubSettingsCredentialsSupport = new SechubSettingsCredentialsSupport();
         return sechubSettingsComponent.getPanel();
     }
@@ -55,10 +53,13 @@ final class SechubSettingsConfigurable implements Configurable {
             currentPassword = credentials.getPasswordAsString();
             currentUserName = credentials.getUserName();
         }
+
         /* @formatter:off */
         return !sechubSettingsComponent.getUserNameText().equals(currentUserName) ||
                 !sechubSettingsComponent.getApiTokenPassword().equals(currentPassword) ||
-                !sechubSettingsComponent.getServerUrlText().equals(state.serverURL);
+                !sechubSettingsComponent.getSecHubServerUrlText().equals(state.serverURL) ||
+                !sechubSettingsComponent.getWebUiUrlText().equals(state.webUiURL) ||
+                !sechubSettingsComponent.isSslTrustAll() == state.sslTrustAll;
         /* @formatter:on */
     }
 
@@ -66,7 +67,7 @@ final class SechubSettingsConfigurable implements Configurable {
     public void apply() {
         SechubSettings.State state = Objects.requireNonNull(SechubSettings.getInstance().getState());
 
-        String serverUrl = sechubSettingsComponent.getServerUrlText();
+        String serverUrl = sechubSettingsComponent.getSecHubServerUrlText();
         if (!serverUrl.isBlank() && !serverUrl.startsWith("http")) {
             /*
              * It is necessary to apply http protocol since the sechubClient needs it even
@@ -80,15 +81,23 @@ final class SechubSettingsConfigurable implements Configurable {
         Credentials credentials = new Credentials(sechubSettingsComponent.getUserNameText(), sechubSettingsComponent.getApiTokenPassword());
         sechubSettingsCredentialsSupport.storeCredentials(credentials);
 
+        state.webUiURL = sechubSettingsComponent.getWebUiUrlText();
+
+        state.sslTrustAll = sechubSettingsComponent.isSslTrustAll();
+
         updateComponents(state);
     }
 
     @Override
     public void reset() {
         SechubSettings.State state = Objects.requireNonNull(SechubSettings.getInstance().getState());
-        sechubSettingsComponent.setServerUrlText(state.serverURL);
+        sechubSettingsComponent.setSecHubServerUrlText(state.serverURL);
 
         Credentials credentials = sechubSettingsCredentialsSupport.retrieveCredentials();
+
+        sechubSettingsComponent.setWebUiUrlText(state.webUiURL);
+
+        sechubSettingsComponent.setSslTrustAll(state.sslTrustAll);
 
         displayCredentialsInSettings(credentials);
     }
@@ -115,11 +124,7 @@ final class SechubSettingsConfigurable implements Configurable {
     }
 
     private static void updateComponents(SechubSettings.State state) {
-        // Creating new sechubAccess with new client
-        SecHubAccess secHubAccess = SecHubAccessFactory.create();
-
-        // Updating the server URL in the SecHubServerPanel and check alive status
         SecHubServerPanel secHubServerPanel = SecHubServerPanel.getInstance();
-        secHubServerPanel.update(state.serverURL, secHubAccess.isSecHubServerAlive());
+        secHubServerPanel.updateSettingsState(state);
     }
 }
