@@ -43,21 +43,13 @@ pipeline {
 
                 stage('Build Server & API Java') {
                     environment {
-                        /* against build race conditions - See TestPortProvider.java */
-                        SECHUB_TEST_WIREMOCK_HTTPS_PORT = getJenkinsExecutorPort(8143)
-                        SECHUB_TEST_WIREMOCK_HTTP_PORT = getJenkinsExecutorPort(8180)
-                        SECHUB_TEST_S3MOCK_HTTP_PORT = getJenkinsExecutorPort(9090)
-                        SECHUB_TEST_S3MOCK_HTTPS_PORT = getJenkinsExecutorPort(9190)
                     }
                     steps {
                         script{
-                            echo "SECHUB_TEST_WIREMOCK_HTTPS_PORT=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT}"
-                            echo "SECHUB_TEST_WIREMOCK_HTTP_PORT=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT}"
-
                             // We do NOT build sechub-integrationtest
                             // Reason: because we do NOT want to have the integration tests executed, otherwise gradle will not execute them
                             // on integration phase again (because nothing has changed, so gradle will cache the results which are ignored ...
-                            callGradleWrapper("ensureLocalhostCertificate build -x :sechub-cli:build -Psechub.test.wiremock.https_port=${env.SECHUB_TEST_WIREMOCK_HTTPS_PORT} -Psechub.test.wiremock.http_port=${env.SECHUB_TEST_WIREMOCK_HTTP_PORT} --console=plain")
+                            callGradleWrapper("ensureLocalhostCertificate build -x :sechub-cli:build --console=plain")
                             callGradleWrapper(":sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary --console=plain")
                         }
                     }

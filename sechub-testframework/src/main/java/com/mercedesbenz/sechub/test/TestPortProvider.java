@@ -24,10 +24,6 @@ public class TestPortProvider {
     private static final int DEFAULT_INTEGRATIONTEST_SERVER_PORT = 8443;
     private static final int DEFAULT_INTEGRATIONTEST_PDS_PORT = 8444;
 
-    // "normal" tests
-    private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT = "sechub.test.wiremock.http_port";
-    private static final String PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT = "sechub.test.wiremock.https_port";
-
     private static final String PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT = "sechub.test.restdoc.https.port";
     private static final String PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT = "sechub.test.mvcmock.https.port";
 
@@ -37,8 +33,6 @@ public class TestPortProvider {
 
     private SystemPropertyProvider systemPropertyProvider = new TestEnvironmentProvider();
 
-    private int wireMockHttpPort;
-    private int wireMockHttpsPort;
     private int integrationTestServerPort;
     private int restDocPort;
     private int mvcMockPort;
@@ -49,9 +43,6 @@ public class TestPortProvider {
     public static final TestPortProvider DEFAULT_INSTANCE = new TestPortProvider();
 
     TestPortProvider() {
-        wireMockHttpPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTP_PORT, findFreePort());
-        wireMockHttpsPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_WIREMOCK_HTTPS_PORT, findFreePort());
-
         restDocPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_RESTDOC_HTTPS_PORT, findFreePort());
         mvcMockPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_TEST_MVCMOCK_HTTPS_PORT, findFreePort());
 
@@ -59,7 +50,7 @@ public class TestPortProvider {
         integrationTestPDSPort = getSystemPropertyOrDefault(PROPERTY_SECHUB_INTEGRATIONTEST_PDS_PORT, DEFAULT_INTEGRATIONTEST_PDS_PORT);
 
         LOG.info("Test port provider created");
-        LOG.info("Wiremock                https: {}, http: {}", wireMockHttpsPort, wireMockHttpPort);
+        LOG.info("Wiremock                https: {}, http: {}", "dynamic", "dynamic");
         LOG.info("Restdoc                 https: {}", restDocPort);
         LOG.info("MVCmock                 https: {}", mvcMockPort);
         LOG.info("Integration test server https: {}", integrationTestServerPort);
@@ -102,11 +93,11 @@ public class TestPortProvider {
     }
 
     public final int getWireMockTestHTTPPort() {
-        return wireMockHttpPort;
+        return findFreePort();
     }
 
     public final int getWireMockTestHTTPSPort() {
-        return wireMockHttpsPort;
+        return findFreePort();
     }
 
     public final int getIntegrationTestServerPort() {
