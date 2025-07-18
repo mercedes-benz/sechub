@@ -9,7 +9,6 @@ import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.mercedesbenz.sechub.storage.core.AssetStorage;
@@ -45,8 +44,15 @@ public class AwsS3JobStorageFactory implements JobStorageFactory, AssetStorageFa
 
         clientConfiguration.setSignerOverride(s3Setup.getSignerOverride());
 
+        String regionToUse = AwsRegionResolver.resolve(s3Setup.getRegion());
+
+        if (regionToUse == null) {
+            throw new IllegalStateException(
+                    "Cannot resolve object for region '" + s3Setup.getRegion() + "' from s3 setup:" + s3Setup.getClass().getSimpleName());
+        }
+
         s3Client = AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(awsCreds))
-                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(s3Setup.getEndPoint(), Regions.DEFAULT_REGION.name()))
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(s3Setup.getEndPoint(), regionToUse))
                 .withClientConfiguration(clientConfiguration).build();
 
         bucketName = s3Setup.getBucketName();

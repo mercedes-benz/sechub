@@ -176,13 +176,13 @@ jobs:
       # Build SecHub Server + PDS
       # ----------------------
       - name: Build Server and PDS artifacts
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build -x :sechub-cli:build
 
       # ----------------------
       # Build API Java publish
       # ----------------------
       - name: Generate and build Java projects related to SecHub Java API
-        run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
+        run: ./gradlew :sechub-pds-tools:buildPDSToolsCLI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
 
@@ -211,8 +211,6 @@ jobs:
       - name: Collect GIT status
         if: always()
         run: |
-          # restore reduced-openapi3.json
-          git restore sechub-api-java/src/main/resources/reduced-openapi3.json
           git status > build/reports/git-status.txt
 
       # -----------------------------------------

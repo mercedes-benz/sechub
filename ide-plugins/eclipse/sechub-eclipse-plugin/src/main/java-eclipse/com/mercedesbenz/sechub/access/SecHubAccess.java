@@ -3,15 +3,22 @@ package com.mercedesbenz.sechub.access;
 
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
+import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 
 public class SecHubAccess {
 
@@ -22,38 +29,37 @@ public class SecHubAccess {
 	public SecHubAccess(String secHubServerUrl, String userId, String apiToken, boolean trustAllCertificates) {
 		initSecHubClient(secHubServerUrl, userId, apiToken, trustAllCertificates);
 	}
-	
-	public class ServerAccessData{
+
+	public class ServerAccessStatus {
 		private boolean alive;
 		private boolean loginFailure;
 		private SortedSet<String> userProjectIds = new TreeSet<String>();
-		
+
 		public boolean isAlive() {
 			return alive;
 		}
-		
+
 		public boolean isLoginFaiure() {
 			return loginFailure;
 		}
-		
+
 		public Set<String> getUserProjectIds() {
 			return Collections.unmodifiableSortedSet(userProjectIds);
 		}
 	}
 
-	public ServerAccessData fetchServerAccessData() {
-		ServerAccessData accessData = new ServerAccessData();
+	public ServerAccessStatus fetchServerAccessStatus() {
+		ServerAccessStatus accessData = new ServerAccessStatus();
 		if (client == null) {
 			LOG.debug("SecHub client is not initialized");
-		}else {
+		} else {
 			try {
-				accessData.alive=client.isServerAlive(); // alive check currently needs credentials
-				
+				accessData.alive = client.isServerAlive(); // alive check currently needs credentials
+
 			} catch (Exception e) {
-				accessData.alive=false;
+				accessData.alive = false;
 			}
 		}
-		// TODO 2024-09-12 de-jcup: When client supports fetching of accessible project ids, add this to the userProjectIds + set login failure if not possible 
 		return accessData;
 	}
 
@@ -82,5 +88,20 @@ public class SecHubAccess {
 
 	private boolean isInputMissingOrEmpty(String secHubServerUrl, String userId, String apiToken) {
 		return secHubServerUrl.isBlank() || userId == null || apiToken == null;
+	}
+
+	public List<ProjectData> fetchProjectList() throws ApiException {
+		return client.withProjectAdministrationApi().getAssignedProjectDataList();
+	}
+
+	public SecHubJobInfoForUserListPage fetchJobInfoList(String projectId, int size, int page) throws ApiException {
+		Map<String, String> map = Map.of();
+		return client.withOtherApi().userListsJobsForProject(projectId, String.valueOf(size), String.valueOf(page),
+				false, map);
+
+	}
+
+	public SecHubReport downloadJobReport(String projectId, UUID jobUUID) throws ApiException {
+		return client.withSecHubExecutionApi().userDownloadJobReport(projectId, jobUUID);
 	}
 }

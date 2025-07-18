@@ -1,6 +1,4 @@
 // SPDX-License-Identifier: MIT
-import { report } from "process";
-
 export const SECHUB_CREDENTIAL_KEYS = {
     serverUrl: 'sechubServerUrl',
     username: 'sechubUsername',

@@ -25,6 +25,9 @@ public class PrepareWrapperS3PropertiesSetup implements S3Setup {
     @Value("${" + PDS_STORAGE_S3_ENDPOINT + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
     private String endpoint;
 
+    @Value("${" + PDS_STORAGE_S3_REGION + ":" + UNDEFINED + "}") // we use undefined here. Will be used in isValid
+    private String region;
+
     /* timeout */
 
     @Value("${" + PDS_STORAGE_S3_TIMEOUT_CONNECTION_MILLISECONDS + ":" + S3Setup.DEFAULT_CONNECTION_TIMEOUT + "}")
@@ -86,6 +89,7 @@ public class PrepareWrapperS3PropertiesSetup implements S3Setup {
         inValid = inValid || UNDEFINED.equals(secretKey);
         inValid = inValid || UNDEFINED.equals(endpoint);
         inValid = inValid || UNDEFINED.equals(bucketName);
+        inValid = inValid || UNDEFINED.equals(region);
 
         return !inValid;
     }
@@ -133,6 +137,11 @@ public class PrepareWrapperS3PropertiesSetup implements S3Setup {
     @Override
     public String getSignerOverride() {
         return signerOverride;
+    }
+
+    @Override
+    public String getRegion() {
+        return region;
     }
 
 }

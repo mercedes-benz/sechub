@@ -73,6 +73,11 @@ export function createSecHubConfigurationModel(builderData: SecHubConfigurationM
         secretScan.use = [referenceName];
         model.secretScan = secretScan;
     }
+    if (builderData.scanTypes?.indexOf(ScanType.IAC_SCAN) != -1) {
+        const iacScan = new cm.IacScan();
+        iacScan.use = [referenceName];
+        model.iacScan = iacScan;
+    }
 
     return model;
 }
