@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub PDS Documentation</h1>
 <div class="details">
-<span id="revnumber"> PDS 2.3.0 modified (commit a0b9e81)</span>
+<span id="revnumber"> PDS 2.4.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -825,7 +825,7 @@ build / contionus integration (CI) pipelines and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>PDS 2.3.0 modified (commit a0b9e81) - Build date: 2025-07-14 16:11 (UTCZ)</code></p>
+<p>Documentation version: <code>PDS 2.4.0 - Build date: 2025-07-17 13:19 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p><strong>About PDS (Product Delegation Server)</strong></p>
@@ -2960,6 +2960,11 @@ Please look for more information at the following tables.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the s3 endpoint.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.region</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client region. Supported are offical AWS region names and additionally: <code>default</code> and <code>current</code>. When <code>current</code> is used, the implementation will try to resolve the current region automatically.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">pds.storage.s3.secretkey</p></td>
@@ -5663,7 +5668,7 @@ The concept of PDS job meta data handling is described <a href="#concept-pds_sol
 </div>
 <div id="footer">
 <div id="footer-text">
- PDS 2.3.0 modified (commit a0b9e81)<br>
+ PDS 2.4.0<br>
 </div>
 </div>
 </body>

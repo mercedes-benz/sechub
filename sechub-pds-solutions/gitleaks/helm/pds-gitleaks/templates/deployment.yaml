@@ -123,14 +123,16 @@ spec:
 {{- else if .Values.storage.s3.enabled }}
             - name: S3_ENABLED
               value: "true"
-            - name:  S3_ENDPOINT
+            - name: PDS_STORAGE_S3_ENDPOINT
               value: {{ .Values.storage.s3.endpoint }}
-            - name: S3_BUCKETNAME
+            - name: PDS_STORAGE_S3_BUCKETNAME
               value: {{ .Values.storage.s3.bucketname }}
-            - name: S3_ACCESSKEY
+            - name: PDS_STORAGE_S3_ACCESSKEY
               value: {{ .Values.storage.s3.accesskey }}
-            - name: S3_SECRETKEY
+            - name: PDS_STORAGE_S3_SECRETKEY
               value: {{ .Values.storage.s3.secretkey }}
+            - name: PDS_STORAGE_S3_REGION
+              value: {{ .Values.storage.s3.region }}
 {{- else if .Values.storage.sharedVolume.enabled }}
             - name: SHARED_VOLUME_UPLOAD_DIR
               value: "{{ .Values.storage.sharedVolume.upload.dir }}"

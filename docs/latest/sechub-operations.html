@@ -531,7 +531,7 @@ table.CodeRay td.code{padding:0 0 0 .75em}
 <div id="header">
 <h1><span class="image"><a class="image" href="https://mercedes-benz.github.io/sechub"><img src="images/sechub-logo.png" alt="sechub logo"></a></span> SecHub Operations</h1>
 <div class="details">
-<span id="revnumber"> Server 2.12.0</span>
+<span id="revnumber"> Server 2.13.0</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of contents</div>
@@ -787,7 +787,7 @@ build / contionus integration (CI) pipelines and helps to provide
 </tbody>
 </table>
 <div class="paragraph">
-<p>Documentation version: <code>Server 2.12.0 - Build date: 2025-07-14 16:11 (UTCZ)</code></p>
+<p>Documentation version: <code>Server 2.13.0 - Build date: 2025-07-17 13:19 (UTCZ)</code></p>
 </div>
 <div class="paragraph">
 <p>Target audience for this document are <strong>SecHub Operators/Administrators</strong>.</p>
@@ -1783,6 +1783,11 @@ Starts always with strategy-identifer, colon and value(s). Values are comma sepa
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.endpoint</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Defines the S3 endpoint - e.g. <a href="https://play.min.io" class="bare">https://play.min.io</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.region</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">undefined</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">S3 client region. Supported are offical AWS region names and additionally: <code>default</code> and <code>current</code>. When <code>current</code> is used, the implementation will try to resolve the current region automatically.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">sechub.storage.s3.secretkey</p></td>
@@ -3972,7 +3977,7 @@ the assignment to a super administrator. Only with permission of project owner t
 </div>
 <div id="footer">
 <div id="footer-text">
- Server 2.12.0<br>
+ Server 2.13.0<br>
 </div>
 </div>
 </body>

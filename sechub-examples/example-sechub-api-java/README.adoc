@@ -47,19 +47,8 @@ parameters.
 
 ==== Gradle
 
-When you want to build the OpenAPI Test Tool, do next:
+When you want to build the OpenAPI Test Tool, execute:
 
-- generate Open API json file
-----
-sechub$ ./gradlew generateOpenapi
-----
-
-- build Open API library
-----
-sechub$ ./gradlew :sechub-api-java:build
-----
-
-- build OpenAPI Test Tool
 ----
 sechub$ ./gradlew buildOpenAPITestTool
 ----

@@ -41527,39 +41527,63 @@ function mkdtempSync(prefix, options) {
  * Executes the scan method of the SecHub CLI. Sets the client exitcode inside context.
  * @param context launch context
  */
-function scan(context) {
+async function scan(context) {
     const clientExecutablePath = sanitize(context.clientExecutablePath);
-    const configFileArgValue = sanitize(context.configFileLocation ? context.configFileLocation : '');
+    const configFileArgValue = sanitize(context.configFileLocation || '');
     const outputArgValue = sanitize(context.workspaceFolder);
     const addScmHistoryArg = sanitize(context.inputData.addScmHistory === 'true' ? '-addScmHistory' : '');
     const tempDir = mkdtempSync(external_path_default().join((0,external_os_.tmpdir)(), 'sechub-scan-temp-dir'));
     const stdoutFile = external_path_default().join(tempDir, `output-${v4()}.txt`);
     const stdoutFd = openSync(stdoutFile, 'a');
     const prefix = 'scan output';
+    const args = [
+        '-configfile', configFileArgValue,
+        '-output', outputArgValue,
+        addScmHistoryArg,
+        'scan',
+    ];
+    lib_core.info(`Running: ${clientExecutablePath} ${args.join(' ')}`);
     try {
-        (0,external_child_process_.execFileSync)(clientExecutablePath, 
-        /* parameters */
-        [
-            '-configfile', configFileArgValue,
-            '-output', outputArgValue, addScmHistoryArg, 'scan'
-        ], 
-        /* options*/
-        {
-            env: process.env,
-            encoding: 'utf-8',
+        const exitCode = await spawnAndWait(clientExecutablePath, args, {
             stdio: ['ignore', stdoutFd, stdoutFd],
+            env: process.env,
         });
         const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
-        lib_core.info('Scan executed successfully');
-        context.lastClientExitCode = 0;
+        context.lastClientExitCode = exitCode;
         context.jobUUID = extractJobUUID(output);
+        lib_core.info('Scan completed successfully');
     }
-    catch (error) {
+    catch (err) {
         const output = logAndCloseStdOutFile(prefix, stdoutFd, stdoutFile);
-        lib_core.error(`Error executing scan command: ${error.message}`);
-        context.lastClientExitCode = error.status;
+        context.lastClientExitCode = 1;
         context.jobUUID = extractJobUUID(output);
+        lib_core.error(`Scan failed: ${err.message}`);
+        throw err;
     }
+}
+function spawnAndWait(command, args, options = {}) {
+    return new Promise((resolve, reject) => {
+        const child = (0,external_child_process_.spawn)(command, args, options);
+        const handleSignal = (signal) => {
+            console.warn(`Received ${signal}, forwarding to child`);
+            child.kill(signal);
+        };
+        process.on('SIGINT', handleSignal);
+        process.on('SIGTERM', handleSignal);
+        child.on('exit', (code, signal) => {
+            process.removeListener('SIGINT', handleSignal);
+            process.removeListener('SIGTERM', handleSignal);
+            if (signal) {
+                return reject(new Error(`Process terminated by signal: ${signal}`));
+            }
+            resolve(code !== null && code !== void 0 ? code : 0);
+        });
+        child.on('error', (err) => {
+            process.removeListener('SIGINT', handleSignal);
+            process.removeListener('SIGTERM', handleSignal);
+            reject(err);
+        });
+    });
 }
 function logAndCloseStdOutFile(prefix, stdOutFd, stdOutFile) {
     closeSync(stdOutFd);
@@ -59399,7 +59423,7 @@ async function launch() {
         failAction(context.lastClientExitCode);
         return context;
     }
-    executeScan(context);
+    await executeScan(context);
     await postScan(context);
     return context;
 }
@@ -59489,8 +59513,8 @@ async function init(context) {
  * Executes the scan.
  * @param context launch context
  */
-function executeScan(context) {
-    scan(context);
+async function executeScan(context) {
+    await scan(context);
     logExitCode(context.lastClientExitCode);
 }
 /**

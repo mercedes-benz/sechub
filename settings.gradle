@@ -7,7 +7,6 @@ include 'sechub-cli',
 /* openapi */
 'sechub-openapi',
 'sechub-openapi-java-client',
-'sechub-api-java', // DEPRECATED
 
 /* commons */
 'sechub-commons-core',

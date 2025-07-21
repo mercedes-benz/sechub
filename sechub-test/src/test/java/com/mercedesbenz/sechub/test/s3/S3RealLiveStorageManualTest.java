@@ -173,6 +173,11 @@ class S3RealLiveStorageManualTest implements ManualTest {
                 return S3Setup.DEFAULT_SIGNER_OVERRIDE;
             }
 
+            @Override
+            public String getRegion() {
+                return "default";
+            }
+
         };
         return s3Setup;
     }

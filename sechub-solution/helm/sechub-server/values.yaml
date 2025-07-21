@@ -48,6 +48,11 @@ server:
     smtp:
       host: mailhost.to.be.defined
       port: 25
+      # Java mail config options. See https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html
+      config: mail.smtp.auth=false,mail.transport.protocol=smtp
+      # Optional: SMTP user credentials
+      # user: exampleuser
+      # password: example
   initialAdminUser:
     # Define initial admin user. The link to get the api token will be sent to this email address.
     id: sechubadm
@@ -263,9 +268,10 @@ storage:
     enabled: false
     endpoint: "https://to.be.defined:<port>"
     bucketname: "<my-bucketname>"
-    # Defines the access key for used S3 bucket
-    # Put the S3 access key in k8s secret secret-storage:sechub_storage_s3_accesskey
-    # Put the S3 secret key in k8s secret secret-storage:sechub_storage_s3_secretkey
+    region: "current"
+    # Please define the access credentials for S3 bucket as Kubernetes secrets:
+    # - Put the S3 access key in k8s secret secret-storage:sechub_storage_s3_accesskey
+    # - Put the S3 secret key in k8s secret secret-storage:sechub_storage_s3_secretkey
     connectionPool:
       # Maximum idle time (in milliseconds) for a connection in the connection pool.
       maxIdleTimeInMilliseconds: 60000

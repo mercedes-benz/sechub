@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub;
 
 import org.eclipse.ui.IFolderLayout;

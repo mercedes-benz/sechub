@@ -99,17 +99,15 @@ jobs:
       # Build SecHub PDS-Tools
       # ----------------------
       - name: Build Server, DAUI and generate OpenAPI file
-        run: ./gradlew ensureLocalhostCertificate build generateOpenapi -x :sechub-integrationtest:test -x :sechub-cli:build
+        run: ./gradlew ensureLocalhostCertificate build -x :sechub-integrationtest:test -x :sechub-cli:build
 
       - name: Generate and build Java projects related to SecHub Java API
-        run: ./gradlew :sechub-api-java:build :sechub-systemtest:build :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
+        run: ./gradlew :sechub-pds-tools:buildPDSToolsCLI -Dsechub.build.stage=api-necessary
 
       # To identifiy parts not in git history and leading to "-dirty-$commitId" markern in documentation
       - name: Collect GIT status
         if: always()
         run: |
-          # restore reduced-openapi3.json
-          git restore sechub-api-java/src/main/resources/reduced-openapi3.json
           mkdir -p build/reports
           git status > build/reports/git-status.txt
           echo "--- git tags:" >> build/reports/git-status.txt

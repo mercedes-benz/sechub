@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server;
 
 import com.mercedesbenz.sechub.access.SecHubAccess;
