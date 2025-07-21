@@ -117,7 +117,7 @@ describe('scan', () => {
             inputData: { addScmHistory: 'true' }
         };
 
-        const child = mockSpawn();
+        mockSpawn();
 
         /* execute */
         await scan(context);
@@ -167,7 +167,7 @@ describe('scan', () => {
             inputData: { addScmHistory: 'false' }
         };
 
-        const child = mockSpawn(1);
+        mockSpawn(1);
 
         /* execute */
         await scan(context);
@@ -399,5 +399,25 @@ describe('spawnAndWait signal handling', () => {
         mockChildProcess.on.mock.calls[1][1](error);
 
         await expect(promise).rejects.toThrow('Child process error');
+    });
+
+    it('should NOT reject promise if child process exists without error', async () => {
+        /* prepare */
+        const command = 'dummyCommand';
+        const args = ['dummyArg'];
+        const options = {};
+
+        // Simulate the child process exiting normally
+        mockChildProcess.on.mockImplementation((event: string, callback: (arg0: number, arg1: null) => void) => {
+            if (event === 'exit') {
+                callback(0, null);
+            }
+        });
+
+        /* execute */
+        const promise = spawnAndWait(command, args, options);
+
+        /* test */
+        await expect(promise).resolves.toBe(0);
     });
 });
