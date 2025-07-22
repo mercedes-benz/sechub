@@ -40,7 +40,7 @@ public class SecHubSettingsComponent {
                 .getPanel();
         /* @formatter:on */
 
-        useCustomWebUiUrl.addActionListener(event -> {
+        useCustomWebUiUrl.addChangeListener(event -> {
             handleWebUiUrlVisibility(webUiUrlLabel);
         });
 
@@ -51,6 +51,8 @@ public class SecHubSettingsComponent {
         boolean isVisible = useCustomWebUiUrl.isSelected();
         webUiUrlLabel.setVisible(isVisible);
         webUiUrlText.setVisible(isVisible);
+        webUiUrlText.setEnabled(isVisible);
+        webUiUrlText.setEditable(isVisible);
     }
 
     public JPanel getPanel() {

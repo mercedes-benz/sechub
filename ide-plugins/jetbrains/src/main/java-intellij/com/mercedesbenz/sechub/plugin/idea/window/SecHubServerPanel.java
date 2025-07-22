@@ -133,7 +133,7 @@ public class SecHubServerPanel implements SecHubPanel {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
 
         /* create action to refresh the server connection */
-        AnAction refreshAction = new AnAction("Refresh", "Refresh server connection", AllIcons.Actions.Refresh) {
+        AnAction refreshAction = new AnAction("Refresh Server Connection", "Refresh server connection", AllIcons.Actions.Refresh) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 checkServerConnection();
@@ -146,7 +146,7 @@ public class SecHubServerPanel implements SecHubPanel {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 String webUiURL = observableSettingsState.getWebUiURL();
-                if (webUiURL == null || webUiURL.isBlank()) {
+                if (observableSettingsState.useCustomWebUiUrl() && (webUiURL == null || webUiURL.isBlank())) {
                     settingsDialogListener.onShowSettingsDialog();
                     return;
                 }
@@ -280,6 +280,7 @@ public class SecHubServerPanel implements SecHubPanel {
         /* add refresh button for projects & jobs */
         JButton refreshButton = new JButton(AllIcons.Actions.Refresh);
         refreshButton.setPreferredSize(new Dimension(30, 30));
+        refreshButton.setToolTipText("Refresh Projects & Jobs");
         refreshButton.addActionListener(e -> {
             if (checkServerConnection()) {
                 loadProjects();
@@ -446,7 +447,7 @@ public class SecHubServerPanel implements SecHubPanel {
         boolean isServerAlive = observableServerConnection.getValue();
         if (isServerAlive) {
             /* load jobs initially */
-            loadProjects();
+            loadJobs();
         }
 
         return panel;
@@ -566,9 +567,8 @@ public class SecHubServerPanel implements SecHubPanel {
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(SechubSettings.State newValue) {
-            SechubSettings.State oldValue = createDefensiveCopy();
             state = newValue;
-            propertyChangeSupport.firePropertyChange(SETTINGS_STATE_PROPERTY, oldValue, newValue);
+            propertyChangeSupport.firePropertyChange(SETTINGS_STATE_PROPERTY, null, newValue);
         }
 
         public SechubSettings.State getValue() {
@@ -593,6 +593,13 @@ public class SecHubServerPanel implements SecHubPanel {
             return serverURL;
         }
 
+        private boolean useCustomWebUiUrl() {
+            if (state == null) {
+                return false;
+            }
+            return state.useCustomWebUiUrl;
+        }
+
         private String getWebUiURL() {
             if (state == null) {
                 return "";
@@ -605,13 +612,6 @@ public class SecHubServerPanel implements SecHubPanel {
                 return false;
             }
             return state.sslTrustAll;
-        }
-
-        private SechubSettings.State createDefensiveCopy() {
-            SechubSettings.State copy = new SechubSettings.State();
-            copy.serverURL = state.serverURL;
-            copy.sslTrustAll = state.sslTrustAll;
-            return copy;
         }
 
     }
@@ -650,9 +650,8 @@ public class SecHubServerPanel implements SecHubPanel {
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(String newValue) {
-            String oldValue = getValue();
             PropertiesComponent.getInstance().setValue(SECHUB_PLUGIN_STATE_CURRENT_PROJECT_ID, newValue);
-            propertyChangeSupport.firePropertyChange(CURRENT_PROJECT_ID_PROPERTY_NAME, oldValue, newValue);
+            propertyChangeSupport.firePropertyChange(CURRENT_PROJECT_ID_PROPERTY_NAME, null, newValue);
         }
 
         public String getValue() {
@@ -671,9 +670,8 @@ public class SecHubServerPanel implements SecHubPanel {
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(List<ProjectData> newValue) {
-            List<ProjectData> oldValue = createDefensiveCopy(projects);
             projects = newValue;
-            propertyChangeSupport.firePropertyChange(PROJECTS_PROPERTY_NAME, oldValue, newValue);
+            propertyChangeSupport.firePropertyChange(PROJECTS_PROPERTY_NAME, null, newValue);
         }
 
         public List<ProjectData> getValue() {
@@ -683,13 +681,6 @@ public class SecHubServerPanel implements SecHubPanel {
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(listener);
         }
-
-        private static List<ProjectData> createDefensiveCopy(List<ProjectData> original) {
-            if (original == null) {
-                return null;
-            }
-            return List.copyOf(original);
-        }
     }
 
     private static class ObservableJobPage {
@@ -698,9 +689,8 @@ public class SecHubServerPanel implements SecHubPanel {
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(SecHubJobInfoForUserListPage newValue) {
-            SecHubJobInfoForUserListPage oldValue = page;
             page = newValue;
-            propertyChangeSupport.firePropertyChange(JOB_PAGE_PROPERTY_NAME, oldValue, newValue);
+            propertyChangeSupport.firePropertyChange(JOB_PAGE_PROPERTY_NAME, null, newValue);
         }
 
         @NotNull
@@ -713,13 +703,11 @@ public class SecHubServerPanel implements SecHubPanel {
         }
 
         public boolean previous() {
-            SecHubJobInfoForUserListPage oldValue = createDefensiveCopy();
-
             int currentPageIndex = page.getPage() == null ? 0 : page.getPage();
             if (currentPageIndex > 0) {
                 int nextPageIndex = currentPageIndex - 1;
                 page.setPage(nextPageIndex);
-                propertyChangeSupport.firePropertyChange(JOB_PAGE_PROPERTY_NAME, oldValue, page);
+                propertyChangeSupport.firePropertyChange(JOB_PAGE_PROPERTY_NAME, null, page);
 
                 return true;
             }
@@ -728,15 +716,13 @@ public class SecHubServerPanel implements SecHubPanel {
         }
 
         public boolean next() {
-            SecHubJobInfoForUserListPage oldValue = createDefensiveCopy();
-
             int currentPage = page.getPage() == null ? 0 : page.getPage();
             int totalPages = page.getTotalPages() == null ? 0 : page.getTotalPages();
             if (currentPage < totalPages - 1) {
                 /* Note: page starts with 0, so we have to check if currentPage is less than totalPages - 1 */
                 int nextPageIndex = currentPage + 1;
                 page.setPage(nextPageIndex);
-                propertyChangeSupport.firePropertyChange(JOB_PAGE_PROPERTY_NAME, oldValue, page);
+                propertyChangeSupport.firePropertyChange(JOB_PAGE_PROPERTY_NAME, null, page);
 
                 return true;
             }
@@ -758,15 +744,6 @@ public class SecHubServerPanel implements SecHubPanel {
             }
 
             return page.getTotalPages();
-        }
-
-        private SecHubJobInfoForUserListPage createDefensiveCopy() {
-            SecHubJobInfoForUserListPage copy = new SecHubJobInfoForUserListPage();
-            copy.setContent(page.getContent());
-            copy.setProjectId(page.getProjectId());
-            copy.setPage(page.getPage());
-            copy.setTotalPages(page.getTotalPages());
-            return copy;
         }
 
         public void reset() {

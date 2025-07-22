@@ -58,6 +58,7 @@ final class SechubSettingsConfigurable implements Configurable {
         return !sechubSettingsComponent.getUserNameText().equals(currentUserName) ||
                 !sechubSettingsComponent.getApiTokenPassword().equals(currentPassword) ||
                 !sechubSettingsComponent.getSecHubServerUrlText().equals(state.serverURL) ||
+                !sechubSettingsComponent.useCustomWebUiUrl() == state.useCustomWebUiUrl ||
                 !sechubSettingsComponent.getWebUiUrlText().equals(state.webUiURL) ||
                 !sechubSettingsComponent.isSslTrustAll() == state.sslTrustAll;
         /* @formatter:on */
@@ -81,6 +82,8 @@ final class SechubSettingsConfigurable implements Configurable {
         Credentials credentials = new Credentials(sechubSettingsComponent.getUserNameText(), sechubSettingsComponent.getApiTokenPassword());
         sechubSettingsCredentialsSupport.storeCredentials(credentials);
 
+        state.useCustomWebUiUrl = sechubSettingsComponent.useCustomWebUiUrl();
+
         state.webUiURL = sechubSettingsComponent.getWebUiUrlText();
 
         state.sslTrustAll = sechubSettingsComponent.isSslTrustAll();
@@ -94,6 +97,8 @@ final class SechubSettingsConfigurable implements Configurable {
         sechubSettingsComponent.setSecHubServerUrlText(state.serverURL);
 
         Credentials credentials = sechubSettingsCredentialsSupport.retrieveCredentials();
+
+        sechubSettingsComponent.setUseCustomWebUiUrl(state.useCustomWebUiUrl);
 
         sechubSettingsComponent.setWebUiUrlText(state.webUiURL);
 
