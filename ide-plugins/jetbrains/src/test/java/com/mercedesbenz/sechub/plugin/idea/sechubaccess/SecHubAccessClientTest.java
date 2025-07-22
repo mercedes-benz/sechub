@@ -11,11 +11,11 @@ import java.util.List;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.*;
 
-public class SecHubAccessTest {
+public class SecHubAccessClientTest {
 
     private static WireMockServer wireMockServer;
-    private static SecHubAccess secHubAccessToTest;
-    private static final SecHubAccess failingSecHubAccess = new SecHubAccess(
+    private static SecHubAccessClient clientToTest;
+    private static final SecHubAccessClient failingClient = new SecHubAccessClient(
             "http://does-not-exist.localhost",
             "user",
             "token",
@@ -49,7 +49,7 @@ public class SecHubAccessTest {
                                 }
                                 """)));
 
-        secHubAccessToTest = new SecHubAccess(
+        clientToTest = new SecHubAccessClient(
                 "http://localhost:" + wireMockServer.port(),
                 "user",
                 "token",
@@ -65,7 +65,7 @@ public class SecHubAccessTest {
     @Test
     public void initSecHubClient_with_null_server_url_throws_null_pointer_exception() {
         try {
-            new SecHubAccess(null, "user", "token", true);
+            new SecHubAccessClient(null, "user", "token", true);
             fail("Expected NullPointerException not thrown");
         } catch (NullPointerException e) {
             assertEquals("Parameter 'secHubServerUrl' must not be null", e.getMessage());
@@ -75,7 +75,7 @@ public class SecHubAccessTest {
     @Test
     public void initSecHubClient_with_null_user_id_throws_null_pointer_exception() {
         try {
-            new SecHubAccess("http://localhost", null, "token", true);
+            new SecHubAccessClient("http://localhost", null, "token", true);
             fail("Expected NullPointerException not thrown");
         } catch (NullPointerException e) {
             assertEquals("Parameter 'userId' must not be null", e.getMessage());
@@ -85,7 +85,7 @@ public class SecHubAccessTest {
     @Test
     public void initSecHubClient_with_null_api_token_throws_null_pointer_exception() {
         try {
-            new SecHubAccess("http://localhost", "user", null, true);
+            new SecHubAccessClient("http://localhost", "user", null, true);
             fail("Expected NullPointerException not thrown");
         } catch (NullPointerException e) {
             assertEquals("Parameter 'apiToken' must not be null", e.getMessage());
@@ -95,7 +95,7 @@ public class SecHubAccessTest {
     @Test
     public void initSecHubClient_with_invalid_server_url_throws_illegal_state_exception() {
         try {
-            new SecHubAccess("invalid-url", "user", "token", true);
+            new SecHubAccessClient("invalid-url", "user", "token", true);
             fail("Expected IllegalStateException not thrown");
         } catch (IllegalStateException e) {
             assertTrue(e.getMessage().contains("Invalid parameter 'secHubServerUrl': invalid-url"));
@@ -105,19 +105,19 @@ public class SecHubAccessTest {
     @Test
     public void isSecHubServerAlive_returns_true_when_server_responds_200() {
         /* execute + test */
-        assertTrue(secHubAccessToTest.isSecHubServerAlive());
+        assertTrue(clientToTest.isSecHubServerAlive());
     }
 
     @Test
     public void isSecHubServerAlive_returns_false_on_exception() {
         /* execute + test */
-        assertFalse(failingSecHubAccess.isSecHubServerAlive());
+        assertFalse(failingClient.isSecHubServerAlive());
     }
 
     @Test
     public void getSecHubProjects_returns_project_data() {
         /* execute */
-        List<ProjectData> projects = secHubAccessToTest.getSecHubProjects();
+        List<ProjectData> projects = clientToTest.getSecHubProjects();
 
         /* test */
         assertNotNull(projects);
@@ -132,7 +132,7 @@ public class SecHubAccessTest {
     @Test
     public void getSecHubProjects_throws_runtime_exception_on_exception() {
         try {
-            failingSecHubAccess.getSecHubProjects();
+            failingClient.getSecHubProjects();
             fail("Expected RuntimeException not thrown");
         } catch (RuntimeException e) {
             assertTrue(e.getMessage().contains("Failed to retrieve SecHub reports"));
@@ -152,7 +152,7 @@ public class SecHubAccessTest {
     @Test
     public void getSecHubJobPage_throws_illegal_argument_exception_on_null_project_id() {
         try {
-            secHubAccessToTest.getSecHubJobPage(null, 10, 0);
+            clientToTest.getSecHubJobPage(null, 10, 0);
             fail("Expected IllegalArgumentException not thrown");
         } catch (NullPointerException e) {
             assertEquals("Parameter 'projectId' must not be null", e.getMessage());
@@ -162,7 +162,7 @@ public class SecHubAccessTest {
     @Test
     public void getSecHubJobPage_throws_runtime_exception_on_exception() {
         try {
-            failingSecHubAccess.getSecHubJobPage("example-project", 10, 0);
+            failingClient.getSecHubJobPage("example-project", 10, 0);
             fail("Expected RuntimeException not thrown");
         } catch (RuntimeException e) {
             assertTrue(e.getMessage().contains("Failed to retrieve SecHub jobs for project: example-project"));
@@ -181,7 +181,7 @@ public class SecHubAccessTest {
     @Test
     public void getSecHubReport_throws_null_pointer_exception_on_null_project_id() {
         try {
-            secHubAccessToTest.getSecHubReport(null, null);
+            clientToTest.getSecHubReport(null, null);
             fail("Expected NullPointerException not thrown");
         } catch (NullPointerException e) {
             assertEquals("Parameter 'projectId' must not be null", e.getMessage());
@@ -191,7 +191,7 @@ public class SecHubAccessTest {
     @Test
     public void getSecHubReport_throws_null_pointer_exception_on_null_job_uuid() {
         try {
-            secHubAccessToTest.getSecHubReport("example-project", null);
+            clientToTest.getSecHubReport("example-project", null);
             fail("Expected NullPointerException not thrown");
         } catch (NullPointerException e) {
             assertEquals("Parameter 'jobUUID' must not be null", e.getMessage());

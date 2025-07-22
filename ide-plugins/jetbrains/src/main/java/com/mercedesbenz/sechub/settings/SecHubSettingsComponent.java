@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.settings;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.swing.*;
 
 import com.intellij.ui.components.JBCheckBox;
 import org.jetbrains.annotations.NotNull;
 
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPasswordField;
 import com.intellij.ui.components.JBTextField;

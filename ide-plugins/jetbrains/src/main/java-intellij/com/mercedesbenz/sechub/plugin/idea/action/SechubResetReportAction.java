@@ -25,7 +25,7 @@ public class SechubResetReportAction extends AnAction {
         Presentation presentation = event.getPresentation();
 
         presentation.setIcon(AllIcons.General.Reset);
-        presentation.setText("Reset report data and presentation");
+        presentation.setText("Reset Report Data");
     }
 
     @Override

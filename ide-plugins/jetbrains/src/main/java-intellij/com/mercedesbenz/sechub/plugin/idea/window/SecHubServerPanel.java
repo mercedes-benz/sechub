@@ -16,10 +16,13 @@ import java.util.UUID;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.Splitter;
 import com.intellij.ui.JBColor;
@@ -33,13 +36,13 @@ import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUser;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.plugin.idea.SecHubReportRequestListener;
 import com.mercedesbenz.sechub.plugin.idea.SecHubSettingsDialogListener;
+import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccess;
 import org.jetbrains.annotations.NotNull;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
-import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccess;
 import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccessFactory;
 import com.mercedesbenz.sechub.settings.SechubSettings;
 
@@ -49,6 +52,7 @@ public class SecHubServerPanel implements SecHubPanel {
 
     private static final Logger LOG = Logger.getInstance(SecHubServerPanel.class);
     private static final String SERVER_URL_NOT_CONFIGURED = "Server URL not configured";
+    private static final Application application = ApplicationManager.getApplication();
     private static SecHubServerPanel INSTANCE;
     private static final int JOB_PAGE_SIZE = 10;
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -98,12 +102,12 @@ public class SecHubServerPanel implements SecHubPanel {
         });
     }
 
-    private boolean checkServerConnection() {
-        boolean isServerAlive = secHubAccess().isSecHubServerAlive();
-        observableServerConnection.setValue(isServerAlive);
-        return isServerAlive;
+    private void checkServerConnection() {
+        application.executeOnPooledThread(() -> {
+            boolean isServerAlive = secHubAccess().isSecHubServerAlive();
+            observableServerConnection.setValue(isServerAlive);
+        });
     }
-
 
     private void createComponents() {
         contentPanel = new JBPanel<>();
@@ -175,7 +179,7 @@ public class SecHubServerPanel implements SecHubPanel {
         toolbar.setTargetComponent(null);
         toolbar.setMinimumButtonSize(new Dimension(25, 25));
 
-        JPanel actionBar = new JPanel(new BorderLayout());
+        JPanel actionBar = new JBPanel(new BorderLayout());
         actionBar.add(toolbar.getComponent(), BorderLayout.WEST);
         actionBar.setOpaque(false);
         actionBar.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
@@ -188,7 +192,7 @@ public class SecHubServerPanel implements SecHubPanel {
 
     @NotNull
     private JPanel createServerConfigurationPanel() {
-        JPanel content = new JPanel(new GridBagLayout());
+        JPanel content = new JBPanel(new GridBagLayout());
 
         JLabel serverUrlLabel = new JBLabel(observableSettingsState.getServerURL());
         serverUrlLabel.setText(observableSettingsState.getServerURL());
@@ -199,7 +203,7 @@ public class SecHubServerPanel implements SecHubPanel {
             serverUrlLabel.setText(newServerUrl);
         });
 
-        JPanel serverActionPanel = new JPanel();
+        JPanel serverActionPanel = new JBPanel();
         serverActionPanel.setLayout(new BorderLayout());
 
         JLabel checkServerConnectionLabel = new JLabel();
@@ -266,7 +270,7 @@ public class SecHubServerPanel implements SecHubPanel {
 
     @NotNull
     private JPanel createProjectsPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        JPanel panel = new JBPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
         JLabel noProjectsLabel = new JBLabel("You are not assigned to any SecHub projects.", AllIcons.General.Warning, SwingConstants.LEFT);
         panel.add(noProjectsLabel);
@@ -282,7 +286,7 @@ public class SecHubServerPanel implements SecHubPanel {
         refreshButton.setPreferredSize(new Dimension(30, 30));
         refreshButton.setToolTipText("Refresh Projects & Jobs");
         refreshButton.addActionListener(e -> {
-            if (checkServerConnection()) {
+            if (observableServerConnection.getValue()) {
                 loadProjects();
                 loadJobs();
             }
@@ -298,7 +302,9 @@ public class SecHubServerPanel implements SecHubPanel {
         /* reload the dropdown when projects are loaded */
         observableProjects.addPropertyChangeListener(event -> {
             List<ProjectData> projects = (List<ProjectData>) event.getNewValue();
-            createProjectsDropdown(projects, comboBox, comboBoxLabel, noProjectsLabel, panel);
+            application.invokeLater(() -> {
+                createProjectsDropdown(projects, comboBox, comboBoxLabel, noProjectsLabel, panel);
+            });
         });
 
         /* listen to changes in server connection status to update projects & jobs components */
@@ -315,7 +321,7 @@ public class SecHubServerPanel implements SecHubPanel {
             }
         });
 
-        boolean isServerAlive = checkServerConnection();
+        boolean isServerAlive = observableServerConnection.getValue();
         if (isServerAlive) {
             loadProjects();
         }
@@ -324,8 +330,10 @@ public class SecHubServerPanel implements SecHubPanel {
     }
 
     private void loadProjects() {
-        List<ProjectData> secHubProjects = secHubAccess().getSecHubProjects();
-        observableProjects.setValue(secHubProjects);
+        application.executeOnPooledThread(() -> {
+            List<ProjectData> secHubProjects = secHubAccess().getSecHubProjects();
+            observableProjects.setValue(secHubProjects);
+        });
     }
 
     /* @formatter:off */
@@ -360,23 +368,15 @@ public class SecHubServerPanel implements SecHubPanel {
             comboBox.setSelectedItem(currentProjectId);
         }
 
-        if (projects.isEmpty()) {
-            /* no projects found, hide the combo box and show the no projects label */
-            LOG.debug("No SecHub projects found");
-            comboBoxLabel.setVisible(false);
-            comboBox.setVisible(false);
-            noProjectsLabel.setVisible(true);
-        } else {
-            /* projects found, show the combo box and hide the no projects label */
-            comboBoxLabel.setVisible(true);
-            comboBox.setVisible(true);
-            panel.remove(noProjectsLabel);
-            noProjectsLabel.setVisible(false);
-        }
+        boolean projectsFound = !projects.isEmpty();
+        LOG.debug("SecHub projects found:{}", projectsFound);
+        comboBoxLabel.setVisible(projectsFound);
+        comboBox.setVisible(projectsFound);
+        noProjectsLabel.setVisible(!projectsFound);
     }
 
     private JPanel createJobsPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
+        JPanel panel = new JBPanel(new BorderLayout());
 
         String[] columnNames = {"Created", "", "UUID", "State", "Result", "Executed By"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0) {
@@ -387,18 +387,26 @@ public class SecHubServerPanel implements SecHubPanel {
             }
         };
         JBTable table = new JBTable(model);
-        /* @formatter:off */
-        table.getColumnModel().getColumn(0).setPreferredWidth(140); /* created */
-        table.getColumnModel().getColumn(0).setMaxWidth(140);       /* created */
-        table.getColumnModel().getColumn(1).setWidth(30);           /* traffic light */
-        table.getColumnModel().getColumn(1).setMaxWidth(30);        /* traffic light */
-        table.getColumnModel().getColumn(2).setPreferredWidth(120); /* job uuid */
-        table.getColumnModel().getColumn(3).setPreferredWidth(60);  /* state */
-        table.getColumnModel().getColumn(4).setPreferredWidth(60);  /* result */
-        table.getColumnModel().getColumn(5).setPreferredWidth(120); /* executed by */
-        /* @formatter:on */
+        TableColumn createdColumn = table.getColumnModel().getColumn(0);
+        createdColumn.setPreferredWidth(140);
+        createdColumn.setMaxWidth(140);
 
-        table.getColumnModel().getColumn(1).setCellRenderer(new SecHubServerPanel.TrafficLightRenderer());
+        TableColumn trafficLightColumn = table.getColumnModel().getColumn(1);
+        trafficLightColumn.setWidth(30);
+        trafficLightColumn.setMaxWidth(30);
+        trafficLightColumn.setCellRenderer(new SecHubServerPanel.TrafficLightRenderer());
+
+        TableColumn jobUUIDColumn = table.getColumnModel().getColumn(2);
+        jobUUIDColumn.setPreferredWidth(120);
+
+        TableColumn stateColumn = table.getColumnModel().getColumn(3);
+        stateColumn.setPreferredWidth(60);
+
+        TableColumn resultColumn = table.getColumnModel().getColumn(4);
+        resultColumn.setPreferredWidth(60);
+
+        TableColumn executedByColumn = table.getColumnModel().getColumn(5);
+        executedByColumn.setPreferredWidth(120);
 
         /* add double click handler for report loading */
         table.addMouseListener(new MouseAdapter() {
@@ -410,7 +418,7 @@ public class SecHubServerPanel implements SecHubPanel {
                     if (row >= 0) {
                         String currentProjectId = observableCurrentProjectId.getValue();
                         /* Job UUID is in the third column (index 2) */
-                        UUID jobUUID = (UUID) table.getValueAt(row, 2);
+                        UUID jobUUID = (UUID) table.getValueAt(row, jobUUIDColumn.getModelIndex());
                         if (currentProjectId != null && jobUUID != null) {
                             secHubReportRequestListener.onReportRequested(currentProjectId, jobUUID);
                         }
@@ -440,7 +448,9 @@ public class SecHubServerPanel implements SecHubPanel {
         observableJobPage.addPropertyChangeListener(event -> {
             SecHubJobInfoForUserListPage page = (SecHubJobInfoForUserListPage) event.getNewValue();
             if (page != null && page.getContent() != null) {
-                loadJobsTable(model, page.getContent());
+                application.invokeLater(() -> {
+                    loadJobsTable(model, page.getContent());
+                });
             }
         });
 
@@ -484,7 +494,7 @@ public class SecHubServerPanel implements SecHubPanel {
             }
         });
 
-        JPanel paginationPanel = new JPanel();
+        JPanel paginationPanel = new JBPanel();
         paginationPanel.add(prevButton);
         paginationPanel.add(pageLabel);
         paginationPanel.add(nextButton);
@@ -526,8 +536,10 @@ public class SecHubServerPanel implements SecHubPanel {
         String projectId = observableCurrentProjectId.getValue();
         if (projectId != null) {
             int pageIndex = observableJobPage.getPage();
-            SecHubJobInfoForUserListPage page = secHubAccess().getSecHubJobPage(projectId, JOB_PAGE_SIZE, pageIndex);
-            observableJobPage.setValue(page);
+            application.executeOnPooledThread(() -> {
+                SecHubJobInfoForUserListPage page = secHubAccess().getSecHubJobPage(projectId, JOB_PAGE_SIZE, pageIndex);
+                observableJobPage.setValue(page);
+            });
         }
     }
 
@@ -567,8 +579,9 @@ public class SecHubServerPanel implements SecHubPanel {
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(SechubSettings.State newValue) {
+            SechubSettings.State oldValue = createDefensiveCopy(state);
             state = newValue;
-            propertyChangeSupport.firePropertyChange(SETTINGS_STATE_PROPERTY, null, newValue);
+            propertyChangeSupport.firePropertyChange(SETTINGS_STATE_PROPERTY, oldValue, newValue);
         }
 
         public SechubSettings.State getValue() {
@@ -614,23 +627,40 @@ public class SecHubServerPanel implements SecHubPanel {
             return state.sslTrustAll;
         }
 
+        private SechubSettings.State createDefensiveCopy(SechubSettings.State original) {
+            if (original == null) {
+                return null;
+            }
+            SechubSettings.State copy = new SechubSettings.State();
+            copy.serverURL = original.serverURL;
+            copy.useCustomWebUiUrl = original.useCustomWebUiUrl;
+            copy.webUiURL = original.webUiURL;
+            copy.sslTrustAll = original.sslTrustAll;
+            return copy;
+        }
     }
 
     private static class ObservableServerConnection {
 
         private static final String IS_SERVER_ALIVE = "isServerAlive";
 
+        private final Object serverConnectionLock = new Object();
         private boolean isServerAlive;
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(boolean value) {
-            isServerAlive = value;
-            /* passing null for old value will force event to be triggered always */
-            propertyChangeSupport.firePropertyChange(IS_SERVER_ALIVE, null, value);
+            synchronized (serverConnectionLock) {
+                boolean oldValue = isServerAlive;
+                isServerAlive = value;
+                /* passing null for old value will force event to be triggered always */
+                propertyChangeSupport.firePropertyChange(IS_SERVER_ALIVE, oldValue, value);
+            }
         }
 
         public boolean getValue() {
-            return isServerAlive;
+            synchronized (serverConnectionLock) {
+                return isServerAlive;
+            }
         }
 
         public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -647,15 +677,21 @@ public class SecHubServerPanel implements SecHubPanel {
         private static final String SECHUB_PLUGIN_STATE_CURRENT_PROJECT_ID = "sechub.currentProjectId";
         private static final String CURRENT_PROJECT_ID_PROPERTY_NAME = "currentProjectId";
 
+        private final Object currentProjectIdLock = new Object();
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(String newValue) {
-            PropertiesComponent.getInstance().setValue(SECHUB_PLUGIN_STATE_CURRENT_PROJECT_ID, newValue);
-            propertyChangeSupport.firePropertyChange(CURRENT_PROJECT_ID_PROPERTY_NAME, null, newValue);
+            synchronized (currentProjectIdLock) {
+                String oldValue = getValue();
+                PropertiesComponent.getInstance().setValue(SECHUB_PLUGIN_STATE_CURRENT_PROJECT_ID, newValue);
+                propertyChangeSupport.firePropertyChange(CURRENT_PROJECT_ID_PROPERTY_NAME, oldValue, newValue);
+            }
         }
 
         public String getValue() {
-            return PropertiesComponent.getInstance().getValue(SECHUB_PLUGIN_STATE_CURRENT_PROJECT_ID);
+            synchronized (currentProjectIdLock) {
+                return PropertiesComponent.getInstance().getValue(SECHUB_PLUGIN_STATE_CURRENT_PROJECT_ID);
+            }
         }
 
         public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -666,36 +702,55 @@ public class SecHubServerPanel implements SecHubPanel {
     private static class ObservableProjects {
 
         private static final String PROJECTS_PROPERTY_NAME = "projects";
+        private final Object projectsLock = new Object();
         private List<ProjectData> projects;
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(List<ProjectData> newValue) {
-            projects = newValue;
-            propertyChangeSupport.firePropertyChange(PROJECTS_PROPERTY_NAME, null, newValue);
+            synchronized (projectsLock) {
+                List<ProjectData> oldValue = createDefensiveCopy(projects);
+                projects = newValue;
+                propertyChangeSupport.firePropertyChange(PROJECTS_PROPERTY_NAME, oldValue, newValue);
+            }
         }
 
         public List<ProjectData> getValue() {
-            return projects;
+            synchronized (projectsLock) {
+                return projects;
+            }
         }
 
         public void addPropertyChangeListener(PropertyChangeListener listener) {
             propertyChangeSupport.addPropertyChangeListener(listener);
         }
+
+        private List<ProjectData> createDefensiveCopy(List<ProjectData> original) {
+            if (original == null) {
+                return null;
+            }
+            return List.copyOf(original);
+        }
     }
 
     private static class ObservableJobPage {
         private static final String JOB_PAGE_PROPERTY_NAME = "jobPage";
+        private final Object pageLock = new Object();
         private SecHubJobInfoForUserListPage page;
         private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
         public void setValue(SecHubJobInfoForUserListPage newValue) {
-            page = newValue;
-            propertyChangeSupport.firePropertyChange(JOB_PAGE_PROPERTY_NAME, null, newValue);
+            synchronized (pageLock) {
+                SecHubJobInfoForUserListPage oldValue = createDefensiveCopy(page);
+                page = newValue;
+                propertyChangeSupport.firePropertyChange(JOB_PAGE_PROPERTY_NAME, oldValue, newValue);
+            }
         }
 
         @NotNull
         public SecHubJobInfoForUserListPage getValue() {
-            return page;
+            synchronized (pageLock) {
+                return page;
+            }
         }
 
         public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -753,6 +808,21 @@ public class SecHubServerPanel implements SecHubPanel {
                 page.setProjectId(null);
                 page.setContent(List.of());
             }
+        }
+
+        private SecHubJobInfoForUserListPage createDefensiveCopy(SecHubJobInfoForUserListPage original) {
+            if (original == null) {
+                return null;
+            }
+            SecHubJobInfoForUserListPage copy = new SecHubJobInfoForUserListPage();
+            copy.setPage(original.getPage());
+            copy.setTotalPages(original.getTotalPages());
+            copy.setProjectId(original.getProjectId());
+            List<SecHubJobInfoForUser> content = original.getContent();
+            if (content != null) {
+                copy.setContent(List.copyOf(content));
+            }
+            return copy;
         }
     }
 
