@@ -63,7 +63,7 @@ or without credentials:
     #           types you have to create a SecHub configuration file and provide it by the config-path
     #           attribute (ignored in the case of a custom configuration file)
     # DEFAULT: codeScan
-    scan-types: codeScan, secretScan
+    scan-types: codeScan,secretScan
 
     # OPTIONAL: A definition of the content type which shall be used for SecHub configuration file generation.
     #           Allowed values: source,binaries. Cannot be combined.
