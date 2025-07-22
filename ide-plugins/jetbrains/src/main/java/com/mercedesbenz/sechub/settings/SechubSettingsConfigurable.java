@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.settings;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 import javax.swing.*;
 
+import com.intellij.openapi.options.ConfigurationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,7 +68,7 @@ final class SechubSettingsConfigurable implements Configurable {
     }
 
     @Override
-    public void apply() {
+    public void apply() throws ConfigurationException {
         SechubSettings.State state = Objects.requireNonNull(SechubSettings.getInstance().getState());
 
         String serverUrl = sechubSettingsComponent.getSecHubServerUrlText();
@@ -79,10 +82,29 @@ final class SechubSettingsConfigurable implements Configurable {
         }
         state.serverURL = serverUrl;
 
-        Credentials credentials = new Credentials(sechubSettingsComponent.getUserNameText(), sechubSettingsComponent.getApiTokenPassword());
+        if (!isUriValid(state.serverURL)) {
+            throw new ConfigurationException("SecHub server URL must be a valid URI");
+        }
+
+        String username = sechubSettingsComponent.getUserNameText();
+        String apiTokenPassword = sechubSettingsComponent.getApiTokenPassword();
+
+        if (username.isBlank()) {
+            throw new ConfigurationException("Username must not be empty");
+        }
+
+        if (apiTokenPassword.isBlank()) {
+            throw new ConfigurationException("API token must not be empty");
+        }
+
+        Credentials credentials = new Credentials(username, apiTokenPassword);
         sechubSettingsCredentialsSupport.storeCredentials(credentials);
 
         state.useCustomWebUiUrl = sechubSettingsComponent.useCustomWebUiUrl();
+
+        if (state.useCustomWebUiUrl && !isUriValid(sechubSettingsComponent.getWebUiUrlText())) {
+            throw new ConfigurationException("Web UI URL must be a valid URI");
+        }
 
         state.webUiURL = sechubSettingsComponent.getWebUiUrlText();
 
@@ -131,5 +153,23 @@ final class SechubSettingsConfigurable implements Configurable {
     private static void updateComponents(SechubSettings.State state) {
         SecHubServerPanel secHubServerPanel = SecHubServerPanel.getInstance();
         secHubServerPanel.updateSettingsState(state);
+    }
+
+    private static boolean isUriValid(String uri) {
+        if (uri == null || uri.isBlank()) {
+            return false;
+        }
+        try {
+            URI parsed = new URI(uri);
+            if (parsed.getScheme() == null || parsed.getScheme().isBlank()) {
+                return false;
+            }
+            if (parsed.getHost() == null || parsed.getHost().isBlank()) {
+                return false;
+            }
+            return true;
+        } catch (URISyntaxException e) {
+            return false;
+        }
     }
 }

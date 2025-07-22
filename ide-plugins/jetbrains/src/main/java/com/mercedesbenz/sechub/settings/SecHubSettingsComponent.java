@@ -74,7 +74,6 @@ public class SecHubSettingsComponent {
 
     @NotNull
     public String getSecHubServerUrlText() {
-        handleUrlTextFieldComponentValidation(secHubServerUrlText);
         return secHubServerUrlText.getText();
     }
 
@@ -106,7 +105,6 @@ public class SecHubSettingsComponent {
             /* This will route the user to the WebUI through the login page of the SecHub server */
             return secHubServerUrlText.getText() + "/login";
         }
-        handleUrlTextFieldComponentValidation(webUiUrlText);
         return webUiUrlText.getText();
     }
 
@@ -120,27 +118,5 @@ public class SecHubSettingsComponent {
 
     public void setSslTrustAll(boolean sslTrustAll) {
         this.sslTrustAll.setSelected(sslTrustAll);
-    }
-
-    private void handleUrlTextFieldComponentValidation(JBTextField textField) {
-        String text = textField.getText();
-        boolean uriValid = isUriValid(text);
-        textField.setBackground(JBColor.background());
-        if (!uriValid) {
-            textField.setBackground(JBColor.RED);
-        }
-    }
-
-    private boolean isUriValid(String uri) {
-        if (uri.isBlank()) {
-            return true;
-        }
-        try {
-            new URI(uri);
-        } catch (URISyntaxException e) {
-            return false;
-        }
-
-        return true;
     }
 }
