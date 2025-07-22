@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea.sechubaccess;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 import com.intellij.credentialStore.Credentials;
@@ -25,6 +27,28 @@ public class SecHubAccessFactory {
             settingsDialogListener.onShowSettingsDialog();
         }
 
+        if (!isUriValid(state.serverURL)) {
+            settingsDialogListener.onShowSettingsDialog();
+        }
+
         return new SecHubAccess(state.serverURL, credentials.getUserName(), credentials.getPasswordAsString(), state.sslTrustAll);
+    }
+
+    private static boolean isUriValid(String uri) {
+        if (uri == null || uri.isBlank()) {
+            return false;
+        }
+        try {
+            URI parsed = new URI(uri);
+            if (parsed.getScheme() == null || parsed.getScheme().isBlank()) {
+                return false;
+            }
+            if (parsed.getHost() == null || parsed.getHost().isBlank()) {
+                return false;
+            }
+            return true;
+        } catch (URISyntaxException e) {
+            return false;
+        }
     }
 }

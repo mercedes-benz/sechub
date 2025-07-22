@@ -80,11 +80,12 @@ final class SechubSettingsConfigurable implements Configurable {
             /* using URL instead of URI won't solve the problem */
             serverUrl = "https://" + serverUrl;
         }
-        state.serverURL = serverUrl;
 
-        if (!isUriValid(state.serverURL)) {
+        if (!isUriValid(serverUrl)) {
             throw new ConfigurationException("SecHub server URL must be a valid URI");
         }
+
+        state.serverURL = serverUrl;
 
         String username = sechubSettingsComponent.getUserNameText();
         String apiTokenPassword = sechubSettingsComponent.getApiTokenPassword();
