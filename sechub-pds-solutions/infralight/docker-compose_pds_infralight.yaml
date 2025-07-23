@@ -1,16 +1,14 @@
 # SPDX-License-Identifier: MIT
 
-version: "3"
 services:
-  pds-owaspzap:
+  pds-infralight:
     build:
       args:
         - BASE_IMAGE=${BASE_IMAGE}
         - INFRALIGHT_WRAPPER_VERSION=${INFRALIGHT_WRAPPER_VERSION}
-        - INFRALIGHT_VERSION=${INFRALIGHT_VERSION}
       context: docker/
-      dockerfile: Owasp-Zap-Debian.dockerfile
-    container_name: pds-owaspzap
+      dockerfile: Infralight-Debian.dockerfile
+    container_name: pds-infralight
     env_file:
       - .env
     ports:
