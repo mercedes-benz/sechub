@@ -7,11 +7,10 @@
  */
 dependencies {
     /* runtime */
-    implementation project(':sechub-commons-archive')
+//    implementation project(':sechub-commons-archive')
     implementation project(':sechub-commons-model')
-    implementation project(':sechub-commons-core')
+//    implementation project(':sechub-commons-core')
     implementation project(':sechub-commons-pds')
-    implementation library.sarif_210
 
     /* test */
     testImplementation project(':sechub-testframework')

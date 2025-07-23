@@ -13,9 +13,8 @@ import org.springframework.stereotype.Component;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
+import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanResult;
 import com.mercedesbenz.sechub.wrapper.infralight.product.InfralighProductImportService;
-
-import de.jcup.sarif_2_1_0.model.SarifSchema210;
 
 @Component
 public class InfralightWrapperCLI implements CommandLineRunner {
@@ -47,10 +46,10 @@ public class InfralightWrapperCLI implements CommandLineRunner {
 
         /* import product results from script output folder - result is already in SARIF */
         Path productsOutputFolder = Paths.get(productsOutputFolderAsString);
-        SarifSchema210 sarifResult = scanService.importProductResultsAsSarif(productsOutputFolder);
+        GenericInfrascanResult result = scanService.importGenericInfrascanResult(productsOutputFolder);
         
-        /* export SARIF as result file */
-        String sarifAsJson = JSONConverter.get().toJSON(sarifResult);
+        /* export as JSON result file */
+        String sarifAsJson = JSONConverter.get().toJSON(result);
         textFileWriter.writeTextToFile(new File(pdsResultFilePath), sarifAsJson, true);
 
     }

@@ -10,7 +10,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.jcup.sarif_2_1_0.model.SarifSchema210;
+import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanFinding;
+import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanProductData;
+import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanResult;
 
 @Service
 public class InfralighProductImportService {
@@ -26,18 +28,20 @@ public class InfralighProductImportService {
     @Autowired
     InfralightProductImportStringDataProvider dataProvider;
 
-    public SarifSchema210 importProductResultsAsSarif(Path productsOutputFolder) throws IOException {
+    public GenericInfrascanResult importGenericInfrascanResult(Path productsOutputFolder) throws IOException {
         LOG.info("Import from product output folder: {}", productsOutputFolder);
-        SarifSchema210 schema = new SarifSchema210();
+        GenericInfrascanResult result = new GenericInfrascanResult();
 
         for (InfralightProductImporter importer : productImporters) {
 
             String data = dataProvider.getStringDataForImporter(importer, productsOutputFolder);
             if (data == null) {
+                /* means no data found - skip import here */
+                LOG.debug("Skip import for '{}' because no data available", importer.getProductName());
                 continue;
             }
 
-            List<InfralightProductImportData> importData = importer.startImport(data);
+            List<GenericInfrascanFinding> importData = importer.startImport(data);
 
             for (InfralightProductImportFilter filter : productImportFilters) {
                 if (filter.canFilter(importer)) {
@@ -45,15 +49,16 @@ public class InfralighProductImportService {
                 }
             }
 
-            importIntoSarifSchema(importData, schema);
+            GenericInfrascanProductData productData = new GenericInfrascanProductData();
+            productData.setProduct(importer.getProductName());
+            productData.getFindings().addAll(importData);
+            
+            result.getProducts().add(productData);
+            
         }
 
-        return schema;
+        return result;
     }
 
-    private void importIntoSarifSchema(List<InfralightProductImportData> importData, SarifSchema210 schema) {
-        // FIXME de-jcup : implement
-
-    }
 
 }

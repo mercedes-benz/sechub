@@ -43,8 +43,8 @@ node InfralightPDS as "Infralight PDS" {
 		class InfralightProductImportFilter {
 		}
 		
-		InfralightProductImporter -> InfralightProductImportData : imports 
-		InfralightProductImportFilter ..> InfralightProductImportData : filters
+		InfralightProductImporter -> GenericInfrascanFinding : imports 
+		InfralightProductImportFilter ..> GenericInfrascanFinding : filters
 		
 		InfralighProductImportService --> InfralightProductImportStringDataProvider : reads stringdata (1)
 		InfralighProductImportService --> InfralightProductImporter : uses (2)

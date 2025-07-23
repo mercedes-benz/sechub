@@ -1,6 +1,7 @@
 package com.mercedesbenz.sechub.wrapper.infralight.cli;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -10,10 +11,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.mercedesbenz.sechub.commons.TextFileWriter;
+import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanFinding;
+import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanProductData;
+import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanResult;
 import com.mercedesbenz.sechub.wrapper.infralight.product.InfralighProductImportService;
-
-import de.jcup.sarif_2_1_0.model.Run;
-import de.jcup.sarif_2_1_0.model.SarifSchema210;
 
 class InfralightWrapperCLITest {
 
@@ -39,11 +40,18 @@ class InfralightWrapperCLITest {
     @Test
     void cli_call_textwriter_at_the_end_and_writes_scan_result_as_json_to_result_file() throws Exception {
         /* prepare */
-        SarifSchema210 schema = new SarifSchema210();
-        Run run1 = new Run();
-        run1.setLanguage("test");
-        schema.getRuns().add(run1);
-        when(scanService.importProductResultsAsSarif(any())).thenReturn(schema);
+        GenericInfrascanResult result = new GenericInfrascanResult();
+        GenericInfrascanProductData productData = new GenericInfrascanProductData();
+        productData.setProduct("test-product");
+        
+        GenericInfrascanFinding testFinding = new GenericInfrascanFinding();
+        testFinding.setCweId(3105);
+        testFinding.setName("Test weakness");
+        testFinding.setDescription("Just for testing");
+
+        productData.getFindings().add(testFinding);
+        result.getProducts().add(productData );
+        when(scanService.importGenericInfrascanResult(any())).thenReturn(result);
 
         when(environment.getInfrascanProductsOutputFolder()).thenReturn("/workspace-folder/output");
         when(environment.getPdsResultFile()).thenReturn("/workspace/result.txt");
@@ -62,7 +70,12 @@ class InfralightWrapperCLITest {
         assertThat(file.getPath()).isEqualTo("/workspace/result.txt");
 
         String content = resultFileCcontentStringCaptor.getValue();
-        assertThat(content).isNotNull().isNotBlank().contains("{\"runs\":[{\"language\":\"test\"}]}"); // test schema data contained
+        
+        String expected ="""
+                {"products":[{"product":"test-product","findings":[{"cweId":3105,"name":"Test weakness","description":"Just for testing"}]}],"type":"generic-infrascan-result"}
+                """.trim();
+        
+        assertThat(content).isNotNull().isNotBlank().contains(expected);
 
     }
 

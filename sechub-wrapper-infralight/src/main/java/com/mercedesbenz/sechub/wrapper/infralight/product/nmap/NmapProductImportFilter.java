@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.mercedesbenz.sechub.wrapper.infralight.product.InfralightProductImportData;
+import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanFinding;
 import com.mercedesbenz.sechub.wrapper.infralight.product.InfralightProductImportFilter;
 import com.mercedesbenz.sechub.wrapper.infralight.product.InfralightProductImporter;
 
@@ -17,7 +17,7 @@ public class NmapProductImportFilter implements InfralightProductImportFilter {
     }
 
     @Override
-    public void filter(List<InfralightProductImportData> importData) {
+    public void filter(List<GenericInfrascanFinding> importData) {
 
     }
 
