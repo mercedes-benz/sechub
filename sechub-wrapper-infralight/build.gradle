@@ -9,7 +9,9 @@ dependencies {
     /* runtime */
     implementation project(':sechub-commons-model')
     implementation project(':sechub-commons-pds')
-
+//	implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${spring_boot_dependency_version.jackson_databind}")
+    implementation library.dom4j
+	
     /* test */
     testImplementation project(':sechub-testframework')
 

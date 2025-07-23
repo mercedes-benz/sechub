@@ -8,18 +8,18 @@ import org.junit.jupiter.api.Test;
 
 import com.mercedesbenz.sechub.wrapper.infralight.product.InfralightProductImporter;
 
-class NmapProductImportFilterTest {
+class NmapPortScanProductImportFilterTest {
 
-    private NmapProductImportFilter importFilterToTest;
+    private NmapPortScanProductImportFilter importFilterToTest;
 
     @BeforeEach
     void beforeEach() {
-        importFilterToTest = new NmapProductImportFilter();
+        importFilterToTest = new NmapPortScanProductImportFilter();
     }
 
     @Test
     void can_filter_NmapProductImporter() {
-        assertThat(importFilterToTest.canFilter(new NmapProductImporter())).isTrue();
+        assertThat(importFilterToTest.canFilter(new NmapPortScanProductImporter())).isTrue();
     }
 
     @Test

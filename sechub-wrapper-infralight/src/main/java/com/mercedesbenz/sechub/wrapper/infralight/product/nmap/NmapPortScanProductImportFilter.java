@@ -9,11 +9,11 @@ import com.mercedesbenz.sechub.wrapper.infralight.product.InfralightProductImpor
 import com.mercedesbenz.sechub.wrapper.infralight.product.InfralightProductImporter;
 
 @Component
-public class NmapProductImportFilter implements InfralightProductImportFilter {
+public class NmapPortScanProductImportFilter implements InfralightProductImportFilter {
 
     @Override
     public boolean canFilter(InfralightProductImporter importer) {
-        return importer instanceof NmapProductImporter;
+        return importer instanceof NmapPortScanProductImporter;
     }
 
     @Override
