@@ -64,6 +64,10 @@
 			{
 				"command": "sechub.selectProject",
 				"title": "SecHub: Select Project"
+			},
+			{
+				"command": "sechub.changeWebUiUrl",
+				"title": "SecHub: Change Web UI URL"
 			}
 		],
 		"viewsContainers": {

@@ -11,7 +11,7 @@ fi
 
 set -e
 
-# check if openapi client is builded
+# check if openapi client is built
 if [ ! -f ../../sechub-openapi-ts-client/dist/gen/index.js ] ; then
   echo "OpenAPI client is not built. Generating OpenAPI client..."
   cd ../../sechub-openapi-ts-client

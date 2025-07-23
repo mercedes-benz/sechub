@@ -64,7 +64,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 					break;
 				case 'changePage':
 					{
-						this.jobListDataTable.changePageDirectory(data.direction);
+						this.jobListDataTable.changePage(data.direction);
 						this.refresh();
 					}
 			}

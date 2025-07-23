@@ -10,6 +10,7 @@ import { importReportFromFile } from './importReportFromFile';
 import { openFinding } from './openFinding';
 import { openCWEinBrowser } from './openCWEinBrowser';
 import { openFindingCallStack } from './openFindingCallStack';
+import { changeWebUiUrl } from './changeWebUiUrl';
 
 export const commands = [
     { command: SECHUB_COMMANDS.changeServerUrl, action: changeServerUrl },
@@ -18,7 +19,8 @@ export const commands = [
     { command: SECHUB_COMMANDS.refreshServerView, action: refreshServerView },
     { command: SECHUB_COMMANDS.fetchReportByUUID, action: fetchReportByUUID },
     { command: SECHUB_COMMANDS.clearSecHubData, action: clearSecHubData },
-    { command: SECHUB_COMMANDS.importReport, action: importReportFromFile }
+    { command: SECHUB_COMMANDS.importReport, action: importReportFromFile },
+    { command: SECHUB_COMMANDS.changeWebUiUrl, action: changeWebUiUrl }
 ];
 
 export const hierachyCommands = [

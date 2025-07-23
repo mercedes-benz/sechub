@@ -9,7 +9,7 @@ export class JobListTable {
 
     private pagination: Pagination = new Pagination(1, 0, 10, '');
 
-    private noJobsRunnedMessage = '<p>No jobs have been started for your project.</p>';
+    private noJobsRanMessage = '<p>No jobs have been started for your project.</p>';
     private failedToFetchJobsMessage = '<p>Failed to retrieve job list. You are either not allowed to view them or facing server connection issues.</p>';
     private noProjectSelectedMessage = '<p>Please select a project first.</p>';
     
@@ -75,13 +75,13 @@ export class JobListTable {
 
                 return `${table}${paginationControls}`;
             } else {
-                return `${title}${this.noJobsRunnedMessage}`;
+                return `${title}${this.noJobsRanMessage}`;
             }
         }
         return `${title}${this.failedToFetchJobsMessage}`;
     }
 
-    changePageDirectory(direction: string) {
+    changePage(direction: string) {
         if (direction === 'next') {
             if (this.pagination.getCurrentPage() < this.pagination.getTotalPages()) {
                 this.pagination.setCurrentPage(this.pagination.getCurrentPage() + 1);

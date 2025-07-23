@@ -184,8 +184,7 @@ export class SecHubContext {
 			vscode.window.showErrorMessage("No scan was executed in loaded report.");
 		}
 
-		const serverUrl = this.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
-		const webUiUrl = serverUrl ? `${serverUrl}/login` : undefined;
+		const webUiUrl = this.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.webUiUrl);
 
 		if (scanTypes.includes(ScanType.WebScan) && scanTypes.length === 1) {
 			const message = "WebScan is not supported in this IDE plugin. Please use the SecHub Web UI to view WebScan results.";

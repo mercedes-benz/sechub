@@ -1,6 +1,9 @@
+import { changeWebUiUrl } from "src/commands/changeWebUiUrl";
+
 // SPDX-License-Identifier: MIT
 export const SECHUB_CREDENTIAL_KEYS = {
     serverUrl: 'sechubServerUrl',
+    webUiUrl: 'sechubWebUiUrl',
     username: 'sechubUsername',
     apiToken: 'sechubApiToken',
 };
@@ -20,6 +23,7 @@ export const SECHUB_COMMANDS = {
     openCWEinBrowser: 'sechub.openCWEinBrowser',
     openFindingCallStack: 'sechub-intern.openFindingCallStack',
     openFinding: 'sechub-intern.openFinding',
+    changeWebUiUrl: 'sechub.changeWebUiUrl',
 };
 
 export const SECHUB_VIEW_IDS = {

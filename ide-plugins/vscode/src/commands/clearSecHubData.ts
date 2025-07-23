@@ -21,6 +21,7 @@ export async function clearSecHubData(sechubContext: SecHubContext): Promise<voi
     try {
         await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, undefined);
         await sechubContext.extensionContext.globalState.update(SECHUB_REPORT_KEYS.selectedProject, undefined);
+        await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.webUiUrl, undefined);
         await sechubContext.extensionContext.secrets.delete(SECHUB_CREDENTIAL_KEYS.username);
         await sechubContext.extensionContext.secrets.delete(SECHUB_CREDENTIAL_KEYS.apiToken);
         // Recreate the API client to ensure it reflects the cleared state

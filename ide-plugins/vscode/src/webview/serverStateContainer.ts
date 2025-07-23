@@ -37,7 +37,6 @@ export class ServerStateContainer {
                 <p id="connectionState">${serverState}</span></p>
             </div>
         </div>`;
-        // todo: should also return the server state, so that it can be used in the Server webview
 
         return {
             html: serverStateContainer,

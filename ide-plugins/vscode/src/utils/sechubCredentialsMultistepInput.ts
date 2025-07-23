@@ -11,6 +11,7 @@ export async function multiStepInput(context: ExtensionContext) {
         serverUrl: string;
         username: string;
         apiToken: string;
+        webUiUrl?: string;
     }
 
     async function collectInputs() {
@@ -46,7 +47,8 @@ export async function multiStepInput(context: ExtensionContext) {
     }
 
     const state = await collectInputs();
-    context.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, state.serverUrl);
+    await context.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, state.serverUrl);
+    await context.globalState.update(SECHUB_CREDENTIAL_KEYS.webUiUrl, `${state.serverUrl}/login`);
     await context.secrets.store(SECHUB_CREDENTIAL_KEYS.username, state.username);
     await context.secrets.store(SECHUB_CREDENTIAL_KEYS.apiToken, state.apiToken);
 
