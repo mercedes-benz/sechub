@@ -7,9 +7,7 @@
  */
 dependencies {
     /* runtime */
-//    implementation project(':sechub-commons-archive')
     implementation project(':sechub-commons-model')
-//    implementation project(':sechub-commons-core')
     implementation project(':sechub-commons-pds')
 
     /* test */
