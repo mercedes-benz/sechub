@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as sechubExtension from './../extension';
-import { FindingNodeReportItem, ReportItem } from './../provider/secHubReportTreeDataProvider';
+import { ReportFindingItem, ReportItem } from './../provider/secHubReportTreeDataProvider';
 import { SECHUB_COMMANDS } from '../utils/sechubConstants';
 import { SecHubContext } from './../extension';
 
 export async function openFindingCallStack(sechubContext: SecHubContext, reportItem: ReportItem): Promise<void> {
     /* shows the hierachy of a finding and selects the first item in it */
 
-    if (reportItem instanceof FindingNodeReportItem) {
+    if (reportItem instanceof ReportFindingItem) {
         sechubContext.callHierarchyTreeDataProvider.update(reportItem.sechubFinding);
 
         /* fetch first child and select first one in hierarchy view (this will show up info as well */

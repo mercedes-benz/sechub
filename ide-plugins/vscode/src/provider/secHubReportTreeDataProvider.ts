@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { SecHubReport, SecHubFinding } from 'sechub-openapi-ts-client';
+import { SecHubReport, SecHubFinding, SecHubMessage, SecHubStatus, SecHubMessageType } from 'sechub-openapi-ts-client';
 import { SECHUB_COMMANDS } from '../utils/sechubConstants';
+import { MetaDataInfoItem } from './secHubInfoTreeDataProvider';
 
 export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<ReportItem> {
 
@@ -27,7 +28,7 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
     }
 
     if (element) {
-      if (element instanceof FindingModelMetaDataReportItem) {
+      if (element instanceof ReportMetadataItem) {
         return Promise.resolve(element.children);
       } else {
         return Promise.resolve([]); // no children at the moment
@@ -64,15 +65,16 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
       return rootItems;
     }
 
-    rootItems.push(new FindingModelMetaDataReportItem("Report UUID:", this.report?.jobUUID, vscode.TreeItemCollapsibleState.None));
-    rootItems.push(new FindingModelMetaDataReportItem("Traffic light:", this.report?.trafficLight, vscode.TreeItemCollapsibleState.None));
+    rootItems.push(new ReportMetadataItem("Report UUID:", this.report?.jobUUID, vscode.TreeItemCollapsibleState.None));
+    rootItems.push(new ReportMetadataItem("Traffic light:", this.report?.trafficLight, vscode.TreeItemCollapsibleState.None));
 
+    this.createMetadataInformationTreeItem(rootItems);
 
-    let findingItems: FindingModelMetaDataReportItem = new FindingModelMetaDataReportItem("Findings:", "" + this.report?.result?.findings.length, vscode.TreeItemCollapsibleState.Expanded);
+    let findingItems: ReportMetadataItem = new ReportMetadataItem("Findings:", "" + this.report?.result?.findings.length, vscode.TreeItemCollapsibleState.Expanded);
     rootItems.push(findingItems);
 
     this.report?.result?.findings.forEach((finding) => {
-      let item: ReportItem = new FindingNodeReportItem(finding);
+      let item: ReportItem = new ReportFindingItem(finding);
       item.contextValue = "reportItem";
       item.command = {
         command: SECHUB_COMMANDS.openFindingCallStack,
@@ -85,12 +87,40 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
 
   }
 
+  private createMetadataInformationTreeItem(rootItems: ReportItem[]){
+    /* adding metainformation if available */
+    const metadataInfoItem = new ReportMetadataItem("Job Information", "", vscode.TreeItemCollapsibleState.Collapsed);
+
+    if(this.report){
+
+      const reportState: SecHubStatus = this.report.status ? this.report.status : "FAILED";
+      metadataInfoItem.children.push(new ReportMetadataItem("Status:", reportState, vscode.TreeItemCollapsibleState.None));
+
+      const executedScans: string[] = this.report.metaData?.executed || [];
+      if(executedScans.length > 0) {
+        metadataInfoItem.children.push(new ReportMetadataItem("Executed Scans:", executedScans.join(", "), vscode.TreeItemCollapsibleState.None));
+      }
+
+      const messageMetadataItem = new ReportMetadataItem("Messages:", "" + (this.report?.messages?.length || 0), vscode.TreeItemCollapsibleState.Collapsed);
+      const reportMessages: SecHubMessage[] = this.report.messages || [];
+      reportMessages.forEach(message => {
+        messageMetadataItem.children.push(new ReportMetadataItem(message.type ? message.type : SecHubMessageType.Info, message.text, vscode.TreeItemCollapsibleState.None));
+      });
+      
+      metadataInfoItem.children.push(messageMetadataItem);
+
+    } else {
+      metadataInfoItem.children.push(new ReportMetadataItem("No Report loaded", "", vscode.TreeItemCollapsibleState.None));
+    }
+  
+    rootItems.push(metadataInfoItem);
+  }
 }
 
 export class ReportItem extends vscode.TreeItem {
 }
 
-export class FindingModelMetaDataReportItem extends ReportItem {
+export class ReportMetadataItem extends ReportItem {
   children: ReportItem[] = [];
 
   constructor(key: string, value: string | undefined, state: vscode.TreeItemCollapsibleState) {
@@ -100,7 +130,7 @@ export class FindingModelMetaDataReportItem extends ReportItem {
 
 }
 
-export class FindingNodeReportItem extends ReportItem {
+export class ReportFindingItem extends ReportItem {
   readonly sechubFinding: SecHubFinding;
 
   constructor(sechubFinding: SecHubFinding
