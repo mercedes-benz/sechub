@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.Severity;
 import com.mercedesbenz.sechub.commons.model.interchange.GenericInfrascanFinding;
 import com.mercedesbenz.sechub.wrapper.infralight.product.InfralightProductImporter;
@@ -100,8 +99,6 @@ public class NmapPortScanProductImporter implements InfralightProductImporter {
             LOG.error("Was not able to import xml file",e);
         }
 
-        String json = JSONConverter.get().toJSON(list,true);
-        System.out.println(json);
         return list;
     }
 

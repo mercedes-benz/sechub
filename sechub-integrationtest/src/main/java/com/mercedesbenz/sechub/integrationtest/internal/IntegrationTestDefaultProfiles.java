@@ -903,7 +903,7 @@ public class IntegrationTestDefaultProfiles {
 
         DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_INFRALIGHT_MOCKED);
-        profile.id = "inttest-p34-pds-infrascan-infralight";
+        profile.id = "inttest-p34-pds-infrascan-il";
         profile.description = "Profile 34: PDS infra scan using pds infralight";
         profile.enabled = true;
         return profile;

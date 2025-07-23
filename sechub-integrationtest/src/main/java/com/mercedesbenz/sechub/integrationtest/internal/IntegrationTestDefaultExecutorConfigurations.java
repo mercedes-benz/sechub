@@ -299,7 +299,7 @@ public class IntegrationTestDefaultExecutorConfigurations {
             PDSIntTestProductIdentifier.PDS_SOLUTION_KICS_MOCKED, PDS_IACSCAN);
     
     public static final TestExecutorConfig PDS_V1_PDS_SOLUTION_INFRALIGHT_MOCKED = definePDSSolutionMockScan(
-            PDSIntTestProductIdentifier.PDS_SOLUTION_INFRALIGHT_MOCKED, PDS_INFRALIGHT);
+            PDSIntTestProductIdentifier.PDS_SOLUTION_INFRALIGHT_MOCKED, PDS_INFRASCAN);
 
     /* @formatter:on */
 

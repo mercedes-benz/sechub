@@ -80,6 +80,7 @@ class ProductIdentifierTest {
               Arguments.of(ProductIdentifier.PDS_CODESCAN   ,ScanType.CODE_SCAN   ),
               Arguments.of(ProductIdentifier.PDS_SECRETSCAN ,ScanType.SECRET_SCAN ),
               Arguments.of(ProductIdentifier.PDS_IACSCAN    ,ScanType.IAC_SCAN    ) ,
+              Arguments.of(ProductIdentifier.PDS_INFRASCAN  ,ScanType.INFRA_SCAN  ) ,
               Arguments.of(ProductIdentifier.PDS_LICENSESCAN,ScanType.LICENSE_SCAN),
 
               Arguments.of(ProductIdentifier.PDS_WEBSCAN    ,ScanType.WEB_SCAN    ),

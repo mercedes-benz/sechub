@@ -6,6 +6,8 @@ hide empty methods
 
 'You can find more examles at https://plantuml.com/class-diagram
 
+node SecHub {
+}
 
 
 node InfralightPDS as "Infralight PDS" {
@@ -52,4 +54,7 @@ node InfralightPDS as "Infralight PDS" {
 	}
 
 }
+
+SecHub ---> InfralightPDS
+ 
 @enduml
