@@ -13,6 +13,9 @@ source ./../sechub-integrationtest/pds/product-scripts/shared-functions.sh
 export PDS_INTEGRATIONTEST_ENABLED=true
 export TOOL_FOLDER=./../sechub-integrationtest/build/pds-tools # gradle bootJar task does inject the
                                                                # wrapper jar here for testing
+                                                               
+export PDS_INFRALIGHT_PRODUCT_FOLDER="./../sechub-pds-solutions/infralight/docker/mocks"
+
 dumpPDSVariables
 # dump additional variables intersting for integration tests:
 

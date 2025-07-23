@@ -29,6 +29,8 @@ public enum TestProductExecutorIdentifier {
     PDS_ANALYTICS,
 
     PDS_PREPARE,
+    
+    PDS_INFRALIGHT,
 
     /* Direct product executors */
     CHECKMARX,

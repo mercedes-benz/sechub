@@ -7,8 +7,6 @@ declare -r wrapper_infralight="$TOOL_FOLDER/sechub-wrapper-infralight.jar"
 if [[ "$PDS_INTEGRATIONTEST_ENABLED" = "true" ]] ; then
   echo "Integrationtest will be performed. Nmap will not be executed."
    
-  export PDS_INFRALIGHT_PRODUCT_FOLDER="../mocks/"
-   
   # Execute the wrapper
   java -jar "$wrapper_infralight"
   

@@ -652,6 +652,8 @@ public class IntegrationTestDefaultProfiles {
      * </ul>
      */
     public static final DefaultTestExecutionProfile PROFILE_33_PDS_SOLUTION_KICS_MOCKED = defineProfile33();
+    
+    public static final DefaultTestExecutionProfile PROFILE_34_PDS_SOLUTION_INFRALIGHT_MOCKED = defineProfile34();
 
     /**
      * @return all default profiles
@@ -893,6 +895,16 @@ public class IntegrationTestDefaultProfiles {
         profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_KICS_MOCKED);
         profile.id = "inttest-p33-pds-iac-kics";
         profile.description = "Profile 33: PDS iac scan using kics";
+        profile.enabled = true;
+        return profile;
+    }
+    
+    private static DefaultTestExecutionProfile defineProfile34() {
+
+        DefaultTestExecutionProfile profile = new DefaultTestExecutionProfile();
+        profile.initialConfigurationsWithoutUUID.add(IntegrationTestDefaultExecutorConfigurations.PDS_V1_PDS_SOLUTION_INFRALIGHT_MOCKED);
+        profile.id = "inttest-p34-pds-infrascan-infralight";
+        profile.description = "Profile 34: PDS infra scan using pds infralight";
         profile.enabled = true;
         return profile;
     }
