@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 import { SECHUB_COMMANDS } from '../utils/sechubConstants';
 

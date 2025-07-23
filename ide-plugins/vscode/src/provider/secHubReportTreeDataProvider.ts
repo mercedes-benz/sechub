@@ -76,11 +76,19 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
     this.report?.result?.findings.forEach((finding) => {
       let item: ReportItem = new ReportFindingItem(finding);
       item.contextValue = "reportItem";
-      item.command = {
-        command: SECHUB_COMMANDS.openFindingCallStack,
-        title: "Select Node",
-        arguments: [item]
-      };
+      if(finding.web){
+        item.command = {
+          command: SECHUB_COMMANDS.openWebScanInInfoview,
+          title: "Select Node",
+          arguments: [item]
+        };
+      } else {
+        item.command = {
+          command: SECHUB_COMMANDS.openFindingCallStack,
+          title: "Select Node",
+          arguments: [item]
+        };
+      }
       findingItems.children.push(item);
     });
     return rootItems;

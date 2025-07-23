@@ -187,13 +187,14 @@ export class SecHubContext {
 		const webUiUrl = this.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.webUiUrl);
 
 		if (scanTypes.includes(ScanType.WebScan) && scanTypes.length === 1) {
-			const message = "WebScan is not supported in this IDE plugin. Please use the SecHub Web UI to view WebScan results.";
+			const message = "WebScan is not fully supported in this IDE plugin. Please use the SecHub Web UI to view WebScan results.";
 			vscode.window.showInformationMessage(message, 'Open SecHub Web UI').then(selection => {
 				if (selection === 'Open SecHub Web UI' && webUiUrl) {
 					vscode.env.openExternal(vscode.Uri.parse(webUiUrl));
 				}
 			});
-			throw new Error("WebScan is not supported in this IDE plugin.");
+		
+		//	throw new Error("WebScan is not supported in this IDE plugin.");
 		}
 	}
 }

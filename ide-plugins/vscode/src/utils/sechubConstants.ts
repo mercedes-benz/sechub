@@ -21,9 +21,11 @@ export const SECHUB_COMMANDS = {
     clearSecHubData: 'sechub.clearSecHubData',
     importReport: 'sechub.importReportFile',
     openCWEinBrowser: 'sechub.openCWEinBrowser',
+    changeWebUiUrl: 'sechub.changeWebUiUrl',
+    // internal commands which can not be used by users directly, but are used in the extension
     openFindingCallStack: 'sechub-intern.openFindingCallStack',
     openFinding: 'sechub-intern.openFinding',
-    changeWebUiUrl: 'sechub.changeWebUiUrl',
+    openWebScanInInfoview: 'sechub-intern.openWebScanInInfoview',
 };
 
 export const SECHUB_VIEW_IDS = {

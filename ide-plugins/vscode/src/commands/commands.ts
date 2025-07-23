@@ -11,6 +11,7 @@ import { openFinding } from './openFinding';
 import { openCWEinBrowser } from './openCWEinBrowser';
 import { openFindingCallStack } from './openFindingCallStack';
 import { changeWebUiUrl } from './changeWebUiUrl';
+import { openWebScanInInfoview } from './openWebScanInInfoview';
 
 export const commands = [
     { command: SECHUB_COMMANDS.changeServerUrl, action: changeServerUrl },
@@ -29,5 +30,6 @@ export const hierachyCommands = [
 
 export const reportItemCommands = [
     { command: SECHUB_COMMANDS.openCWEinBrowser, action: openCWEinBrowser },
-    { command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack }
+    { command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack },
+    { command: SECHUB_COMMANDS.openWebScanInInfoview, action: openWebScanInInfoview } // Reusing the same command for web scans
 ];
