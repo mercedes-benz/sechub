@@ -18,9 +18,13 @@ export async function changeServerUrl(sechubContext: SecHubContext): Promise<voi
             }
         });
         if (newServerUrl) {
-            await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, newServerUrl);
+            // Remove trailing slashes
+            const trimmedUrl = newServerUrl.replace(/\/+$/, '');
+
+            await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, trimmedUrl);
+            await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.webUiUrl, `${trimmedUrl}/login`);
             await DefaultClient.createClient(sechubContext.extensionContext);
-            sechubContext.serverTreeProvider.refresh();
-            vscode.window.showInformationMessage(`SecHub Server URL updated to: '${newServerUrl}'`);
+            sechubContext.serverWebViewProvider.refresh();
+            vscode.window.showInformationMessage(`SecHub Server URL updated to: '${trimmedUrl}'`);
         }
     }

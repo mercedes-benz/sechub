@@ -2,7 +2,7 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { Command } from 'vscode';
-import * as findingNodeLinkBuilder from './../model/findingNodeLinkBuilder';
+import * as findingNodeLinkBuilder from '../utils/findingNodeLinkBuilder';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
 export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoItem> {
@@ -27,7 +27,6 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
 
   getChildren(element?: InfoItem): Thenable<InfoItem[]> {
     if (!this.callStack) {
-      vscode.window.showInformationMessage('No call stack data available');
       return Promise.resolve([]);
     }
 
@@ -45,7 +44,7 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
   }
 
 
-  public update(findingNode: SecHubFinding | undefined, callStack: SecHubCodeCallStack) {
+  public update(findingNode: SecHubFinding | undefined, callStack: SecHubCodeCallStack | undefined) {
     this.findingNode = findingNode;
     this.callStack = callStack;
     this.refresh();
@@ -66,7 +65,7 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
     rootItems.push(new MetaDataInfoItem("Line:", this.callStack?.line, undefined, vscode.TreeItemCollapsibleState.None));
     rootItems.push(new MetaDataInfoItem("Column:", this.callStack?.column, undefined, vscode.TreeItemCollapsibleState.None));
     rootItems.push(new MetaDataInfoItem("Type:", this.findingNode?.type, undefined, vscode.TreeItemCollapsibleState.None));
-    
+
     return rootItems;
   }
 
@@ -78,16 +77,19 @@ export class InfoItem extends vscode.TreeItem {
 export class MetaDataInfoItem extends InfoItem {
   children: InfoItem[] = [];
 
-  constructor(key: string, value: string | number | undefined, command: Command | undefined, state: vscode.TreeItemCollapsibleState) {
+  constructor(key: string,
+    value: string | number | undefined,
+    command: Command | undefined,
+    state: vscode.TreeItemCollapsibleState) {
     super(key, state);
 
-    var description = "";
+    let description = "";
 
     if (value) {
       description = "" + value;
     }
 
-    this.description = "" + description;
+    this.description = description;
 
     this.command = command;
     if (SecHubInfoTreeDataProvider.cweIdKey === key) {
@@ -109,10 +111,4 @@ export class FindingMetaInfoItem extends InfoItem {
     this.tooltip = `${this.label}-${this.description}`;
     this.findingNode = findingNode;
   }
-
-
-  iconPath = {
-    light: path.join(__filename, '..', '..', 'resources', 'light', 'ReportItem.svg'),
-    dark: path.join(__filename, '..', '..', 'resources', 'dark', 'ReportItem.svg')
-  };
 }
