@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import { ContentType } from '../src/content-type';
-import { resolveProxyConfig, split, ensureAcceptedScanType } from '../src/input-helper';
+import { resolveProxyConfig, split, safeAcceptedScanTypes } from '../src/input-helper';
 import { ScanType } from 'sechub-openapi-ts-client';
 
 describe('split', function () {
@@ -252,7 +251,7 @@ describe('ensureAcceptedScanType', function() {
     test('ensureAcceptedScanType - no params results in default', () => {
 
         /* execute */
-        const result = ensureAcceptedScanType([]);
+        const result = safeAcceptedScanTypes([]);
 
         /* test */
         expect(result).toEqual([ScanType.CodeScan]);
@@ -262,7 +261,7 @@ describe('ensureAcceptedScanType', function() {
     test('ensureAcceptedScanType - wrong params results in default', () => {
 
         /* execute */
-        const result = ensureAcceptedScanType(['x','y']);
+        const result = safeAcceptedScanTypes(['x','y']);
 
         /* test */
         expect(result).toEqual([ScanType.CodeScan]);
@@ -272,7 +271,7 @@ describe('ensureAcceptedScanType', function() {
     test('ensureAcceptedScanType - partly wrong params results in correct one only', () => {
 
         /* execute */
-        const result = ensureAcceptedScanType(['licensescan','y']);
+        const result = safeAcceptedScanTypes(['licensescan','y']);
 
         /* test */
         expect(result).toEqual([ScanType.LicenseScan]);
@@ -282,7 +281,7 @@ describe('ensureAcceptedScanType', function() {
     test('ensureAcceptedScanType - wellknown params accepted case insensitive but converted', () => {
 
         /* execute */
-        const result = ensureAcceptedScanType(['licensescan','SECRETscan','CodeScan', 'IAcScan']);
+        const result = safeAcceptedScanTypes(['licensescan','SECRETscan','CodeScan', 'IAcScan']);
 
         /* test */
         expect(result).toContain(ScanType.LicenseScan);

@@ -3,7 +3,6 @@
 import { AxiosProxyConfig } from "axios";
 import { ScanType } from 'sechub-openapi-ts-client'
 import * as core from '@actions/core';
-import { SecHubConfigurationModelBuilderData } from "./configuration-builder";
 
 const COMMA = ',';
 
@@ -22,7 +21,7 @@ export function split(input: string): string[] {
         .filter(item => item.length > 0);
 }
 
-export function ensureAcceptedScanType(data: string[]): string[] {
+export function safeAcceptedScanTypes(data: string[]): string[] {
     const accepted: string[] = [];
     if (data){
         for (const entry of data) {
@@ -37,6 +36,7 @@ export function ensureAcceptedScanType(data: string[]): string[] {
             }
         }
     }
+    // the default and fallback is codeScan
     if (accepted.length == 0) {
         accepted.push(ScanType.CodeScan);
     }
@@ -106,8 +106,6 @@ function getProtocolDefaultPort(protocol: string) {
     }
 }
 
-
-function equalIgnoreCase(string1: string, string2: string) {
-    return string1.toLowerCase() === string2.toLowerCase();
+function equalIgnoreCase(string1: string, string2: string): boolean {
+    return (string1 ?? '').toLowerCase() === (string2 ?? '').toLowerCase();;
 }
-

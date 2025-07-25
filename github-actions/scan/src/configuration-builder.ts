@@ -2,7 +2,7 @@
 
 import * as core from '@actions/core';
 import * as shell from 'shelljs';
-import { ScanType, SecHubConfiguration, SecHubCodeScanConfiguration, SecHubLicenseScanConfiguration, SecHubSecretScanConfiguration, SecHubIacScanConfiguration, SecHubSourceDataConfiguration } from 'sechub-openapi-ts-client';
+import { ScanType, SecHubConfiguration, SecHubCodeScanConfiguration, SecHubLicenseScanConfiguration, SecHubSecretScanConfiguration, SecHubIacScanConfiguration, SecHubSourceDataConfiguration, SecHubBinaryDataConfiguration } from 'sechub-openapi-ts-client';
 import { ContentType } from './content-type';
 
 /**
@@ -107,7 +107,7 @@ function createSourceOrBinaryDataReference(referenceName: string, builderData: S
         };
         model.data.sources = [sourceData];
     } else if (builderData.contentType === ContentType.BINARIES) {
-        const binaryData: SecHubSourceDataConfiguration = {
+        const binaryData: SecHubBinaryDataConfiguration = {
             name: referenceName,
             fileSystem: {
                 folders: builderData.includeFolders

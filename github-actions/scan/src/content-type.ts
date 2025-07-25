@@ -21,7 +21,7 @@ export class ContentType {
         return data.toLowerCase() === this.BINARIES;
     }
 
-    static ensureAccepted(contentType: string): string {
+    static safeAcceptedContentType(contentType: string): string {
         if (ContentType.isSource(contentType)) {
             return ContentType.SOURCE;
         }

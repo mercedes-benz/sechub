@@ -41834,7 +41834,7 @@ function split(input) {
         .map(item => item.trim())
         .filter(item => item.length > 0);
 }
-function ensureAcceptedScanType(data) {
+function safeAcceptedScanTypes(data) {
     const accepted = [];
     if (data) {
         for (const entry of data) {
@@ -41852,6 +41852,7 @@ function ensureAcceptedScanType(data) {
             }
         }
     }
+    // the default and fallback is codeScan
     if (accepted.length == 0) {
         accepted.push(src.ScanType.CodeScan);
     }
@@ -41920,7 +41921,8 @@ function getProtocolDefaultPort(protocol) {
     }
 }
 function equalIgnoreCase(string1, string2) {
-    return string1.toLowerCase() === string2.toLowerCase();
+    return (string1 !== null && string1 !== void 0 ? string1 : '').toLowerCase() === (string2 !== null && string2 !== void 0 ? string2 : '').toLowerCase();
+    ;
 }
 
 ;// CONCATENATED MODULE: ./src/fs-helper.ts
@@ -42096,7 +42098,7 @@ class ContentType {
         }
         return data.toLowerCase() === this.BINARIES;
     }
-    static ensureAccepted(contentType) {
+    static safeAcceptedContentType(contentType) {
         if (ContentType.isSource(contentType)) {
             return ContentType.SOURCE;
         }
@@ -60570,8 +60572,8 @@ function createSafeBuilderData(gitHubInputData) {
     const builderData = new SecHubConfigurationModelBuilderData();
     builderData.includeFolders = split(gitHubInputData.includeFolders);
     builderData.excludeFolders = split(gitHubInputData.excludeFolders);
-    builderData.scanTypes = ensureAcceptedScanType(split(gitHubInputData.scanTypes));
-    builderData.contentType = ContentType.ensureAccepted(gitHubInputData.contentType);
+    builderData.scanTypes = safeAcceptedScanTypes(split(gitHubInputData.scanTypes));
+    builderData.contentType = ContentType.safeAcceptedContentType(gitHubInputData.contentType);
     return builderData;
 }
 async function init(context) {
