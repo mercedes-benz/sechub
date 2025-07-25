@@ -34,7 +34,7 @@ npm run generate-api-client
 #### build the generated client
 
 ```bash
-npm build
+npm run build
 ```
 
 ### Install and Build by script

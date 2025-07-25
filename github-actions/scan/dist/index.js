@@ -4820,6 +4820,83 @@ module.exports = crc32;
 
 /***/ }),
 
+/***/ 9227:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var bind = __nccwpck_require__(8334);
+
+var $apply = __nccwpck_require__(5101);
+var $call = __nccwpck_require__(2808);
+var $reflectApply = __nccwpck_require__(8309);
+
+/** @type {import('./actualApply')} */
+module.exports = $reflectApply || bind.call($call, $apply);
+
+
+/***/ }),
+
+/***/ 5101:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./functionApply')} */
+module.exports = Function.prototype.apply;
+
+
+/***/ }),
+
+/***/ 2808:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./functionCall')} */
+module.exports = Function.prototype.call;
+
+
+/***/ }),
+
+/***/ 6815:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var bind = __nccwpck_require__(8334);
+var $TypeError = __nccwpck_require__(6361);
+
+var $call = __nccwpck_require__(2808);
+var $actualApply = __nccwpck_require__(9227);
+
+/** @type {(args: [Function, thisArg?: unknown, ...args: unknown[]]) => Function} TODO FIXME, find a way to use import('.') */
+module.exports = function callBindBasic(args) {
+	if (args.length < 1 || typeof args[0] !== 'function') {
+		throw new $TypeError('a function is required');
+	}
+	return $actualApply(bind, $call, args);
+};
+
+
+/***/ }),
+
+/***/ 8309:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./reflectApply')} */
+module.exports = typeof Reflect !== 'undefined' && Reflect && Reflect.apply;
+
+
+/***/ }),
+
 /***/ 5443:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -5035,7 +5112,7 @@ CombinedStream.prototype._emitError = function(err) {
 
 /***/ }),
 
-/***/ 1569:
+/***/ 6724:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 module.exports = __nccwpck_require__(4325);
@@ -6846,6 +6923,44 @@ DelayedStream.prototype._checkIfMaxDataSizeExceeded = function() {
 
 /***/ }),
 
+/***/ 2693:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var callBind = __nccwpck_require__(6815);
+var gOPD = __nccwpck_require__(8501);
+
+var hasProtoAccessor;
+try {
+	// eslint-disable-next-line no-extra-parens, no-proto
+	hasProtoAccessor = /** @type {{ __proto__?: typeof Array.prototype }} */ ([]).__proto__ === Array.prototype;
+} catch (e) {
+	if (!e || typeof e !== 'object' || !('code' in e) || e.code !== 'ERR_PROTO_ACCESS') {
+		throw e;
+	}
+}
+
+// eslint-disable-next-line no-extra-parens
+var desc = !!hasProtoAccessor && gOPD && gOPD(Object.prototype, /** @type {keyof typeof Object.prototype} */ ('__proto__'));
+
+var $Object = Object;
+var $getPrototypeOf = $Object.getPrototypeOf;
+
+/** @type {import('./get')} */
+module.exports = desc && typeof desc.get === 'function'
+	? callBind([desc.get])
+	: typeof $getPrototypeOf === 'function'
+		? /** @type {import('./get')} */ function getDunder(value) {
+			// eslint-disable-next-line eqeqeq
+			return $getPrototypeOf(value == null ? value : $Object(value));
+		}
+		: false;
+
+
+/***/ }),
+
 /***/ 1205:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -6943,6 +7058,167 @@ var eos = function(stream, opts, callback) {
 };
 
 module.exports = eos;
+
+
+/***/ }),
+
+/***/ 6123:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('.')} */
+var $defineProperty = Object.defineProperty || false;
+if ($defineProperty) {
+	try {
+		$defineProperty({}, 'a', { value: 1 });
+	} catch (e) {
+		// IE 8 has a broken defineProperty
+		$defineProperty = false;
+	}
+}
+
+module.exports = $defineProperty;
+
+
+/***/ }),
+
+/***/ 1933:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./eval')} */
+module.exports = EvalError;
+
+
+/***/ }),
+
+/***/ 8015:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('.')} */
+module.exports = Error;
+
+
+/***/ }),
+
+/***/ 4415:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./range')} */
+module.exports = RangeError;
+
+
+/***/ }),
+
+/***/ 6279:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./ref')} */
+module.exports = ReferenceError;
+
+
+/***/ }),
+
+/***/ 5474:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./syntax')} */
+module.exports = SyntaxError;
+
+
+/***/ }),
+
+/***/ 6361:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./type')} */
+module.exports = TypeError;
+
+
+/***/ }),
+
+/***/ 5065:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./uri')} */
+module.exports = URIError;
+
+
+/***/ }),
+
+/***/ 8308:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('.')} */
+module.exports = Object;
+
+
+/***/ }),
+
+/***/ 1770:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var GetIntrinsic = __nccwpck_require__(4538);
+
+var $defineProperty = GetIntrinsic('%Object.defineProperty%', true);
+
+var hasToStringTag = __nccwpck_require__(9038)();
+var hasOwn = __nccwpck_require__(2157);
+var $TypeError = __nccwpck_require__(6361);
+
+var toStringTag = hasToStringTag ? Symbol.toStringTag : null;
+
+/** @type {import('.')} */
+module.exports = function setToStringTag(object, value) {
+	var overrideIfSet = arguments.length > 2 && !!arguments[2] && arguments[2].force;
+	var nonConfigurable = arguments.length > 2 && !!arguments[2] && arguments[2].nonConfigurable;
+	if (
+		(typeof overrideIfSet !== 'undefined' && typeof overrideIfSet !== 'boolean')
+		|| (typeof nonConfigurable !== 'undefined' && typeof nonConfigurable !== 'boolean')
+	) {
+		throw new $TypeError('if provided, the `overrideIfSet` and `nonConfigurable` options must be booleans');
+	}
+	if (toStringTag && (overrideIfSet || !hasOwn(object, toStringTag))) {
+		if ($defineProperty) {
+			$defineProperty(object, toStringTag, {
+				configurable: !nonConfigurable,
+				enumerable: false,
+				value: value,
+				writable: false
+			});
+		} else {
+			object[toStringTag] = value; // eslint-disable-line no-param-reassign
+		}
+	}
+};
 
 
 /***/ }),
@@ -8262,6 +8538,9 @@ module.exports.wrap = wrap;
 /***/ 4334:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
+"use strict";
+
+
 var CombinedStream = __nccwpck_require__(5443);
 var util = __nccwpck_require__(3837);
 var path = __nccwpck_require__(1017);
@@ -8270,15 +8549,12 @@ var https = __nccwpck_require__(5687);
 var parseUrl = (__nccwpck_require__(7310).parse);
 var fs = __nccwpck_require__(7147);
 var Stream = (__nccwpck_require__(2781).Stream);
+var crypto = __nccwpck_require__(6113);
 var mime = __nccwpck_require__(3583);
 var asynckit = __nccwpck_require__(4812);
+var setToStringTag = __nccwpck_require__(1770);
+var hasOwn = __nccwpck_require__(2157);
 var populate = __nccwpck_require__(7142);
-
-// Public API
-module.exports = FormData;
-
-// make it a Stream
-util.inherits(FormData, CombinedStream);
 
 /**
  * Create readable "multipart/form-data" streams.
@@ -8286,7 +8562,7 @@ util.inherits(FormData, CombinedStream);
  * and file uploads to other web applications.
  *
  * @constructor
- * @param {Object} options - Properties to be added/overriden for FormData and CombinedStream
+ * @param {object} options - Properties to be added/overriden for FormData and CombinedStream
  */
 function FormData(options) {
   if (!(this instanceof FormData)) {
@@ -8299,35 +8575,39 @@ function FormData(options) {
 
   CombinedStream.call(this);
 
-  options = options || {};
-  for (var option in options) {
+  options = options || {}; // eslint-disable-line no-param-reassign
+  for (var option in options) { // eslint-disable-line no-restricted-syntax
     this[option] = options[option];
   }
 }
 
+// make it a Stream
+util.inherits(FormData, CombinedStream);
+
 FormData.LINE_BREAK = '\r\n';
 FormData.DEFAULT_CONTENT_TYPE = 'application/octet-stream';
 
-FormData.prototype.append = function(field, value, options) {
-
-  options = options || {};
+FormData.prototype.append = function (field, value, options) {
+  options = options || {}; // eslint-disable-line no-param-reassign
 
   // allow filename as single option
-  if (typeof options == 'string') {
-    options = {filename: options};
+  if (typeof options === 'string') {
+    options = { filename: options }; // eslint-disable-line no-param-reassign
   }
 
   var append = CombinedStream.prototype.append.bind(this);
 
   // all that streamy business can't handle numbers
-  if (typeof value == 'number') {
-    value = '' + value;
+  if (typeof value === 'number' || value == null) {
+    value = String(value); // eslint-disable-line no-param-reassign
   }
 
   // https://github.com/felixge/node-form-data/issues/38
-  if (util.isArray(value)) {
-    // Please convert your array into string
-    // the way web server expects it
+  if (Array.isArray(value)) {
+    /*
+     * Please convert your array into string
+     * the way web server expects it
+     */
     this._error(new Error('Arrays are not supported.'));
     return;
   }
@@ -8343,15 +8623,17 @@ FormData.prototype.append = function(field, value, options) {
   this._trackLength(header, value, options);
 };
 
-FormData.prototype._trackLength = function(header, value, options) {
+FormData.prototype._trackLength = function (header, value, options) {
   var valueLength = 0;
 
-  // used w/ getLengthSync(), when length is known.
-  // e.g. for streaming directly from a remote server,
-  // w/ a known file a size, and not wanting to wait for
-  // incoming file to finish to get its size.
+  /*
+   * used w/ getLengthSync(), when length is known.
+   * e.g. for streaming directly from a remote server,
+   * w/ a known file a size, and not wanting to wait for
+   * incoming file to finish to get its size.
+   */
   if (options.knownLength != null) {
-    valueLength += +options.knownLength;
+    valueLength += Number(options.knownLength);
   } else if (Buffer.isBuffer(value)) {
     valueLength = value.length;
   } else if (typeof value === 'string') {
@@ -8361,12 +8643,10 @@ FormData.prototype._trackLength = function(header, value, options) {
   this._valueLength += valueLength;
 
   // @check why add CRLF? does this account for custom/multiple CRLFs?
-  this._overheadLength +=
-    Buffer.byteLength(header) +
-    FormData.LINE_BREAK.length;
+  this._overheadLength += Buffer.byteLength(header) + FormData.LINE_BREAK.length;
 
   // empty or either doesn't have path or not an http response or not a stream
-  if (!value || ( !value.path && !(value.readable && value.hasOwnProperty('httpVersion')) && !(value instanceof Stream))) {
+  if (!value || (!value.path && !(value.readable && hasOwn(value, 'httpVersion')) && !(value instanceof Stream))) {
     return;
   }
 
@@ -8376,10 +8656,8 @@ FormData.prototype._trackLength = function(header, value, options) {
   }
 };
 
-FormData.prototype._lengthRetriever = function(value, callback) {
-
-  if (value.hasOwnProperty('fd')) {
-
+FormData.prototype._lengthRetriever = function (value, callback) {
+  if (hasOwn(value, 'fd')) {
     // take read range into a account
     // `end` = Infinity –> read file till the end
     //
@@ -8388,54 +8666,52 @@ FormData.prototype._lengthRetriever = function(value, callback) {
     // Fix it when node fixes it.
     // https://github.com/joyent/node/issues/7819
     if (value.end != undefined && value.end != Infinity && value.start != undefined) {
-
       // when end specified
       // no need to calculate range
       // inclusive, starts with 0
-      callback(null, value.end + 1 - (value.start ? value.start : 0));
+      callback(null, value.end + 1 - (value.start ? value.start : 0)); // eslint-disable-line callback-return
 
-    // not that fast snoopy
+      // not that fast snoopy
     } else {
       // still need to fetch file size from fs
-      fs.stat(value.path, function(err, stat) {
-
-        var fileSize;
-
+      fs.stat(value.path, function (err, stat) {
         if (err) {
           callback(err);
           return;
         }
 
         // update final size based on the range options
-        fileSize = stat.size - (value.start ? value.start : 0);
+        var fileSize = stat.size - (value.start ? value.start : 0);
         callback(null, fileSize);
       });
     }
 
-  // or http response
-  } else if (value.hasOwnProperty('httpVersion')) {
-    callback(null, +value.headers['content-length']);
+    // or http response
+  } else if (hasOwn(value, 'httpVersion')) {
+    callback(null, Number(value.headers['content-length'])); // eslint-disable-line callback-return
 
-  // or request stream http://github.com/mikeal/request
-  } else if (value.hasOwnProperty('httpModule')) {
+    // or request stream http://github.com/mikeal/request
+  } else if (hasOwn(value, 'httpModule')) {
     // wait till response come back
-    value.on('response', function(response) {
+    value.on('response', function (response) {
       value.pause();
-      callback(null, +response.headers['content-length']);
+      callback(null, Number(response.headers['content-length']));
     });
     value.resume();
 
-  // something else
+    // something else
   } else {
-    callback('Unknown stream');
+    callback('Unknown stream'); // eslint-disable-line callback-return
   }
 };
 
-FormData.prototype._multiPartHeader = function(field, value, options) {
-  // custom header specified (as string)?
-  // it becomes responsible for boundary
-  // (e.g. to handle extra CRLFs on .NET servers)
-  if (typeof options.header == 'string') {
+FormData.prototype._multiPartHeader = function (field, value, options) {
+  /*
+   * custom header specified (as string)?
+   * it becomes responsible for boundary
+   * (e.g. to handle extra CRLFs on .NET servers)
+   */
+  if (typeof options.header === 'string') {
     return options.header;
   }
 
@@ -8443,7 +8719,7 @@ FormData.prototype._multiPartHeader = function(field, value, options) {
   var contentType = this._getContentType(value, options);
 
   var contents = '';
-  var headers  = {
+  var headers = {
     // add custom disposition as third element or keep it two elements if not
     'Content-Disposition': ['form-data', 'name="' + field + '"'].concat(contentDisposition || []),
     // if no content type. allow it to be empty array
@@ -8451,77 +8727,74 @@ FormData.prototype._multiPartHeader = function(field, value, options) {
   };
 
   // allow custom headers.
-  if (typeof options.header == 'object') {
+  if (typeof options.header === 'object') {
     populate(headers, options.header);
   }
 
   var header;
-  for (var prop in headers) {
-    if (!headers.hasOwnProperty(prop)) continue;
-    header = headers[prop];
+  for (var prop in headers) { // eslint-disable-line no-restricted-syntax
+    if (hasOwn(headers, prop)) {
+      header = headers[prop];
 
-    // skip nullish headers.
-    if (header == null) {
-      continue;
-    }
+      // skip nullish headers.
+      if (header == null) {
+        continue; // eslint-disable-line no-restricted-syntax, no-continue
+      }
 
-    // convert all headers to arrays.
-    if (!Array.isArray(header)) {
-      header = [header];
-    }
+      // convert all headers to arrays.
+      if (!Array.isArray(header)) {
+        header = [header];
+      }
 
-    // add non-empty headers.
-    if (header.length) {
-      contents += prop + ': ' + header.join('; ') + FormData.LINE_BREAK;
+      // add non-empty headers.
+      if (header.length) {
+        contents += prop + ': ' + header.join('; ') + FormData.LINE_BREAK;
+      }
     }
   }
 
   return '--' + this.getBoundary() + FormData.LINE_BREAK + contents + FormData.LINE_BREAK;
 };
 
-FormData.prototype._getContentDisposition = function(value, options) {
-
-  var filename
-    , contentDisposition
-    ;
+FormData.prototype._getContentDisposition = function (value, options) { // eslint-disable-line consistent-return
+  var filename;
 
   if (typeof options.filepath === 'string') {
     // custom filepath for relative paths
     filename = path.normalize(options.filepath).replace(/\\/g, '/');
-  } else if (options.filename || value.name || value.path) {
-    // custom filename take precedence
-    // formidable and the browser add a name property
-    // fs- and request- streams have path property
-    filename = path.basename(options.filename || value.name || value.path);
-  } else if (value.readable && value.hasOwnProperty('httpVersion')) {
+  } else if (options.filename || (value && (value.name || value.path))) {
+    /*
+     * custom filename take precedence
+     * formidable and the browser add a name property
+     * fs- and request- streams have path property
+     */
+    filename = path.basename(options.filename || (value && (value.name || value.path)));
+  } else if (value && value.readable && hasOwn(value, 'httpVersion')) {
     // or try http response
     filename = path.basename(value.client._httpMessage.path || '');
   }
 
   if (filename) {
-    contentDisposition = 'filename="' + filename + '"';
+    return 'filename="' + filename + '"';
   }
-
-  return contentDisposition;
 };
 
-FormData.prototype._getContentType = function(value, options) {
-
+FormData.prototype._getContentType = function (value, options) {
   // use custom content-type above all
   var contentType = options.contentType;
 
   // or try `name` from formidable, browser
-  if (!contentType && value.name) {
+  if (!contentType && value && value.name) {
     contentType = mime.lookup(value.name);
   }
 
   // or try `path` from fs-, request- streams
-  if (!contentType && value.path) {
+  if (!contentType && value && value.path) {
     contentType = mime.lookup(value.path);
   }
 
   // or if it's http-reponse
-  if (!contentType && value.readable && value.hasOwnProperty('httpVersion')) {
+  if (!contentType && value && value.readable && hasOwn(value, 'httpVersion')) {
     contentType = value.headers['content-type'];
   }
 
@@ -8531,18 +8804,18 @@ FormData.prototype._getContentType = function(value, options) {
   }
 
   // fallback to the default content type if `value` is not simple value
-  if (!contentType && typeof value == 'object') {
+  if (!contentType && value && typeof value === 'object') {
     contentType = FormData.DEFAULT_CONTENT_TYPE;
   }
 
   return contentType;
 };
 
-FormData.prototype._multiPartFooter = function() {
-  return function(next) {
+FormData.prototype._multiPartFooter = function () {
+  return function (next) {
     var footer = FormData.LINE_BREAK;
 
-    var lastPart = (this._streams.length === 0);
+    var lastPart = this._streams.length === 0;
     if (lastPart) {
       footer += this._lastBoundary();
     }
@@ -8551,18 +8824,18 @@ FormData.prototype._multiPartFooter = function() {
   }.bind(this);
 };
 
-FormData.prototype._lastBoundary = function() {
+FormData.prototype._lastBoundary = function () {
   return '--' + this.getBoundary() + '--' + FormData.LINE_BREAK;
 };
 
-FormData.prototype.getHeaders = function(userHeaders) {
+FormData.prototype.getHeaders = function (userHeaders) {
   var header;
   var formHeaders = {
     'content-type': 'multipart/form-data; boundary=' + this.getBoundary()
   };
 
-  for (header in userHeaders) {
-    if (userHeaders.hasOwnProperty(header)) {
+  for (header in userHeaders) { // eslint-disable-line no-restricted-syntax
+    if (hasOwn(userHeaders, header)) {
       formHeaders[header.toLowerCase()] = userHeaders[header];
     }
   }
@@ -8570,11 +8843,14 @@ FormData.prototype.getHeaders = function(userHeaders) {
   return formHeaders;
 };
 
-FormData.prototype.setBoundary = function(boundary) {
+FormData.prototype.setBoundary = function (boundary) {
+  if (typeof boundary !== 'string') {
+    throw new TypeError('FormData boundary must be a string');
+  }
   this._boundary = boundary;
 };
 
-FormData.prototype.getBoundary = function() {
+FormData.prototype.getBoundary = function () {
   if (!this._boundary) {
     this._generateBoundary();
   }
@@ -8582,60 +8858,55 @@ FormData.prototype.getBoundary = function() {
   return this._boundary;
 };
 
-FormData.prototype.getBuffer = function() {
-  var dataBuffer = new Buffer.alloc( 0 );
+FormData.prototype.getBuffer = function () {
+  var dataBuffer = new Buffer.alloc(0); // eslint-disable-line new-cap
   var boundary = this.getBoundary();
 
   // Create the form content. Add Line breaks to the end of data.
   for (var i = 0, len = this._streams.length; i < len; i++) {
     if (typeof this._streams[i] !== 'function') {
-
       // Add content to the buffer.
-      if(Buffer.isBuffer(this._streams[i])) {
-        dataBuffer = Buffer.concat( [dataBuffer, this._streams[i]]);
-      }else {
-        dataBuffer = Buffer.concat( [dataBuffer, Buffer.from(this._streams[i])]);
+      if (Buffer.isBuffer(this._streams[i])) {
+        dataBuffer = Buffer.concat([dataBuffer, this._streams[i]]);
+      } else {
+        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(this._streams[i])]);
       }
 
       // Add break after content.
-      if (typeof this._streams[i] !== 'string' || this._streams[i].substring( 2, boundary.length + 2 ) !== boundary) {
-        dataBuffer = Buffer.concat( [dataBuffer, Buffer.from(FormData.LINE_BREAK)] );
+      if (typeof this._streams[i] !== 'string' || this._streams[i].substring(2, boundary.length + 2) !== boundary) {
+        dataBuffer = Buffer.concat([dataBuffer, Buffer.from(FormData.LINE_BREAK)]);
       }
     }
   }
 
   // Add the footer and return the Buffer object.
-  return Buffer.concat( [dataBuffer, Buffer.from(this._lastBoundary())] );
+  return Buffer.concat([dataBuffer, Buffer.from(this._lastBoundary())]);
 };
 
-FormData.prototype._generateBoundary = function() {
+FormData.prototype._generateBoundary = function () {
   // This generates a 50 character boundary similar to those used by Firefox.
-  // They are optimized for boyer-moore parsing.
-  var boundary = '--------------------------';
-  for (var i = 0; i < 24; i++) {
-    boundary += Math.floor(Math.random() * 10).toString(16);
-  }
 
-  this._boundary = boundary;
+  // They are optimized for boyer-moore parsing.
+  this._boundary = '--------------------------' + crypto.randomBytes(12).toString('hex');
 };
 
 // Note: getLengthSync DOESN'T calculate streams length
-// As workaround one can calculate file size manually
-// and add it as knownLength option
-FormData.prototype.getLengthSync = function() {
+// As workaround one can calculate file size manually and add it as knownLength option
+FormData.prototype.getLengthSync = function () {
   var knownLength = this._overheadLength + this._valueLength;
 
-  // Don't get confused, there are 3 "internal" streams for each keyval pair
-  // so it basically checks if there is any value added to the form
+  // Don't get confused, there are 3 "internal" streams for each keyval pair so it basically checks if there is any value added to the form
   if (this._streams.length) {
     knownLength += this._lastBoundary().length;
   }
 
   // https://github.com/form-data/form-data/issues/40
   if (!this.hasKnownLength()) {
-    // Some async length retrievers are present
-    // therefore synchronous length calculation is false.
-    // Please use getLength(callback) to get proper length
+    /*
+     * Some async length retrievers are present
+     * therefore synchronous length calculation is false.
+     * Please use getLength(callback) to get proper length
+     */
     this._error(new Error('Cannot calculate proper length in synchronous way.'));
   }
 
@@ -8645,7 +8916,7 @@ FormData.prototype.getLengthSync = function() {
 // Public API to check if length of added values is known
 // https://github.com/form-data/form-data/issues/196
 // https://github.com/form-data/form-data/issues/262
-FormData.prototype.hasKnownLength = function() {
+FormData.prototype.hasKnownLength = function () {
   var hasKnownLength = true;
 
   if (this._valuesToMeasure.length) {
@@ -8655,7 +8926,7 @@ FormData.prototype.hasKnownLength = function() {
   return hasKnownLength;
 };
 
-FormData.prototype.getLength = function(cb) {
+FormData.prototype.getLength = function (cb) {
   var knownLength = this._overheadLength + this._valueLength;
 
   if (this._streams.length) {
@@ -8667,13 +8938,13 @@ FormData.prototype.getLength = function(cb) {
     return;
   }
 
-  asynckit.parallel(this._valuesToMeasure, this._lengthRetriever, function(err, values) {
+  asynckit.parallel(this._valuesToMeasure, this._lengthRetriever, function (err, values) {
     if (err) {
       cb(err);
       return;
     }
 
-    values.forEach(function(length) {
+    values.forEach(function (length) {
       knownLength += length;
     });
 
@@ -8681,31 +8952,26 @@ FormData.prototype.getLength = function(cb) {
   });
 };
 
-FormData.prototype.submit = function(params, cb) {
-  var request
-    , options
-    , defaults = {method: 'post'}
-    ;
+FormData.prototype.submit = function (params, cb) {
+  var request;
+  var options;
+  var defaults = { method: 'post' };
 
-  // parse provided url if it's string
-  // or treat it as options object
-  if (typeof params == 'string') {
-
-    params = parseUrl(params);
+  // parse provided url if it's string or treat it as options object
+  if (typeof params === 'string') {
+    params = parseUrl(params); // eslint-disable-line no-param-reassign
+    /* eslint sort-keys: 0 */
     options = populate({
       port: params.port,
       path: params.pathname,
       host: params.hostname,
       protocol: params.protocol
     }, defaults);
-
-  // use custom params
-  } else {
-
+  } else { // use custom params
     options = populate(params, defaults);
     // if no port provided use default one
     if (!options.port) {
-      options.port = options.protocol == 'https:' ? 443 : 80;
+      options.port = options.protocol === 'https:' ? 443 : 80;
     }
   }
 
@@ -8713,14 +8979,14 @@ FormData.prototype.submit = function(params, cb) {
   options.headers = this.getHeaders(params.headers);
 
   // https if specified, fallback to http in any other case
-  if (options.protocol == 'https:') {
+  if (options.protocol === 'https:') {
     request = https.request(options);
   } else {
     request = http.request(options);
   }
 
   // get content length and fire away
-  this.getLength(function(err, length) {
+  this.getLength(function (err, length) {
     if (err && err !== 'Unknown stream') {
       this._error(err);
       return;
@@ -8739,7 +9005,7 @@ FormData.prototype.submit = function(params, cb) {
         request.removeListener('error', callback);
         request.removeListener('response', onResponse);
 
-        return cb.call(this, error, responce);
+        return cb.call(this, error, responce); // eslint-disable-line no-invalid-this
       };
 
       onResponse = callback.bind(this, null);
@@ -8752,7 +9018,7 @@ FormData.prototype.submit = function(params, cb) {
   return request;
 };
 
-FormData.prototype._error = function(err) {
+FormData.prototype._error = function (err) {
   if (!this.error) {
     this.error = err;
     this.pause();
@@ -8763,6 +9029,10 @@ FormData.prototype._error = function(err) {
 FormData.prototype.toString = function () {
   return '[object FormData]';
 };
+setToStringTag(FormData, 'FormData');
+
+// Public API
+module.exports = FormData;
 
 
 /***/ }),
@@ -8770,12 +9040,13 @@ FormData.prototype.toString = function () {
 /***/ 7142:
 /***/ ((module) => {
 
-// populates missing values
-module.exports = function(dst, src) {
+"use strict";
 
-  Object.keys(src).forEach(function(prop)
-  {
-    dst[prop] = dst[prop] || src[prop];
+
+// populates missing values
+module.exports = function (dst, src) {
+  Object.keys(src).forEach(function (prop) {
+    dst[prop] = dst[prop] || src[prop]; // eslint-disable-line no-param-reassign
   });
 
   return dst;
@@ -9486,7 +9757,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 8254:
+/***/ 6184:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -9541,7 +9812,7 @@ const fs = __nccwpck_require__(1176)
 const { mkdirs, mkdirsSync } = __nccwpck_require__(8605)
 
 const { symlinkPaths, symlinkPathsSync } = __nccwpck_require__(3727)
-const { symlinkType, symlinkTypeSync } = __nccwpck_require__(8254)
+const { symlinkType, symlinkTypeSync } = __nccwpck_require__(6184)
 
 const { pathExists } = __nccwpck_require__(3835)
 
@@ -10762,6 +11033,558 @@ exports.realpath = function realpath(p, cache, cb) {
     start();
   }
 };
+
+
+/***/ }),
+
+/***/ 9320:
+/***/ ((module) => {
+
+"use strict";
+
+
+/* eslint no-invalid-this: 1 */
+
+var ERROR_MESSAGE = 'Function.prototype.bind called on incompatible ';
+var toStr = Object.prototype.toString;
+var max = Math.max;
+var funcType = '[object Function]';
+
+var concatty = function concatty(a, b) {
+    var arr = [];
+
+    for (var i = 0; i < a.length; i += 1) {
+        arr[i] = a[i];
+    }
+    for (var j = 0; j < b.length; j += 1) {
+        arr[j + a.length] = b[j];
+    }
+
+    return arr;
+};
+
+var slicy = function slicy(arrLike, offset) {
+    var arr = [];
+    for (var i = offset || 0, j = 0; i < arrLike.length; i += 1, j += 1) {
+        arr[j] = arrLike[i];
+    }
+    return arr;
+};
+
+var joiny = function (arr, joiner) {
+    var str = '';
+    for (var i = 0; i < arr.length; i += 1) {
+        str += arr[i];
+        if (i + 1 < arr.length) {
+            str += joiner;
+        }
+    }
+    return str;
+};
+
+module.exports = function bind(that) {
+    var target = this;
+    if (typeof target !== 'function' || toStr.apply(target) !== funcType) {
+        throw new TypeError(ERROR_MESSAGE + target);
+    }
+    var args = slicy(arguments, 1);
+
+    var bound;
+    var binder = function () {
+        if (this instanceof bound) {
+            var result = target.apply(
+                this,
+                concatty(args, arguments)
+            );
+            if (Object(result) === result) {
+                return result;
+            }
+            return this;
+        }
+        return target.apply(
+            that,
+            concatty(args, arguments)
+        );
+
+    };
+
+    var boundLength = max(0, target.length - args.length);
+    var boundArgs = [];
+    for (var i = 0; i < boundLength; i++) {
+        boundArgs[i] = '$' + i;
+    }
+
+    bound = Function('binder', 'return function (' + joiny(boundArgs, ',') + '){ return binder.apply(this,arguments); }')(binder);
+
+    if (target.prototype) {
+        var Empty = function Empty() {};
+        Empty.prototype = target.prototype;
+        bound.prototype = new Empty();
+        Empty.prototype = null;
+    }
+
+    return bound;
+};
+
+
+/***/ }),
+
+/***/ 8334:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var implementation = __nccwpck_require__(9320);
+
+module.exports = Function.prototype.bind || implementation;
+
+
+/***/ }),
+
+/***/ 4538:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var undefined;
+
+var $Object = __nccwpck_require__(8308);
+
+var $Error = __nccwpck_require__(8015);
+var $EvalError = __nccwpck_require__(1933);
+var $RangeError = __nccwpck_require__(4415);
+var $ReferenceError = __nccwpck_require__(6279);
+var $SyntaxError = __nccwpck_require__(5474);
+var $TypeError = __nccwpck_require__(6361);
+var $URIError = __nccwpck_require__(5065);
+
+var abs = __nccwpck_require__(9775);
+var floor = __nccwpck_require__(924);
+var max = __nccwpck_require__(2419);
+var min = __nccwpck_require__(3373);
+var pow = __nccwpck_require__(8029);
+var round = __nccwpck_require__(9396);
+var sign = __nccwpck_require__(9091);
+
+var $Function = Function;
+
+// eslint-disable-next-line consistent-return
+var getEvalledConstructor = function (expressionSyntax) {
+	try {
+		return $Function('"use strict"; return (' + expressionSyntax + ').constructor;')();
+	} catch (e) {}
+};
+
+var $gOPD = __nccwpck_require__(8501);
+var $defineProperty = __nccwpck_require__(6123);
+
+var throwTypeError = function () {
+	throw new $TypeError();
+};
+var ThrowTypeError = $gOPD
+	? (function () {
+		try {
+			// eslint-disable-next-line no-unused-expressions, no-caller, no-restricted-properties
+			arguments.callee; // IE 8 does not throw here
+			return throwTypeError;
+		} catch (calleeThrows) {
+			try {
+				// IE 8 throws on Object.getOwnPropertyDescriptor(arguments, '')
+				return $gOPD(arguments, 'callee').get;
+			} catch (gOPDthrows) {
+				return throwTypeError;
+			}
+		}
+	}())
+	: throwTypeError;
+
+var hasSymbols = __nccwpck_require__(587)();
+
+var getProto = __nccwpck_require__(3592);
+var $ObjectGPO = __nccwpck_require__(5045);
+var $ReflectGPO = __nccwpck_require__(8859);
+
+var $apply = __nccwpck_require__(5101);
+var $call = __nccwpck_require__(2808);
+
+var needsEval = {};
+
+var TypedArray = typeof Uint8Array === 'undefined' || !getProto ? undefined : getProto(Uint8Array);
+
+var INTRINSICS = {
+	__proto__: null,
+	'%AggregateError%': typeof AggregateError === 'undefined' ? undefined : AggregateError,
+	'%Array%': Array,
+	'%ArrayBuffer%': typeof ArrayBuffer === 'undefined' ? undefined : ArrayBuffer,
+	'%ArrayIteratorPrototype%': hasSymbols && getProto ? getProto([][Symbol.iterator]()) : undefined,
+	'%AsyncFromSyncIteratorPrototype%': undefined,
+	'%AsyncFunction%': needsEval,
+	'%AsyncGenerator%': needsEval,
+	'%AsyncGeneratorFunction%': needsEval,
+	'%AsyncIteratorPrototype%': needsEval,
+	'%Atomics%': typeof Atomics === 'undefined' ? undefined : Atomics,
+	'%BigInt%': typeof BigInt === 'undefined' ? undefined : BigInt,
+	'%BigInt64Array%': typeof BigInt64Array === 'undefined' ? undefined : BigInt64Array,
+	'%BigUint64Array%': typeof BigUint64Array === 'undefined' ? undefined : BigUint64Array,
+	'%Boolean%': Boolean,
+	'%DataView%': typeof DataView === 'undefined' ? undefined : DataView,
+	'%Date%': Date,
+	'%decodeURI%': decodeURI,
+	'%decodeURIComponent%': decodeURIComponent,
+	'%encodeURI%': encodeURI,
+	'%encodeURIComponent%': encodeURIComponent,
+	'%Error%': $Error,
+	'%eval%': eval, // eslint-disable-line no-eval
+	'%EvalError%': $EvalError,
+	'%Float16Array%': typeof Float16Array === 'undefined' ? undefined : Float16Array,
+	'%Float32Array%': typeof Float32Array === 'undefined' ? undefined : Float32Array,
+	'%Float64Array%': typeof Float64Array === 'undefined' ? undefined : Float64Array,
+	'%FinalizationRegistry%': typeof FinalizationRegistry === 'undefined' ? undefined : FinalizationRegistry,
+	'%Function%': $Function,
+	'%GeneratorFunction%': needsEval,
+	'%Int8Array%': typeof Int8Array === 'undefined' ? undefined : Int8Array,
+	'%Int16Array%': typeof Int16Array === 'undefined' ? undefined : Int16Array,
+	'%Int32Array%': typeof Int32Array === 'undefined' ? undefined : Int32Array,
+	'%isFinite%': isFinite,
+	'%isNaN%': isNaN,
+	'%IteratorPrototype%': hasSymbols && getProto ? getProto(getProto([][Symbol.iterator]())) : undefined,
+	'%JSON%': typeof JSON === 'object' ? JSON : undefined,
+	'%Map%': typeof Map === 'undefined' ? undefined : Map,
+	'%MapIteratorPrototype%': typeof Map === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Map()[Symbol.iterator]()),
+	'%Math%': Math,
+	'%Number%': Number,
+	'%Object%': $Object,
+	'%Object.getOwnPropertyDescriptor%': $gOPD,
+	'%parseFloat%': parseFloat,
+	'%parseInt%': parseInt,
+	'%Promise%': typeof Promise === 'undefined' ? undefined : Promise,
+	'%Proxy%': typeof Proxy === 'undefined' ? undefined : Proxy,
+	'%RangeError%': $RangeError,
+	'%ReferenceError%': $ReferenceError,
+	'%Reflect%': typeof Reflect === 'undefined' ? undefined : Reflect,
+	'%RegExp%': RegExp,
+	'%Set%': typeof Set === 'undefined' ? undefined : Set,
+	'%SetIteratorPrototype%': typeof Set === 'undefined' || !hasSymbols || !getProto ? undefined : getProto(new Set()[Symbol.iterator]()),
+	'%SharedArrayBuffer%': typeof SharedArrayBuffer === 'undefined' ? undefined : SharedArrayBuffer,
+	'%String%': String,
+	'%StringIteratorPrototype%': hasSymbols && getProto ? getProto(''[Symbol.iterator]()) : undefined,
+	'%Symbol%': hasSymbols ? Symbol : undefined,
+	'%SyntaxError%': $SyntaxError,
+	'%ThrowTypeError%': ThrowTypeError,
+	'%TypedArray%': TypedArray,
+	'%TypeError%': $TypeError,
+	'%Uint8Array%': typeof Uint8Array === 'undefined' ? undefined : Uint8Array,
+	'%Uint8ClampedArray%': typeof Uint8ClampedArray === 'undefined' ? undefined : Uint8ClampedArray,
+	'%Uint16Array%': typeof Uint16Array === 'undefined' ? undefined : Uint16Array,
+	'%Uint32Array%': typeof Uint32Array === 'undefined' ? undefined : Uint32Array,
+	'%URIError%': $URIError,
+	'%WeakMap%': typeof WeakMap === 'undefined' ? undefined : WeakMap,
+	'%WeakRef%': typeof WeakRef === 'undefined' ? undefined : WeakRef,
+	'%WeakSet%': typeof WeakSet === 'undefined' ? undefined : WeakSet,
+
+	'%Function.prototype.call%': $call,
+	'%Function.prototype.apply%': $apply,
+	'%Object.defineProperty%': $defineProperty,
+	'%Object.getPrototypeOf%': $ObjectGPO,
+	'%Math.abs%': abs,
+	'%Math.floor%': floor,
+	'%Math.max%': max,
+	'%Math.min%': min,
+	'%Math.pow%': pow,
+	'%Math.round%': round,
+	'%Math.sign%': sign,
+	'%Reflect.getPrototypeOf%': $ReflectGPO
+};
+
+if (getProto) {
+	try {
+		null.error; // eslint-disable-line no-unused-expressions
+	} catch (e) {
+		// https://github.com/tc39/proposal-shadowrealm/pull/384#issuecomment-1364264229
+		var errorProto = getProto(getProto(e));
+		INTRINSICS['%Error.prototype%'] = errorProto;
+	}
+}
+
+var doEval = function doEval(name) {
+	var value;
+	if (name === '%AsyncFunction%') {
+		value = getEvalledConstructor('async function () {}');
+	} else if (name === '%GeneratorFunction%') {
+		value = getEvalledConstructor('function* () {}');
+	} else if (name === '%AsyncGeneratorFunction%') {
+		value = getEvalledConstructor('async function* () {}');
+	} else if (name === '%AsyncGenerator%') {
+		var fn = doEval('%AsyncGeneratorFunction%');
+		if (fn) {
+			value = fn.prototype;
+		}
+	} else if (name === '%AsyncIteratorPrototype%') {
+		var gen = doEval('%AsyncGenerator%');
+		if (gen && getProto) {
+			value = getProto(gen.prototype);
+		}
+	}
+
+	INTRINSICS[name] = value;
+
+	return value;
+};
+
+var LEGACY_ALIASES = {
+	__proto__: null,
+	'%ArrayBufferPrototype%': ['ArrayBuffer', 'prototype'],
+	'%ArrayPrototype%': ['Array', 'prototype'],
+	'%ArrayProto_entries%': ['Array', 'prototype', 'entries'],
+	'%ArrayProto_forEach%': ['Array', 'prototype', 'forEach'],
+	'%ArrayProto_keys%': ['Array', 'prototype', 'keys'],
+	'%ArrayProto_values%': ['Array', 'prototype', 'values'],
+	'%AsyncFunctionPrototype%': ['AsyncFunction', 'prototype'],
+	'%AsyncGenerator%': ['AsyncGeneratorFunction', 'prototype'],
+	'%AsyncGeneratorPrototype%': ['AsyncGeneratorFunction', 'prototype', 'prototype'],
+	'%BooleanPrototype%': ['Boolean', 'prototype'],
+	'%DataViewPrototype%': ['DataView', 'prototype'],
+	'%DatePrototype%': ['Date', 'prototype'],
+	'%ErrorPrototype%': ['Error', 'prototype'],
+	'%EvalErrorPrototype%': ['EvalError', 'prototype'],
+	'%Float32ArrayPrototype%': ['Float32Array', 'prototype'],
+	'%Float64ArrayPrototype%': ['Float64Array', 'prototype'],
+	'%FunctionPrototype%': ['Function', 'prototype'],
+	'%Generator%': ['GeneratorFunction', 'prototype'],
+	'%GeneratorPrototype%': ['GeneratorFunction', 'prototype', 'prototype'],
+	'%Int8ArrayPrototype%': ['Int8Array', 'prototype'],
+	'%Int16ArrayPrototype%': ['Int16Array', 'prototype'],
+	'%Int32ArrayPrototype%': ['Int32Array', 'prototype'],
+	'%JSONParse%': ['JSON', 'parse'],
+	'%JSONStringify%': ['JSON', 'stringify'],
+	'%MapPrototype%': ['Map', 'prototype'],
+	'%NumberPrototype%': ['Number', 'prototype'],
+	'%ObjectPrototype%': ['Object', 'prototype'],
+	'%ObjProto_toString%': ['Object', 'prototype', 'toString'],
+	'%ObjProto_valueOf%': ['Object', 'prototype', 'valueOf'],
+	'%PromisePrototype%': ['Promise', 'prototype'],
+	'%PromiseProto_then%': ['Promise', 'prototype', 'then'],
+	'%Promise_all%': ['Promise', 'all'],
+	'%Promise_reject%': ['Promise', 'reject'],
+	'%Promise_resolve%': ['Promise', 'resolve'],
+	'%RangeErrorPrototype%': ['RangeError', 'prototype'],
+	'%ReferenceErrorPrototype%': ['ReferenceError', 'prototype'],
+	'%RegExpPrototype%': ['RegExp', 'prototype'],
+	'%SetPrototype%': ['Set', 'prototype'],
+	'%SharedArrayBufferPrototype%': ['SharedArrayBuffer', 'prototype'],
+	'%StringPrototype%': ['String', 'prototype'],
+	'%SymbolPrototype%': ['Symbol', 'prototype'],
+	'%SyntaxErrorPrototype%': ['SyntaxError', 'prototype'],
+	'%TypedArrayPrototype%': ['TypedArray', 'prototype'],
+	'%TypeErrorPrototype%': ['TypeError', 'prototype'],
+	'%Uint8ArrayPrototype%': ['Uint8Array', 'prototype'],
+	'%Uint8ClampedArrayPrototype%': ['Uint8ClampedArray', 'prototype'],
+	'%Uint16ArrayPrototype%': ['Uint16Array', 'prototype'],
+	'%Uint32ArrayPrototype%': ['Uint32Array', 'prototype'],
+	'%URIErrorPrototype%': ['URIError', 'prototype'],
+	'%WeakMapPrototype%': ['WeakMap', 'prototype'],
+	'%WeakSetPrototype%': ['WeakSet', 'prototype']
+};
+
+var bind = __nccwpck_require__(8334);
+var hasOwn = __nccwpck_require__(2157);
+var $concat = bind.call($call, Array.prototype.concat);
+var $spliceApply = bind.call($apply, Array.prototype.splice);
+var $replace = bind.call($call, String.prototype.replace);
+var $strSlice = bind.call($call, String.prototype.slice);
+var $exec = bind.call($call, RegExp.prototype.exec);
+
+/* adapted from https://github.com/lodash/lodash/blob/4.17.15/dist/lodash.js#L6735-L6744 */
+var rePropName = /[^%.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|%$))/g;
+var reEscapeChar = /\\(\\)?/g; /** Used to match backslashes in property paths. */
+var stringToPath = function stringToPath(string) {
+	var first = $strSlice(string, 0, 1);
+	var last = $strSlice(string, -1);
+	if (first === '%' && last !== '%') {
+		throw new $SyntaxError('invalid intrinsic syntax, expected closing `%`');
+	} else if (last === '%' && first !== '%') {
+		throw new $SyntaxError('invalid intrinsic syntax, expected opening `%`');
+	}
+	var result = [];
+	$replace(string, rePropName, function (match, number, quote, subString) {
+		result[result.length] = quote ? $replace(subString, reEscapeChar, '$1') : number || match;
+	});
+	return result;
+};
+/* end adaptation */
+
+var getBaseIntrinsic = function getBaseIntrinsic(name, allowMissing) {
+	var intrinsicName = name;
+	var alias;
+	if (hasOwn(LEGACY_ALIASES, intrinsicName)) {
+		alias = LEGACY_ALIASES[intrinsicName];
+		intrinsicName = '%' + alias[0] + '%';
+	}
+
+	if (hasOwn(INTRINSICS, intrinsicName)) {
+		var value = INTRINSICS[intrinsicName];
+		if (value === needsEval) {
+			value = doEval(intrinsicName);
+		}
+		if (typeof value === 'undefined' && !allowMissing) {
+			throw new $TypeError('intrinsic ' + name + ' exists, but is not available. Please file an issue!');
+		}
+
+		return {
+			alias: alias,
+			name: intrinsicName,
+			value: value
+		};
+	}
+
+	throw new $SyntaxError('intrinsic ' + name + ' does not exist!');
+};
+
+module.exports = function GetIntrinsic(name, allowMissing) {
+	if (typeof name !== 'string' || name.length === 0) {
+		throw new $TypeError('intrinsic name must be a non-empty string');
+	}
+	if (arguments.length > 1 && typeof allowMissing !== 'boolean') {
+		throw new $TypeError('"allowMissing" argument must be a boolean');
+	}
+
+	if ($exec(/^%?[^%]*%?$/, name) === null) {
+		throw new $SyntaxError('`%` may not be present anywhere but at the beginning and end of the intrinsic name');
+	}
+	var parts = stringToPath(name);
+	var intrinsicBaseName = parts.length > 0 ? parts[0] : '';
+
+	var intrinsic = getBaseIntrinsic('%' + intrinsicBaseName + '%', allowMissing);
+	var intrinsicRealName = intrinsic.name;
+	var value = intrinsic.value;
+	var skipFurtherCaching = false;
+
+	var alias = intrinsic.alias;
+	if (alias) {
+		intrinsicBaseName = alias[0];
+		$spliceApply(parts, $concat([0, 1], alias));
+	}
+
+	for (var i = 1, isOwn = true; i < parts.length; i += 1) {
+		var part = parts[i];
+		var first = $strSlice(part, 0, 1);
+		var last = $strSlice(part, -1);
+		if (
+			(
+				(first === '"' || first === "'" || first === '`')
+				|| (last === '"' || last === "'" || last === '`')
+			)
+			&& first !== last
+		) {
+			throw new $SyntaxError('property names with quotes must have matching quotes');
+		}
+		if (part === 'constructor' || !isOwn) {
+			skipFurtherCaching = true;
+		}
+
+		intrinsicBaseName += '.' + part;
+		intrinsicRealName = '%' + intrinsicBaseName + '%';
+
+		if (hasOwn(INTRINSICS, intrinsicRealName)) {
+			value = INTRINSICS[intrinsicRealName];
+		} else if (value != null) {
+			if (!(part in value)) {
+				if (!allowMissing) {
+					throw new $TypeError('base intrinsic for ' + name + ' exists, but the property is not available.');
+				}
+				return void undefined;
+			}
+			if ($gOPD && (i + 1) >= parts.length) {
+				var desc = $gOPD(value, part);
+				isOwn = !!desc;
+
+				// By convention, when a data property is converted to an accessor
+				// property to emulate a data property that does not suffer from
+				// the override mistake, that accessor's getter is marked with
+				// an `originalValue` property. Here, when we detect this, we
+				// uphold the illusion by pretending to see that original data
+				// property, i.e., returning the value rather than the getter
+				// itself.
+				if (isOwn && 'get' in desc && !('originalValue' in desc.get)) {
+					value = desc.get;
+				} else {
+					value = value[part];
+				}
+			} else {
+				isOwn = hasOwn(value, part);
+				value = value[part];
+			}
+
+			if (isOwn && !skipFurtherCaching) {
+				INTRINSICS[intrinsicRealName] = value;
+			}
+		}
+	}
+	return value;
+};
+
+
+/***/ }),
+
+/***/ 5045:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var $Object = __nccwpck_require__(8308);
+
+/** @type {import('./Object.getPrototypeOf')} */
+module.exports = $Object.getPrototypeOf || null;
+
+
+/***/ }),
+
+/***/ 8859:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./Reflect.getPrototypeOf')} */
+module.exports = (typeof Reflect !== 'undefined' && Reflect.getPrototypeOf) || null;
+
+
+/***/ }),
+
+/***/ 3592:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var reflectGetProto = __nccwpck_require__(8859);
+var originalGetProto = __nccwpck_require__(5045);
+
+var getDunderProto = __nccwpck_require__(2693);
+
+/** @type {import('.')} */
+module.exports = reflectGetProto
+	? function getProto(O) {
+		// @ts-expect-error TS can't narrow inside a closure, for some reason
+		return reflectGetProto(O);
+	}
+	: originalGetProto
+		? function getProto(O) {
+			if (!O || (typeof O !== 'object' && typeof O !== 'function')) {
+				throw new TypeError('getProto: not an object');
+			}
+			// @ts-expect-error TS can't narrow inside a closure, for some reason
+			return originalGetProto(O);
+		}
+		: getDunderProto
+			? function getProto(O) {
+				// @ts-expect-error TS can't narrow inside a closure, for some reason
+				return getDunderProto(O);
+			}
+			: null;
 
 
 /***/ }),
@@ -12301,6 +13124,41 @@ GlobSync.prototype._makeAbs = function (f) {
 
 /***/ }),
 
+/***/ 7087:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./gOPD')} */
+module.exports = Object.getOwnPropertyDescriptor;
+
+
+/***/ }),
+
+/***/ 8501:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+/** @type {import('.')} */
+var $gOPD = __nccwpck_require__(7087);
+
+if ($gOPD) {
+	try {
+		$gOPD([], 'length');
+	} catch (e) {
+		// IE 8 has a broken gOPD
+		$gOPD = null;
+	}
+}
+
+module.exports = $gOPD;
+
+
+/***/ }),
+
 /***/ 7356:
 /***/ ((module) => {
 
@@ -13290,6 +14148,113 @@ module.exports = (flag, argv = process.argv) => {
 
 /***/ }),
 
+/***/ 587:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var origSymbol = typeof Symbol !== 'undefined' && Symbol;
+var hasSymbolSham = __nccwpck_require__(7747);
+
+/** @type {import('.')} */
+module.exports = function hasNativeSymbols() {
+	if (typeof origSymbol !== 'function') { return false; }
+	if (typeof Symbol !== 'function') { return false; }
+	if (typeof origSymbol('foo') !== 'symbol') { return false; }
+	if (typeof Symbol('bar') !== 'symbol') { return false; }
+
+	return hasSymbolSham();
+};
+
+
+/***/ }),
+
+/***/ 7747:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./shams')} */
+/* eslint complexity: [2, 18], max-statements: [2, 33] */
+module.exports = function hasSymbols() {
+	if (typeof Symbol !== 'function' || typeof Object.getOwnPropertySymbols !== 'function') { return false; }
+	if (typeof Symbol.iterator === 'symbol') { return true; }
+
+	/** @type {{ [k in symbol]?: unknown }} */
+	var obj = {};
+	var sym = Symbol('test');
+	var symObj = Object(sym);
+	if (typeof sym === 'string') { return false; }
+
+	if (Object.prototype.toString.call(sym) !== '[object Symbol]') { return false; }
+	if (Object.prototype.toString.call(symObj) !== '[object Symbol]') { return false; }
+
+	// temp disabled per https://github.com/ljharb/object.assign/issues/17
+	// if (sym instanceof Symbol) { return false; }
+	// temp disabled per https://github.com/WebReflection/get-own-property-symbols/issues/4
+	// if (!(symObj instanceof Symbol)) { return false; }
+
+	// if (typeof Symbol.prototype.toString !== 'function') { return false; }
+	// if (String(sym) !== Symbol.prototype.toString.call(sym)) { return false; }
+
+	var symVal = 42;
+	obj[sym] = symVal;
+	for (var _ in obj) { return false; } // eslint-disable-line no-restricted-syntax, no-unreachable-loop
+	if (typeof Object.keys === 'function' && Object.keys(obj).length !== 0) { return false; }
+
+	if (typeof Object.getOwnPropertyNames === 'function' && Object.getOwnPropertyNames(obj).length !== 0) { return false; }
+
+	var syms = Object.getOwnPropertySymbols(obj);
+	if (syms.length !== 1 || syms[0] !== sym) { return false; }
+
+	if (!Object.prototype.propertyIsEnumerable.call(obj, sym)) { return false; }
+
+	if (typeof Object.getOwnPropertyDescriptor === 'function') {
+		// eslint-disable-next-line no-extra-parens
+		var descriptor = /** @type {PropertyDescriptor} */ (Object.getOwnPropertyDescriptor(obj, sym));
+		if (descriptor.value !== symVal || descriptor.enumerable !== true) { return false; }
+	}
+
+	return true;
+};
+
+
+/***/ }),
+
+/***/ 9038:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var hasSymbols = __nccwpck_require__(7747);
+
+/** @type {import('.')} */
+module.exports = function hasToStringTagShams() {
+	return hasSymbols() && !!Symbol.toStringTag;
+};
+
+
+/***/ }),
+
+/***/ 2157:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var call = Function.prototype.call;
+var $hasOwn = Object.prototype.hasOwnProperty;
+var bind = __nccwpck_require__(8334);
+
+/** @type {import('.')} */
+module.exports = bind.call(call, $hasOwn);
+
+
+/***/ }),
+
 /***/ 2492:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -13513,6 +14478,111 @@ function stripBom (content) {
 }
 
 module.exports = { stringify, stripBom }
+
+
+/***/ }),
+
+/***/ 9775:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./abs')} */
+module.exports = Math.abs;
+
+
+/***/ }),
+
+/***/ 924:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./floor')} */
+module.exports = Math.floor;
+
+
+/***/ }),
+
+/***/ 7661:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./isNaN')} */
+module.exports = Number.isNaN || function isNaN(a) {
+	return a !== a;
+};
+
+
+/***/ }),
+
+/***/ 2419:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./max')} */
+module.exports = Math.max;
+
+
+/***/ }),
+
+/***/ 3373:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./min')} */
+module.exports = Math.min;
+
+
+/***/ }),
+
+/***/ 8029:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./pow')} */
+module.exports = Math.pow;
+
+
+/***/ }),
+
+/***/ 9396:
+/***/ ((module) => {
+
+"use strict";
+
+
+/** @type {import('./round')} */
+module.exports = Math.round;
+
+
+/***/ }),
+
+/***/ 9091:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+
+var $isNaN = __nccwpck_require__(7661);
+
+/** @type {import('./sign')} */
+module.exports = function sign(number) {
+	if ($isNaN(number) || number === 0) {
+		return number;
+	}
+	return number < 0 ? -1 : +1;
+};
 
 
 /***/ }),
@@ -22238,6 +23308,12342 @@ function defaultCallback(err) {
 
 /***/ }),
 
+/***/ 2049:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ConfigurationApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class ConfigurationApi extends runtime.BaseAPI {
+    /**
+     * An administrator assigns an execution profile to an existing project
+     * Admin assigns execution profile to project
+     */
+    adminAssignExecutionProfileToProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['profileId'] == null) {
+                throw new runtime.RequiredError('profileId', 'Required parameter "profileId" was null or undefined when calling adminAssignExecutionProfileToProject().');
+            }
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminAssignExecutionProfileToProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/execution/profile/{profileId}/project/{projectId}`;
+            urlPath = urlPath.replace(`{${"profileId"}}`, encodeURIComponent(String(requestParameters['profileId'])));
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator assigns an execution profile to an existing project
+     * Admin assigns execution profile to project
+     */
+    adminAssignExecutionProfileToProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminAssignExecutionProfileToProjectRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator creates an execution profile
+     * Admin creates an execution profile
+     */
+    adminCreateExecutionProfileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['profileId'] == null) {
+                throw new runtime.RequiredError('profileId', 'Required parameter "profileId" was null or undefined when calling adminCreateExecutionProfile().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/execution/profile/{profileId}`;
+            urlPath = urlPath.replace(`{${"profileId"}}`, encodeURIComponent(String(requestParameters['profileId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.ProductExecutionProfileToJSON)(requestParameters['productExecutionProfile']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator creates an execution profile
+     * Admin creates an execution profile
+     */
+    adminCreateExecutionProfile(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminCreateExecutionProfileRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator creates an executor a new configuration entry.
+     * Admin creates an executor configuration
+     */
+    adminCreateExecutorConfigurationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json;charset=UTF-8';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/executor`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.ProductExecutorConfigToJSON)(requestParameters['productExecutorConfig']),
+            }, initOverrides);
+            if (this.isJsonMime(response.headers.get('content-type'))) {
+                return new runtime.JSONApiResponse(response);
+            }
+            else {
+                return new runtime.TextApiResponse(response);
+            }
+        });
+    }
+    /**
+     * An administrator creates an executor a new configuration entry.
+     * Admin creates an executor configuration
+     */
+    adminCreateExecutorConfiguration() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            const response = yield this.adminCreateExecutorConfigurationRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator wants to create a new template or to update a template definition
+     * Admin creates or updates a template
+     */
+    adminCreateOrUpdateTemplateRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['templateId'] == null) {
+                throw new runtime.RequiredError('templateId', 'Required parameter "templateId" was null or undefined when calling adminCreateOrUpdateTemplate().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/template/{templateId}`;
+            urlPath = urlPath.replace(`{${"templateId"}}`, encodeURIComponent(String(requestParameters['templateId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator wants to create a new template or to update a template definition
+     * Admin creates or updates a template
+     */
+    adminCreateOrUpdateTemplate(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminCreateOrUpdateTemplateRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator deletes execution profile
+     * Admin deletes execution profile
+     */
+    adminDeleteExecutionProfileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['profileId'] == null) {
+                throw new runtime.RequiredError('profileId', 'Required parameter "profileId" was null or undefined when calling adminDeleteExecutionProfile().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/execution/profile/{profileId}`;
+            urlPath = urlPath.replace(`{${"profileId"}}`, encodeURIComponent(String(requestParameters['profileId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator deletes execution profile
+     * Admin deletes execution profile
+     */
+    adminDeleteExecutionProfile(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDeleteExecutionProfileRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator deletes an executor by removing the configuration entry identified by its uuid
+     * Admin deletes executor configuration
+     */
+    adminDeleteExecutorConfigurationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['uuid'] == null) {
+                throw new runtime.RequiredError('uuid', 'Required parameter "uuid" was null or undefined when calling adminDeleteExecutorConfiguration().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/executor/{uuid}`;
+            urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator deletes an executor by removing the configuration entry identified by its uuid
+     * Admin deletes executor configuration
+     */
+    adminDeleteExecutorConfiguration(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDeleteExecutorConfigurationRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator wants to delete an existing template
+     * Admin deletes a template
+     */
+    adminDeleteTemplateRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['templateId'] == null) {
+                throw new runtime.RequiredError('templateId', 'Required parameter "templateId" was null or undefined when calling adminDeleteTemplate().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/template/{templateId}`;
+            urlPath = urlPath.replace(`{${"templateId"}}`, encodeURIComponent(String(requestParameters['templateId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator wants to delete an existing template
+     * Admin deletes a template
+     */
+    adminDeleteTemplate(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDeleteTemplateRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator deletes an asset completely.
+     * Admin deletes asset comletely
+     */
+    adminDeletesAssetCompletelyRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['assetId'] == null) {
+                throw new runtime.RequiredError('assetId', 'Required parameter "assetId" was null or undefined when calling adminDeletesAssetCompletely().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/asset/{assetId}`;
+            urlPath = urlPath.replace(`{${"assetId"}}`, encodeURIComponent(String(requestParameters['assetId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator deletes an asset completely.
+     * Admin deletes asset comletely
+     */
+    adminDeletesAssetCompletely(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDeletesAssetCompletelyRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator deletes a file fom an asset.
+     * Admin deletes an asset file
+     */
+    adminDeletesAssetFileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['assetId'] == null) {
+                throw new runtime.RequiredError('assetId', 'Required parameter "assetId" was null or undefined when calling adminDeletesAssetFile().');
+            }
+            if (requestParameters['fileName'] == null) {
+                throw new runtime.RequiredError('fileName', 'Required parameter "fileName" was null or undefined when calling adminDeletesAssetFile().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/asset/{assetId}/file/{fileName}`;
+            urlPath = urlPath.replace(`{${"assetId"}}`, encodeURIComponent(String(requestParameters['assetId'])));
+            urlPath = urlPath.replace(`{${"fileName"}}`, encodeURIComponent(String(requestParameters['fileName'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator deletes a file fom an asset.
+     * Admin deletes an asset file
+     */
+    adminDeletesAssetFile(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDeletesAssetFileRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator downloads a file fom an asset.
+     * Admin downloads an asset file
+     */
+    adminDownloadsAssetFileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['assetId'] == null) {
+                throw new runtime.RequiredError('assetId', 'Required parameter "assetId" was null or undefined when calling adminDownloadsAssetFile().');
+            }
+            if (requestParameters['fileName'] == null) {
+                throw new runtime.RequiredError('fileName', 'Required parameter "fileName" was null or undefined when calling adminDownloadsAssetFile().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/asset/{assetId}/file/{fileName}`;
+            urlPath = urlPath.replace(`{${"assetId"}}`, encodeURIComponent(String(requestParameters['assetId'])));
+            urlPath = urlPath.replace(`{${"fileName"}}`, encodeURIComponent(String(requestParameters['fileName'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.BlobApiResponse(response);
+        });
+    }
+    /**
+     * An administrator downloads a file fom an asset.
+     * Admin downloads an asset file
+     */
+    adminDownloadsAssetFile(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminDownloadsAssetFileRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator wants to inspect the runtime status of template setup. The health check trigger will return
+     * Admin executes a template health check and fetches result
+     */
+    adminExecuteTemplatesHealthCheckRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/templates/healthcheck`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.TemplatesHealthCheckResultFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator wants to inspect the runtime status of template setup. The health check trigger will return
+     * Admin executes a template health check and fetches result
+     */
+    adminExecuteTemplatesHealthCheck(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminExecuteTemplatesHealthCheckRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches details about an asset. For example: the result will contain names but also checksum of files.
+     * Admin fetches asset details
+     */
+    adminFetchAssetDetailsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['assetId'] == null) {
+                throw new runtime.RequiredError('assetId', 'Required parameter "assetId" was null or undefined when calling adminFetchAssetDetails().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/asset/{assetId}/details`;
+            urlPath = urlPath.replace(`{${"assetId"}}`, encodeURIComponent(String(requestParameters['assetId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.AssetDetailDataFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches details about an asset. For example: the result will contain names but also checksum of files.
+     * Admin fetches asset details
+     */
+    adminFetchAssetDetails(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchAssetDetailsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches all available asset ids.
+     * Admin fetches asset ids
+     */
+    adminFetchAssetIdsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/asset/ids`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * An administrator fetches all available asset ids.
+     * Admin fetches asset ids
+     */
+    adminFetchAssetIds(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchAssetIdsRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches current auto-cleanup configuration
+     * Admin fetches auto cleanup configuration
+     */
+    adminFetchAutoCleanupConfigurationRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/autoclean`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.AdministrationAutoCleanupConfigFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches current auto-cleanup configuration
+     * Admin fetches auto cleanup configuration
+     */
+    adminFetchAutoCleanupConfiguration(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchAutoCleanupConfigurationRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches details about an execution profile
+     * Admin fetches execution profile
+     */
+    adminFetchExecutionProfileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['profileId'] == null) {
+                throw new runtime.RequiredError('profileId', 'Required parameter "profileId" was null or undefined when calling adminFetchExecutionProfile().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/execution/profile/{profileId}`;
+            urlPath = urlPath.replace(`{${"profileId"}}`, encodeURIComponent(String(requestParameters['profileId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ProductExecutionProfileFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches details about an execution profile
+     * Admin fetches execution profile
+     */
+    adminFetchExecutionProfile(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchExecutionProfileRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches execution profile list
+     * Admin fetches execution profile list
+     */
+    adminFetchExecutionProfileListRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/execution/profiles`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ProductExecutionProfilesListFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches execution profile list
+     * Admin fetches execution profile list
+     */
+    adminFetchExecutionProfileList(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchExecutionProfileListRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches one explicit executor configuration by its uuid.
+     * Admin fetches executor configuration
+     */
+    adminFetchExecutorConfigurationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['uuid'] == null) {
+                throw new runtime.RequiredError('uuid', 'Required parameter "uuid" was null or undefined when calling adminFetchExecutorConfiguration().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/executor/{uuid}`;
+            urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ProductExecutorConfigFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches one explicit executor configuration by its uuid.
+     * Admin fetches executor configuration
+     */
+    adminFetchExecutorConfiguration(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchExecutorConfigurationRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches executor configuration list which contains all executor configurations
+     * Admin fetches executor configuration list
+     */
+    adminFetchExecutorConfigurationListRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/executors`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ProductExecutorConfigListFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches executor configuration list which contains all executor configurations
+     * Admin fetches executor configuration list
+     */
+    adminFetchExecutorConfigurationList(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchExecutorConfigurationListRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches mapping configuration by its ID.
+     * Admin fetches mapping configuration
+     */
+    adminFetchMappingConfigurationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['mappingId'] == null) {
+                throw new runtime.RequiredError('mappingId', 'Required parameter "mappingId" was null or undefined when calling adminFetchMappingConfiguration().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/mapping/{mappingId}`;
+            urlPath = urlPath.replace(`{${"mappingId"}}`, encodeURIComponent(String(requestParameters['mappingId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.MappingDataFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches mapping configuration by its ID.
+     * Admin fetches mapping configuration
+     */
+    adminFetchMappingConfiguration(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchMappingConfigurationRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator wants to fetch the template definition by template id
+     * Admin fetches template
+     */
+    adminFetchTemplateRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['templateId'] == null) {
+                throw new runtime.RequiredError('templateId', 'Required parameter "templateId" was null or undefined when calling adminFetchTemplate().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/template/{templateId}`;
+            urlPath = urlPath.replace(`{${"templateId"}}`, encodeURIComponent(String(requestParameters['templateId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.TemplateDefinitionFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator wants to fetch the template definition by template id
+     * Admin fetches template
+     */
+    adminFetchTemplate(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchTemplateRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator wants to fetch a list containing all available template identifiers
+     * Admin fetches template ids
+     */
+    adminFetchTemplateIdsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['templateId'] == null) {
+                throw new runtime.RequiredError('templateId', 'Required parameter "templateId" was null or undefined when calling adminFetchTemplateIds().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/templates`;
+            urlPath = urlPath.replace(`{${"templateId"}}`, encodeURIComponent(String(requestParameters['templateId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * An administrator wants to fetch a list containing all available template identifiers
+     * Admin fetches template ids
+     */
+    adminFetchTemplateIds(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchTemplateIdsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator unassigns an execution profile from a projects.
+     * Admin unassigns execution profile from project
+     */
+    adminUnassignExecutionProfileFromProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['profileId'] == null) {
+                throw new runtime.RequiredError('profileId', 'Required parameter "profileId" was null or undefined when calling adminUnassignExecutionProfileFromProject().');
+            }
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminUnassignExecutionProfileFromProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/execution/profile/{profileId}/project/{projectId}`;
+            urlPath = urlPath.replace(`{${"profileId"}}`, encodeURIComponent(String(requestParameters['profileId'])));
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator unassigns an execution profile from a projects.
+     * Admin unassigns execution profile from project
+     */
+    adminUnassignExecutionProfileFromProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminUnassignExecutionProfileFromProjectRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator changes auto-cleanup configuration
+     * Admin updates auto cleanup configuration
+     */
+    adminUpdateAutoCleanupConfigurationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json;charset=UTF-8';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/autoclean`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.AdministrationAutoCleanupConfigToJSON)(requestParameters['administrationAutoCleanupConfig']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator changes auto-cleanup configuration
+     * Admin updates auto cleanup configuration
+     */
+    adminUpdateAutoCleanupConfiguration() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            yield this.adminUpdateAutoCleanupConfigurationRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator updates dedicated execution profile
+     * Admin updates execution profile
+     */
+    adminUpdateExecutionProfileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['profileId'] == null) {
+                throw new runtime.RequiredError('profileId', 'Required parameter "profileId" was null or undefined when calling adminUpdateExecutionProfile().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/execution/profile/{profileId}`;
+            urlPath = urlPath.replace(`{${"profileId"}}`, encodeURIComponent(String(requestParameters['profileId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.ProductExecutionProfileToJSON)(requestParameters['productExecutionProfile']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator updates dedicated execution profile
+     * Admin updates execution profile
+     */
+    adminUpdateExecutionProfile(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminUpdateExecutionProfileRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator updates dedicated executor configuration. The update does change description, enabled state and also used executors, but Will NOT change any associations between profile and projects.
+     * Admin updates executor configuration setup
+     */
+    adminUpdateExecutorConfigRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['uuid'] == null) {
+                throw new runtime.RequiredError('uuid', 'Required parameter "uuid" was null or undefined when calling adminUpdateExecutorConfig().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/executor/{uuid}`;
+            urlPath = urlPath.replace(`{${"uuid"}}`, encodeURIComponent(String(requestParameters['uuid'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.ProductExecutorConfigToJSON)(requestParameters['productExecutorConfig']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator updates dedicated executor configuration. The update does change description, enabled state and also used executors, but Will NOT change any associations between profile and projects.
+     * Admin updates executor configuration setup
+     */
+    adminUpdateExecutorConfig(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminUpdateExecutorConfigRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator changes mapping configuration. Mappings represents a generic mechanism to replace a given string, matched by configured regular expression pattern with a replacement string. Some of the mappings are used for adapter behaviour.
+     * Admin updates mapping configuration
+     */
+    adminUpdateMappingConfigurationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['mappingId'] == null) {
+                throw new runtime.RequiredError('mappingId', 'Required parameter "mappingId" was null or undefined when calling adminUpdateMappingConfiguration().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/config/mapping/{mappingId}`;
+            urlPath = urlPath.replace(`{${"mappingId"}}`, encodeURIComponent(String(requestParameters['mappingId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.MappingDataToJSON)(requestParameters['mappingData']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator changes mapping configuration. Mappings represents a generic mechanism to replace a given string, matched by configured regular expression pattern with a replacement string. Some of the mappings are used for adapter behaviour.
+     * Admin updates mapping configuration
+     */
+    adminUpdateMappingConfiguration(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminUpdateMappingConfigurationRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator uploads a file for an asset. If the file already exits, it will be overriden.
+     * Admin uploads an asset file
+     */
+    adminUploadsAssetFileRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['assetId'] == null) {
+                throw new runtime.RequiredError('assetId', 'Required parameter "assetId" was null or undefined when calling adminUploadsAssetFile().');
+            }
+            if (requestParameters['file'] == null) {
+                throw new runtime.RequiredError('file', 'Required parameter "file" was null or undefined when calling adminUploadsAssetFile().');
+            }
+            if (requestParameters['checkSum'] == null) {
+                throw new runtime.RequiredError('checkSum', 'Required parameter "checkSum" was null or undefined when calling adminUploadsAssetFile().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            const consumes = [
+                { contentType: 'multipart/form-data' },
+            ];
+            // @ts-ignore: canConsumeForm may be unused
+            const canConsumeForm = runtime.canConsumeForm(consumes);
+            let formParams;
+            let useForm = false;
+            // use FormData to transmit files using content-type "multipart/form-data"
+            useForm = canConsumeForm;
+            if (useForm) {
+                formParams = new FormData();
+            }
+            else {
+                formParams = new URLSearchParams();
+            }
+            if (requestParameters['file'] != null) {
+                formParams.append('file', requestParameters['file']);
+            }
+            if (requestParameters['checkSum'] != null) {
+                formParams.append('checkSum', requestParameters['checkSum']);
+            }
+            let urlPath = `/api/admin/asset/{assetId}/file`;
+            urlPath = urlPath.replace(`{${"assetId"}}`, encodeURIComponent(String(requestParameters['assetId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: formParams,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator uploads a file for an asset. If the file already exits, it will be overriden.
+     * Admin uploads an asset file
+     */
+    adminUploadsAssetFile(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminUploadsAssetFileRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.ConfigurationApi = ConfigurationApi;
+
+
+/***/ }),
+
+/***/ 1368:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EncryptionApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class EncryptionApi extends runtime.BaseAPI {
+    /**
+     * An administrator fetches encryption status from all domains where encryption is used.
+     * Admin fetches encryption status
+     */
+    adminFetchesEncryptionStatusRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/encryption/status`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.SecHubEncryptionStatusFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches encryption status from all domains where encryption is used.
+     * Admin fetches encryption status
+     */
+    adminFetchesEncryptionStatus(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchesEncryptionStatusRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator starts encryption rotation.
+     * Admin starts encryption rotation
+     */
+    adminStartsEncryptionRotationRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json;charset=UTF-8';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/encryption/rotate`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.SecHubEncryptionDataToJSON)(requestParameters['secHubEncryptionData']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator starts encryption rotation.
+     * Admin starts encryption rotation
+     */
+    adminStartsEncryptionRotation() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            yield this.adminStartsEncryptionRotationRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.EncryptionApi = EncryptionApi;
+
+
+/***/ }),
+
+/***/ 1244:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JobAdministrationApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class JobAdministrationApi extends runtime.BaseAPI {
+    /**
+     * Administrator does cancel a job by its Job UUID
+     * Admin cancels a job
+     */
+    adminCancelJobRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling adminCancelJob().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/jobs/cancel/{jobUUID}`;
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Administrator does cancel a job by its Job UUID
+     * Admin cancels a job
+     */
+    adminCancelJob(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminCancelJobRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * Admin lists all running jobs
+     * Admin lists all running jobs
+     */
+    adminListAllRunningJobsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/jobs/running`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.JobInformationFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * Admin lists all running jobs
+     * Admin lists all running jobs
+     */
+    adminListAllRunningJobs(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminListAllRunningJobsRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Admin restarts a job
+     * Admin restarts a job
+     */
+    adminRestartJobRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling adminRestartJob().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/jobs/restart/{jobUUID}`;
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Admin restarts a job
+     * Admin restarts a job
+     */
+    adminRestartJob(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminRestartJobRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * Admin restarts a job (hard)
+     * Admin restarts a job (hard)
+     */
+    adminRestartJobHardRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling adminRestartJobHard().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/jobs/restart-hard/{jobUUID}`;
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Admin restarts a job (hard)
+     * Admin restarts a job (hard)
+     */
+    adminRestartJobHard(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminRestartJobHardRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.JobAdministrationApi = JobAdministrationApi;
+
+
+/***/ }),
+
+/***/ 4680:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JobManagementApi = void 0;
+const runtime = __nccwpck_require__(7886);
+/**
+ *
+ */
+class JobManagementApi extends runtime.BaseAPI {
+    /**
+     * User cancels a job by its Job UUID
+     * User cancels a job
+     */
+    userCancelsJobRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userCancelsJob().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/management/jobs/{jobUUID}/cancel`;
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User cancels a job by its Job UUID
+     * User cancels a job
+     */
+    userCancelsJob(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userCancelsJobRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.JobManagementApi = JobManagementApi;
+
+
+/***/ }),
+
+/***/ 9725:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OtherApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class OtherApi extends runtime.BaseAPI {
+    /**
+     * An administrator disables scheduler job processing. This can be a preparation for system wide update - when scheduling is stoped, user can ask for new SecHub Jobs etc. But as long as scheduler is stopped nothing is executed - so JVMs/PODs can be updated in cluster
+     * Admin disables job processing in scheduler
+     */
+    adminDisableSchedulerJobProcessingRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/scheduler/disable/job-processing`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator disables scheduler job processing. This can be a preparation for system wide update - when scheduling is stoped, user can ask for new SecHub Jobs etc. But as long as scheduler is stopped nothing is executed - so JVMs/PODs can be updated in cluster
+     * Admin disables job processing in scheduler
+     */
+    adminDisableSchedulerJobProcessing(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDisableSchedulerJobProcessingRaw(initOverrides);
+        });
+    }
+    /**
+     * An administrator starts scheduler job processing. This can be a necessary step after a system wide update where processing of jobs was stoped before.
+     * Admin enables scheduler job processing
+     */
+    adminEnableSchedulerJobProcessingRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/scheduler/enable/job-processing`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator starts scheduler job processing. This can be a necessary step after a system wide update where processing of jobs was stoped before.
+     * Admin enables scheduler job processing
+     */
+    adminEnableSchedulerJobProcessing(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminEnableSchedulerJobProcessingRaw(initOverrides);
+        });
+    }
+    /**
+     * An administrator fetches the current SecHub server runtime data. Only administrators are allowed to do this because it contains the server version and knowing the exact server version makes it easier for penetration tester or attacker to attack the system.
+     * Admin fetches server runtime data
+     */
+    adminFetchServerRuntimeDataRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/info/server`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ServerRuntimeDataFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches the current SecHub server runtime data. Only administrators are allowed to do this because it contains the server version and knowing the exact server version makes it easier for penetration tester or attacker to attack the system.
+     * Admin fetches server runtime data
+     */
+    adminFetchServerRuntimeData(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminFetchServerRuntimeDataRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches current known status information about sechub
+     * Admin lists status information
+     */
+    adminListStatusInformationRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/status`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(index_1.StatusEntryFromJSON));
+        });
+    }
+    /**
+     * An administrator fetches current known status information about sechub
+     * Admin lists status information
+     */
+    adminListStatusInformation(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminListStatusInformationRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator wants to update information about scheduler status
+     * Admin trigger scheduler status refresh
+     */
+    adminTriggerRefreshOfSchedulerStatusRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/scheduler/status/refresh`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator wants to update information about scheduler status
+     * Admin trigger scheduler status refresh
+     */
+    adminTriggerRefreshOfSchedulerStatus(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminTriggerRefreshOfSchedulerStatusRaw(initOverrides);
+        });
+    }
+    /**
+     * User lists jobs for project
+     * User lists jobs for project
+     */
+    userListsJobsForProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userListsJobsForProject().');
+            }
+            const queryParameters = {};
+            if (requestParameters['size'] != null) {
+                queryParameters['size'] = requestParameters['size'];
+            }
+            if (requestParameters['page'] != null) {
+                queryParameters['page'] = requestParameters['page'];
+            }
+            if (requestParameters['withMetaData'] != null) {
+                queryParameters['withMetaData'] = requestParameters['withMetaData'];
+            }
+            if (requestParameters['allParams'] != null) {
+                queryParameters['allParams'] = requestParameters['allParams'];
+            }
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/jobs`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.SecHubJobInfoForUserListPageFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * User lists jobs for project
+     * User lists jobs for project
+     */
+    userListsJobsForProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userListsJobsForProjectRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+}
+exports.OtherApi = OtherApi;
+
+
+/***/ }),
+
+/***/ 120:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProjectAdministrationApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class ProjectAdministrationApi extends runtime.BaseAPI {
+    /**
+     * An administrator assigns a template to a project
+     * Admin assigns template to project
+     */
+    adminAssignTemplateToProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminAssignTemplateToProject().');
+            }
+            if (requestParameters['templateId'] == null) {
+                throw new runtime.RequiredError('templateId', 'Required parameter "templateId" was null or undefined when calling adminAssignTemplateToProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}/template/{templateId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"templateId"}}`, encodeURIComponent(String(requestParameters['templateId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator assigns a template to a project
+     * Admin assigns template to project
+     */
+    adminAssignTemplateToProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminAssignTemplateToProjectRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * Admin changes project access level
+     * Admin changes project access level
+     */
+    adminChangeProjectAccessLevelRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminChangeProjectAccessLevel().');
+            }
+            if (requestParameters['projectAccessLevel'] == null) {
+                throw new runtime.RequiredError('projectAccessLevel', 'Required parameter "projectAccessLevel" was null or undefined when calling adminChangeProjectAccessLevel().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}/accesslevel/{projectAccessLevel}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"projectAccessLevel"}}`, encodeURIComponent(String(requestParameters['projectAccessLevel'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Admin changes project access level
+     * Admin changes project access level
+     */
+    adminChangeProjectAccessLevel(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminChangeProjectAccessLevelRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator changes the project description
+     * Admin changes project description
+     */
+    adminChangeProjectDescriptionRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminChangeProjectDescription().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.ProjectInputToJSON)(requestParameters['projectInput']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ProjectDetailInformationFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator changes the project description
+     * Admin changes project description
+     */
+    adminChangeProjectDescription(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminChangeProjectDescriptionRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Admin creates a project
+     * Admin creates a project
+     */
+    adminCreateProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.ProjectInputToJSON)(requestParameters['projectInput']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Admin creates a project
+     * Admin creates a project
+     */
+    adminCreateProject() {
+        return __awaiter(this, arguments, void 0, function* (requestParameters = {}, initOverrides) {
+            yield this.adminCreateProjectRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * Admin deletes a project
+     * Admin deletes a project
+     */
+    adminDeleteProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminDeleteProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Admin deletes a project
+     * Admin deletes a project
+     */
+    adminDeleteProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDeleteProjectRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator downloads a json file containing all project ids
+     * Admin lists all projects
+     */
+    adminListAllProjectsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/projects`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * An administrator downloads a json file containing all project ids
+     * Admin lists all projects
+     */
+    adminListAllProjects(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminListAllProjectsRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator or owner assigns an user to an existing SecHub project
+     * Admin or owner assigns user to project
+     */
+    adminOrOwnerAssignUserToProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminOrOwnerAssignUserToProject().');
+            }
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminOrOwnerAssignUserToProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/management/project/{projectId}/membership/{userId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator or owner assigns an user to an existing SecHub project
+     * Admin or owner assigns user to project
+     */
+    adminOrOwnerAssignUserToProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminOrOwnerAssignUserToProjectRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator or the current project owner changes the ownership of an existing sechub project.
+     * Admin or owner changes owner of a project
+     */
+    adminOrOwnerChangesProjectOwnerRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminOrOwnerChangesProjectOwner().');
+            }
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminOrOwnerChangesProjectOwner().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/management/project/{projectId}/owner/{userId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator or the current project owner changes the ownership of an existing sechub project.
+     * Admin or owner changes owner of a project
+     */
+    adminOrOwnerChangesProjectOwner(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminOrOwnerChangesProjectOwnerRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator or owner unassigns an user from a sechub project.
+     * Admin or owner unassigns user from project
+     */
+    adminOrOwnerUnassignUserFromProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminOrOwnerUnassignUserFromProject().');
+            }
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminOrOwnerUnassignUserFromProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/management/project/{projectId}/membership/{userId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator or owner unassigns an user from a sechub project.
+     * Admin or owner unassigns user from project
+     */
+    adminOrOwnerUnassignUserFromProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminOrOwnerUnassignUserFromProjectRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator downloads a json file containing json with project details
+     * Admin shows project details
+     */
+    adminShowProjectDetailsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminShowProjectDetails().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ProjectDetailInformationFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator downloads a json file containing json with project details
+     * Admin shows project details
+     */
+    adminShowProjectDetails(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminShowProjectDetailsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An admin downloads a json file containing log for scans of project
+     * Admin shows scan logs for project
+     */
+    adminShowScanLogsForProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminShowScanLogsForProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}/scan/logs`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(index_1.ProjectScanLogSummaryFromJSON));
+        });
+    }
+    /**
+     * An admin downloads a json file containing log for scans of project
+     * Admin shows scan logs for project
+     */
+    adminShowScanLogsForProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminShowScanLogsForProjectRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator unassigns a template from a project
+     * Admin unassigns template from project
+     */
+    adminUnassignTemplateFromProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling adminUnassignTemplateFromProject().');
+            }
+            if (requestParameters['templateId'] == null) {
+                throw new runtime.RequiredError('templateId', 'Required parameter "templateId" was null or undefined when calling adminUnassignTemplateFromProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}/template/{templateId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"templateId"}}`, encodeURIComponent(String(requestParameters['templateId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator unassigns a template from a project
+     * Admin unassigns template from project
+     */
+    adminUnassignTemplateFromProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminUnassignTemplateFromProjectRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * Get list of owned and assigned projects with project id, owner and assigned users (if caller is owner or admin)
+     * Get list of owned and assigned projects
+     */
+    getAssignedProjectDataListRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/projects`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(index_1.ProjectDataFromJSON));
+        });
+    }
+    /**
+     * Get list of owned and assigned projects with project id, owner and assigned users (if caller is owner or admin)
+     * Get list of owned and assigned projects
+     */
+    getAssignedProjectDataList(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.getAssignedProjectDataListRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Update project metadata
+     * Update project metadata
+     */
+    updateProjectMetaDataRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling updateProjectMetaData().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}/metadata`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: requestParameters['requestBody'],
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Update project metadata
+     * Update project metadata
+     */
+    updateProjectMetaData(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.updateProjectMetaDataRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * Update project whitelist
+     * Update project whitelist
+     */
+    updateProjectWhitelistRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling updateProjectWhitelist().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json;charset=UTF-8';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/project/{projectId}/whitelist`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.ProjectInputToJSON)(requestParameters['projectInput']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Update project whitelist
+     * Update project whitelist
+     */
+    updateProjectWhitelist(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.updateProjectWhitelistRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.ProjectAdministrationApi = ProjectAdministrationApi;
+
+
+/***/ }),
+
+/***/ 9848:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SecHubExecutionApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class SecHubExecutionApi extends runtime.BaseAPI {
+    /**
+     * An administrator downloads a ZIP file containing full details of a scan. Main reason for this use case is for debugging when there are problems with security products. Another reason is for developers to adopt new security products easier.
+     * Admin downloads all details about a scan job
+     */
+    adminDownloadFullScanDataForJobRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling adminDownloadFullScanDataForJob().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/scan/download/{jobUUID}`;
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.BlobApiResponse(response);
+        });
+    }
+    /**
+     * An administrator downloads a ZIP file containing full details of a scan. Main reason for this use case is for debugging when there are problems with security products. Another reason is for developers to adopt new security products easier.
+     * Admin downloads all details about a scan job
+     */
+    adminDownloadFullScanDataForJob(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminDownloadFullScanDataForJobRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * User approves SecHub job
+     * User approves SecHub job
+     */
+    userApproveJobRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userApproveJob().');
+            }
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userApproveJob().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/job/{jobUUID}/approve`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User approves SecHub job
+     * User approves SecHub job
+     */
+    userApproveJob(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userApproveJobRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * User checks sechub job state
+     * User checks sechub job state
+     */
+    userCheckJobStatusRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userCheckJobStatus().');
+            }
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userCheckJobStatus().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/job/{jobUUID}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ScheduleJobStatusFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * User checks sechub job state
+     * User checks sechub job state
+     */
+    userCheckJobStatus(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userCheckJobStatusRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * User creates a new sechub job
+     * User creates a new sechub job
+     */
+    userCreateNewJobRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userCreateNewJob().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/job`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.SecHubConfigurationToJSON)(requestParameters['secHubConfiguration']),
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.SchedulerResultFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * User creates a new sechub job
+     * User creates a new sechub job
+     */
+    userCreateNewJob(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userCreateNewJobRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * User downloads sechub job report
+     * User downloads sechub job report
+     */
+    userDownloadJobReportRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userDownloadJobReport().');
+            }
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userDownloadJobReport().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/report/{jobUUID}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.SecHubReportFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * User downloads sechub job report
+     * User downloads sechub job report
+     */
+    userDownloadJobReport(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userDownloadJobReportRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * User downloads job report in SPDX format
+     * User downloads job report in SPDX format
+     */
+    userDownloadSpdxJobReportRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userDownloadSpdxJobReport().');
+            }
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userDownloadSpdxJobReport().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/report/spdx/{jobUUID}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.SecHubReportFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * User downloads job report in SPDX format
+     * User downloads job report in SPDX format
+     */
+    userDownloadSpdxJobReport(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userDownloadSpdxJobReportRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * User fetches false positive configuration of project
+     * User fetches false positive configuration of project
+     */
+    userFetchFalsePositiveConfigurationOfProjectRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userFetchFalsePositiveConfigurationOfProject().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/false-positives`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.FalsePositiveProjectConfigurationFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * User fetches false positive configuration of project
+     * User fetches false positive configuration of project
+     */
+    userFetchFalsePositiveConfigurationOfProject(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userFetchFalsePositiveConfigurationOfProjectRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * User marks false positives
+     * User marks false positives for finished sechub job
+     */
+    userMarkFalsePositivesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userMarkFalsePositives().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json;charset=UTF-8';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/false-positives`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.FalsePositivesToJSON)(requestParameters['falsePositives']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User marks false positives
+     * User marks false positives for finished sechub job
+     */
+    userMarkFalsePositives(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userMarkFalsePositivesRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * User unmarks existing false positive definitons
+     * User unmarks existing false positive definitons
+     */
+    userUnmarksFalsePositivesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userUnmarksFalsePositives().');
+            }
+            if (requestParameters['id'] == null) {
+                throw new runtime.RequiredError('id', 'Required parameter "id" was null or undefined when calling userUnmarksFalsePositives().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/false-positive/{id}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"id"}}`, encodeURIComponent(String(requestParameters['id'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User unmarks existing false positive definitons
+     * User unmarks existing false positive definitons
+     */
+    userUnmarksFalsePositives(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userUnmarksFalsePositivesRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * User unmarks existing false positive definitons
+     * User unmarks existing false positive definitons
+     */
+    userUnmarksJobFalsePositivesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userUnmarksJobFalsePositives().');
+            }
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userUnmarksJobFalsePositives().');
+            }
+            if (requestParameters['findingId'] == null) {
+                throw new runtime.RequiredError('findingId', 'Required parameter "findingId" was null or undefined when calling userUnmarksJobFalsePositives().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/false-positive/{jobUUID}/{findingId}`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            urlPath = urlPath.replace(`{${"findingId"}}`, encodeURIComponent(String(requestParameters['findingId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User unmarks existing false positive definitons
+     * User unmarks existing false positive definitons
+     */
+    userUnmarksJobFalsePositives(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userUnmarksJobFalsePositivesRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * User uploads source code
+     * User uploads source code
+     */
+    userUploadSourceCodeRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userUploadSourceCode().');
+            }
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userUploadSourceCode().');
+            }
+            if (requestParameters['checkSum'] == null) {
+                throw new runtime.RequiredError('checkSum', 'Required parameter "checkSum" was null or undefined when calling userUploadSourceCode().');
+            }
+            if (requestParameters['file'] == null) {
+                throw new runtime.RequiredError('file', 'Required parameter "file" was null or undefined when calling userUploadSourceCode().');
+            }
+            const queryParameters = {};
+            if (requestParameters['checkSum'] != null) {
+                queryParameters['checkSum'] = requestParameters['checkSum'];
+            }
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            const consumes = [
+                { contentType: 'multipart/form-data' },
+            ];
+            // @ts-ignore: canConsumeForm may be unused
+            const canConsumeForm = runtime.canConsumeForm(consumes);
+            let formParams;
+            let useForm = false;
+            // use FormData to transmit files using content-type "multipart/form-data"
+            useForm = canConsumeForm;
+            if (useForm) {
+                formParams = new FormData();
+            }
+            else {
+                formParams = new URLSearchParams();
+            }
+            if (requestParameters['file'] != null) {
+                formParams.append('file', requestParameters['file']);
+            }
+            let urlPath = `/api/project/{projectId}/job/{jobUUID}/sourcecode`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: formParams,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User uploads source code
+     * User uploads source code
+     */
+    userUploadSourceCode(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userUploadSourceCodeRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * User uploads binaries
+     * User uploads binaries
+     */
+    userUploadsBinariesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userUploadsBinaries().');
+            }
+            if (requestParameters['jobUUID'] == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userUploadsBinaries().');
+            }
+            if (requestParameters['file'] == null) {
+                throw new runtime.RequiredError('file', 'Required parameter "file" was null or undefined when calling userUploadsBinaries().');
+            }
+            if (requestParameters['xFileSize'] == null) {
+                throw new runtime.RequiredError('xFileSize', 'Required parameter "xFileSize" was null or undefined when calling userUploadsBinaries().');
+            }
+            if (requestParameters['checkSum'] == null) {
+                throw new runtime.RequiredError('checkSum', 'Required parameter "checkSum" was null or undefined when calling userUploadsBinaries().');
+            }
+            const queryParameters = {};
+            if (requestParameters['file'] != null) {
+                queryParameters['file'] = requestParameters['file'];
+            }
+            if (requestParameters['checkSum'] != null) {
+                queryParameters['checkSum'] = requestParameters['checkSum'];
+            }
+            const headerParameters = {};
+            if (requestParameters['xFileSize'] != null) {
+                headerParameters['x-file-size'] = String(requestParameters['xFileSize']);
+            }
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/job/{jobUUID}/binaries`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            urlPath = urlPath.replace(`{${"jobUUID"}}`, encodeURIComponent(String(requestParameters['jobUUID'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User uploads binaries
+     * User uploads binaries
+     */
+    userUploadsBinaries(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userUploadsBinariesRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.SecHubExecutionApi = SecHubExecutionApi;
+
+
+/***/ }),
+
+/***/ 2022:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SignUpApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class SignUpApi extends runtime.BaseAPI {
+    /**
+     * In this use case the administrator will accept the self registration done by an user
+     * Admin applies self registration
+     */
+    adminAcceptSignupRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminAcceptSignup().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/signup/accept/{userId}`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * In this use case the administrator will accept the self registration done by an user
+     * Admin applies self registration
+     */
+    adminAcceptSignup(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminAcceptSignupRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * In this use case the administrator will not accept the self registration done by an user but delete the entry.
+     * Admin deletes user signup
+     */
+    adminDeleteSignupRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminDeleteSignup().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/signup/{userId}`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * In this use case the administrator will not accept the self registration done by an user but delete the entry.
+     * Admin deletes user signup
+     */
+    adminDeleteSignup(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDeleteSignupRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * In this use case the administrator will list the currently unapplied user self registrations/signups.
+     * Admin lists open user signups
+     */
+    adminListOpenUserSignUpsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/signups`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(index_1.SignUpFromJSON));
+        });
+    }
+    /**
+     * In this use case the administrator will list the currently unapplied user self registrations/signups.
+     * Admin lists open user signups
+     */
+    adminListOpenUserSignUps(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminListOpenUserSignUpsRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * User clicks link to get new api token
+     * User clicks link to get new api token
+     */
+    anonymousGetNewApiTokenByOneTimeTokenRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['oneTimeToken'] == null) {
+                throw new runtime.RequiredError('oneTimeToken', 'Required parameter "oneTimeToken" was null or undefined when calling anonymousGetNewApiTokenByOneTimeToken().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            let urlPath = `/api/anonymous/apitoken/{oneTimeToken}`;
+            urlPath = urlPath.replace(`{${"oneTimeToken"}}`, encodeURIComponent(String(requestParameters['oneTimeToken'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User clicks link to get new api token
+     * User clicks link to get new api token
+     */
+    anonymousGetNewApiTokenByOneTimeToken(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.anonymousGetNewApiTokenByOneTimeTokenRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * User requests new API token
+     * User requests new API token
+     */
+    anonymousRefreshApiTokenByEmailAddressRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['emailAddress'] == null) {
+                throw new runtime.RequiredError('emailAddress', 'Required parameter "emailAddress" was null or undefined when calling anonymousRefreshApiTokenByEmailAddress().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            let urlPath = `/api/anonymous/refresh/apitoken/{emailAddress}`;
+            urlPath = urlPath.replace(`{${"emailAddress"}}`, encodeURIComponent(String(requestParameters['emailAddress'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User requests new API token
+     * User requests new API token
+     */
+    anonymousRefreshApiTokenByEmailAddress(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.anonymousRefreshApiTokenByEmailAddressRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * User self registration
+     * User self registration
+     */
+    anonymousSignUpRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['signUpInput'] == null) {
+                throw new runtime.RequiredError('signUpInput', 'Required parameter "signUpInput" was null or undefined when calling anonymousSignUp().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            let urlPath = `/api/anonymous/signup`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.SignUpInputToJSON)(requestParameters['signUpInput']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User self registration
+     * User self registration
+     */
+    anonymousSignUp(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.anonymousSignUpRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.SignUpApi = SignUpApi;
+
+
+/***/ }),
+
+/***/ 6860:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SystemApi = void 0;
+const runtime = __nccwpck_require__(7886);
+/**
+ *
+ */
+class SystemApi extends runtime.BaseAPI {
+    /**
+     * An anonymous user or system wants to know if the server is alive and running.
+     * Check if the server is alive and running.
+     */
+    anonymousCheckAliveGetRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            let urlPath = `/api/anonymous/check/alive`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An anonymous user or system wants to know if the server is alive and running.
+     * Check if the server is alive and running.
+     */
+    anonymousCheckAliveGet(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.anonymousCheckAliveGetRaw(initOverrides);
+        });
+    }
+    /**
+     * An anonymous user or system wants to know if the server is alive and running.
+     * Check if the server is alive and running.
+     */
+    anonymousCheckAliveHeadRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            let urlPath = `/api/anonymous/check/alive`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'HEAD',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An anonymous user or system wants to know if the server is alive and running.
+     * Check if the server is alive and running.
+     */
+    anonymousCheckAliveHead(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.anonymousCheckAliveHeadRaw(initOverrides);
+        });
+    }
+}
+exports.SystemApi = SystemApi;
+
+
+/***/ }),
+
+/***/ 5942:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TestingApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class TestingApi extends runtime.BaseAPI {
+    /**
+     * User defines mock data configuration for project
+     * User defines mock data configuration for project
+     */
+    userDefineProjectMockDataRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userDefineProjectMockData().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters['Content-Type'] = 'application/json';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/mockdata`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+                body: (0, index_1.ScanProjectMockDataConfigurationToJSON)(requestParameters['scanProjectMockDataConfiguration']),
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User defines mock data configuration for project
+     * User defines mock data configuration for project
+     */
+    userDefineProjectMockData(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userDefineProjectMockDataRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * User retrieves mock data configuration for project
+     * User retrieves mock data configuration for project
+     */
+    userRetrieveProjectMockDataRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['projectId'] == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userRetrieveProjectMockData().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/project/{projectId}/mockdata`;
+            urlPath = urlPath.replace(`{${"projectId"}}`, encodeURIComponent(String(requestParameters['projectId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.ScanProjectMockDataConfigurationFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * User retrieves mock data configuration for project
+     * User retrieves mock data configuration for project
+     */
+    userRetrieveProjectMockData(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userRetrieveProjectMockDataRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+}
+exports.TestingApi = TestingApi;
+
+
+/***/ }),
+
+/***/ 3786:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UserAdministrationApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class UserAdministrationApi extends runtime.BaseAPI {
+    /**
+     * Admin deletes a user
+     * Admin deletes a user
+     */
+    adminDeleteUserRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminDeleteUser().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/user/{userId}`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'DELETE',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Admin deletes a user
+     * Admin deletes a user
+     */
+    adminDeleteUser(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminDeleteUserRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator grants admin rights to another user. So this user will become also an administrator.
+     * Admin grants admin rights to user
+     */
+    adminGrantAdminRightsToUserRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminGrantAdminRightsToUser().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/user/{userId}/grant/superadmin`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator grants admin rights to another user. So this user will become also an administrator.
+     * Admin grants admin rights to user
+     */
+    adminGrantAdminRightsToUser(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminGrantAdminRightsToUserRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator downloads a json file containing all names of SecHub admins
+     * Admin lists all admins
+     */
+    adminListAllAdminsRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/admins`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * An administrator downloads a json file containing all names of SecHub admins
+     * Admin lists all admins
+     */
+    adminListAllAdmins(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminListAllAdminsRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator downloads a json file containing all user ids
+     * Admin lists all users
+     */
+    adminListAllUsersRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/users`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response);
+        });
+    }
+    /**
+     * An administrator downloads a json file containing all user ids
+     * Admin lists all users
+     */
+    adminListAllUsers(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminListAllUsersRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator revokes existing admin rights from another administrator.
+     * Admin revokes admin rights from an admin
+     */
+    adminRevokeAdminRightsFromAdminRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminRevokeAdminRightsFromAdmin().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/user/{userId}/revoke/superadmin`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * An administrator revokes existing admin rights from another administrator.
+     * Admin revokes admin rights from an admin
+     */
+    adminRevokeAdminRightsFromAdmin(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminRevokeAdminRightsFromAdminRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * An administrator downloads a json file containing json containing user details
+     * Admin shows user details
+     */
+    adminShowUserDetailsRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminShowUserDetails().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/user/{userId}`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.UserDetailInformationFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator downloads a json file containing json containing user details
+     * Admin shows user details
+     */
+    adminShowUserDetails(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminShowUserDetailsRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * An administrator fetches user details for an email address.
+     * Admin shows user details for email address
+     */
+    adminShowUserDetailsForEmailAddressRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['emailAddress'] == null) {
+                throw new runtime.RequiredError('emailAddress', 'Required parameter "emailAddress" was null or undefined when calling adminShowUserDetailsForEmailAddress().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/user-by-email/{emailAddress}`;
+            urlPath = urlPath.replace(`{${"emailAddress"}}`, encodeURIComponent(String(requestParameters['emailAddress'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.UserDetailInformationFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * An administrator fetches user details for an email address.
+     * Admin shows user details for email address
+     */
+    adminShowUserDetailsForEmailAddress(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.adminShowUserDetailsForEmailAddressRaw(requestParameters, initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * Admin updates user email address
+     * Admin updates user email address
+     */
+    adminUpdateUserEmailAddressRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['userId'] == null) {
+                throw new runtime.RequiredError('userId', 'Required parameter "userId" was null or undefined when calling adminUpdateUserEmailAddress().');
+            }
+            if (requestParameters['emailAddress'] == null) {
+                throw new runtime.RequiredError('emailAddress', 'Required parameter "emailAddress" was null or undefined when calling adminUpdateUserEmailAddress().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/admin/user/{userId}/email/{emailAddress}`;
+            urlPath = urlPath.replace(`{${"userId"}}`, encodeURIComponent(String(requestParameters['userId'])));
+            urlPath = urlPath.replace(`{${"emailAddress"}}`, encodeURIComponent(String(requestParameters['emailAddress'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'PUT',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * Admin updates user email address
+     * Admin updates user email address
+     */
+    adminUpdateUserEmailAddress(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.adminUpdateUserEmailAddressRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.UserAdministrationApi = UserAdministrationApi;
+
+
+/***/ }),
+
+/***/ 5877:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UserSelfServiceApi = void 0;
+const runtime = __nccwpck_require__(7886);
+const index_1 = __nccwpck_require__(2646);
+/**
+ *
+ */
+class UserSelfServiceApi extends runtime.BaseAPI {
+    /**
+     * The unauthenticated user verifies new email address in token
+     * Anonymous user verifies new email address
+     */
+    anonymousUserVerifiesEmailAddressRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['token'] == null) {
+                throw new runtime.RequiredError('token', 'Required parameter "token" was null or undefined when calling anonymousUserVerifiesEmailAddress().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/anonymous/email/verify/{token}`;
+            urlPath = urlPath.replace(`{${"token"}}`, encodeURIComponent(String(requestParameters['token'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * The unauthenticated user verifies new email address in token
+     * Anonymous user verifies new email address
+     */
+    anonymousUserVerifiesEmailAddress(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.anonymousUserVerifiesEmailAddressRaw(requestParameters, initOverrides);
+        });
+    }
+    /**
+     * The authenticated user fetches his user details
+     * User fetches his user details
+     */
+    userFetchUserDetailInformationRaw(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/management/user`;
+            const response = yield this.request({
+                path: urlPath,
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.JSONApiResponse(response, (jsonValue) => (0, index_1.UserDetailInformationFromJSON)(jsonValue));
+        });
+    }
+    /**
+     * The authenticated user fetches his user details
+     * User fetches his user details
+     */
+    userFetchUserDetailInformation(initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userFetchUserDetailInformationRaw(initOverrides);
+            return yield response.value();
+        });
+    }
+    /**
+     * The authenticated user updates his email address
+     * User updates his email address
+     */
+    userUpdatesEmailAddressRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters['emailAddress'] == null) {
+                throw new runtime.RequiredError('emailAddress', 'Required parameter "emailAddress" was null or undefined when calling userUpdatesEmailAddress().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters["Authorization"] = "Basic " + btoa(this.configuration.username + ":" + this.configuration.password);
+            }
+            let urlPath = `/api/management/user/email/{emailAddress}`;
+            urlPath = urlPath.replace(`{${"emailAddress"}}`, encodeURIComponent(String(requestParameters['emailAddress'])));
+            const response = yield this.request({
+                path: urlPath,
+                method: 'POST',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * The authenticated user updates his email address
+     * User updates his email address
+     */
+    userUpdatesEmailAddress(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userUpdatesEmailAddressRaw(requestParameters, initOverrides);
+        });
+    }
+}
+exports.UserSelfServiceApi = UserSelfServiceApi;
+
+
+/***/ }),
+
+/***/ 4246:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/* tslint:disable */
+/* eslint-disable */
+__exportStar(__nccwpck_require__(2049), exports);
+__exportStar(__nccwpck_require__(1368), exports);
+__exportStar(__nccwpck_require__(1244), exports);
+__exportStar(__nccwpck_require__(4680), exports);
+__exportStar(__nccwpck_require__(9725), exports);
+__exportStar(__nccwpck_require__(120), exports);
+__exportStar(__nccwpck_require__(9848), exports);
+__exportStar(__nccwpck_require__(2022), exports);
+__exportStar(__nccwpck_require__(6860), exports);
+__exportStar(__nccwpck_require__(5942), exports);
+__exportStar(__nccwpck_require__(3786), exports);
+__exportStar(__nccwpck_require__(5877), exports);
+
+
+/***/ }),
+
+/***/ 4422:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/* tslint:disable */
+/* eslint-disable */
+__exportStar(__nccwpck_require__(7886), exports);
+__exportStar(__nccwpck_require__(4246), exports);
+__exportStar(__nccwpck_require__(2646), exports);
+
+
+/***/ }),
+
+/***/ 1579:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfAction = instanceOfAction;
+exports.ActionFromJSON = ActionFromJSON;
+exports.ActionFromJSONTyped = ActionFromJSONTyped;
+exports.ActionToJSON = ActionToJSON;
+exports.ActionToJSONTyped = ActionToJSONTyped;
+const ActionType_1 = __nccwpck_require__(454);
+const SecHubTimeUnit_1 = __nccwpck_require__(820);
+/**
+ * Check if a given object implements the Action interface.
+ */
+function instanceOfAction(value) {
+    if (!('type' in value) || value['type'] === undefined)
+        return false;
+    return true;
+}
+function ActionFromJSON(json) {
+    return ActionFromJSONTyped(json, false);
+}
+function ActionFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'type': (0, ActionType_1.ActionTypeFromJSON)(json['type']),
+        'selector': json['selector'] == null ? undefined : json['selector'],
+        'value': json['value'] == null ? undefined : json['value'],
+        'description': json['description'] == null ? undefined : json['description'],
+        'unit': json['unit'] == null ? undefined : (0, SecHubTimeUnit_1.SecHubTimeUnitFromJSON)(json['unit']),
+    };
+}
+function ActionToJSON(json) {
+    return ActionToJSONTyped(json, false);
+}
+function ActionToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'type': (0, ActionType_1.ActionTypeToJSON)(value['type']),
+        'selector': value['selector'],
+        'value': value['value'],
+        'description': value['description'],
+        'unit': (0, SecHubTimeUnit_1.SecHubTimeUnitToJSON)(value['unit']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 454:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ActionType = void 0;
+exports.instanceOfActionType = instanceOfActionType;
+exports.ActionTypeFromJSON = ActionTypeFromJSON;
+exports.ActionTypeFromJSONTyped = ActionTypeFromJSONTyped;
+exports.ActionTypeToJSON = ActionTypeToJSON;
+exports.ActionTypeToJSONTyped = ActionTypeToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.ActionType = {
+    Input: 'INPUT',
+    Click: 'CLICK',
+    Password: 'PASSWORD',
+    Username: 'USERNAME',
+    Wait: 'WAIT'
+};
+function instanceOfActionType(value) {
+    for (const key in exports.ActionType) {
+        if (Object.prototype.hasOwnProperty.call(exports.ActionType, key)) {
+            if (exports.ActionType[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function ActionTypeFromJSON(json) {
+    return ActionTypeFromJSONTyped(json, false);
+}
+function ActionTypeFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function ActionTypeToJSON(value) {
+    return value;
+}
+function ActionTypeToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 8044:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfAdministrationAutoCleanupConfig = instanceOfAdministrationAutoCleanupConfig;
+exports.AdministrationAutoCleanupConfigFromJSON = AdministrationAutoCleanupConfigFromJSON;
+exports.AdministrationAutoCleanupConfigFromJSONTyped = AdministrationAutoCleanupConfigFromJSONTyped;
+exports.AdministrationAutoCleanupConfigToJSON = AdministrationAutoCleanupConfigToJSON;
+exports.AdministrationAutoCleanupConfigToJSONTyped = AdministrationAutoCleanupConfigToJSONTyped;
+const CleanupTime_1 = __nccwpck_require__(1360);
+/**
+ * Check if a given object implements the AdministrationAutoCleanupConfig interface.
+ */
+function instanceOfAdministrationAutoCleanupConfig(value) {
+    return true;
+}
+function AdministrationAutoCleanupConfigFromJSON(json) {
+    return AdministrationAutoCleanupConfigFromJSONTyped(json, false);
+}
+function AdministrationAutoCleanupConfigFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'cleanupTime': json['cleanupTime'] == null ? undefined : (0, CleanupTime_1.CleanupTimeFromJSON)(json['cleanupTime']),
+    };
+}
+function AdministrationAutoCleanupConfigToJSON(json) {
+    return AdministrationAutoCleanupConfigToJSONTyped(json, false);
+}
+function AdministrationAutoCleanupConfigToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'cleanupTime': (0, CleanupTime_1.CleanupTimeToJSON)(value['cleanupTime']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 8382:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfAssetDetailData = instanceOfAssetDetailData;
+exports.AssetDetailDataFromJSON = AssetDetailDataFromJSON;
+exports.AssetDetailDataFromJSONTyped = AssetDetailDataFromJSONTyped;
+exports.AssetDetailDataToJSON = AssetDetailDataToJSON;
+exports.AssetDetailDataToJSONTyped = AssetDetailDataToJSONTyped;
+const AssetFileData_1 = __nccwpck_require__(5615);
+/**
+ * Check if a given object implements the AssetDetailData interface.
+ */
+function instanceOfAssetDetailData(value) {
+    return true;
+}
+function AssetDetailDataFromJSON(json) {
+    return AssetDetailDataFromJSONTyped(json, false);
+}
+function AssetDetailDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'assetId': json['assetId'] == null ? undefined : json['assetId'],
+        'files': json['files'] == null ? undefined : (json['files'].map(AssetFileData_1.AssetFileDataFromJSON)),
+    };
+}
+function AssetDetailDataToJSON(json) {
+    return AssetDetailDataToJSONTyped(json, false);
+}
+function AssetDetailDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'assetId': value['assetId'],
+        'files': value['files'] == null ? undefined : (value['files'].map(AssetFileData_1.AssetFileDataToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 5615:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfAssetFileData = instanceOfAssetFileData;
+exports.AssetFileDataFromJSON = AssetFileDataFromJSON;
+exports.AssetFileDataFromJSONTyped = AssetFileDataFromJSONTyped;
+exports.AssetFileDataToJSON = AssetFileDataToJSON;
+exports.AssetFileDataToJSONTyped = AssetFileDataToJSONTyped;
+/**
+ * Check if a given object implements the AssetFileData interface.
+ */
+function instanceOfAssetFileData(value) {
+    return true;
+}
+function AssetFileDataFromJSON(json) {
+    return AssetFileDataFromJSONTyped(json, false);
+}
+function AssetFileDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'fileName': json['fileName'] == null ? undefined : json['fileName'],
+        'checksum': json['checksum'] == null ? undefined : json['checksum'],
+    };
+}
+function AssetFileDataToJSON(json) {
+    return AssetFileDataToJSONTyped(json, false);
+}
+function AssetFileDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'fileName': value['fileName'],
+        'checksum': value['checksum'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4846:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfBasicLoginConfiguration = instanceOfBasicLoginConfiguration;
+exports.BasicLoginConfigurationFromJSON = BasicLoginConfigurationFromJSON;
+exports.BasicLoginConfigurationFromJSONTyped = BasicLoginConfigurationFromJSONTyped;
+exports.BasicLoginConfigurationToJSON = BasicLoginConfigurationToJSON;
+exports.BasicLoginConfigurationToJSONTyped = BasicLoginConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the BasicLoginConfiguration interface.
+ */
+function instanceOfBasicLoginConfiguration(value) {
+    return true;
+}
+function BasicLoginConfigurationFromJSON(json) {
+    return BasicLoginConfigurationFromJSONTyped(json, false);
+}
+function BasicLoginConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'user': json['user'] == null ? undefined : json['user'],
+        'password': json['password'] == null ? undefined : json['password'],
+    };
+}
+function BasicLoginConfigurationToJSON(json) {
+    return BasicLoginConfigurationToJSONTyped(json, false);
+}
+function BasicLoginConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'user': value['user'],
+        'password': value['password'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 1360:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfCleanupTime = instanceOfCleanupTime;
+exports.CleanupTimeFromJSON = CleanupTimeFromJSON;
+exports.CleanupTimeFromJSONTyped = CleanupTimeFromJSONTyped;
+exports.CleanupTimeToJSON = CleanupTimeToJSON;
+exports.CleanupTimeToJSONTyped = CleanupTimeToJSONTyped;
+const CountableInDaysTimeUnit_1 = __nccwpck_require__(8436);
+/**
+ * Check if a given object implements the CleanupTime interface.
+ */
+function instanceOfCleanupTime(value) {
+    return true;
+}
+function CleanupTimeFromJSON(json) {
+    return CleanupTimeFromJSONTyped(json, false);
+}
+function CleanupTimeFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'unit': json['unit'] == null ? undefined : (0, CountableInDaysTimeUnit_1.CountableInDaysTimeUnitFromJSON)(json['unit']),
+        'amount': json['amount'] == null ? undefined : json['amount'],
+    };
+}
+function CleanupTimeToJSON(json) {
+    return CleanupTimeToJSONTyped(json, false);
+}
+function CleanupTimeToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'unit': (0, CountableInDaysTimeUnit_1.CountableInDaysTimeUnitToJSON)(value['unit']),
+        'amount': value['amount'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 241:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfClientCertificateConfiguration = instanceOfClientCertificateConfiguration;
+exports.ClientCertificateConfigurationFromJSON = ClientCertificateConfigurationFromJSON;
+exports.ClientCertificateConfigurationFromJSONTyped = ClientCertificateConfigurationFromJSONTyped;
+exports.ClientCertificateConfigurationToJSON = ClientCertificateConfigurationToJSON;
+exports.ClientCertificateConfigurationToJSONTyped = ClientCertificateConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the ClientCertificateConfiguration interface.
+ */
+function instanceOfClientCertificateConfiguration(value) {
+    if (!('password' in value) || value['password'] === undefined)
+        return false;
+    return true;
+}
+function ClientCertificateConfigurationFromJSON(json) {
+    return ClientCertificateConfigurationFromJSONTyped(json, false);
+}
+function ClientCertificateConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'password': json['password'],
+        'use': json['use'] == null ? undefined : json['use'],
+    };
+}
+function ClientCertificateConfigurationToJSON(json) {
+    return ClientCertificateConfigurationToJSONTyped(json, false);
+}
+function ClientCertificateConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'password': value['password'],
+        'use': value['use'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 8436:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CountableInDaysTimeUnit = void 0;
+exports.instanceOfCountableInDaysTimeUnit = instanceOfCountableInDaysTimeUnit;
+exports.CountableInDaysTimeUnitFromJSON = CountableInDaysTimeUnitFromJSON;
+exports.CountableInDaysTimeUnitFromJSONTyped = CountableInDaysTimeUnitFromJSONTyped;
+exports.CountableInDaysTimeUnitToJSON = CountableInDaysTimeUnitToJSON;
+exports.CountableInDaysTimeUnitToJSONTyped = CountableInDaysTimeUnitToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.CountableInDaysTimeUnit = {
+    Day: 'DAY',
+    Week: 'WEEK',
+    Month: 'MONTH',
+    Year: 'YEAR'
+};
+function instanceOfCountableInDaysTimeUnit(value) {
+    for (const key in exports.CountableInDaysTimeUnit) {
+        if (Object.prototype.hasOwnProperty.call(exports.CountableInDaysTimeUnit, key)) {
+            if (exports.CountableInDaysTimeUnit[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function CountableInDaysTimeUnitFromJSON(json) {
+    return CountableInDaysTimeUnitFromJSONTyped(json, false);
+}
+function CountableInDaysTimeUnitFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function CountableInDaysTimeUnitToJSON(value) {
+    return value;
+}
+function CountableInDaysTimeUnitToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 5775:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EncodingType = void 0;
+exports.instanceOfEncodingType = instanceOfEncodingType;
+exports.EncodingTypeFromJSON = EncodingTypeFromJSON;
+exports.EncodingTypeFromJSONTyped = EncodingTypeFromJSONTyped;
+exports.EncodingTypeToJSON = EncodingTypeToJSON;
+exports.EncodingTypeToJSONTyped = EncodingTypeToJSONTyped;
+/**
+ * Representing the encoding of the TOTP seed.
+ * @export
+ */
+exports.EncodingType = {
+    Autodetect: 'AUTODETECT',
+    Hex: 'HEX',
+    Base32: 'BASE32',
+    Base64: 'BASE64',
+    Plain: 'PLAIN'
+};
+function instanceOfEncodingType(value) {
+    for (const key in exports.EncodingType) {
+        if (Object.prototype.hasOwnProperty.call(exports.EncodingType, key)) {
+            if (exports.EncodingType[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function EncodingTypeFromJSON(json) {
+    return EncodingTypeFromJSONTyped(json, false);
+}
+function EncodingTypeFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function EncodingTypeToJSON(value) {
+    return value;
+}
+function EncodingTypeToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 9658:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExecutionResult = void 0;
+exports.instanceOfExecutionResult = instanceOfExecutionResult;
+exports.ExecutionResultFromJSON = ExecutionResultFromJSON;
+exports.ExecutionResultFromJSONTyped = ExecutionResultFromJSONTyped;
+exports.ExecutionResultToJSON = ExecutionResultToJSON;
+exports.ExecutionResultToJSONTyped = ExecutionResultToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.ExecutionResult = {
+    None: 'NONE',
+    Ok: 'OK',
+    Failed: 'FAILED'
+};
+function instanceOfExecutionResult(value) {
+    for (const key in exports.ExecutionResult) {
+        if (Object.prototype.hasOwnProperty.call(exports.ExecutionResult, key)) {
+            if (exports.ExecutionResult[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function ExecutionResultFromJSON(json) {
+    return ExecutionResultFromJSONTyped(json, false);
+}
+function ExecutionResultFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function ExecutionResultToJSON(value) {
+    return value;
+}
+function ExecutionResultToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 2357:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ExecutionState = void 0;
+exports.instanceOfExecutionState = instanceOfExecutionState;
+exports.ExecutionStateFromJSON = ExecutionStateFromJSON;
+exports.ExecutionStateFromJSONTyped = ExecutionStateFromJSONTyped;
+exports.ExecutionStateToJSON = ExecutionStateToJSON;
+exports.ExecutionStateToJSONTyped = ExecutionStateToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.ExecutionState = {
+    Initializing: 'INITIALIZING',
+    ReadyToStart: 'READY_TO_START',
+    Started: 'STARTED',
+    CancelRequested: 'CANCEL_REQUESTED',
+    Canceled: 'CANCELED',
+    Ended: 'ENDED'
+};
+function instanceOfExecutionState(value) {
+    for (const key in exports.ExecutionState) {
+        if (Object.prototype.hasOwnProperty.call(exports.ExecutionState, key)) {
+            if (exports.ExecutionState[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function ExecutionStateFromJSON(json) {
+    return ExecutionStateFromJSONTyped(json, false);
+}
+function ExecutionStateFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function ExecutionStateToJSON(value) {
+    return value;
+}
+function ExecutionStateToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 3561:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositiveEntry = instanceOfFalsePositiveEntry;
+exports.FalsePositiveEntryFromJSON = FalsePositiveEntryFromJSON;
+exports.FalsePositiveEntryFromJSONTyped = FalsePositiveEntryFromJSONTyped;
+exports.FalsePositiveEntryToJSON = FalsePositiveEntryToJSON;
+exports.FalsePositiveEntryToJSONTyped = FalsePositiveEntryToJSONTyped;
+const FalsePositiveMetaData_1 = __nccwpck_require__(6908);
+const FalsePositiveJobData_1 = __nccwpck_require__(1828);
+const FalsePositiveProjectData_1 = __nccwpck_require__(7173);
+/**
+ * Check if a given object implements the FalsePositiveEntry interface.
+ */
+function instanceOfFalsePositiveEntry(value) {
+    return true;
+}
+function FalsePositiveEntryFromJSON(json) {
+    return FalsePositiveEntryFromJSONTyped(json, false);
+}
+function FalsePositiveEntryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'jobData': json['jobData'] == null ? undefined : (0, FalsePositiveJobData_1.FalsePositiveJobDataFromJSON)(json['jobData']),
+        'author': json['author'] == null ? undefined : json['author'],
+        'metaData': json['metaData'] == null ? undefined : (0, FalsePositiveMetaData_1.FalsePositiveMetaDataFromJSON)(json['metaData']),
+        'projectData': json['projectData'] == null ? undefined : (0, FalsePositiveProjectData_1.FalsePositiveProjectDataFromJSON)(json['projectData']),
+        'created': json['created'] == null ? undefined : json['created'],
+    };
+}
+function FalsePositiveEntryToJSON(json) {
+    return FalsePositiveEntryToJSONTyped(json, false);
+}
+function FalsePositiveEntryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'jobData': (0, FalsePositiveJobData_1.FalsePositiveJobDataToJSON)(value['jobData']),
+        'author': value['author'],
+        'metaData': (0, FalsePositiveMetaData_1.FalsePositiveMetaDataToJSON)(value['metaData']),
+        'projectData': (0, FalsePositiveProjectData_1.FalsePositiveProjectDataToJSON)(value['projectData']),
+        'created': value['created'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 1828:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositiveJobData = instanceOfFalsePositiveJobData;
+exports.FalsePositiveJobDataFromJSON = FalsePositiveJobDataFromJSON;
+exports.FalsePositiveJobDataFromJSONTyped = FalsePositiveJobDataFromJSONTyped;
+exports.FalsePositiveJobDataToJSON = FalsePositiveJobDataToJSON;
+exports.FalsePositiveJobDataToJSONTyped = FalsePositiveJobDataToJSONTyped;
+/**
+ * Check if a given object implements the FalsePositiveJobData interface.
+ */
+function instanceOfFalsePositiveJobData(value) {
+    return true;
+}
+function FalsePositiveJobDataFromJSON(json) {
+    return FalsePositiveJobDataFromJSONTyped(json, false);
+}
+function FalsePositiveJobDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'jobUUID': json['jobUUID'] == null ? undefined : json['jobUUID'],
+        'findingId': json['findingId'] == null ? undefined : json['findingId'],
+        'comment': json['comment'] == null ? undefined : json['comment'],
+    };
+}
+function FalsePositiveJobDataToJSON(json) {
+    return FalsePositiveJobDataToJSONTyped(json, false);
+}
+function FalsePositiveJobDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'jobUUID': value['jobUUID'],
+        'findingId': value['findingId'],
+        'comment': value['comment'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 6908:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositiveMetaData = instanceOfFalsePositiveMetaData;
+exports.FalsePositiveMetaDataFromJSON = FalsePositiveMetaDataFromJSON;
+exports.FalsePositiveMetaDataFromJSONTyped = FalsePositiveMetaDataFromJSONTyped;
+exports.FalsePositiveMetaDataToJSON = FalsePositiveMetaDataToJSON;
+exports.FalsePositiveMetaDataToJSONTyped = FalsePositiveMetaDataToJSONTyped;
+const FalsePositiveWebMetaData_1 = __nccwpck_require__(9138);
+const FalsePositivesFalsePositivesInnerMetaDataCode_1 = __nccwpck_require__(5853);
+/**
+ * Check if a given object implements the FalsePositiveMetaData interface.
+ */
+function instanceOfFalsePositiveMetaData(value) {
+    return true;
+}
+function FalsePositiveMetaDataFromJSON(json) {
+    return FalsePositiveMetaDataFromJSONTyped(json, false);
+}
+function FalsePositiveMetaDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'scanType': json['scanType'] == null ? undefined : json['scanType'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'severity': json['severity'] == null ? undefined : json['severity'],
+        'code': json['code'] == null ? undefined : (0, FalsePositivesFalsePositivesInnerMetaDataCode_1.FalsePositivesFalsePositivesInnerMetaDataCodeFromJSON)(json['code']),
+        'web': json['web'] == null ? undefined : (0, FalsePositiveWebMetaData_1.FalsePositiveWebMetaDataFromJSON)(json['web']),
+        'cweId': json['cweId'] == null ? undefined : json['cweId'],
+        'cveId': json['cveId'] == null ? undefined : json['cveId'],
+        'owasp': json['owasp'] == null ? undefined : json['owasp'],
+    };
+}
+function FalsePositiveMetaDataToJSON(json) {
+    return FalsePositiveMetaDataToJSONTyped(json, false);
+}
+function FalsePositiveMetaDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'scanType': value['scanType'],
+        'name': value['name'],
+        'severity': value['severity'],
+        'code': (0, FalsePositivesFalsePositivesInnerMetaDataCode_1.FalsePositivesFalsePositivesInnerMetaDataCodeToJSON)(value['code']),
+        'web': (0, FalsePositiveWebMetaData_1.FalsePositiveWebMetaDataToJSON)(value['web']),
+        'cweId': value['cweId'],
+        'cveId': value['cveId'],
+        'owasp': value['owasp'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 1797:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositiveProjectConfiguration = instanceOfFalsePositiveProjectConfiguration;
+exports.FalsePositiveProjectConfigurationFromJSON = FalsePositiveProjectConfigurationFromJSON;
+exports.FalsePositiveProjectConfigurationFromJSONTyped = FalsePositiveProjectConfigurationFromJSONTyped;
+exports.FalsePositiveProjectConfigurationToJSON = FalsePositiveProjectConfigurationToJSON;
+exports.FalsePositiveProjectConfigurationToJSONTyped = FalsePositiveProjectConfigurationToJSONTyped;
+const FalsePositiveEntry_1 = __nccwpck_require__(3561);
+/**
+ * Check if a given object implements the FalsePositiveProjectConfiguration interface.
+ */
+function instanceOfFalsePositiveProjectConfiguration(value) {
+    return true;
+}
+function FalsePositiveProjectConfigurationFromJSON(json) {
+    return FalsePositiveProjectConfigurationFromJSONTyped(json, false);
+}
+function FalsePositiveProjectConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'falsePositives': json['falsePositives'] == null ? undefined : (json['falsePositives'].map(FalsePositiveEntry_1.FalsePositiveEntryFromJSON)),
+    };
+}
+function FalsePositiveProjectConfigurationToJSON(json) {
+    return FalsePositiveProjectConfigurationToJSONTyped(json, false);
+}
+function FalsePositiveProjectConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'falsePositives': value['falsePositives'] == null ? undefined : (value['falsePositives'].map(FalsePositiveEntry_1.FalsePositiveEntryToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 7173:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositiveProjectData = instanceOfFalsePositiveProjectData;
+exports.FalsePositiveProjectDataFromJSON = FalsePositiveProjectDataFromJSON;
+exports.FalsePositiveProjectDataFromJSONTyped = FalsePositiveProjectDataFromJSONTyped;
+exports.FalsePositiveProjectDataToJSON = FalsePositiveProjectDataToJSON;
+exports.FalsePositiveProjectDataToJSONTyped = FalsePositiveProjectDataToJSONTyped;
+const WebscanFalsePositiveProjectData_1 = __nccwpck_require__(3495);
+/**
+ * Check if a given object implements the FalsePositiveProjectData interface.
+ */
+function instanceOfFalsePositiveProjectData(value) {
+    if (!('id' in value) || value['id'] === undefined)
+        return false;
+    return true;
+}
+function FalsePositiveProjectDataFromJSON(json) {
+    return FalsePositiveProjectDataFromJSONTyped(json, false);
+}
+function FalsePositiveProjectDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'id': json['id'],
+        'comment': json['comment'] == null ? undefined : json['comment'],
+        'webScan': json['webScan'] == null ? undefined : (0, WebscanFalsePositiveProjectData_1.WebscanFalsePositiveProjectDataFromJSON)(json['webScan']),
+    };
+}
+function FalsePositiveProjectDataToJSON(json) {
+    return FalsePositiveProjectDataToJSONTyped(json, false);
+}
+function FalsePositiveProjectDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'id': value['id'],
+        'comment': value['comment'],
+        'webScan': (0, WebscanFalsePositiveProjectData_1.WebscanFalsePositiveProjectDataToJSON)(value['webScan']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 9138:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositiveWebMetaData = instanceOfFalsePositiveWebMetaData;
+exports.FalsePositiveWebMetaDataFromJSON = FalsePositiveWebMetaDataFromJSON;
+exports.FalsePositiveWebMetaDataFromJSONTyped = FalsePositiveWebMetaDataFromJSONTyped;
+exports.FalsePositiveWebMetaDataToJSON = FalsePositiveWebMetaDataToJSON;
+exports.FalsePositiveWebMetaDataToJSONTyped = FalsePositiveWebMetaDataToJSONTyped;
+const FalsePositiveWebResponseMetaData_1 = __nccwpck_require__(8107);
+const FalsePositiveWebRequestMetaData_1 = __nccwpck_require__(3371);
+/**
+ * Check if a given object implements the FalsePositiveWebMetaData interface.
+ */
+function instanceOfFalsePositiveWebMetaData(value) {
+    return true;
+}
+function FalsePositiveWebMetaDataFromJSON(json) {
+    return FalsePositiveWebMetaDataFromJSONTyped(json, false);
+}
+function FalsePositiveWebMetaDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'request': json['request'] == null ? undefined : (0, FalsePositiveWebRequestMetaData_1.FalsePositiveWebRequestMetaDataFromJSON)(json['request']),
+        'response': json['response'] == null ? undefined : (0, FalsePositiveWebResponseMetaData_1.FalsePositiveWebResponseMetaDataFromJSON)(json['response']),
+    };
+}
+function FalsePositiveWebMetaDataToJSON(json) {
+    return FalsePositiveWebMetaDataToJSONTyped(json, false);
+}
+function FalsePositiveWebMetaDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'request': (0, FalsePositiveWebRequestMetaData_1.FalsePositiveWebRequestMetaDataToJSON)(value['request']),
+        'response': (0, FalsePositiveWebResponseMetaData_1.FalsePositiveWebResponseMetaDataToJSON)(value['response']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 3371:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositiveWebRequestMetaData = instanceOfFalsePositiveWebRequestMetaData;
+exports.FalsePositiveWebRequestMetaDataFromJSON = FalsePositiveWebRequestMetaDataFromJSON;
+exports.FalsePositiveWebRequestMetaDataFromJSONTyped = FalsePositiveWebRequestMetaDataFromJSONTyped;
+exports.FalsePositiveWebRequestMetaDataToJSON = FalsePositiveWebRequestMetaDataToJSON;
+exports.FalsePositiveWebRequestMetaDataToJSONTyped = FalsePositiveWebRequestMetaDataToJSONTyped;
+/**
+ * Check if a given object implements the FalsePositiveWebRequestMetaData interface.
+ */
+function instanceOfFalsePositiveWebRequestMetaData(value) {
+    return true;
+}
+function FalsePositiveWebRequestMetaDataFromJSON(json) {
+    return FalsePositiveWebRequestMetaDataFromJSONTyped(json, false);
+}
+function FalsePositiveWebRequestMetaDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'method': json['method'] == null ? undefined : json['method'],
+        'target': json['target'] == null ? undefined : json['target'],
+        'protocol': json['protocol'] == null ? undefined : json['protocol'],
+        'version': json['version'] == null ? undefined : json['version'],
+        'attackVector': json['attackVector'] == null ? undefined : json['attackVector'],
+    };
+}
+function FalsePositiveWebRequestMetaDataToJSON(json) {
+    return FalsePositiveWebRequestMetaDataToJSONTyped(json, false);
+}
+function FalsePositiveWebRequestMetaDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'method': value['method'],
+        'target': value['target'],
+        'protocol': value['protocol'],
+        'version': value['version'],
+        'attackVector': value['attackVector'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 8107:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositiveWebResponseMetaData = instanceOfFalsePositiveWebResponseMetaData;
+exports.FalsePositiveWebResponseMetaDataFromJSON = FalsePositiveWebResponseMetaDataFromJSON;
+exports.FalsePositiveWebResponseMetaDataFromJSONTyped = FalsePositiveWebResponseMetaDataFromJSONTyped;
+exports.FalsePositiveWebResponseMetaDataToJSON = FalsePositiveWebResponseMetaDataToJSON;
+exports.FalsePositiveWebResponseMetaDataToJSONTyped = FalsePositiveWebResponseMetaDataToJSONTyped;
+/**
+ * Check if a given object implements the FalsePositiveWebResponseMetaData interface.
+ */
+function instanceOfFalsePositiveWebResponseMetaData(value) {
+    return true;
+}
+function FalsePositiveWebResponseMetaDataFromJSON(json) {
+    return FalsePositiveWebResponseMetaDataFromJSONTyped(json, false);
+}
+function FalsePositiveWebResponseMetaDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'evidence': json['evidence'] == null ? undefined : json['evidence'],
+        'statusCode': json['statusCode'] == null ? undefined : json['statusCode'],
+    };
+}
+function FalsePositiveWebResponseMetaDataToJSON(json) {
+    return FalsePositiveWebResponseMetaDataToJSONTyped(json, false);
+}
+function FalsePositiveWebResponseMetaDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'evidence': value['evidence'],
+        'statusCode': value['statusCode'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 8749:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositives = instanceOfFalsePositives;
+exports.FalsePositivesFromJSON = FalsePositivesFromJSON;
+exports.FalsePositivesFromJSONTyped = FalsePositivesFromJSONTyped;
+exports.FalsePositivesToJSON = FalsePositivesToJSON;
+exports.FalsePositivesToJSONTyped = FalsePositivesToJSONTyped;
+const FalsePositiveJobData_1 = __nccwpck_require__(1828);
+const FalsePositiveProjectData_1 = __nccwpck_require__(7173);
+/**
+ * Check if a given object implements the FalsePositives interface.
+ */
+function instanceOfFalsePositives(value) {
+    return true;
+}
+function FalsePositivesFromJSON(json) {
+    return FalsePositivesFromJSONTyped(json, false);
+}
+function FalsePositivesFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'apiVersion': json['apiVersion'] == null ? undefined : json['apiVersion'],
+        'type': json['type'] == null ? undefined : json['type'],
+        'jobData': json['jobData'] == null ? undefined : (json['jobData'].map(FalsePositiveJobData_1.FalsePositiveJobDataFromJSON)),
+        'projectData': json['projectData'] == null ? undefined : (json['projectData'].map(FalsePositiveProjectData_1.FalsePositiveProjectDataFromJSON)),
+    };
+}
+function FalsePositivesToJSON(json) {
+    return FalsePositivesToJSONTyped(json, false);
+}
+function FalsePositivesToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'apiVersion': value['apiVersion'],
+        'type': value['type'],
+        'jobData': value['jobData'] == null ? undefined : (value['jobData'].map(FalsePositiveJobData_1.FalsePositiveJobDataToJSON)),
+        'projectData': value['projectData'] == null ? undefined : (value['projectData'].map(FalsePositiveProjectData_1.FalsePositiveProjectDataToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 5853:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositivesFalsePositivesInnerMetaDataCode = instanceOfFalsePositivesFalsePositivesInnerMetaDataCode;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeFromJSON = FalsePositivesFalsePositivesInnerMetaDataCodeFromJSON;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeFromJSONTyped = FalsePositivesFalsePositivesInnerMetaDataCodeFromJSONTyped;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeToJSON = FalsePositivesFalsePositivesInnerMetaDataCodeToJSON;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeToJSONTyped = FalsePositivesFalsePositivesInnerMetaDataCodeToJSONTyped;
+const FalsePositivesFalsePositivesInnerMetaDataCodeEnd_1 = __nccwpck_require__(4821);
+const FalsePositivesFalsePositivesInnerMetaDataCodeStart_1 = __nccwpck_require__(7387);
+/**
+ * Check if a given object implements the FalsePositivesFalsePositivesInnerMetaDataCode interface.
+ */
+function instanceOfFalsePositivesFalsePositivesInnerMetaDataCode(value) {
+    return true;
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeFromJSON(json) {
+    return FalsePositivesFalsePositivesInnerMetaDataCodeFromJSONTyped(json, false);
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'start': json['start'] == null ? undefined : (0, FalsePositivesFalsePositivesInnerMetaDataCodeStart_1.FalsePositivesFalsePositivesInnerMetaDataCodeStartFromJSON)(json['start']),
+        'end': json['end'] == null ? undefined : (0, FalsePositivesFalsePositivesInnerMetaDataCodeEnd_1.FalsePositivesFalsePositivesInnerMetaDataCodeEndFromJSON)(json['end']),
+    };
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeToJSON(json) {
+    return FalsePositivesFalsePositivesInnerMetaDataCodeToJSONTyped(json, false);
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'start': (0, FalsePositivesFalsePositivesInnerMetaDataCodeStart_1.FalsePositivesFalsePositivesInnerMetaDataCodeStartToJSON)(value['start']),
+        'end': (0, FalsePositivesFalsePositivesInnerMetaDataCodeEnd_1.FalsePositivesFalsePositivesInnerMetaDataCodeEndToJSON)(value['end']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 4821:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositivesFalsePositivesInnerMetaDataCodeEnd = instanceOfFalsePositivesFalsePositivesInnerMetaDataCodeEnd;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeEndFromJSON = FalsePositivesFalsePositivesInnerMetaDataCodeEndFromJSON;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeEndFromJSONTyped = FalsePositivesFalsePositivesInnerMetaDataCodeEndFromJSONTyped;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeEndToJSON = FalsePositivesFalsePositivesInnerMetaDataCodeEndToJSON;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeEndToJSONTyped = FalsePositivesFalsePositivesInnerMetaDataCodeEndToJSONTyped;
+/**
+ * Check if a given object implements the FalsePositivesFalsePositivesInnerMetaDataCodeEnd interface.
+ */
+function instanceOfFalsePositivesFalsePositivesInnerMetaDataCodeEnd(value) {
+    return true;
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeEndFromJSON(json) {
+    return FalsePositivesFalsePositivesInnerMetaDataCodeEndFromJSONTyped(json, false);
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeEndFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'sourceCode': json['sourceCode'] == null ? undefined : json['sourceCode'],
+        'relevantPart': json['relevantPart'] == null ? undefined : json['relevantPart'],
+        'location': json['location'] == null ? undefined : json['location'],
+    };
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeEndToJSON(json) {
+    return FalsePositivesFalsePositivesInnerMetaDataCodeEndToJSONTyped(json, false);
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeEndToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'sourceCode': value['sourceCode'],
+        'relevantPart': value['relevantPart'],
+        'location': value['location'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 7387:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFalsePositivesFalsePositivesInnerMetaDataCodeStart = instanceOfFalsePositivesFalsePositivesInnerMetaDataCodeStart;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeStartFromJSON = FalsePositivesFalsePositivesInnerMetaDataCodeStartFromJSON;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeStartFromJSONTyped = FalsePositivesFalsePositivesInnerMetaDataCodeStartFromJSONTyped;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeStartToJSON = FalsePositivesFalsePositivesInnerMetaDataCodeStartToJSON;
+exports.FalsePositivesFalsePositivesInnerMetaDataCodeStartToJSONTyped = FalsePositivesFalsePositivesInnerMetaDataCodeStartToJSONTyped;
+/**
+ * Check if a given object implements the FalsePositivesFalsePositivesInnerMetaDataCodeStart interface.
+ */
+function instanceOfFalsePositivesFalsePositivesInnerMetaDataCodeStart(value) {
+    return true;
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeStartFromJSON(json) {
+    return FalsePositivesFalsePositivesInnerMetaDataCodeStartFromJSONTyped(json, false);
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeStartFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'sourceCode': json['sourceCode'] == null ? undefined : json['sourceCode'],
+        'relevantPart': json['relevantPart'] == null ? undefined : json['relevantPart'],
+        'location': json['location'] == null ? undefined : json['location'],
+    };
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeStartToJSON(json) {
+    return FalsePositivesFalsePositivesInnerMetaDataCodeStartToJSONTyped(json, false);
+}
+function FalsePositivesFalsePositivesInnerMetaDataCodeStartToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'sourceCode': value['sourceCode'],
+        'relevantPart': value['relevantPart'],
+        'location': value['location'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 2429:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfFormLoginConfiguration = instanceOfFormLoginConfiguration;
+exports.FormLoginConfigurationFromJSON = FormLoginConfigurationFromJSON;
+exports.FormLoginConfigurationFromJSONTyped = FormLoginConfigurationFromJSONTyped;
+exports.FormLoginConfigurationToJSON = FormLoginConfigurationToJSON;
+exports.FormLoginConfigurationToJSONTyped = FormLoginConfigurationToJSONTyped;
+const Script_1 = __nccwpck_require__(1350);
+/**
+ * Check if a given object implements the FormLoginConfiguration interface.
+ */
+function instanceOfFormLoginConfiguration(value) {
+    return true;
+}
+function FormLoginConfigurationFromJSON(json) {
+    return FormLoginConfigurationFromJSONTyped(json, false);
+}
+function FormLoginConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'script': json['script'] == null ? undefined : (0, Script_1.ScriptFromJSON)(json['script']),
+    };
+}
+function FormLoginConfigurationToJSON(json) {
+    return FormLoginConfigurationToJSONTyped(json, false);
+}
+function FormLoginConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'script': (0, Script_1.ScriptToJSON)(value['script']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 2304:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfHTTPHeaderConfiguration = instanceOfHTTPHeaderConfiguration;
+exports.HTTPHeaderConfigurationFromJSON = HTTPHeaderConfigurationFromJSON;
+exports.HTTPHeaderConfigurationFromJSONTyped = HTTPHeaderConfigurationFromJSONTyped;
+exports.HTTPHeaderConfigurationToJSON = HTTPHeaderConfigurationToJSON;
+exports.HTTPHeaderConfigurationToJSONTyped = HTTPHeaderConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the HTTPHeaderConfiguration interface.
+ */
+function instanceOfHTTPHeaderConfiguration(value) {
+    if (!('name' in value) || value['name'] === undefined)
+        return false;
+    if (!('value' in value) || value['value'] === undefined)
+        return false;
+    if (!('sensitive' in value) || value['sensitive'] === undefined)
+        return false;
+    return true;
+}
+function HTTPHeaderConfigurationFromJSON(json) {
+    return HTTPHeaderConfigurationFromJSONTyped(json, false);
+}
+function HTTPHeaderConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'name': json['name'],
+        'value': json['value'],
+        'onlyForUrls': json['onlyForUrls'] == null ? undefined : json['onlyForUrls'],
+        'sensitive': json['sensitive'],
+        'use': json['use'] == null ? undefined : json['use'],
+    };
+}
+function HTTPHeaderConfigurationToJSON(json) {
+    return HTTPHeaderConfigurationToJSONTyped(json, false);
+}
+function HTTPHeaderConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'name': value['name'],
+        'value': value['value'],
+        'onlyForUrls': value['onlyForUrls'],
+        'sensitive': value['sensitive'],
+        'use': value['use'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 2442:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfJobInformation = instanceOfJobInformation;
+exports.JobInformationFromJSON = JobInformationFromJSON;
+exports.JobInformationFromJSONTyped = JobInformationFromJSONTyped;
+exports.JobInformationToJSON = JobInformationToJSON;
+exports.JobInformationToJSONTyped = JobInformationToJSONTyped;
+const JobStatus_1 = __nccwpck_require__(4797);
+/**
+ * Check if a given object implements the JobInformation interface.
+ */
+function instanceOfJobInformation(value) {
+    return true;
+}
+function JobInformationFromJSON(json) {
+    return JobInformationFromJSONTyped(json, false);
+}
+function JobInformationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'jobUUID': json['jobUUID'] == null ? undefined : json['jobUUID'],
+        'projectId': json['projectId'] == null ? undefined : json['projectId'],
+        'owner': json['owner'] == null ? undefined : json['owner'],
+        'status': json['status'] == null ? undefined : (0, JobStatus_1.JobStatusFromJSON)(json['status']),
+        'since': json['since'] == null ? undefined : (new Date(json['since'])),
+        '_configuration': json['configuration'] == null ? undefined : json['configuration'],
+        'info': json['info'] == null ? undefined : json['info'],
+        'version': json['version'] == null ? undefined : json['version'],
+    };
+}
+function JobInformationToJSON(json) {
+    return JobInformationToJSONTyped(json, false);
+}
+function JobInformationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'jobUUID': value['jobUUID'],
+        'projectId': value['projectId'],
+        'owner': value['owner'],
+        'status': (0, JobStatus_1.JobStatusToJSON)(value['status']),
+        'since': value['since'] == null ? undefined : ((value['since']).toISOString()),
+        'configuration': value['_configuration'],
+        'info': value['info'],
+        'version': value['version'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4797:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JobStatus = void 0;
+exports.instanceOfJobStatus = instanceOfJobStatus;
+exports.JobStatusFromJSON = JobStatusFromJSON;
+exports.JobStatusFromJSONTyped = JobStatusFromJSONTyped;
+exports.JobStatusToJSON = JobStatusToJSON;
+exports.JobStatusToJSONTyped = JobStatusToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.JobStatus = {
+    Created: 'CREATED',
+    Running: 'RUNNING',
+    Done: 'DONE'
+};
+function instanceOfJobStatus(value) {
+    for (const key in exports.JobStatus) {
+        if (Object.prototype.hasOwnProperty.call(exports.JobStatus, key)) {
+            if (exports.JobStatus[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function JobStatusFromJSON(json) {
+    return JobStatusFromJSONTyped(json, false);
+}
+function JobStatusFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function JobStatusToJSON(value) {
+    return value;
+}
+function JobStatusToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 4397:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfMappingData = instanceOfMappingData;
+exports.MappingDataFromJSON = MappingDataFromJSON;
+exports.MappingDataFromJSONTyped = MappingDataFromJSONTyped;
+exports.MappingDataToJSON = MappingDataToJSON;
+exports.MappingDataToJSONTyped = MappingDataToJSONTyped;
+const MappingEntry_1 = __nccwpck_require__(4396);
+/**
+ * Check if a given object implements the MappingData interface.
+ */
+function instanceOfMappingData(value) {
+    return true;
+}
+function MappingDataFromJSON(json) {
+    return MappingDataFromJSONTyped(json, false);
+}
+function MappingDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'entries': json['entries'] == null ? undefined : (json['entries'].map(MappingEntry_1.MappingEntryFromJSON)),
+    };
+}
+function MappingDataToJSON(json) {
+    return MappingDataToJSONTyped(json, false);
+}
+function MappingDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'entries': value['entries'] == null ? undefined : (value['entries'].map(MappingEntry_1.MappingEntryToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 4396:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfMappingEntry = instanceOfMappingEntry;
+exports.MappingEntryFromJSON = MappingEntryFromJSON;
+exports.MappingEntryFromJSONTyped = MappingEntryFromJSONTyped;
+exports.MappingEntryToJSON = MappingEntryToJSON;
+exports.MappingEntryToJSONTyped = MappingEntryToJSONTyped;
+/**
+ * Check if a given object implements the MappingEntry interface.
+ */
+function instanceOfMappingEntry(value) {
+    return true;
+}
+function MappingEntryFromJSON(json) {
+    return MappingEntryFromJSONTyped(json, false);
+}
+function MappingEntryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'pattern': json['pattern'] == null ? undefined : json['pattern'],
+        'replacement': json['replacement'] == null ? undefined : json['replacement'],
+        'comment': json['comment'] == null ? undefined : json['comment'],
+    };
+}
+function MappingEntryToJSON(json) {
+    return MappingEntryToJSONTyped(json, false);
+}
+function MappingEntryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'pattern': value['pattern'],
+        'replacement': value['replacement'],
+        'comment': value['comment'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3007:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfPage = instanceOfPage;
+exports.PageFromJSON = PageFromJSON;
+exports.PageFromJSONTyped = PageFromJSONTyped;
+exports.PageToJSON = PageToJSON;
+exports.PageToJSONTyped = PageToJSONTyped;
+const Action_1 = __nccwpck_require__(1579);
+/**
+ * Check if a given object implements the Page interface.
+ */
+function instanceOfPage(value) {
+    return true;
+}
+function PageFromJSON(json) {
+    return PageFromJSONTyped(json, false);
+}
+function PageFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'actions': json['actions'] == null ? undefined : (json['actions'].map(Action_1.ActionFromJSON)),
+    };
+}
+function PageToJSON(json) {
+    return PageToJSONTyped(json, false);
+}
+function PageToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'actions': value['actions'] == null ? undefined : (value['actions'].map(Action_1.ActionToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 3834:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutionProfile = instanceOfProductExecutionProfile;
+exports.ProductExecutionProfileFromJSON = ProductExecutionProfileFromJSON;
+exports.ProductExecutionProfileFromJSONTyped = ProductExecutionProfileFromJSONTyped;
+exports.ProductExecutionProfileToJSON = ProductExecutionProfileToJSON;
+exports.ProductExecutionProfileToJSONTyped = ProductExecutionProfileToJSONTyped;
+const ProductExecutorConfig_1 = __nccwpck_require__(7485);
+/**
+ * Check if a given object implements the ProductExecutionProfile interface.
+ */
+function instanceOfProductExecutionProfile(value) {
+    return true;
+}
+function ProductExecutionProfileFromJSON(json) {
+    return ProductExecutionProfileFromJSONTyped(json, false);
+}
+function ProductExecutionProfileFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'id': json['id'] == null ? undefined : json['id'],
+        'description': json['description'] == null ? undefined : json['description'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'version': json['version'] == null ? undefined : json['version'],
+        'configurations': json['configurations'] == null ? undefined : (json['configurations'].map(ProductExecutorConfig_1.ProductExecutorConfigFromJSON)),
+        'projectIds': json['projectIds'] == null ? undefined : json['projectIds'],
+    };
+}
+function ProductExecutionProfileToJSON(json) {
+    return ProductExecutionProfileToJSONTyped(json, false);
+}
+function ProductExecutionProfileToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'id': value['id'],
+        'description': value['description'],
+        'enabled': value['enabled'],
+        'version': value['version'],
+        'configurations': value['configurations'] == null ? undefined : (value['configurations'].map(ProductExecutorConfig_1.ProductExecutorConfigToJSON)),
+        'projectIds': value['projectIds'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 9162:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutionProfileListEntry = instanceOfProductExecutionProfileListEntry;
+exports.ProductExecutionProfileListEntryFromJSON = ProductExecutionProfileListEntryFromJSON;
+exports.ProductExecutionProfileListEntryFromJSONTyped = ProductExecutionProfileListEntryFromJSONTyped;
+exports.ProductExecutionProfileListEntryToJSON = ProductExecutionProfileListEntryToJSON;
+exports.ProductExecutionProfileListEntryToJSONTyped = ProductExecutionProfileListEntryToJSONTyped;
+/**
+ * Check if a given object implements the ProductExecutionProfileListEntry interface.
+ */
+function instanceOfProductExecutionProfileListEntry(value) {
+    return true;
+}
+function ProductExecutionProfileListEntryFromJSON(json) {
+    return ProductExecutionProfileListEntryFromJSONTyped(json, false);
+}
+function ProductExecutionProfileListEntryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'id': json['id'] == null ? undefined : json['id'],
+        'description': json['description'] == null ? undefined : json['description'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+    };
+}
+function ProductExecutionProfileListEntryToJSON(json) {
+    return ProductExecutionProfileListEntryToJSONTyped(json, false);
+}
+function ProductExecutionProfileListEntryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'id': value['id'],
+        'description': value['description'],
+        'enabled': value['enabled'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3407:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutionProfilesList = instanceOfProductExecutionProfilesList;
+exports.ProductExecutionProfilesListFromJSON = ProductExecutionProfilesListFromJSON;
+exports.ProductExecutionProfilesListFromJSONTyped = ProductExecutionProfilesListFromJSONTyped;
+exports.ProductExecutionProfilesListToJSON = ProductExecutionProfilesListToJSON;
+exports.ProductExecutionProfilesListToJSONTyped = ProductExecutionProfilesListToJSONTyped;
+const ProductExecutionProfileListEntry_1 = __nccwpck_require__(9162);
+/**
+ * Check if a given object implements the ProductExecutionProfilesList interface.
+ */
+function instanceOfProductExecutionProfilesList(value) {
+    return true;
+}
+function ProductExecutionProfilesListFromJSON(json) {
+    return ProductExecutionProfilesListFromJSONTyped(json, false);
+}
+function ProductExecutionProfilesListFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'executionProfiles': json['executionProfiles'] == null ? undefined : (json['executionProfiles'].map(ProductExecutionProfileListEntry_1.ProductExecutionProfileListEntryFromJSON)),
+        'type': json['type'] == null ? undefined : json['type'],
+    };
+}
+function ProductExecutionProfilesListToJSON(json) {
+    return ProductExecutionProfilesListToJSONTyped(json, false);
+}
+function ProductExecutionProfilesListToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'executionProfiles': value['executionProfiles'] == null ? undefined : (value['executionProfiles'].map(ProductExecutionProfileListEntry_1.ProductExecutionProfileListEntryToJSON)),
+        'type': value['type'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 7485:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutorConfig = instanceOfProductExecutorConfig;
+exports.ProductExecutorConfigFromJSON = ProductExecutorConfigFromJSON;
+exports.ProductExecutorConfigFromJSONTyped = ProductExecutorConfigFromJSONTyped;
+exports.ProductExecutorConfigToJSON = ProductExecutorConfigToJSON;
+exports.ProductExecutorConfigToJSONTyped = ProductExecutorConfigToJSONTyped;
+const ProductExecutionProfile_1 = __nccwpck_require__(3834);
+const ProductIdentifier_1 = __nccwpck_require__(5098);
+const ProductExecutorConfigSetup_1 = __nccwpck_require__(4155);
+/**
+ * Check if a given object implements the ProductExecutorConfig interface.
+ */
+function instanceOfProductExecutorConfig(value) {
+    return true;
+}
+function ProductExecutorConfigFromJSON(json) {
+    return ProductExecutorConfigFromJSONTyped(json, false);
+}
+function ProductExecutorConfigFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'productIdentifier': json['productIdentifier'] == null ? undefined : (0, ProductIdentifier_1.ProductIdentifierFromJSON)(json['productIdentifier']),
+        'setup': json['setup'] == null ? undefined : (0, ProductExecutorConfigSetup_1.ProductExecutorConfigSetupFromJSON)(json['setup']),
+        'version': json['version'] == null ? undefined : json['version'],
+        'executorVersion': json['executorVersion'] == null ? undefined : json['executorVersion'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+        'profiles': json['profiles'] == null ? undefined : (json['profiles'].map(ProductExecutionProfile_1.ProductExecutionProfileFromJSON)),
+    };
+}
+function ProductExecutorConfigToJSON(json) {
+    return ProductExecutorConfigToJSONTyped(json, false);
+}
+function ProductExecutorConfigToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'uuid': value['uuid'],
+        'name': value['name'],
+        'productIdentifier': (0, ProductIdentifier_1.ProductIdentifierToJSON)(value['productIdentifier']),
+        'setup': (0, ProductExecutorConfigSetup_1.ProductExecutorConfigSetupToJSON)(value['setup']),
+        'version': value['version'],
+        'executorVersion': value['executorVersion'],
+        'enabled': value['enabled'],
+        'profiles': value['profiles'] == null ? undefined : (value['profiles'].map(ProductExecutionProfile_1.ProductExecutionProfileToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 8306:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutorConfigList = instanceOfProductExecutorConfigList;
+exports.ProductExecutorConfigListFromJSON = ProductExecutorConfigListFromJSON;
+exports.ProductExecutorConfigListFromJSONTyped = ProductExecutorConfigListFromJSONTyped;
+exports.ProductExecutorConfigListToJSON = ProductExecutorConfigListToJSON;
+exports.ProductExecutorConfigListToJSONTyped = ProductExecutorConfigListToJSONTyped;
+const ProductExecutorConfigListEntry_1 = __nccwpck_require__(9805);
+/**
+ * Check if a given object implements the ProductExecutorConfigList interface.
+ */
+function instanceOfProductExecutorConfigList(value) {
+    return true;
+}
+function ProductExecutorConfigListFromJSON(json) {
+    return ProductExecutorConfigListFromJSONTyped(json, false);
+}
+function ProductExecutorConfigListFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'executorConfigurations': json['executorConfigurations'] == null ? undefined : (json['executorConfigurations'].map(ProductExecutorConfigListEntry_1.ProductExecutorConfigListEntryFromJSON)),
+    };
+}
+function ProductExecutorConfigListToJSON(json) {
+    return ProductExecutorConfigListToJSONTyped(json, false);
+}
+function ProductExecutorConfigListToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'executorConfigurations': value['executorConfigurations'] == null ? undefined : (value['executorConfigurations'].map(ProductExecutorConfigListEntry_1.ProductExecutorConfigListEntryToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 9805:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutorConfigListEntry = instanceOfProductExecutorConfigListEntry;
+exports.ProductExecutorConfigListEntryFromJSON = ProductExecutorConfigListEntryFromJSON;
+exports.ProductExecutorConfigListEntryFromJSONTyped = ProductExecutorConfigListEntryFromJSONTyped;
+exports.ProductExecutorConfigListEntryToJSON = ProductExecutorConfigListEntryToJSON;
+exports.ProductExecutorConfigListEntryToJSONTyped = ProductExecutorConfigListEntryToJSONTyped;
+/**
+ * Check if a given object implements the ProductExecutorConfigListEntry interface.
+ */
+function instanceOfProductExecutorConfigListEntry(value) {
+    return true;
+}
+function ProductExecutorConfigListEntryFromJSON(json) {
+    return ProductExecutorConfigListEntryFromJSONTyped(json, false);
+}
+function ProductExecutorConfigListEntryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'uuid': json['uuid'] == null ? undefined : json['uuid'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'enabled': json['enabled'] == null ? undefined : json['enabled'],
+    };
+}
+function ProductExecutorConfigListEntryToJSON(json) {
+    return ProductExecutorConfigListEntryToJSONTyped(json, false);
+}
+function ProductExecutorConfigListEntryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'uuid': value['uuid'],
+        'name': value['name'],
+        'enabled': value['enabled'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4155:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutorConfigSetup = instanceOfProductExecutorConfigSetup;
+exports.ProductExecutorConfigSetupFromJSON = ProductExecutorConfigSetupFromJSON;
+exports.ProductExecutorConfigSetupFromJSONTyped = ProductExecutorConfigSetupFromJSONTyped;
+exports.ProductExecutorConfigSetupToJSON = ProductExecutorConfigSetupToJSON;
+exports.ProductExecutorConfigSetupToJSONTyped = ProductExecutorConfigSetupToJSONTyped;
+const ProductExecutorConfigSetupCredentials_1 = __nccwpck_require__(7848);
+const ProductExecutorConfigSetupJobParameter_1 = __nccwpck_require__(3271);
+/**
+ * Check if a given object implements the ProductExecutorConfigSetup interface.
+ */
+function instanceOfProductExecutorConfigSetup(value) {
+    return true;
+}
+function ProductExecutorConfigSetupFromJSON(json) {
+    return ProductExecutorConfigSetupFromJSONTyped(json, false);
+}
+function ProductExecutorConfigSetupFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'baseURL': json['baseURL'] == null ? undefined : json['baseURL'],
+        'credentials': json['credentials'] == null ? undefined : (0, ProductExecutorConfigSetupCredentials_1.ProductExecutorConfigSetupCredentialsFromJSON)(json['credentials']),
+        'jobParameters': json['jobParameters'] == null ? undefined : (json['jobParameters'].map(ProductExecutorConfigSetupJobParameter_1.ProductExecutorConfigSetupJobParameterFromJSON)),
+    };
+}
+function ProductExecutorConfigSetupToJSON(json) {
+    return ProductExecutorConfigSetupToJSONTyped(json, false);
+}
+function ProductExecutorConfigSetupToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'baseURL': value['baseURL'],
+        'credentials': (0, ProductExecutorConfigSetupCredentials_1.ProductExecutorConfigSetupCredentialsToJSON)(value['credentials']),
+        'jobParameters': value['jobParameters'] == null ? undefined : (value['jobParameters'].map(ProductExecutorConfigSetupJobParameter_1.ProductExecutorConfigSetupJobParameterToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 7848:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutorConfigSetupCredentials = instanceOfProductExecutorConfigSetupCredentials;
+exports.ProductExecutorConfigSetupCredentialsFromJSON = ProductExecutorConfigSetupCredentialsFromJSON;
+exports.ProductExecutorConfigSetupCredentialsFromJSONTyped = ProductExecutorConfigSetupCredentialsFromJSONTyped;
+exports.ProductExecutorConfigSetupCredentialsToJSON = ProductExecutorConfigSetupCredentialsToJSON;
+exports.ProductExecutorConfigSetupCredentialsToJSONTyped = ProductExecutorConfigSetupCredentialsToJSONTyped;
+/**
+ * Check if a given object implements the ProductExecutorConfigSetupCredentials interface.
+ */
+function instanceOfProductExecutorConfigSetupCredentials(value) {
+    return true;
+}
+function ProductExecutorConfigSetupCredentialsFromJSON(json) {
+    return ProductExecutorConfigSetupCredentialsFromJSONTyped(json, false);
+}
+function ProductExecutorConfigSetupCredentialsFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'user': json['user'] == null ? undefined : json['user'],
+        'password': json['password'] == null ? undefined : json['password'],
+    };
+}
+function ProductExecutorConfigSetupCredentialsToJSON(json) {
+    return ProductExecutorConfigSetupCredentialsToJSONTyped(json, false);
+}
+function ProductExecutorConfigSetupCredentialsToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'user': value['user'],
+        'password': value['password'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3271:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProductExecutorConfigSetupJobParameter = instanceOfProductExecutorConfigSetupJobParameter;
+exports.ProductExecutorConfigSetupJobParameterFromJSON = ProductExecutorConfigSetupJobParameterFromJSON;
+exports.ProductExecutorConfigSetupJobParameterFromJSONTyped = ProductExecutorConfigSetupJobParameterFromJSONTyped;
+exports.ProductExecutorConfigSetupJobParameterToJSON = ProductExecutorConfigSetupJobParameterToJSON;
+exports.ProductExecutorConfigSetupJobParameterToJSONTyped = ProductExecutorConfigSetupJobParameterToJSONTyped;
+/**
+ * Check if a given object implements the ProductExecutorConfigSetupJobParameter interface.
+ */
+function instanceOfProductExecutorConfigSetupJobParameter(value) {
+    return true;
+}
+function ProductExecutorConfigSetupJobParameterFromJSON(json) {
+    return ProductExecutorConfigSetupJobParameterFromJSONTyped(json, false);
+}
+function ProductExecutorConfigSetupJobParameterFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'key': json['key'] == null ? undefined : json['key'],
+        'value': json['value'] == null ? undefined : json['value'],
+    };
+}
+function ProductExecutorConfigSetupJobParameterToJSON(json) {
+    return ProductExecutorConfigSetupJobParameterToJSONTyped(json, false);
+}
+function ProductExecutorConfigSetupJobParameterToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'key': value['key'],
+        'value': value['value'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 5098:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProductIdentifier = void 0;
+exports.instanceOfProductIdentifier = instanceOfProductIdentifier;
+exports.ProductIdentifierFromJSON = ProductIdentifierFromJSON;
+exports.ProductIdentifierFromJSONTyped = ProductIdentifierFromJSONTyped;
+exports.ProductIdentifierToJSON = ProductIdentifierToJSON;
+exports.ProductIdentifierToJSONTyped = ProductIdentifierToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.ProductIdentifier = {
+    Netsparker: 'NETSPARKER',
+    Nessus: 'NESSUS',
+    Sereco: 'SERECO',
+    Checkmarx: 'CHECKMARX',
+    PdsCodescan: 'PDS_CODESCAN',
+    PdsWebscan: 'PDS_WEBSCAN',
+    PdsInfrascan: 'PDS_INFRASCAN',
+    PdsLicensescan: 'PDS_LICENSESCAN',
+    PdsSecretscan: 'PDS_SECRETSCAN',
+    PdsAnalytics: 'PDS_ANALYTICS',
+    PdsPrepare: 'PDS_PREPARE',
+    Unknown: 'UNKNOWN'
+};
+function instanceOfProductIdentifier(value) {
+    for (const key in exports.ProductIdentifier) {
+        if (Object.prototype.hasOwnProperty.call(exports.ProductIdentifier, key)) {
+            if (exports.ProductIdentifier[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function ProductIdentifierFromJSON(json) {
+    return ProductIdentifierFromJSONTyped(json, false);
+}
+function ProductIdentifierFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function ProductIdentifierToJSON(value) {
+    return value;
+}
+function ProductIdentifierToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 9778:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ProjectAccessLevel = void 0;
+exports.instanceOfProjectAccessLevel = instanceOfProjectAccessLevel;
+exports.ProjectAccessLevelFromJSON = ProjectAccessLevelFromJSON;
+exports.ProjectAccessLevelFromJSONTyped = ProjectAccessLevelFromJSONTyped;
+exports.ProjectAccessLevelToJSON = ProjectAccessLevelToJSON;
+exports.ProjectAccessLevelToJSONTyped = ProjectAccessLevelToJSONTyped;
+/**
+ * The project access level. Accepted values: FULL (Full access to project, no restrictions), READ_ONLY (Users have only read access to existing data, No new jobs possible), NONE (Users have no access at all.)
+ * @export
+ */
+exports.ProjectAccessLevel = {
+    Full: 'FULL',
+    ReadOnly: 'READ_ONLY',
+    None: 'NONE'
+};
+function instanceOfProjectAccessLevel(value) {
+    for (const key in exports.ProjectAccessLevel) {
+        if (Object.prototype.hasOwnProperty.call(exports.ProjectAccessLevel, key)) {
+            if (exports.ProjectAccessLevel[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function ProjectAccessLevelFromJSON(json) {
+    return ProjectAccessLevelFromJSONTyped(json, false);
+}
+function ProjectAccessLevelFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function ProjectAccessLevelToJSON(value) {
+    return value;
+}
+function ProjectAccessLevelToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 4769:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProjectData = instanceOfProjectData;
+exports.ProjectDataFromJSON = ProjectDataFromJSON;
+exports.ProjectDataFromJSONTyped = ProjectDataFromJSONTyped;
+exports.ProjectDataToJSON = ProjectDataToJSON;
+exports.ProjectDataToJSONTyped = ProjectDataToJSONTyped;
+const ProjectUserData_1 = __nccwpck_require__(8254);
+/**
+ * Check if a given object implements the ProjectData interface.
+ */
+function instanceOfProjectData(value) {
+    if (!('projectId' in value) || value['projectId'] === undefined)
+        return false;
+    if (!('owner' in value) || value['owner'] === undefined)
+        return false;
+    if (!('isOwned' in value) || value['isOwned'] === undefined)
+        return false;
+    return true;
+}
+function ProjectDataFromJSON(json) {
+    return ProjectDataFromJSONTyped(json, false);
+}
+function ProjectDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'projectId': json['projectId'],
+        'owner': (0, ProjectUserData_1.ProjectUserDataFromJSON)(json['owner']),
+        'isOwned': json['isOwned'],
+        'assignedUsers': json['assignedUsers'] == null ? undefined : (json['assignedUsers'].map(ProjectUserData_1.ProjectUserDataFromJSON)),
+        'enabledProfileIds': json['enabledProfileIds'] == null ? undefined : json['enabledProfileIds'],
+    };
+}
+function ProjectDataToJSON(json) {
+    return ProjectDataToJSONTyped(json, false);
+}
+function ProjectDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'projectId': value['projectId'],
+        'owner': (0, ProjectUserData_1.ProjectUserDataToJSON)(value['owner']),
+        'isOwned': value['isOwned'],
+        'assignedUsers': value['assignedUsers'] == null ? undefined : (value['assignedUsers'].map(ProjectUserData_1.ProjectUserDataToJSON)),
+        'enabledProfileIds': value['enabledProfileIds'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 5714:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProjectDetailInformation = instanceOfProjectDetailInformation;
+exports.ProjectDetailInformationFromJSON = ProjectDetailInformationFromJSON;
+exports.ProjectDetailInformationFromJSONTyped = ProjectDetailInformationFromJSONTyped;
+exports.ProjectDetailInformationToJSON = ProjectDetailInformationToJSON;
+exports.ProjectDetailInformationToJSONTyped = ProjectDetailInformationToJSONTyped;
+const ProjectDetailInformationMetaData_1 = __nccwpck_require__(6187);
+/**
+ * Check if a given object implements the ProjectDetailInformation interface.
+ */
+function instanceOfProjectDetailInformation(value) {
+    return true;
+}
+function ProjectDetailInformationFromJSON(json) {
+    return ProjectDetailInformationFromJSONTyped(json, false);
+}
+function ProjectDetailInformationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'owner': json['owner'] == null ? undefined : json['owner'],
+        'metaData': json['metaData'] == null ? undefined : (0, ProjectDetailInformationMetaData_1.ProjectDetailInformationMetaDataFromJSON)(json['metaData']),
+        'accessLevel': json['accessLevel'] == null ? undefined : json['accessLevel'],
+        'description': json['description'] == null ? undefined : json['description'],
+        'whiteList': json['whiteList'] == null ? undefined : json['whiteList'],
+        'projectId': json['projectId'] == null ? undefined : json['projectId'],
+        'users': json['users'] == null ? undefined : json['users'],
+        'templates': json['templates'] == null ? undefined : json['templates'],
+    };
+}
+function ProjectDetailInformationToJSON(json) {
+    return ProjectDetailInformationToJSONTyped(json, false);
+}
+function ProjectDetailInformationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'owner': value['owner'],
+        'metaData': (0, ProjectDetailInformationMetaData_1.ProjectDetailInformationMetaDataToJSON)(value['metaData']),
+        'accessLevel': value['accessLevel'],
+        'description': value['description'],
+        'whiteList': value['whiteList'],
+        'projectId': value['projectId'],
+        'users': value['users'],
+        'templates': value['templates'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 6187:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProjectDetailInformationMetaData = instanceOfProjectDetailInformationMetaData;
+exports.ProjectDetailInformationMetaDataFromJSON = ProjectDetailInformationMetaDataFromJSON;
+exports.ProjectDetailInformationMetaDataFromJSONTyped = ProjectDetailInformationMetaDataFromJSONTyped;
+exports.ProjectDetailInformationMetaDataToJSON = ProjectDetailInformationMetaDataToJSON;
+exports.ProjectDetailInformationMetaDataToJSONTyped = ProjectDetailInformationMetaDataToJSONTyped;
+/**
+ * Check if a given object implements the ProjectDetailInformationMetaData interface.
+ */
+function instanceOfProjectDetailInformationMetaData(value) {
+    return true;
+}
+function ProjectDetailInformationMetaDataFromJSON(json) {
+    return ProjectDetailInformationMetaDataFromJSONTyped(json, false);
+}
+function ProjectDetailInformationMetaDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'key1': json['key1'] == null ? undefined : json['key1'],
+    };
+}
+function ProjectDetailInformationMetaDataToJSON(json) {
+    return ProjectDetailInformationMetaDataToJSONTyped(json, false);
+}
+function ProjectDetailInformationMetaDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'key1': value['key1'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3844:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProjectInput = instanceOfProjectInput;
+exports.ProjectInputFromJSON = ProjectInputFromJSON;
+exports.ProjectInputFromJSONTyped = ProjectInputFromJSONTyped;
+exports.ProjectInputToJSON = ProjectInputToJSON;
+exports.ProjectInputToJSONTyped = ProjectInputToJSONTyped;
+const ProjectWhitelist_1 = __nccwpck_require__(6080);
+/**
+ * Check if a given object implements the ProjectInput interface.
+ */
+function instanceOfProjectInput(value) {
+    if (!('description' in value) || value['description'] === undefined)
+        return false;
+    return true;
+}
+function ProjectInputFromJSON(json) {
+    return ProjectInputFromJSONTyped(json, false);
+}
+function ProjectInputFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'apiVersion': json['apiVersion'] == null ? undefined : json['apiVersion'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'description': json['description'],
+        'owner': json['owner'] == null ? undefined : json['owner'],
+        'whiteList': json['whiteList'] == null ? undefined : (0, ProjectWhitelist_1.ProjectWhitelistFromJSON)(json['whiteList']),
+        'metaData': json['metaData'] == null ? undefined : json['metaData'],
+    };
+}
+function ProjectInputToJSON(json) {
+    return ProjectInputToJSONTyped(json, false);
+}
+function ProjectInputToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'apiVersion': value['apiVersion'],
+        'name': value['name'],
+        'description': value['description'],
+        'owner': value['owner'],
+        'whiteList': (0, ProjectWhitelist_1.ProjectWhitelistToJSON)(value['whiteList']),
+        'metaData': value['metaData'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4879:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProjectScanLogSummary = instanceOfProjectScanLogSummary;
+exports.ProjectScanLogSummaryFromJSON = ProjectScanLogSummaryFromJSON;
+exports.ProjectScanLogSummaryFromJSONTyped = ProjectScanLogSummaryFromJSONTyped;
+exports.ProjectScanLogSummaryToJSON = ProjectScanLogSummaryToJSON;
+exports.ProjectScanLogSummaryToJSONTyped = ProjectScanLogSummaryToJSONTyped;
+/**
+ * Check if a given object implements the ProjectScanLogSummary interface.
+ */
+function instanceOfProjectScanLogSummary(value) {
+    return true;
+}
+function ProjectScanLogSummaryFromJSON(json) {
+    return ProjectScanLogSummaryFromJSONTyped(json, false);
+}
+function ProjectScanLogSummaryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'executedBy': json['executedBy'] == null ? undefined : json['executedBy'],
+        'sechubJobUUID': json['sechubJobUUID'] == null ? undefined : json['sechubJobUUID'],
+        'ended': json['ended'] == null ? undefined : json['ended'],
+        'started': json['started'] == null ? undefined : json['started'],
+        'status': json['status'] == null ? undefined : json['status'],
+    };
+}
+function ProjectScanLogSummaryToJSON(json) {
+    return ProjectScanLogSummaryToJSONTyped(json, false);
+}
+function ProjectScanLogSummaryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'executedBy': value['executedBy'],
+        'sechubJobUUID': value['sechubJobUUID'],
+        'ended': value['ended'],
+        'started': value['started'],
+        'status': value['status'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 8254:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProjectUserData = instanceOfProjectUserData;
+exports.ProjectUserDataFromJSON = ProjectUserDataFromJSON;
+exports.ProjectUserDataFromJSONTyped = ProjectUserDataFromJSONTyped;
+exports.ProjectUserDataToJSON = ProjectUserDataToJSON;
+exports.ProjectUserDataToJSONTyped = ProjectUserDataToJSONTyped;
+/**
+ * Check if a given object implements the ProjectUserData interface.
+ */
+function instanceOfProjectUserData(value) {
+    if (!('userId' in value) || value['userId'] === undefined)
+        return false;
+    if (!('emailAddress' in value) || value['emailAddress'] === undefined)
+        return false;
+    return true;
+}
+function ProjectUserDataFromJSON(json) {
+    return ProjectUserDataFromJSONTyped(json, false);
+}
+function ProjectUserDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'userId': json['userId'],
+        'emailAddress': json['emailAddress'],
+    };
+}
+function ProjectUserDataToJSON(json) {
+    return ProjectUserDataToJSONTyped(json, false);
+}
+function ProjectUserDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'userId': value['userId'],
+        'emailAddress': value['emailAddress'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 6080:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfProjectWhitelist = instanceOfProjectWhitelist;
+exports.ProjectWhitelistFromJSON = ProjectWhitelistFromJSON;
+exports.ProjectWhitelistFromJSONTyped = ProjectWhitelistFromJSONTyped;
+exports.ProjectWhitelistToJSON = ProjectWhitelistToJSON;
+exports.ProjectWhitelistToJSONTyped = ProjectWhitelistToJSONTyped;
+/**
+ * Check if a given object implements the ProjectWhitelist interface.
+ */
+function instanceOfProjectWhitelist(value) {
+    return true;
+}
+function ProjectWhitelistFromJSON(json) {
+    return ProjectWhitelistFromJSONTyped(json, false);
+}
+function ProjectWhitelistFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'uris': json['uris'] == null ? undefined : json['uris'],
+    };
+}
+function ProjectWhitelistToJSON(json) {
+    return ProjectWhitelistToJSONTyped(json, false);
+}
+function ProjectWhitelistToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'uris': value['uris'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 9424:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfScanMockData = instanceOfScanMockData;
+exports.ScanMockDataFromJSON = ScanMockDataFromJSON;
+exports.ScanMockDataFromJSONTyped = ScanMockDataFromJSONTyped;
+exports.ScanMockDataToJSON = ScanMockDataToJSON;
+exports.ScanMockDataToJSONTyped = ScanMockDataToJSONTyped;
+const TrafficLight_1 = __nccwpck_require__(5779);
+/**
+ * Check if a given object implements the ScanMockData interface.
+ */
+function instanceOfScanMockData(value) {
+    return true;
+}
+function ScanMockDataFromJSON(json) {
+    return ScanMockDataFromJSONTyped(json, false);
+}
+function ScanMockDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'result': json['result'] == null ? undefined : (0, TrafficLight_1.TrafficLightFromJSON)(json['result']),
+    };
+}
+function ScanMockDataToJSON(json) {
+    return ScanMockDataToJSONTyped(json, false);
+}
+function ScanMockDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'result': (0, TrafficLight_1.TrafficLightToJSON)(value['result']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 4758:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfScanProjectMockDataConfiguration = instanceOfScanProjectMockDataConfiguration;
+exports.ScanProjectMockDataConfigurationFromJSON = ScanProjectMockDataConfigurationFromJSON;
+exports.ScanProjectMockDataConfigurationFromJSONTyped = ScanProjectMockDataConfigurationFromJSONTyped;
+exports.ScanProjectMockDataConfigurationToJSON = ScanProjectMockDataConfigurationToJSON;
+exports.ScanProjectMockDataConfigurationToJSONTyped = ScanProjectMockDataConfigurationToJSONTyped;
+const ScanMockData_1 = __nccwpck_require__(9424);
+/**
+ * Check if a given object implements the ScanProjectMockDataConfiguration interface.
+ */
+function instanceOfScanProjectMockDataConfiguration(value) {
+    return true;
+}
+function ScanProjectMockDataConfigurationFromJSON(json) {
+    return ScanProjectMockDataConfigurationFromJSONTyped(json, false);
+}
+function ScanProjectMockDataConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'apiVersion': json['apiVersion'] == null ? undefined : json['apiVersion'],
+        'codeScan': json['codeScan'] == null ? undefined : (0, ScanMockData_1.ScanMockDataFromJSON)(json['codeScan']),
+        'webScan': json['webScan'] == null ? undefined : (0, ScanMockData_1.ScanMockDataFromJSON)(json['webScan']),
+        'infraScan': json['infraScan'] == null ? undefined : (0, ScanMockData_1.ScanMockDataFromJSON)(json['infraScan']),
+    };
+}
+function ScanProjectMockDataConfigurationToJSON(json) {
+    return ScanProjectMockDataConfigurationToJSONTyped(json, false);
+}
+function ScanProjectMockDataConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'apiVersion': value['apiVersion'],
+        'codeScan': (0, ScanMockData_1.ScanMockDataToJSON)(value['codeScan']),
+        'webScan': (0, ScanMockData_1.ScanMockDataToJSON)(value['webScan']),
+        'infraScan': (0, ScanMockData_1.ScanMockDataToJSON)(value['infraScan']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 6503:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ScanType = void 0;
+exports.instanceOfScanType = instanceOfScanType;
+exports.ScanTypeFromJSON = ScanTypeFromJSON;
+exports.ScanTypeFromJSONTyped = ScanTypeFromJSONTyped;
+exports.ScanTypeToJSON = ScanTypeToJSON;
+exports.ScanTypeToJSONTyped = ScanTypeToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.ScanType = {
+    CodeScan: 'codeScan',
+    WebScan: 'webScan',
+    InfraScan: 'infraScan',
+    LicenseScan: 'licenseScan',
+    SecretScan: 'secretScan',
+    IacScan: 'iacScan',
+    Report: 'report',
+    Analytics: 'analytics',
+    Prepare: 'prepare',
+    Unknown: 'unknown'
+};
+function instanceOfScanType(value) {
+    for (const key in exports.ScanType) {
+        if (Object.prototype.hasOwnProperty.call(exports.ScanType, key)) {
+            if (exports.ScanType[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function ScanTypeFromJSON(json) {
+    return ScanTypeFromJSONTyped(json, false);
+}
+function ScanTypeFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function ScanTypeToJSON(value) {
+    return value;
+}
+function ScanTypeToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 2892:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfScanTypeSummaryDetailData = instanceOfScanTypeSummaryDetailData;
+exports.ScanTypeSummaryDetailDataFromJSON = ScanTypeSummaryDetailDataFromJSON;
+exports.ScanTypeSummaryDetailDataFromJSONTyped = ScanTypeSummaryDetailDataFromJSONTyped;
+exports.ScanTypeSummaryDetailDataToJSON = ScanTypeSummaryDetailDataToJSON;
+exports.ScanTypeSummaryDetailDataToJSONTyped = ScanTypeSummaryDetailDataToJSONTyped;
+const ScanTypeSummaryFindingOverviewData_1 = __nccwpck_require__(6617);
+/**
+ * Check if a given object implements the ScanTypeSummaryDetailData interface.
+ */
+function instanceOfScanTypeSummaryDetailData(value) {
+    return true;
+}
+function ScanTypeSummaryDetailDataFromJSON(json) {
+    return ScanTypeSummaryDetailDataFromJSONTyped(json, false);
+}
+function ScanTypeSummaryDetailDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'critical': json['critical'] == null ? undefined : (json['critical'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataFromJSON)),
+        'high': json['high'] == null ? undefined : (json['high'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataFromJSON)),
+        'medium': json['medium'] == null ? undefined : (json['medium'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataFromJSON)),
+        'low': json['low'] == null ? undefined : (json['low'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataFromJSON)),
+        'unclassified': json['unclassified'] == null ? undefined : (json['unclassified'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataFromJSON)),
+        'info': json['info'] == null ? undefined : (json['info'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataFromJSON)),
+    };
+}
+function ScanTypeSummaryDetailDataToJSON(json) {
+    return ScanTypeSummaryDetailDataToJSONTyped(json, false);
+}
+function ScanTypeSummaryDetailDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'critical': value['critical'] == null ? undefined : (value['critical'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataToJSON)),
+        'high': value['high'] == null ? undefined : (value['high'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataToJSON)),
+        'medium': value['medium'] == null ? undefined : (value['medium'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataToJSON)),
+        'low': value['low'] == null ? undefined : (value['low'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataToJSON)),
+        'unclassified': value['unclassified'] == null ? undefined : (value['unclassified'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataToJSON)),
+        'info': value['info'] == null ? undefined : (value['info'].map(ScanTypeSummaryFindingOverviewData_1.ScanTypeSummaryFindingOverviewDataToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 6617:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfScanTypeSummaryFindingOverviewData = instanceOfScanTypeSummaryFindingOverviewData;
+exports.ScanTypeSummaryFindingOverviewDataFromJSON = ScanTypeSummaryFindingOverviewDataFromJSON;
+exports.ScanTypeSummaryFindingOverviewDataFromJSONTyped = ScanTypeSummaryFindingOverviewDataFromJSONTyped;
+exports.ScanTypeSummaryFindingOverviewDataToJSON = ScanTypeSummaryFindingOverviewDataToJSON;
+exports.ScanTypeSummaryFindingOverviewDataToJSONTyped = ScanTypeSummaryFindingOverviewDataToJSONTyped;
+/**
+ * Check if a given object implements the ScanTypeSummaryFindingOverviewData interface.
+ */
+function instanceOfScanTypeSummaryFindingOverviewData(value) {
+    return true;
+}
+function ScanTypeSummaryFindingOverviewDataFromJSON(json) {
+    return ScanTypeSummaryFindingOverviewDataFromJSONTyped(json, false);
+}
+function ScanTypeSummaryFindingOverviewDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'cweId': json['cweId'] == null ? undefined : json['cweId'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'count': json['count'] == null ? undefined : json['count'],
+    };
+}
+function ScanTypeSummaryFindingOverviewDataToJSON(json) {
+    return ScanTypeSummaryFindingOverviewDataToJSONTyped(json, false);
+}
+function ScanTypeSummaryFindingOverviewDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'cweId': value['cweId'],
+        'name': value['name'],
+        'count': value['count'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 129:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfScheduleJobStatus = instanceOfScheduleJobStatus;
+exports.ScheduleJobStatusFromJSON = ScheduleJobStatusFromJSON;
+exports.ScheduleJobStatusFromJSONTyped = ScheduleJobStatusFromJSONTyped;
+exports.ScheduleJobStatusToJSON = ScheduleJobStatusToJSON;
+exports.ScheduleJobStatusToJSONTyped = ScheduleJobStatusToJSONTyped;
+const SecHubMessage_1 = __nccwpck_require__(4516);
+const ScheduleJobStatusResult_1 = __nccwpck_require__(9715);
+const TrafficLight_1 = __nccwpck_require__(5779);
+/**
+ * Check if a given object implements the ScheduleJobStatus interface.
+ */
+function instanceOfScheduleJobStatus(value) {
+    return true;
+}
+function ScheduleJobStatusFromJSON(json) {
+    return ScheduleJobStatusFromJSONTyped(json, false);
+}
+function ScheduleJobStatusFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'jobUUID': json['jobUUID'] == null ? undefined : json['jobUUID'],
+        'owner': json['owner'] == null ? undefined : json['owner'],
+        'created': json['created'] == null ? undefined : json['created'],
+        'started': json['started'] == null ? undefined : json['started'],
+        'ended': json['ended'] == null ? undefined : json['ended'],
+        'state': json['state'] == null ? undefined : json['state'],
+        'result': json['result'] == null ? undefined : (0, ScheduleJobStatusResult_1.ScheduleJobStatusResultFromJSON)(json['result']),
+        'trafficLight': json['trafficLight'] == null ? undefined : (0, TrafficLight_1.TrafficLightFromJSON)(json['trafficLight']),
+        'messages': json['messages'] == null ? undefined : (json['messages'].map(SecHubMessage_1.SecHubMessageFromJSON)),
+    };
+}
+function ScheduleJobStatusToJSON(json) {
+    return ScheduleJobStatusToJSONTyped(json, false);
+}
+function ScheduleJobStatusToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'jobUUID': value['jobUUID'],
+        'owner': value['owner'],
+        'created': value['created'],
+        'started': value['started'],
+        'ended': value['ended'],
+        'state': value['state'],
+        'result': (0, ScheduleJobStatusResult_1.ScheduleJobStatusResultToJSON)(value['result']),
+        'trafficLight': (0, TrafficLight_1.TrafficLightToJSON)(value['trafficLight']),
+        'messages': value['messages'] == null ? undefined : (value['messages'].map(SecHubMessage_1.SecHubMessageToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 9715:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ScheduleJobStatusResult = void 0;
+exports.instanceOfScheduleJobStatusResult = instanceOfScheduleJobStatusResult;
+exports.ScheduleJobStatusResultFromJSON = ScheduleJobStatusResultFromJSON;
+exports.ScheduleJobStatusResultFromJSONTyped = ScheduleJobStatusResultFromJSONTyped;
+exports.ScheduleJobStatusResultToJSON = ScheduleJobStatusResultToJSON;
+exports.ScheduleJobStatusResultToJSONTyped = ScheduleJobStatusResultToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.ScheduleJobStatusResult = {
+    None: 'NONE',
+    Ok: 'OK',
+    Failed: 'FAILED'
+};
+function instanceOfScheduleJobStatusResult(value) {
+    for (const key in exports.ScheduleJobStatusResult) {
+        if (Object.prototype.hasOwnProperty.call(exports.ScheduleJobStatusResult, key)) {
+            if (exports.ScheduleJobStatusResult[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function ScheduleJobStatusResultFromJSON(json) {
+    return ScheduleJobStatusResultFromJSONTyped(json, false);
+}
+function ScheduleJobStatusResultFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function ScheduleJobStatusResultToJSON(value) {
+    return value;
+}
+function ScheduleJobStatusResultToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 523:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSchedulerResult = instanceOfSchedulerResult;
+exports.SchedulerResultFromJSON = SchedulerResultFromJSON;
+exports.SchedulerResultFromJSONTyped = SchedulerResultFromJSONTyped;
+exports.SchedulerResultToJSON = SchedulerResultToJSON;
+exports.SchedulerResultToJSONTyped = SchedulerResultToJSONTyped;
+/**
+ * Check if a given object implements the SchedulerResult interface.
+ */
+function instanceOfSchedulerResult(value) {
+    return true;
+}
+function SchedulerResultFromJSON(json) {
+    return SchedulerResultFromJSONTyped(json, false);
+}
+function SchedulerResultFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'jobId': json['jobId'] == null ? undefined : json['jobId'],
+    };
+}
+function SchedulerResultToJSON(json) {
+    return SchedulerResultToJSONTyped(json, false);
+}
+function SchedulerResultToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'jobId': value['jobId'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 1350:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfScript = instanceOfScript;
+exports.ScriptFromJSON = ScriptFromJSON;
+exports.ScriptFromJSONTyped = ScriptFromJSONTyped;
+exports.ScriptToJSON = ScriptToJSON;
+exports.ScriptToJSONTyped = ScriptToJSONTyped;
+const Page_1 = __nccwpck_require__(3007);
+/**
+ * Check if a given object implements the Script interface.
+ */
+function instanceOfScript(value) {
+    return true;
+}
+function ScriptFromJSON(json) {
+    return ScriptFromJSONTyped(json, false);
+}
+function ScriptFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'pages': json['pages'] == null ? undefined : (json['pages'].map(Page_1.PageFromJSON)),
+    };
+}
+function ScriptToJSON(json) {
+    return ScriptToJSONTyped(json, false);
+}
+function ScriptToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'pages': value['pages'] == null ? undefined : (value['pages'].map(Page_1.PageToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 3971:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubBinaryDataConfiguration = instanceOfSecHubBinaryDataConfiguration;
+exports.SecHubBinaryDataConfigurationFromJSON = SecHubBinaryDataConfigurationFromJSON;
+exports.SecHubBinaryDataConfigurationFromJSONTyped = SecHubBinaryDataConfigurationFromJSONTyped;
+exports.SecHubBinaryDataConfigurationToJSON = SecHubBinaryDataConfigurationToJSON;
+exports.SecHubBinaryDataConfigurationToJSONTyped = SecHubBinaryDataConfigurationToJSONTyped;
+const SecHubRemoteDataConfiguration_1 = __nccwpck_require__(1852);
+const SecHubFileSystemConfiguration_1 = __nccwpck_require__(9142);
+/**
+ * Check if a given object implements the SecHubBinaryDataConfiguration interface.
+ */
+function instanceOfSecHubBinaryDataConfiguration(value) {
+    return true;
+}
+function SecHubBinaryDataConfigurationFromJSON(json) {
+    return SecHubBinaryDataConfigurationFromJSONTyped(json, false);
+}
+function SecHubBinaryDataConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'fileSystem': json['fileSystem'] == null ? undefined : (0, SecHubFileSystemConfiguration_1.SecHubFileSystemConfigurationFromJSON)(json['fileSystem']),
+        'excludes': json['excludes'] == null ? undefined : json['excludes'],
+        'includes': json['includes'] == null ? undefined : json['includes'],
+        'remote': json['remote'] == null ? undefined : (0, SecHubRemoteDataConfiguration_1.SecHubRemoteDataConfigurationFromJSON)(json['remote']),
+        'name': json['name'] == null ? undefined : json['name'],
+    };
+}
+function SecHubBinaryDataConfigurationToJSON(json) {
+    return SecHubBinaryDataConfigurationToJSONTyped(json, false);
+}
+function SecHubBinaryDataConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'fileSystem': (0, SecHubFileSystemConfiguration_1.SecHubFileSystemConfigurationToJSON)(value['fileSystem']),
+        'excludes': value['excludes'],
+        'includes': value['includes'],
+        'remote': (0, SecHubRemoteDataConfiguration_1.SecHubRemoteDataConfigurationToJSON)(value['remote']),
+        'name': value['name'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 7553:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SecHubCipherAlgorithm = void 0;
+exports.instanceOfSecHubCipherAlgorithm = instanceOfSecHubCipherAlgorithm;
+exports.SecHubCipherAlgorithmFromJSON = SecHubCipherAlgorithmFromJSON;
+exports.SecHubCipherAlgorithmFromJSONTyped = SecHubCipherAlgorithmFromJSONTyped;
+exports.SecHubCipherAlgorithmToJSON = SecHubCipherAlgorithmToJSON;
+exports.SecHubCipherAlgorithmToJSONTyped = SecHubCipherAlgorithmToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.SecHubCipherAlgorithm = {
+    None: 'NONE',
+    AesGcmSiv128: 'AES_GCM_SIV_128',
+    AesGcmSiv256: 'AES_GCM_SIV_256'
+};
+function instanceOfSecHubCipherAlgorithm(value) {
+    for (const key in exports.SecHubCipherAlgorithm) {
+        if (Object.prototype.hasOwnProperty.call(exports.SecHubCipherAlgorithm, key)) {
+            if (exports.SecHubCipherAlgorithm[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function SecHubCipherAlgorithmFromJSON(json) {
+    return SecHubCipherAlgorithmFromJSONTyped(json, false);
+}
+function SecHubCipherAlgorithmFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function SecHubCipherAlgorithmToJSON(value) {
+    return value;
+}
+function SecHubCipherAlgorithmToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 6899:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SecHubCipherPasswordSourceType = void 0;
+exports.instanceOfSecHubCipherPasswordSourceType = instanceOfSecHubCipherPasswordSourceType;
+exports.SecHubCipherPasswordSourceTypeFromJSON = SecHubCipherPasswordSourceTypeFromJSON;
+exports.SecHubCipherPasswordSourceTypeFromJSONTyped = SecHubCipherPasswordSourceTypeFromJSONTyped;
+exports.SecHubCipherPasswordSourceTypeToJSON = SecHubCipherPasswordSourceTypeToJSON;
+exports.SecHubCipherPasswordSourceTypeToJSONTyped = SecHubCipherPasswordSourceTypeToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.SecHubCipherPasswordSourceType = {
+    None: 'NONE',
+    EnvironmentVariable: 'ENVIRONMENT_VARIABLE'
+};
+function instanceOfSecHubCipherPasswordSourceType(value) {
+    for (const key in exports.SecHubCipherPasswordSourceType) {
+        if (Object.prototype.hasOwnProperty.call(exports.SecHubCipherPasswordSourceType, key)) {
+            if (exports.SecHubCipherPasswordSourceType[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function SecHubCipherPasswordSourceTypeFromJSON(json) {
+    return SecHubCipherPasswordSourceTypeFromJSONTyped(json, false);
+}
+function SecHubCipherPasswordSourceTypeFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function SecHubCipherPasswordSourceTypeToJSON(value) {
+    return value;
+}
+function SecHubCipherPasswordSourceTypeToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 8806:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubCodeCallStack = instanceOfSecHubCodeCallStack;
+exports.SecHubCodeCallStackFromJSON = SecHubCodeCallStackFromJSON;
+exports.SecHubCodeCallStackFromJSONTyped = SecHubCodeCallStackFromJSONTyped;
+exports.SecHubCodeCallStackToJSON = SecHubCodeCallStackToJSON;
+exports.SecHubCodeCallStackToJSONTyped = SecHubCodeCallStackToJSONTyped;
+/**
+ * Check if a given object implements the SecHubCodeCallStack interface.
+ */
+function instanceOfSecHubCodeCallStack(value) {
+    return true;
+}
+function SecHubCodeCallStackFromJSON(json) {
+    return SecHubCodeCallStackFromJSONTyped(json, false);
+}
+function SecHubCodeCallStackFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'location': json['location'] == null ? undefined : json['location'],
+        'line': json['line'] == null ? undefined : json['line'],
+        'column': json['column'] == null ? undefined : json['column'],
+        'source': json['source'] == null ? undefined : json['source'],
+        'relevantPart': json['relevantPart'] == null ? undefined : json['relevantPart'],
+        'calls': json['calls'] == null ? undefined : SecHubCodeCallStackFromJSON(json['calls']),
+    };
+}
+function SecHubCodeCallStackToJSON(json) {
+    return SecHubCodeCallStackToJSONTyped(json, false);
+}
+function SecHubCodeCallStackToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'location': value['location'],
+        'line': value['line'],
+        'column': value['column'],
+        'source': value['source'],
+        'relevantPart': value['relevantPart'],
+        'calls': SecHubCodeCallStackToJSON(value['calls']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 8592:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubCodeScanConfiguration = instanceOfSecHubCodeScanConfiguration;
+exports.SecHubCodeScanConfigurationFromJSON = SecHubCodeScanConfigurationFromJSON;
+exports.SecHubCodeScanConfigurationFromJSONTyped = SecHubCodeScanConfigurationFromJSONTyped;
+exports.SecHubCodeScanConfigurationToJSON = SecHubCodeScanConfigurationToJSON;
+exports.SecHubCodeScanConfigurationToJSONTyped = SecHubCodeScanConfigurationToJSONTyped;
+const SecHubFileSystemConfiguration_1 = __nccwpck_require__(9142);
+/**
+ * Check if a given object implements the SecHubCodeScanConfiguration interface.
+ */
+function instanceOfSecHubCodeScanConfiguration(value) {
+    return true;
+}
+function SecHubCodeScanConfigurationFromJSON(json) {
+    return SecHubCodeScanConfigurationFromJSONTyped(json, false);
+}
+function SecHubCodeScanConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'fileSystem': json['fileSystem'] == null ? undefined : (0, SecHubFileSystemConfiguration_1.SecHubFileSystemConfigurationFromJSON)(json['fileSystem']),
+        'excludes': json['excludes'] == null ? undefined : json['excludes'],
+        'includes': json['includes'] == null ? undefined : json['includes'],
+        'use': json['use'] == null ? undefined : json['use'],
+    };
+}
+function SecHubCodeScanConfigurationToJSON(json) {
+    return SecHubCodeScanConfigurationToJSONTyped(json, false);
+}
+function SecHubCodeScanConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'fileSystem': (0, SecHubFileSystemConfiguration_1.SecHubFileSystemConfigurationToJSON)(value['fileSystem']),
+        'excludes': value['excludes'],
+        'includes': value['includes'],
+        'use': value['use'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 7678:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubConfiguration = instanceOfSecHubConfiguration;
+exports.SecHubConfigurationFromJSON = SecHubConfigurationFromJSON;
+exports.SecHubConfigurationFromJSONTyped = SecHubConfigurationFromJSONTyped;
+exports.SecHubConfigurationToJSON = SecHubConfigurationToJSON;
+exports.SecHubConfigurationToJSONTyped = SecHubConfigurationToJSONTyped;
+const SecHubSecretScanConfiguration_1 = __nccwpck_require__(2380);
+const SecHubWebScanConfiguration_1 = __nccwpck_require__(1270);
+const SecHubCodeScanConfiguration_1 = __nccwpck_require__(8592);
+const SecHubIacScanConfiguration_1 = __nccwpck_require__(8879);
+const SecHubInfrastructureScanConfiguration_1 = __nccwpck_require__(6087);
+const SecHubConfigurationMetaData_1 = __nccwpck_require__(3878);
+const SecHubDataConfiguration_1 = __nccwpck_require__(5503);
+const SecHubLicenseScanConfiguration_1 = __nccwpck_require__(7633);
+/**
+ * Check if a given object implements the SecHubConfiguration interface.
+ */
+function instanceOfSecHubConfiguration(value) {
+    if (!('projectId' in value) || value['projectId'] === undefined)
+        return false;
+    return true;
+}
+function SecHubConfigurationFromJSON(json) {
+    return SecHubConfigurationFromJSONTyped(json, false);
+}
+function SecHubConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'webScan': json['webScan'] == null ? undefined : (0, SecHubWebScanConfiguration_1.SecHubWebScanConfigurationFromJSON)(json['webScan']),
+        'infraScan': json['infraScan'] == null ? undefined : (0, SecHubInfrastructureScanConfiguration_1.SecHubInfrastructureScanConfigurationFromJSON)(json['infraScan']),
+        'codeScan': json['codeScan'] == null ? undefined : (0, SecHubCodeScanConfiguration_1.SecHubCodeScanConfigurationFromJSON)(json['codeScan']),
+        'data': json['data'] == null ? undefined : (0, SecHubDataConfiguration_1.SecHubDataConfigurationFromJSON)(json['data']),
+        'licenseScan': json['licenseScan'] == null ? undefined : (0, SecHubLicenseScanConfiguration_1.SecHubLicenseScanConfigurationFromJSON)(json['licenseScan']),
+        'secretScan': json['secretScan'] == null ? undefined : (0, SecHubSecretScanConfiguration_1.SecHubSecretScanConfigurationFromJSON)(json['secretScan']),
+        'iacScan': json['iacScan'] == null ? undefined : (0, SecHubIacScanConfiguration_1.SecHubIacScanConfigurationFromJSON)(json['iacScan']),
+        'metaData': json['metaData'] == null ? undefined : (0, SecHubConfigurationMetaData_1.SecHubConfigurationMetaDataFromJSON)(json['metaData']),
+        'apiVersion': json['apiVersion'] == null ? undefined : json['apiVersion'],
+        'projectId': json['projectId'],
+    };
+}
+function SecHubConfigurationToJSON(json) {
+    return SecHubConfigurationToJSONTyped(json, false);
+}
+function SecHubConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'webScan': (0, SecHubWebScanConfiguration_1.SecHubWebScanConfigurationToJSON)(value['webScan']),
+        'infraScan': (0, SecHubInfrastructureScanConfiguration_1.SecHubInfrastructureScanConfigurationToJSON)(value['infraScan']),
+        'codeScan': (0, SecHubCodeScanConfiguration_1.SecHubCodeScanConfigurationToJSON)(value['codeScan']),
+        'data': (0, SecHubDataConfiguration_1.SecHubDataConfigurationToJSON)(value['data']),
+        'licenseScan': (0, SecHubLicenseScanConfiguration_1.SecHubLicenseScanConfigurationToJSON)(value['licenseScan']),
+        'secretScan': (0, SecHubSecretScanConfiguration_1.SecHubSecretScanConfigurationToJSON)(value['secretScan']),
+        'iacScan': (0, SecHubIacScanConfiguration_1.SecHubIacScanConfigurationToJSON)(value['iacScan']),
+        'metaData': (0, SecHubConfigurationMetaData_1.SecHubConfigurationMetaDataToJSON)(value['metaData']),
+        'apiVersion': value['apiVersion'],
+        'projectId': value['projectId'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3878:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubConfigurationMetaData = instanceOfSecHubConfigurationMetaData;
+exports.SecHubConfigurationMetaDataFromJSON = SecHubConfigurationMetaDataFromJSON;
+exports.SecHubConfigurationMetaDataFromJSONTyped = SecHubConfigurationMetaDataFromJSONTyped;
+exports.SecHubConfigurationMetaDataToJSON = SecHubConfigurationMetaDataToJSON;
+exports.SecHubConfigurationMetaDataToJSONTyped = SecHubConfigurationMetaDataToJSONTyped;
+/**
+ * Check if a given object implements the SecHubConfigurationMetaData interface.
+ */
+function instanceOfSecHubConfigurationMetaData(value) {
+    return true;
+}
+function SecHubConfigurationMetaDataFromJSON(json) {
+    return SecHubConfigurationMetaDataFromJSONTyped(json, false);
+}
+function SecHubConfigurationMetaDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'labels': json['labels'] == null ? undefined : json['labels'],
+    };
+}
+function SecHubConfigurationMetaDataToJSON(json) {
+    return SecHubConfigurationMetaDataToJSONTyped(json, false);
+}
+function SecHubConfigurationMetaDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'labels': value['labels'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 5503:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubDataConfiguration = instanceOfSecHubDataConfiguration;
+exports.SecHubDataConfigurationFromJSON = SecHubDataConfigurationFromJSON;
+exports.SecHubDataConfigurationFromJSONTyped = SecHubDataConfigurationFromJSONTyped;
+exports.SecHubDataConfigurationToJSON = SecHubDataConfigurationToJSON;
+exports.SecHubDataConfigurationToJSONTyped = SecHubDataConfigurationToJSONTyped;
+const SecHubSourceDataConfiguration_1 = __nccwpck_require__(2416);
+const SecHubBinaryDataConfiguration_1 = __nccwpck_require__(3971);
+/**
+ * Check if a given object implements the SecHubDataConfiguration interface.
+ */
+function instanceOfSecHubDataConfiguration(value) {
+    return true;
+}
+function SecHubDataConfigurationFromJSON(json) {
+    return SecHubDataConfigurationFromJSONTyped(json, false);
+}
+function SecHubDataConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'sources': json['sources'] == null ? undefined : (json['sources'].map(SecHubSourceDataConfiguration_1.SecHubSourceDataConfigurationFromJSON)),
+        'binaries': json['binaries'] == null ? undefined : (json['binaries'].map(SecHubBinaryDataConfiguration_1.SecHubBinaryDataConfigurationFromJSON)),
+    };
+}
+function SecHubDataConfigurationToJSON(json) {
+    return SecHubDataConfigurationToJSONTyped(json, false);
+}
+function SecHubDataConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'sources': value['sources'] == null ? undefined : (value['sources'].map(SecHubSourceDataConfiguration_1.SecHubSourceDataConfigurationToJSON)),
+        'binaries': value['binaries'] == null ? undefined : (value['binaries'].map(SecHubBinaryDataConfiguration_1.SecHubBinaryDataConfigurationToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 5657:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubDomainEncryptionData = instanceOfSecHubDomainEncryptionData;
+exports.SecHubDomainEncryptionDataFromJSON = SecHubDomainEncryptionDataFromJSON;
+exports.SecHubDomainEncryptionDataFromJSONTyped = SecHubDomainEncryptionDataFromJSONTyped;
+exports.SecHubDomainEncryptionDataToJSON = SecHubDomainEncryptionDataToJSON;
+exports.SecHubDomainEncryptionDataToJSONTyped = SecHubDomainEncryptionDataToJSONTyped;
+/**
+ * Check if a given object implements the SecHubDomainEncryptionData interface.
+ */
+function instanceOfSecHubDomainEncryptionData(value) {
+    return true;
+}
+function SecHubDomainEncryptionDataFromJSON(json) {
+    return SecHubDomainEncryptionDataFromJSONTyped(json, false);
+}
+function SecHubDomainEncryptionDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'id': json['id'] == null ? undefined : json['id'],
+        'algorithm': json['algorithm'] == null ? undefined : json['algorithm'],
+        'passwordSource': json['passwordSource'] == null ? undefined : json['passwordSource'],
+        'created': json['created'] == null ? undefined : (new Date(json['created'])),
+        'createdFrom': json['createdFrom'] == null ? undefined : json['createdFrom'],
+        'usage': json['usage'] == null ? undefined : json['usage'],
+    };
+}
+function SecHubDomainEncryptionDataToJSON(json) {
+    return SecHubDomainEncryptionDataToJSONTyped(json, false);
+}
+function SecHubDomainEncryptionDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'id': value['id'],
+        'algorithm': value['algorithm'],
+        'passwordSource': value['passwordSource'],
+        'created': value['created'] == null ? undefined : ((value['created']).toISOString()),
+        'createdFrom': value['createdFrom'],
+        'usage': value['usage'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 8966:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubDomainEncryptionStatus = instanceOfSecHubDomainEncryptionStatus;
+exports.SecHubDomainEncryptionStatusFromJSON = SecHubDomainEncryptionStatusFromJSON;
+exports.SecHubDomainEncryptionStatusFromJSONTyped = SecHubDomainEncryptionStatusFromJSONTyped;
+exports.SecHubDomainEncryptionStatusToJSON = SecHubDomainEncryptionStatusToJSON;
+exports.SecHubDomainEncryptionStatusToJSONTyped = SecHubDomainEncryptionStatusToJSONTyped;
+const SecHubDomainEncryptionData_1 = __nccwpck_require__(5657);
+/**
+ * Check if a given object implements the SecHubDomainEncryptionStatus interface.
+ */
+function instanceOfSecHubDomainEncryptionStatus(value) {
+    return true;
+}
+function SecHubDomainEncryptionStatusFromJSON(json) {
+    return SecHubDomainEncryptionStatusFromJSONTyped(json, false);
+}
+function SecHubDomainEncryptionStatusFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'name': json['name'] == null ? undefined : json['name'],
+        'data': json['data'] == null ? undefined : (json['data'].map(SecHubDomainEncryptionData_1.SecHubDomainEncryptionDataFromJSON)),
+    };
+}
+function SecHubDomainEncryptionStatusToJSON(json) {
+    return SecHubDomainEncryptionStatusToJSONTyped(json, false);
+}
+function SecHubDomainEncryptionStatusToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'name': value['name'],
+        'data': value['data'] == null ? undefined : (value['data'].map(SecHubDomainEncryptionData_1.SecHubDomainEncryptionDataToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 6575:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubEncryptionData = instanceOfSecHubEncryptionData;
+exports.SecHubEncryptionDataFromJSON = SecHubEncryptionDataFromJSON;
+exports.SecHubEncryptionDataFromJSONTyped = SecHubEncryptionDataFromJSONTyped;
+exports.SecHubEncryptionDataToJSON = SecHubEncryptionDataToJSON;
+exports.SecHubEncryptionDataToJSONTyped = SecHubEncryptionDataToJSONTyped;
+/**
+ * Check if a given object implements the SecHubEncryptionData interface.
+ */
+function instanceOfSecHubEncryptionData(value) {
+    return true;
+}
+function SecHubEncryptionDataFromJSON(json) {
+    return SecHubEncryptionDataFromJSONTyped(json, false);
+}
+function SecHubEncryptionDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'algorithm': json['algorithm'] == null ? undefined : json['algorithm'],
+        'passwordSourceType': json['passwordSourceType'] == null ? undefined : json['passwordSourceType'],
+        'passwordSourceData': json['passwordSourceData'] == null ? undefined : json['passwordSourceData'],
+    };
+}
+function SecHubEncryptionDataToJSON(json) {
+    return SecHubEncryptionDataToJSONTyped(json, false);
+}
+function SecHubEncryptionDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'algorithm': value['algorithm'],
+        'passwordSourceType': value['passwordSourceType'],
+        'passwordSourceData': value['passwordSourceData'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 1198:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubEncryptionStatus = instanceOfSecHubEncryptionStatus;
+exports.SecHubEncryptionStatusFromJSON = SecHubEncryptionStatusFromJSON;
+exports.SecHubEncryptionStatusFromJSONTyped = SecHubEncryptionStatusFromJSONTyped;
+exports.SecHubEncryptionStatusToJSON = SecHubEncryptionStatusToJSON;
+exports.SecHubEncryptionStatusToJSONTyped = SecHubEncryptionStatusToJSONTyped;
+const SecHubDomainEncryptionStatus_1 = __nccwpck_require__(8966);
+/**
+ * Check if a given object implements the SecHubEncryptionStatus interface.
+ */
+function instanceOfSecHubEncryptionStatus(value) {
+    return true;
+}
+function SecHubEncryptionStatusFromJSON(json) {
+    return SecHubEncryptionStatusFromJSONTyped(json, false);
+}
+function SecHubEncryptionStatusFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'type': json['type'] == null ? undefined : json['type'],
+        'domains': json['domains'] == null ? undefined : (json['domains'].map(SecHubDomainEncryptionStatus_1.SecHubDomainEncryptionStatusFromJSON)),
+    };
+}
+function SecHubEncryptionStatusToJSON(json) {
+    return SecHubEncryptionStatusToJSONTyped(json, false);
+}
+function SecHubEncryptionStatusToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'type': value['type'],
+        'domains': value['domains'] == null ? undefined : (value['domains'].map(SecHubDomainEncryptionStatus_1.SecHubDomainEncryptionStatusToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 9142:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubFileSystemConfiguration = instanceOfSecHubFileSystemConfiguration;
+exports.SecHubFileSystemConfigurationFromJSON = SecHubFileSystemConfigurationFromJSON;
+exports.SecHubFileSystemConfigurationFromJSONTyped = SecHubFileSystemConfigurationFromJSONTyped;
+exports.SecHubFileSystemConfigurationToJSON = SecHubFileSystemConfigurationToJSON;
+exports.SecHubFileSystemConfigurationToJSONTyped = SecHubFileSystemConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the SecHubFileSystemConfiguration interface.
+ */
+function instanceOfSecHubFileSystemConfiguration(value) {
+    return true;
+}
+function SecHubFileSystemConfigurationFromJSON(json) {
+    return SecHubFileSystemConfigurationFromJSONTyped(json, false);
+}
+function SecHubFileSystemConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'files': json['files'] == null ? undefined : json['files'],
+        'folders': json['folders'] == null ? undefined : json['folders'],
+    };
+}
+function SecHubFileSystemConfigurationToJSON(json) {
+    return SecHubFileSystemConfigurationToJSONTyped(json, false);
+}
+function SecHubFileSystemConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'files': value['files'],
+        'folders': value['folders'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4972:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubFinding = instanceOfSecHubFinding;
+exports.SecHubFindingFromJSON = SecHubFindingFromJSON;
+exports.SecHubFindingFromJSONTyped = SecHubFindingFromJSONTyped;
+exports.SecHubFindingToJSON = SecHubFindingToJSON;
+exports.SecHubFindingToJSONTyped = SecHubFindingToJSONTyped;
+const ScanType_1 = __nccwpck_require__(6503);
+const SecHubReportWeb_1 = __nccwpck_require__(9817);
+const SecHubRevisionData_1 = __nccwpck_require__(5154);
+const Severity_1 = __nccwpck_require__(2496);
+const SecHubCodeCallStack_1 = __nccwpck_require__(8806);
+/**
+ * Check if a given object implements the SecHubFinding interface.
+ */
+function instanceOfSecHubFinding(value) {
+    return true;
+}
+function SecHubFindingFromJSON(json) {
+    return SecHubFindingFromJSONTyped(json, false);
+}
+function SecHubFindingFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'id': json['id'] == null ? undefined : json['id'],
+        'description': json['description'] == null ? undefined : json['description'],
+        'hostNames': json['hostNames'] == null ? undefined : json['hostNames'],
+        'created': json['created'] == null ? undefined : (new Date(json['created'])),
+        'createdBy': json['createdBy'] == null ? undefined : json['createdBy'],
+        'name': json['name'] == null ? undefined : json['name'],
+        'parameters': json['parameters'] == null ? undefined : json['parameters'],
+        'path': json['path'] == null ? undefined : json['path'],
+        'parameterName': json['parameterName'] == null ? undefined : json['parameterName'],
+        'references': json['references'] == null ? undefined : json['references'],
+        'request': json['request'] == null ? undefined : json['request'],
+        'solution': json['solution'] == null ? undefined : json['solution'],
+        'response': json['response'] == null ? undefined : json['response'],
+        'service': json['service'] == null ? undefined : json['service'],
+        'severity': json['severity'] == null ? undefined : (0, Severity_1.SeverityFromJSON)(json['severity']),
+        'target': json['target'] == null ? undefined : json['target'],
+        'website': json['website'] == null ? undefined : json['website'],
+        'code': json['code'] == null ? undefined : (0, SecHubCodeCallStack_1.SecHubCodeCallStackFromJSON)(json['code']),
+        'productResultLink': json['productResultLink'] == null ? undefined : json['productResultLink'],
+        'type': json['type'] == null ? undefined : (0, ScanType_1.ScanTypeFromJSON)(json['type']),
+        'cweId': json['cweId'] == null ? undefined : json['cweId'],
+        'cveId': json['cveId'] == null ? undefined : json['cveId'],
+        'owasp': json['owasp'] == null ? undefined : json['owasp'],
+        'web': json['web'] == null ? undefined : (0, SecHubReportWeb_1.SecHubReportWebFromJSON)(json['web']),
+        'revision': json['revision'] == null ? undefined : (0, SecHubRevisionData_1.SecHubRevisionDataFromJSON)(json['revision']),
+    };
+}
+function SecHubFindingToJSON(json) {
+    return SecHubFindingToJSONTyped(json, false);
+}
+function SecHubFindingToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'id': value['id'],
+        'description': value['description'],
+        'hostNames': value['hostNames'],
+        'created': value['created'] == null ? undefined : ((value['created']).toISOString()),
+        'createdBy': value['createdBy'],
+        'name': value['name'],
+        'parameters': value['parameters'],
+        'path': value['path'],
+        'parameterName': value['parameterName'],
+        'references': value['references'],
+        'request': value['request'],
+        'solution': value['solution'],
+        'response': value['response'],
+        'service': value['service'],
+        'severity': (0, Severity_1.SeverityToJSON)(value['severity']),
+        'target': value['target'],
+        'website': value['website'],
+        'code': (0, SecHubCodeCallStack_1.SecHubCodeCallStackToJSON)(value['code']),
+        'productResultLink': value['productResultLink'],
+        'type': (0, ScanType_1.ScanTypeToJSON)(value['type']),
+        'cweId': value['cweId'],
+        'cveId': value['cveId'],
+        'owasp': value['owasp'],
+        'web': (0, SecHubReportWeb_1.SecHubReportWebToJSON)(value['web']),
+        'revision': (0, SecHubRevisionData_1.SecHubRevisionDataToJSON)(value['revision']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 8879:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubIacScanConfiguration = instanceOfSecHubIacScanConfiguration;
+exports.SecHubIacScanConfigurationFromJSON = SecHubIacScanConfigurationFromJSON;
+exports.SecHubIacScanConfigurationFromJSONTyped = SecHubIacScanConfigurationFromJSONTyped;
+exports.SecHubIacScanConfigurationToJSON = SecHubIacScanConfigurationToJSON;
+exports.SecHubIacScanConfigurationToJSONTyped = SecHubIacScanConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the SecHubIacScanConfiguration interface.
+ */
+function instanceOfSecHubIacScanConfiguration(value) {
+    return true;
+}
+function SecHubIacScanConfigurationFromJSON(json) {
+    return SecHubIacScanConfigurationFromJSONTyped(json, false);
+}
+function SecHubIacScanConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'use': json['use'] == null ? undefined : json['use'],
+    };
+}
+function SecHubIacScanConfigurationToJSON(json) {
+    return SecHubIacScanConfigurationToJSONTyped(json, false);
+}
+function SecHubIacScanConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'use': value['use'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 6087:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubInfrastructureScanConfiguration = instanceOfSecHubInfrastructureScanConfiguration;
+exports.SecHubInfrastructureScanConfigurationFromJSON = SecHubInfrastructureScanConfigurationFromJSON;
+exports.SecHubInfrastructureScanConfigurationFromJSONTyped = SecHubInfrastructureScanConfigurationFromJSONTyped;
+exports.SecHubInfrastructureScanConfigurationToJSON = SecHubInfrastructureScanConfigurationToJSON;
+exports.SecHubInfrastructureScanConfigurationToJSONTyped = SecHubInfrastructureScanConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the SecHubInfrastructureScanConfiguration interface.
+ */
+function instanceOfSecHubInfrastructureScanConfiguration(value) {
+    return true;
+}
+function SecHubInfrastructureScanConfigurationFromJSON(json) {
+    return SecHubInfrastructureScanConfigurationFromJSONTyped(json, false);
+}
+function SecHubInfrastructureScanConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'uris': json['uris'] == null ? undefined : json['uris'],
+        'ips': json['ips'] == null ? undefined : json['ips'],
+        'use': json['use'] == null ? undefined : json['use'],
+    };
+}
+function SecHubInfrastructureScanConfigurationToJSON(json) {
+    return SecHubInfrastructureScanConfigurationToJSONTyped(json, false);
+}
+function SecHubInfrastructureScanConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'uris': value['uris'],
+        'ips': value['ips'],
+        'use': value['use'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4605:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubJobInfoForUser = instanceOfSecHubJobInfoForUser;
+exports.SecHubJobInfoForUserFromJSON = SecHubJobInfoForUserFromJSON;
+exports.SecHubJobInfoForUserFromJSONTyped = SecHubJobInfoForUserFromJSONTyped;
+exports.SecHubJobInfoForUserToJSON = SecHubJobInfoForUserToJSON;
+exports.SecHubJobInfoForUserToJSONTyped = SecHubJobInfoForUserToJSONTyped;
+const ExecutionState_1 = __nccwpck_require__(2357);
+const TrafficLight_1 = __nccwpck_require__(5779);
+const ExecutionResult_1 = __nccwpck_require__(9658);
+const SecHubConfigurationMetaData_1 = __nccwpck_require__(3878);
+/**
+ * Check if a given object implements the SecHubJobInfoForUser interface.
+ */
+function instanceOfSecHubJobInfoForUser(value) {
+    return true;
+}
+function SecHubJobInfoForUserFromJSON(json) {
+    return SecHubJobInfoForUserFromJSONTyped(json, false);
+}
+function SecHubJobInfoForUserFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'jobUUID': json['jobUUID'] == null ? undefined : json['jobUUID'],
+        'executedBy': json['executedBy'] == null ? undefined : json['executedBy'],
+        'created': json['created'] == null ? undefined : (new Date(json['created'])),
+        'started': json['started'] == null ? undefined : (new Date(json['started'])),
+        'ended': json['ended'] == null ? undefined : (new Date(json['ended'])),
+        'executionState': json['executionState'] == null ? undefined : (0, ExecutionState_1.ExecutionStateFromJSON)(json['executionState']),
+        'trafficLight': json['trafficLight'] == null ? undefined : (0, TrafficLight_1.TrafficLightFromJSON)(json['trafficLight']),
+        'executionResult': json['executionResult'] == null ? undefined : (0, ExecutionResult_1.ExecutionResultFromJSON)(json['executionResult']),
+        'metaData': json['metaData'] == null ? undefined : (0, SecHubConfigurationMetaData_1.SecHubConfigurationMetaDataFromJSON)(json['metaData']),
+    };
+}
+function SecHubJobInfoForUserToJSON(json) {
+    return SecHubJobInfoForUserToJSONTyped(json, false);
+}
+function SecHubJobInfoForUserToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'jobUUID': value['jobUUID'],
+        'executedBy': value['executedBy'],
+        'created': value['created'] == null ? undefined : ((value['created']).toISOString()),
+        'started': value['started'] == null ? undefined : ((value['started']).toISOString()),
+        'ended': value['ended'] == null ? undefined : ((value['ended']).toISOString()),
+        'executionState': (0, ExecutionState_1.ExecutionStateToJSON)(value['executionState']),
+        'trafficLight': (0, TrafficLight_1.TrafficLightToJSON)(value['trafficLight']),
+        'executionResult': (0, ExecutionResult_1.ExecutionResultToJSON)(value['executionResult']),
+        'metaData': (0, SecHubConfigurationMetaData_1.SecHubConfigurationMetaDataToJSON)(value['metaData']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 273:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubJobInfoForUserListPage = instanceOfSecHubJobInfoForUserListPage;
+exports.SecHubJobInfoForUserListPageFromJSON = SecHubJobInfoForUserListPageFromJSON;
+exports.SecHubJobInfoForUserListPageFromJSONTyped = SecHubJobInfoForUserListPageFromJSONTyped;
+exports.SecHubJobInfoForUserListPageToJSON = SecHubJobInfoForUserListPageToJSON;
+exports.SecHubJobInfoForUserListPageToJSONTyped = SecHubJobInfoForUserListPageToJSONTyped;
+const SecHubJobInfoForUser_1 = __nccwpck_require__(4605);
+/**
+ * Check if a given object implements the SecHubJobInfoForUserListPage interface.
+ */
+function instanceOfSecHubJobInfoForUserListPage(value) {
+    return true;
+}
+function SecHubJobInfoForUserListPageFromJSON(json) {
+    return SecHubJobInfoForUserListPageFromJSONTyped(json, false);
+}
+function SecHubJobInfoForUserListPageFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'content': json['content'] == null ? undefined : (json['content'].map(SecHubJobInfoForUser_1.SecHubJobInfoForUserFromJSON)),
+        'projectId': json['projectId'] == null ? undefined : json['projectId'],
+        'page': json['page'] == null ? undefined : json['page'],
+        'totalPages': json['totalPages'] == null ? undefined : json['totalPages'],
+    };
+}
+function SecHubJobInfoForUserListPageToJSON(json) {
+    return SecHubJobInfoForUserListPageToJSONTyped(json, false);
+}
+function SecHubJobInfoForUserListPageToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'content': value['content'] == null ? undefined : (value['content'].map(SecHubJobInfoForUser_1.SecHubJobInfoForUserToJSON)),
+        'projectId': value['projectId'],
+        'page': value['page'],
+        'totalPages': value['totalPages'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 7633:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubLicenseScanConfiguration = instanceOfSecHubLicenseScanConfiguration;
+exports.SecHubLicenseScanConfigurationFromJSON = SecHubLicenseScanConfigurationFromJSON;
+exports.SecHubLicenseScanConfigurationFromJSONTyped = SecHubLicenseScanConfigurationFromJSONTyped;
+exports.SecHubLicenseScanConfigurationToJSON = SecHubLicenseScanConfigurationToJSON;
+exports.SecHubLicenseScanConfigurationToJSONTyped = SecHubLicenseScanConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the SecHubLicenseScanConfiguration interface.
+ */
+function instanceOfSecHubLicenseScanConfiguration(value) {
+    return true;
+}
+function SecHubLicenseScanConfigurationFromJSON(json) {
+    return SecHubLicenseScanConfigurationFromJSONTyped(json, false);
+}
+function SecHubLicenseScanConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'use': json['use'] == null ? undefined : json['use'],
+    };
+}
+function SecHubLicenseScanConfigurationToJSON(json) {
+    return SecHubLicenseScanConfigurationToJSONTyped(json, false);
+}
+function SecHubLicenseScanConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'use': value['use'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4516:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubMessage = instanceOfSecHubMessage;
+exports.SecHubMessageFromJSON = SecHubMessageFromJSON;
+exports.SecHubMessageFromJSONTyped = SecHubMessageFromJSONTyped;
+exports.SecHubMessageToJSON = SecHubMessageToJSON;
+exports.SecHubMessageToJSONTyped = SecHubMessageToJSONTyped;
+const SecHubMessageType_1 = __nccwpck_require__(4460);
+/**
+ * Check if a given object implements the SecHubMessage interface.
+ */
+function instanceOfSecHubMessage(value) {
+    return true;
+}
+function SecHubMessageFromJSON(json) {
+    return SecHubMessageFromJSONTyped(json, false);
+}
+function SecHubMessageFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'type': json['type'] == null ? undefined : (0, SecHubMessageType_1.SecHubMessageTypeFromJSON)(json['type']),
+        'text': json['text'] == null ? undefined : json['text'],
+    };
+}
+function SecHubMessageToJSON(json) {
+    return SecHubMessageToJSONTyped(json, false);
+}
+function SecHubMessageToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'type': (0, SecHubMessageType_1.SecHubMessageTypeToJSON)(value['type']),
+        'text': value['text'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4460:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SecHubMessageType = void 0;
+exports.instanceOfSecHubMessageType = instanceOfSecHubMessageType;
+exports.SecHubMessageTypeFromJSON = SecHubMessageTypeFromJSON;
+exports.SecHubMessageTypeFromJSONTyped = SecHubMessageTypeFromJSONTyped;
+exports.SecHubMessageTypeToJSON = SecHubMessageTypeToJSON;
+exports.SecHubMessageTypeToJSONTyped = SecHubMessageTypeToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.SecHubMessageType = {
+    Error: 'ERROR',
+    Warning: 'WARNING',
+    Info: 'INFO'
+};
+function instanceOfSecHubMessageType(value) {
+    for (const key in exports.SecHubMessageType) {
+        if (Object.prototype.hasOwnProperty.call(exports.SecHubMessageType, key)) {
+            if (exports.SecHubMessageType[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function SecHubMessageTypeFromJSON(json) {
+    return SecHubMessageTypeFromJSONTyped(json, false);
+}
+function SecHubMessageTypeFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function SecHubMessageTypeToJSON(value) {
+    return value;
+}
+function SecHubMessageTypeToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 5092:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubPasswordSource = instanceOfSecHubPasswordSource;
+exports.SecHubPasswordSourceFromJSON = SecHubPasswordSourceFromJSON;
+exports.SecHubPasswordSourceFromJSONTyped = SecHubPasswordSourceFromJSONTyped;
+exports.SecHubPasswordSourceToJSON = SecHubPasswordSourceToJSON;
+exports.SecHubPasswordSourceToJSONTyped = SecHubPasswordSourceToJSONTyped;
+/**
+ * Check if a given object implements the SecHubPasswordSource interface.
+ */
+function instanceOfSecHubPasswordSource(value) {
+    return true;
+}
+function SecHubPasswordSourceFromJSON(json) {
+    return SecHubPasswordSourceFromJSONTyped(json, false);
+}
+function SecHubPasswordSourceFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'type': json['type'] == null ? undefined : json['type'],
+        'data': json['data'] == null ? undefined : json['data'],
+    };
+}
+function SecHubPasswordSourceToJSON(json) {
+    return SecHubPasswordSourceToJSONTyped(json, false);
+}
+function SecHubPasswordSourceToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'type': value['type'],
+        'data': value['data'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 6517:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubRemoteCredentialConfiguration = instanceOfSecHubRemoteCredentialConfiguration;
+exports.SecHubRemoteCredentialConfigurationFromJSON = SecHubRemoteCredentialConfigurationFromJSON;
+exports.SecHubRemoteCredentialConfigurationFromJSONTyped = SecHubRemoteCredentialConfigurationFromJSONTyped;
+exports.SecHubRemoteCredentialConfigurationToJSON = SecHubRemoteCredentialConfigurationToJSON;
+exports.SecHubRemoteCredentialConfigurationToJSONTyped = SecHubRemoteCredentialConfigurationToJSONTyped;
+const SecHubRemoteCredentialUserData_1 = __nccwpck_require__(2887);
+/**
+ * Check if a given object implements the SecHubRemoteCredentialConfiguration interface.
+ */
+function instanceOfSecHubRemoteCredentialConfiguration(value) {
+    return true;
+}
+function SecHubRemoteCredentialConfigurationFromJSON(json) {
+    return SecHubRemoteCredentialConfigurationFromJSONTyped(json, false);
+}
+function SecHubRemoteCredentialConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'user': json['user'] == null ? undefined : (0, SecHubRemoteCredentialUserData_1.SecHubRemoteCredentialUserDataFromJSON)(json['user']),
+    };
+}
+function SecHubRemoteCredentialConfigurationToJSON(json) {
+    return SecHubRemoteCredentialConfigurationToJSONTyped(json, false);
+}
+function SecHubRemoteCredentialConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'user': (0, SecHubRemoteCredentialUserData_1.SecHubRemoteCredentialUserDataToJSON)(value['user']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 2887:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubRemoteCredentialUserData = instanceOfSecHubRemoteCredentialUserData;
+exports.SecHubRemoteCredentialUserDataFromJSON = SecHubRemoteCredentialUserDataFromJSON;
+exports.SecHubRemoteCredentialUserDataFromJSONTyped = SecHubRemoteCredentialUserDataFromJSONTyped;
+exports.SecHubRemoteCredentialUserDataToJSON = SecHubRemoteCredentialUserDataToJSON;
+exports.SecHubRemoteCredentialUserDataToJSONTyped = SecHubRemoteCredentialUserDataToJSONTyped;
+/**
+ * Check if a given object implements the SecHubRemoteCredentialUserData interface.
+ */
+function instanceOfSecHubRemoteCredentialUserData(value) {
+    if (!('user' in value) || value['user'] === undefined)
+        return false;
+    if (!('password' in value) || value['password'] === undefined)
+        return false;
+    return true;
+}
+function SecHubRemoteCredentialUserDataFromJSON(json) {
+    return SecHubRemoteCredentialUserDataFromJSONTyped(json, false);
+}
+function SecHubRemoteCredentialUserDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'user': json['user'],
+        'password': json['password'],
+    };
+}
+function SecHubRemoteCredentialUserDataToJSON(json) {
+    return SecHubRemoteCredentialUserDataToJSONTyped(json, false);
+}
+function SecHubRemoteCredentialUserDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'user': value['user'],
+        'password': value['password'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 1852:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubRemoteDataConfiguration = instanceOfSecHubRemoteDataConfiguration;
+exports.SecHubRemoteDataConfigurationFromJSON = SecHubRemoteDataConfigurationFromJSON;
+exports.SecHubRemoteDataConfigurationFromJSONTyped = SecHubRemoteDataConfigurationFromJSONTyped;
+exports.SecHubRemoteDataConfigurationToJSON = SecHubRemoteDataConfigurationToJSON;
+exports.SecHubRemoteDataConfigurationToJSONTyped = SecHubRemoteDataConfigurationToJSONTyped;
+const SecHubRemoteCredentialConfiguration_1 = __nccwpck_require__(6517);
+/**
+ * Check if a given object implements the SecHubRemoteDataConfiguration interface.
+ */
+function instanceOfSecHubRemoteDataConfiguration(value) {
+    return true;
+}
+function SecHubRemoteDataConfigurationFromJSON(json) {
+    return SecHubRemoteDataConfigurationFromJSONTyped(json, false);
+}
+function SecHubRemoteDataConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'credentials': json['credentials'] == null ? undefined : (0, SecHubRemoteCredentialConfiguration_1.SecHubRemoteCredentialConfigurationFromJSON)(json['credentials']),
+        'type': json['type'] == null ? undefined : json['type'],
+        'location': json['location'] == null ? undefined : json['location'],
+    };
+}
+function SecHubRemoteDataConfigurationToJSON(json) {
+    return SecHubRemoteDataConfigurationToJSONTyped(json, false);
+}
+function SecHubRemoteDataConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'credentials': (0, SecHubRemoteCredentialConfiguration_1.SecHubRemoteCredentialConfigurationToJSON)(value['credentials']),
+        'type': value['type'],
+        'location': value['location'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 2619:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReport = instanceOfSecHubReport;
+exports.SecHubReportFromJSON = SecHubReportFromJSON;
+exports.SecHubReportFromJSONTyped = SecHubReportFromJSONTyped;
+exports.SecHubReportToJSON = SecHubReportToJSON;
+exports.SecHubReportToJSONTyped = SecHubReportToJSONTyped;
+const SecHubMessage_1 = __nccwpck_require__(4516);
+const SecHubResult_1 = __nccwpck_require__(2703);
+const TrafficLight_1 = __nccwpck_require__(5779);
+const SecHubReportMetaData_1 = __nccwpck_require__(1569);
+const SecHubStatus_1 = __nccwpck_require__(4156);
+/**
+ * Check if a given object implements the SecHubReport interface.
+ */
+function instanceOfSecHubReport(value) {
+    return true;
+}
+function SecHubReportFromJSON(json) {
+    return SecHubReportFromJSONTyped(json, false);
+}
+function SecHubReportFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'messages': json['messages'] == null ? undefined : (json['messages'].map(SecHubMessage_1.SecHubMessageFromJSON)),
+        'status': json['status'] == null ? undefined : (0, SecHubStatus_1.SecHubStatusFromJSON)(json['status']),
+        'trafficLight': json['trafficLight'] == null ? undefined : (0, TrafficLight_1.TrafficLightFromJSON)(json['trafficLight']),
+        'result': json['result'] == null ? undefined : (0, SecHubResult_1.SecHubResultFromJSON)(json['result']),
+        'jobUUID': json['jobUUID'] == null ? undefined : json['jobUUID'],
+        'reportVersion': json['reportVersion'] == null ? undefined : json['reportVersion'],
+        'metaData': json['metaData'] == null ? undefined : (0, SecHubReportMetaData_1.SecHubReportMetaDataFromJSON)(json['metaData']),
+    };
+}
+function SecHubReportToJSON(json) {
+    return SecHubReportToJSONTyped(json, false);
+}
+function SecHubReportToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'messages': value['messages'] == null ? undefined : (value['messages'].map(SecHubMessage_1.SecHubMessageToJSON)),
+        'status': (0, SecHubStatus_1.SecHubStatusToJSON)(value['status']),
+        'trafficLight': (0, TrafficLight_1.TrafficLightToJSON)(value['trafficLight']),
+        'result': (0, SecHubResult_1.SecHubResultToJSON)(value['result']),
+        'jobUUID': value['jobUUID'],
+        'reportVersion': value['reportVersion'],
+        'metaData': (0, SecHubReportMetaData_1.SecHubReportMetaDataToJSON)(value['metaData']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 1569:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportMetaData = instanceOfSecHubReportMetaData;
+exports.SecHubReportMetaDataFromJSON = SecHubReportMetaDataFromJSON;
+exports.SecHubReportMetaDataFromJSONTyped = SecHubReportMetaDataFromJSONTyped;
+exports.SecHubReportMetaDataToJSON = SecHubReportMetaDataToJSON;
+exports.SecHubReportMetaDataToJSONTyped = SecHubReportMetaDataToJSONTyped;
+const ScanType_1 = __nccwpck_require__(6503);
+const SecHubReportSummary_1 = __nccwpck_require__(6707);
+const SecHubVersionControlData_1 = __nccwpck_require__(4102);
+/**
+ * Check if a given object implements the SecHubReportMetaData interface.
+ */
+function instanceOfSecHubReportMetaData(value) {
+    return true;
+}
+function SecHubReportMetaDataFromJSON(json) {
+    return SecHubReportMetaDataFromJSONTyped(json, false);
+}
+function SecHubReportMetaDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'labels': json['labels'] == null ? undefined : json['labels'],
+        'versionControl': json['versionControl'] == null ? undefined : (0, SecHubVersionControlData_1.SecHubVersionControlDataFromJSON)(json['versionControl']),
+        'summary': json['summary'] == null ? undefined : (0, SecHubReportSummary_1.SecHubReportSummaryFromJSON)(json['summary']),
+        'executed': json['executed'] == null ? undefined : (json['executed'].map(ScanType_1.ScanTypeFromJSON)),
+    };
+}
+function SecHubReportMetaDataToJSON(json) {
+    return SecHubReportMetaDataToJSONTyped(json, false);
+}
+function SecHubReportMetaDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'labels': value['labels'],
+        'versionControl': (0, SecHubVersionControlData_1.SecHubVersionControlDataToJSON)(value['versionControl']),
+        'summary': (0, SecHubReportSummary_1.SecHubReportSummaryToJSON)(value['summary']),
+        'executed': value['executed'] == null ? undefined : (value['executed'].map(ScanType_1.ScanTypeToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 6571:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportScanTypeSummary = instanceOfSecHubReportScanTypeSummary;
+exports.SecHubReportScanTypeSummaryFromJSON = SecHubReportScanTypeSummaryFromJSON;
+exports.SecHubReportScanTypeSummaryFromJSONTyped = SecHubReportScanTypeSummaryFromJSONTyped;
+exports.SecHubReportScanTypeSummaryToJSON = SecHubReportScanTypeSummaryToJSON;
+exports.SecHubReportScanTypeSummaryToJSONTyped = SecHubReportScanTypeSummaryToJSONTyped;
+const ScanTypeSummaryDetailData_1 = __nccwpck_require__(2892);
+/**
+ * Check if a given object implements the SecHubReportScanTypeSummary interface.
+ */
+function instanceOfSecHubReportScanTypeSummary(value) {
+    return true;
+}
+function SecHubReportScanTypeSummaryFromJSON(json) {
+    return SecHubReportScanTypeSummaryFromJSONTyped(json, false);
+}
+function SecHubReportScanTypeSummaryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'total': json['total'] == null ? undefined : json['total'],
+        'critical': json['critical'] == null ? undefined : json['critical'],
+        'high': json['high'] == null ? undefined : json['high'],
+        'medium': json['medium'] == null ? undefined : json['medium'],
+        'low': json['low'] == null ? undefined : json['low'],
+        'unclassified': json['unclassified'] == null ? undefined : json['unclassified'],
+        'info': json['info'] == null ? undefined : json['info'],
+        'details': json['details'] == null ? undefined : (0, ScanTypeSummaryDetailData_1.ScanTypeSummaryDetailDataFromJSON)(json['details']),
+    };
+}
+function SecHubReportScanTypeSummaryToJSON(json) {
+    return SecHubReportScanTypeSummaryToJSONTyped(json, false);
+}
+function SecHubReportScanTypeSummaryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'total': value['total'],
+        'critical': value['critical'],
+        'high': value['high'],
+        'medium': value['medium'],
+        'low': value['low'],
+        'unclassified': value['unclassified'],
+        'info': value['info'],
+        'details': (0, ScanTypeSummaryDetailData_1.ScanTypeSummaryDetailDataToJSON)(value['details']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 6707:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportSummary = instanceOfSecHubReportSummary;
+exports.SecHubReportSummaryFromJSON = SecHubReportSummaryFromJSON;
+exports.SecHubReportSummaryFromJSONTyped = SecHubReportSummaryFromJSONTyped;
+exports.SecHubReportSummaryToJSON = SecHubReportSummaryToJSON;
+exports.SecHubReportSummaryToJSONTyped = SecHubReportSummaryToJSONTyped;
+const SecHubReportScanTypeSummary_1 = __nccwpck_require__(6571);
+/**
+ * Check if a given object implements the SecHubReportSummary interface.
+ */
+function instanceOfSecHubReportSummary(value) {
+    return true;
+}
+function SecHubReportSummaryFromJSON(json) {
+    return SecHubReportSummaryFromJSONTyped(json, false);
+}
+function SecHubReportSummaryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'codeScan': json['codeScan'] == null ? undefined : (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryFromJSON)(json['codeScan']),
+        'infraScan': json['infraScan'] == null ? undefined : (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryFromJSON)(json['infraScan']),
+        'licenseScan': json['licenseScan'] == null ? undefined : (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryFromJSON)(json['licenseScan']),
+        'secretScan': json['secretScan'] == null ? undefined : (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryFromJSON)(json['secretScan']),
+        'iacScan': json['iacScan'] == null ? undefined : (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryFromJSON)(json['iacScan']),
+        'webScan': json['webScan'] == null ? undefined : (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryFromJSON)(json['webScan']),
+    };
+}
+function SecHubReportSummaryToJSON(json) {
+    return SecHubReportSummaryToJSONTyped(json, false);
+}
+function SecHubReportSummaryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'codeScan': (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryToJSON)(value['codeScan']),
+        'infraScan': (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryToJSON)(value['infraScan']),
+        'licenseScan': (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryToJSON)(value['licenseScan']),
+        'secretScan': (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryToJSON)(value['secretScan']),
+        'iacScan': (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryToJSON)(value['iacScan']),
+        'webScan': (0, SecHubReportScanTypeSummary_1.SecHubReportScanTypeSummaryToJSON)(value['webScan']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 9817:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportWeb = instanceOfSecHubReportWeb;
+exports.SecHubReportWebFromJSON = SecHubReportWebFromJSON;
+exports.SecHubReportWebFromJSONTyped = SecHubReportWebFromJSONTyped;
+exports.SecHubReportWebToJSON = SecHubReportWebToJSON;
+exports.SecHubReportWebToJSONTyped = SecHubReportWebToJSONTyped;
+const SecHubReportWebAttack_1 = __nccwpck_require__(3368);
+const SecHubReportWebRequest_1 = __nccwpck_require__(6652);
+const SecHubReportWebResponse_1 = __nccwpck_require__(3567);
+/**
+ * Check if a given object implements the SecHubReportWeb interface.
+ */
+function instanceOfSecHubReportWeb(value) {
+    return true;
+}
+function SecHubReportWebFromJSON(json) {
+    return SecHubReportWebFromJSONTyped(json, false);
+}
+function SecHubReportWebFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'request': json['request'] == null ? undefined : (0, SecHubReportWebRequest_1.SecHubReportWebRequestFromJSON)(json['request']),
+        'response': json['response'] == null ? undefined : (0, SecHubReportWebResponse_1.SecHubReportWebResponseFromJSON)(json['response']),
+        'attack': json['attack'] == null ? undefined : (0, SecHubReportWebAttack_1.SecHubReportWebAttackFromJSON)(json['attack']),
+    };
+}
+function SecHubReportWebToJSON(json) {
+    return SecHubReportWebToJSONTyped(json, false);
+}
+function SecHubReportWebToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'request': (0, SecHubReportWebRequest_1.SecHubReportWebRequestToJSON)(value['request']),
+        'response': (0, SecHubReportWebResponse_1.SecHubReportWebResponseToJSON)(value['response']),
+        'attack': (0, SecHubReportWebAttack_1.SecHubReportWebAttackToJSON)(value['attack']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 3368:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportWebAttack = instanceOfSecHubReportWebAttack;
+exports.SecHubReportWebAttackFromJSON = SecHubReportWebAttackFromJSON;
+exports.SecHubReportWebAttackFromJSONTyped = SecHubReportWebAttackFromJSONTyped;
+exports.SecHubReportWebAttackToJSON = SecHubReportWebAttackToJSON;
+exports.SecHubReportWebAttackToJSONTyped = SecHubReportWebAttackToJSONTyped;
+const SecHubReportWebEvidence_1 = __nccwpck_require__(3260);
+/**
+ * Check if a given object implements the SecHubReportWebAttack interface.
+ */
+function instanceOfSecHubReportWebAttack(value) {
+    return true;
+}
+function SecHubReportWebAttackFromJSON(json) {
+    return SecHubReportWebAttackFromJSONTyped(json, false);
+}
+function SecHubReportWebAttackFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'vector': json['vector'] == null ? undefined : json['vector'],
+        'evidence': json['evidence'] == null ? undefined : (0, SecHubReportWebEvidence_1.SecHubReportWebEvidenceFromJSON)(json['evidence']),
+    };
+}
+function SecHubReportWebAttackToJSON(json) {
+    return SecHubReportWebAttackToJSONTyped(json, false);
+}
+function SecHubReportWebAttackToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'vector': value['vector'],
+        'evidence': (0, SecHubReportWebEvidence_1.SecHubReportWebEvidenceToJSON)(value['evidence']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 8364:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportWebBody = instanceOfSecHubReportWebBody;
+exports.SecHubReportWebBodyFromJSON = SecHubReportWebBodyFromJSON;
+exports.SecHubReportWebBodyFromJSONTyped = SecHubReportWebBodyFromJSONTyped;
+exports.SecHubReportWebBodyToJSON = SecHubReportWebBodyToJSON;
+exports.SecHubReportWebBodyToJSONTyped = SecHubReportWebBodyToJSONTyped;
+/**
+ * Check if a given object implements the SecHubReportWebBody interface.
+ */
+function instanceOfSecHubReportWebBody(value) {
+    return true;
+}
+function SecHubReportWebBodyFromJSON(json) {
+    return SecHubReportWebBodyFromJSONTyped(json, false);
+}
+function SecHubReportWebBodyFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'text': json['text'] == null ? undefined : json['text'],
+        'binary': json['binary'] == null ? undefined : json['binary'],
+    };
+}
+function SecHubReportWebBodyToJSON(json) {
+    return SecHubReportWebBodyToJSONTyped(json, false);
+}
+function SecHubReportWebBodyToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'text': value['text'],
+        'binary': value['binary'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3792:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportWebBodyLocation = instanceOfSecHubReportWebBodyLocation;
+exports.SecHubReportWebBodyLocationFromJSON = SecHubReportWebBodyLocationFromJSON;
+exports.SecHubReportWebBodyLocationFromJSONTyped = SecHubReportWebBodyLocationFromJSONTyped;
+exports.SecHubReportWebBodyLocationToJSON = SecHubReportWebBodyLocationToJSON;
+exports.SecHubReportWebBodyLocationToJSONTyped = SecHubReportWebBodyLocationToJSONTyped;
+/**
+ * Check if a given object implements the SecHubReportWebBodyLocation interface.
+ */
+function instanceOfSecHubReportWebBodyLocation(value) {
+    return true;
+}
+function SecHubReportWebBodyLocationFromJSON(json) {
+    return SecHubReportWebBodyLocationFromJSONTyped(json, false);
+}
+function SecHubReportWebBodyLocationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'startLine': json['startLine'] == null ? undefined : json['startLine'],
+    };
+}
+function SecHubReportWebBodyLocationToJSON(json) {
+    return SecHubReportWebBodyLocationToJSONTyped(json, false);
+}
+function SecHubReportWebBodyLocationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'startLine': value['startLine'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3260:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportWebEvidence = instanceOfSecHubReportWebEvidence;
+exports.SecHubReportWebEvidenceFromJSON = SecHubReportWebEvidenceFromJSON;
+exports.SecHubReportWebEvidenceFromJSONTyped = SecHubReportWebEvidenceFromJSONTyped;
+exports.SecHubReportWebEvidenceToJSON = SecHubReportWebEvidenceToJSON;
+exports.SecHubReportWebEvidenceToJSONTyped = SecHubReportWebEvidenceToJSONTyped;
+const SecHubReportWebBodyLocation_1 = __nccwpck_require__(3792);
+/**
+ * Check if a given object implements the SecHubReportWebEvidence interface.
+ */
+function instanceOfSecHubReportWebEvidence(value) {
+    return true;
+}
+function SecHubReportWebEvidenceFromJSON(json) {
+    return SecHubReportWebEvidenceFromJSONTyped(json, false);
+}
+function SecHubReportWebEvidenceFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'snippet': json['snippet'] == null ? undefined : json['snippet'],
+        'bodyLocation': json['bodyLocation'] == null ? undefined : (0, SecHubReportWebBodyLocation_1.SecHubReportWebBodyLocationFromJSON)(json['bodyLocation']),
+    };
+}
+function SecHubReportWebEvidenceToJSON(json) {
+    return SecHubReportWebEvidenceToJSONTyped(json, false);
+}
+function SecHubReportWebEvidenceToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'snippet': value['snippet'],
+        'bodyLocation': (0, SecHubReportWebBodyLocation_1.SecHubReportWebBodyLocationToJSON)(value['bodyLocation']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 6652:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportWebRequest = instanceOfSecHubReportWebRequest;
+exports.SecHubReportWebRequestFromJSON = SecHubReportWebRequestFromJSON;
+exports.SecHubReportWebRequestFromJSONTyped = SecHubReportWebRequestFromJSONTyped;
+exports.SecHubReportWebRequestToJSON = SecHubReportWebRequestToJSON;
+exports.SecHubReportWebRequestToJSONTyped = SecHubReportWebRequestToJSONTyped;
+const SecHubReportWebBody_1 = __nccwpck_require__(8364);
+/**
+ * Check if a given object implements the SecHubReportWebRequest interface.
+ */
+function instanceOfSecHubReportWebRequest(value) {
+    return true;
+}
+function SecHubReportWebRequestFromJSON(json) {
+    return SecHubReportWebRequestFromJSONTyped(json, false);
+}
+function SecHubReportWebRequestFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'protocol': json['protocol'] == null ? undefined : json['protocol'],
+        'version': json['version'] == null ? undefined : json['version'],
+        'target': json['target'] == null ? undefined : json['target'],
+        'method': json['method'] == null ? undefined : json['method'],
+        'headers': json['headers'] == null ? undefined : json['headers'],
+        'body': json['body'] == null ? undefined : (0, SecHubReportWebBody_1.SecHubReportWebBodyFromJSON)(json['body']),
+    };
+}
+function SecHubReportWebRequestToJSON(json) {
+    return SecHubReportWebRequestToJSONTyped(json, false);
+}
+function SecHubReportWebRequestToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'protocol': value['protocol'],
+        'version': value['version'],
+        'target': value['target'],
+        'method': value['method'],
+        'headers': value['headers'],
+        'body': (0, SecHubReportWebBody_1.SecHubReportWebBodyToJSON)(value['body']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 3567:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubReportWebResponse = instanceOfSecHubReportWebResponse;
+exports.SecHubReportWebResponseFromJSON = SecHubReportWebResponseFromJSON;
+exports.SecHubReportWebResponseFromJSONTyped = SecHubReportWebResponseFromJSONTyped;
+exports.SecHubReportWebResponseToJSON = SecHubReportWebResponseToJSON;
+exports.SecHubReportWebResponseToJSONTyped = SecHubReportWebResponseToJSONTyped;
+const SecHubReportWebBody_1 = __nccwpck_require__(8364);
+/**
+ * Check if a given object implements the SecHubReportWebResponse interface.
+ */
+function instanceOfSecHubReportWebResponse(value) {
+    return true;
+}
+function SecHubReportWebResponseFromJSON(json) {
+    return SecHubReportWebResponseFromJSONTyped(json, false);
+}
+function SecHubReportWebResponseFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'statusCode': json['statusCode'] == null ? undefined : json['statusCode'],
+        'reasonPhrase': json['reasonPhrase'] == null ? undefined : json['reasonPhrase'],
+        'protocol': json['protocol'] == null ? undefined : json['protocol'],
+        'version': json['version'] == null ? undefined : json['version'],
+        'headers': json['headers'] == null ? undefined : json['headers'],
+        'body': json['body'] == null ? undefined : (0, SecHubReportWebBody_1.SecHubReportWebBodyFromJSON)(json['body']),
+    };
+}
+function SecHubReportWebResponseToJSON(json) {
+    return SecHubReportWebResponseToJSONTyped(json, false);
+}
+function SecHubReportWebResponseToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'statusCode': value['statusCode'],
+        'reasonPhrase': value['reasonPhrase'],
+        'protocol': value['protocol'],
+        'version': value['version'],
+        'headers': value['headers'],
+        'body': (0, SecHubReportWebBody_1.SecHubReportWebBodyToJSON)(value['body']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 2703:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubResult = instanceOfSecHubResult;
+exports.SecHubResultFromJSON = SecHubResultFromJSON;
+exports.SecHubResultFromJSONTyped = SecHubResultFromJSONTyped;
+exports.SecHubResultToJSON = SecHubResultToJSON;
+exports.SecHubResultToJSONTyped = SecHubResultToJSONTyped;
+const SecHubFinding_1 = __nccwpck_require__(4972);
+/**
+ * Check if a given object implements the SecHubResult interface.
+ */
+function instanceOfSecHubResult(value) {
+    return true;
+}
+function SecHubResultFromJSON(json) {
+    return SecHubResultFromJSONTyped(json, false);
+}
+function SecHubResultFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'count': json['count'] == null ? undefined : json['count'],
+        'findings': json['findings'] == null ? undefined : (json['findings'].map(SecHubFinding_1.SecHubFindingFromJSON)),
+        'falsePositives': json['falsePositives'] == null ? undefined : (json['falsePositives'].map(SecHubFinding_1.SecHubFindingFromJSON)),
+    };
+}
+function SecHubResultToJSON(json) {
+    return SecHubResultToJSONTyped(json, false);
+}
+function SecHubResultToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'count': value['count'],
+        'findings': value['findings'] == null ? undefined : (value['findings'].map(SecHubFinding_1.SecHubFindingToJSON)),
+        'falsePositives': value['falsePositives'] == null ? undefined : (value['falsePositives'].map(SecHubFinding_1.SecHubFindingToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 5154:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubRevisionData = instanceOfSecHubRevisionData;
+exports.SecHubRevisionDataFromJSON = SecHubRevisionDataFromJSON;
+exports.SecHubRevisionDataFromJSONTyped = SecHubRevisionDataFromJSONTyped;
+exports.SecHubRevisionDataToJSON = SecHubRevisionDataToJSON;
+exports.SecHubRevisionDataToJSONTyped = SecHubRevisionDataToJSONTyped;
+/**
+ * Check if a given object implements the SecHubRevisionData interface.
+ */
+function instanceOfSecHubRevisionData(value) {
+    return true;
+}
+function SecHubRevisionDataFromJSON(json) {
+    return SecHubRevisionDataFromJSONTyped(json, false);
+}
+function SecHubRevisionDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'id': json['id'] == null ? undefined : json['id'],
+    };
+}
+function SecHubRevisionDataToJSON(json) {
+    return SecHubRevisionDataToJSONTyped(json, false);
+}
+function SecHubRevisionDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'id': value['id'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 2380:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubSecretScanConfiguration = instanceOfSecHubSecretScanConfiguration;
+exports.SecHubSecretScanConfigurationFromJSON = SecHubSecretScanConfigurationFromJSON;
+exports.SecHubSecretScanConfigurationFromJSONTyped = SecHubSecretScanConfigurationFromJSONTyped;
+exports.SecHubSecretScanConfigurationToJSON = SecHubSecretScanConfigurationToJSON;
+exports.SecHubSecretScanConfigurationToJSONTyped = SecHubSecretScanConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the SecHubSecretScanConfiguration interface.
+ */
+function instanceOfSecHubSecretScanConfiguration(value) {
+    return true;
+}
+function SecHubSecretScanConfigurationFromJSON(json) {
+    return SecHubSecretScanConfigurationFromJSONTyped(json, false);
+}
+function SecHubSecretScanConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'use': json['use'] == null ? undefined : json['use'],
+    };
+}
+function SecHubSecretScanConfigurationToJSON(json) {
+    return SecHubSecretScanConfigurationToJSONTyped(json, false);
+}
+function SecHubSecretScanConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'use': value['use'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 2416:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubSourceDataConfiguration = instanceOfSecHubSourceDataConfiguration;
+exports.SecHubSourceDataConfigurationFromJSON = SecHubSourceDataConfigurationFromJSON;
+exports.SecHubSourceDataConfigurationFromJSONTyped = SecHubSourceDataConfigurationFromJSONTyped;
+exports.SecHubSourceDataConfigurationToJSON = SecHubSourceDataConfigurationToJSON;
+exports.SecHubSourceDataConfigurationToJSONTyped = SecHubSourceDataConfigurationToJSONTyped;
+const SecHubRemoteDataConfiguration_1 = __nccwpck_require__(1852);
+const SecHubFileSystemConfiguration_1 = __nccwpck_require__(9142);
+/**
+ * Check if a given object implements the SecHubSourceDataConfiguration interface.
+ */
+function instanceOfSecHubSourceDataConfiguration(value) {
+    return true;
+}
+function SecHubSourceDataConfigurationFromJSON(json) {
+    return SecHubSourceDataConfigurationFromJSONTyped(json, false);
+}
+function SecHubSourceDataConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'fileSystem': json['fileSystem'] == null ? undefined : (0, SecHubFileSystemConfiguration_1.SecHubFileSystemConfigurationFromJSON)(json['fileSystem']),
+        'excludes': json['excludes'] == null ? undefined : json['excludes'],
+        'includes': json['includes'] == null ? undefined : json['includes'],
+        'remote': json['remote'] == null ? undefined : (0, SecHubRemoteDataConfiguration_1.SecHubRemoteDataConfigurationFromJSON)(json['remote']),
+        'name': json['name'] == null ? undefined : json['name'],
+    };
+}
+function SecHubSourceDataConfigurationToJSON(json) {
+    return SecHubSourceDataConfigurationToJSONTyped(json, false);
+}
+function SecHubSourceDataConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'fileSystem': (0, SecHubFileSystemConfiguration_1.SecHubFileSystemConfigurationToJSON)(value['fileSystem']),
+        'excludes': value['excludes'],
+        'includes': value['includes'],
+        'remote': (0, SecHubRemoteDataConfiguration_1.SecHubRemoteDataConfigurationToJSON)(value['remote']),
+        'name': value['name'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 4156:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SecHubStatus = void 0;
+exports.instanceOfSecHubStatus = instanceOfSecHubStatus;
+exports.SecHubStatusFromJSON = SecHubStatusFromJSON;
+exports.SecHubStatusFromJSONTyped = SecHubStatusFromJSONTyped;
+exports.SecHubStatusToJSON = SecHubStatusToJSON;
+exports.SecHubStatusToJSONTyped = SecHubStatusToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.SecHubStatus = {
+    Success: 'SUCCESS',
+    Failed: 'FAILED'
+};
+function instanceOfSecHubStatus(value) {
+    for (const key in exports.SecHubStatus) {
+        if (Object.prototype.hasOwnProperty.call(exports.SecHubStatus, key)) {
+            if (exports.SecHubStatus[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function SecHubStatusFromJSON(json) {
+    return SecHubStatusFromJSONTyped(json, false);
+}
+function SecHubStatusFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function SecHubStatusToJSON(value) {
+    return value;
+}
+function SecHubStatusToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 820:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SecHubTimeUnit = void 0;
+exports.instanceOfSecHubTimeUnit = instanceOfSecHubTimeUnit;
+exports.SecHubTimeUnitFromJSON = SecHubTimeUnitFromJSON;
+exports.SecHubTimeUnitFromJSONTyped = SecHubTimeUnitFromJSONTyped;
+exports.SecHubTimeUnitToJSON = SecHubTimeUnitToJSON;
+exports.SecHubTimeUnitToJSONTyped = SecHubTimeUnitToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.SecHubTimeUnit = {
+    Millisecond: 'MILLISECOND',
+    Second: 'SECOND',
+    Minute: 'MINUTE',
+    Hour: 'HOUR',
+    Day: 'DAY'
+};
+function instanceOfSecHubTimeUnit(value) {
+    for (const key in exports.SecHubTimeUnit) {
+        if (Object.prototype.hasOwnProperty.call(exports.SecHubTimeUnit, key)) {
+            if (exports.SecHubTimeUnit[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function SecHubTimeUnitFromJSON(json) {
+    return SecHubTimeUnitFromJSONTyped(json, false);
+}
+function SecHubTimeUnitFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function SecHubTimeUnitToJSON(value) {
+    return value;
+}
+function SecHubTimeUnitToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 4102:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubVersionControlData = instanceOfSecHubVersionControlData;
+exports.SecHubVersionControlDataFromJSON = SecHubVersionControlDataFromJSON;
+exports.SecHubVersionControlDataFromJSONTyped = SecHubVersionControlDataFromJSONTyped;
+exports.SecHubVersionControlDataToJSON = SecHubVersionControlDataToJSON;
+exports.SecHubVersionControlDataToJSONTyped = SecHubVersionControlDataToJSONTyped;
+const SecHubRevisionData_1 = __nccwpck_require__(5154);
+/**
+ * Check if a given object implements the SecHubVersionControlData interface.
+ */
+function instanceOfSecHubVersionControlData(value) {
+    return true;
+}
+function SecHubVersionControlDataFromJSON(json) {
+    return SecHubVersionControlDataFromJSONTyped(json, false);
+}
+function SecHubVersionControlDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'type': json['type'] == null ? undefined : json['type'],
+        'location': json['location'] == null ? undefined : json['location'],
+        'revision': json['revision'] == null ? undefined : (0, SecHubRevisionData_1.SecHubRevisionDataFromJSON)(json['revision']),
+    };
+}
+function SecHubVersionControlDataToJSON(json) {
+    return SecHubVersionControlDataToJSONTyped(json, false);
+}
+function SecHubVersionControlDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'type': value['type'],
+        'location': value['location'],
+        'revision': (0, SecHubRevisionData_1.SecHubRevisionDataToJSON)(value['revision']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 1147:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubWebScanApiConfiguration = instanceOfSecHubWebScanApiConfiguration;
+exports.SecHubWebScanApiConfigurationFromJSON = SecHubWebScanApiConfigurationFromJSON;
+exports.SecHubWebScanApiConfigurationFromJSONTyped = SecHubWebScanApiConfigurationFromJSONTyped;
+exports.SecHubWebScanApiConfigurationToJSON = SecHubWebScanApiConfigurationToJSON;
+exports.SecHubWebScanApiConfigurationToJSONTyped = SecHubWebScanApiConfigurationToJSONTyped;
+const SecHubWebScanApiType_1 = __nccwpck_require__(8822);
+/**
+ * Check if a given object implements the SecHubWebScanApiConfiguration interface.
+ */
+function instanceOfSecHubWebScanApiConfiguration(value) {
+    return true;
+}
+function SecHubWebScanApiConfigurationFromJSON(json) {
+    return SecHubWebScanApiConfigurationFromJSONTyped(json, false);
+}
+function SecHubWebScanApiConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'type': json['type'] == null ? undefined : (0, SecHubWebScanApiType_1.SecHubWebScanApiTypeFromJSON)(json['type']),
+        'use': json['use'] == null ? undefined : json['use'],
+        'apiDefinitionUrl': json['apiDefinitionUrl'] == null ? undefined : json['apiDefinitionUrl'],
+    };
+}
+function SecHubWebScanApiConfigurationToJSON(json) {
+    return SecHubWebScanApiConfigurationToJSONTyped(json, false);
+}
+function SecHubWebScanApiConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'type': (0, SecHubWebScanApiType_1.SecHubWebScanApiTypeToJSON)(value['type']),
+        'use': value['use'],
+        'apiDefinitionUrl': value['apiDefinitionUrl'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 8822:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SecHubWebScanApiType = void 0;
+exports.instanceOfSecHubWebScanApiType = instanceOfSecHubWebScanApiType;
+exports.SecHubWebScanApiTypeFromJSON = SecHubWebScanApiTypeFromJSON;
+exports.SecHubWebScanApiTypeFromJSONTyped = SecHubWebScanApiTypeFromJSONTyped;
+exports.SecHubWebScanApiTypeToJSON = SecHubWebScanApiTypeToJSON;
+exports.SecHubWebScanApiTypeToJSONTyped = SecHubWebScanApiTypeToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.SecHubWebScanApiType = {
+    OpenApi: 'OPEN_API'
+};
+function instanceOfSecHubWebScanApiType(value) {
+    for (const key in exports.SecHubWebScanApiType) {
+        if (Object.prototype.hasOwnProperty.call(exports.SecHubWebScanApiType, key)) {
+            if (exports.SecHubWebScanApiType[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function SecHubWebScanApiTypeFromJSON(json) {
+    return SecHubWebScanApiTypeFromJSONTyped(json, false);
+}
+function SecHubWebScanApiTypeFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function SecHubWebScanApiTypeToJSON(value) {
+    return value;
+}
+function SecHubWebScanApiTypeToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 1270:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSecHubWebScanConfiguration = instanceOfSecHubWebScanConfiguration;
+exports.SecHubWebScanConfigurationFromJSON = SecHubWebScanConfigurationFromJSON;
+exports.SecHubWebScanConfigurationFromJSONTyped = SecHubWebScanConfigurationFromJSONTyped;
+exports.SecHubWebScanConfigurationToJSON = SecHubWebScanConfigurationToJSON;
+exports.SecHubWebScanConfigurationToJSONTyped = SecHubWebScanConfigurationToJSONTyped;
+const HTTPHeaderConfiguration_1 = __nccwpck_require__(2304);
+const WebLoginConfiguration_1 = __nccwpck_require__(3062);
+const SecHubWebScanApiConfiguration_1 = __nccwpck_require__(1147);
+const WebScanDurationConfiguration_1 = __nccwpck_require__(2485);
+const ClientCertificateConfiguration_1 = __nccwpck_require__(241);
+/**
+ * Check if a given object implements the SecHubWebScanConfiguration interface.
+ */
+function instanceOfSecHubWebScanConfiguration(value) {
+    return true;
+}
+function SecHubWebScanConfigurationFromJSON(json) {
+    return SecHubWebScanConfigurationFromJSONTyped(json, false);
+}
+function SecHubWebScanConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'login': json['login'] == null ? undefined : (0, WebLoginConfiguration_1.WebLoginConfigurationFromJSON)(json['login']),
+        'maxScanDuration': json['maxScanDuration'] == null ? undefined : (0, WebScanDurationConfiguration_1.WebScanDurationConfigurationFromJSON)(json['maxScanDuration']),
+        'api': json['api'] == null ? undefined : (0, SecHubWebScanApiConfiguration_1.SecHubWebScanApiConfigurationFromJSON)(json['api']),
+        'url': json['url'] == null ? undefined : json['url'],
+        'use': json['use'] == null ? undefined : json['use'],
+        'includes': json['includes'] == null ? undefined : json['includes'],
+        'excludes': json['excludes'] == null ? undefined : json['excludes'],
+        'headers': json['headers'] == null ? undefined : (json['headers'].map(HTTPHeaderConfiguration_1.HTTPHeaderConfigurationFromJSON)),
+        'clientCertificate': json['clientCertificate'] == null ? undefined : (0, ClientCertificateConfiguration_1.ClientCertificateConfigurationFromJSON)(json['clientCertificate']),
+    };
+}
+function SecHubWebScanConfigurationToJSON(json) {
+    return SecHubWebScanConfigurationToJSONTyped(json, false);
+}
+function SecHubWebScanConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'login': (0, WebLoginConfiguration_1.WebLoginConfigurationToJSON)(value['login']),
+        'maxScanDuration': (0, WebScanDurationConfiguration_1.WebScanDurationConfigurationToJSON)(value['maxScanDuration']),
+        'api': (0, SecHubWebScanApiConfiguration_1.SecHubWebScanApiConfigurationToJSON)(value['api']),
+        'url': value['url'],
+        'use': value['use'],
+        'includes': value['includes'],
+        'excludes': value['excludes'],
+        'headers': value['headers'] == null ? undefined : (value['headers'].map(HTTPHeaderConfiguration_1.HTTPHeaderConfigurationToJSON)),
+        'clientCertificate': (0, ClientCertificateConfiguration_1.ClientCertificateConfigurationToJSON)(value['clientCertificate']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 7326:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfServerRuntimeData = instanceOfServerRuntimeData;
+exports.ServerRuntimeDataFromJSON = ServerRuntimeDataFromJSON;
+exports.ServerRuntimeDataFromJSONTyped = ServerRuntimeDataFromJSONTyped;
+exports.ServerRuntimeDataToJSON = ServerRuntimeDataToJSON;
+exports.ServerRuntimeDataToJSONTyped = ServerRuntimeDataToJSONTyped;
+/**
+ * Check if a given object implements the ServerRuntimeData interface.
+ */
+function instanceOfServerRuntimeData(value) {
+    return true;
+}
+function ServerRuntimeDataFromJSON(json) {
+    return ServerRuntimeDataFromJSONTyped(json, false);
+}
+function ServerRuntimeDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'serverVersion': json['serverVersion'] == null ? undefined : json['serverVersion'],
+    };
+}
+function ServerRuntimeDataToJSON(json) {
+    return ServerRuntimeDataToJSONTyped(json, false);
+}
+function ServerRuntimeDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'serverVersion': value['serverVersion'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 2496:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Severity = void 0;
+exports.instanceOfSeverity = instanceOfSeverity;
+exports.SeverityFromJSON = SeverityFromJSON;
+exports.SeverityFromJSONTyped = SeverityFromJSONTyped;
+exports.SeverityToJSON = SeverityToJSON;
+exports.SeverityToJSONTyped = SeverityToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.Severity = {
+    Info: 'INFO',
+    Low: 'LOW',
+    Medium: 'MEDIUM',
+    High: 'HIGH',
+    Critical: 'CRITICAL'
+};
+function instanceOfSeverity(value) {
+    for (const key in exports.Severity) {
+        if (Object.prototype.hasOwnProperty.call(exports.Severity, key)) {
+            if (exports.Severity[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function SeverityFromJSON(json) {
+    return SeverityFromJSONTyped(json, false);
+}
+function SeverityFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function SeverityToJSON(value) {
+    return value;
+}
+function SeverityToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 6310:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSignUp = instanceOfSignUp;
+exports.SignUpFromJSON = SignUpFromJSON;
+exports.SignUpFromJSONTyped = SignUpFromJSONTyped;
+exports.SignUpToJSON = SignUpToJSON;
+exports.SignUpToJSONTyped = SignUpToJSONTyped;
+/**
+ * Check if a given object implements the SignUp interface.
+ */
+function instanceOfSignUp(value) {
+    return true;
+}
+function SignUpFromJSON(json) {
+    return SignUpFromJSONTyped(json, false);
+}
+function SignUpFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'userId': json['userId'] == null ? undefined : json['userId'],
+        'emailAddress': json['emailAddress'] == null ? undefined : json['emailAddress'],
+        'version': json['version'] == null ? undefined : json['version'],
+    };
+}
+function SignUpToJSON(json) {
+    return SignUpToJSONTyped(json, false);
+}
+function SignUpToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'userId': value['userId'],
+        'emailAddress': value['emailAddress'],
+        'version': value['version'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 6463:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfSignUpInput = instanceOfSignUpInput;
+exports.SignUpInputFromJSON = SignUpInputFromJSON;
+exports.SignUpInputFromJSONTyped = SignUpInputFromJSONTyped;
+exports.SignUpInputToJSON = SignUpInputToJSON;
+exports.SignUpInputToJSONTyped = SignUpInputToJSONTyped;
+/**
+ * Check if a given object implements the SignUpInput interface.
+ */
+function instanceOfSignUpInput(value) {
+    return true;
+}
+function SignUpInputFromJSON(json) {
+    return SignUpInputFromJSONTyped(json, false);
+}
+function SignUpInputFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'apiVersion': json['apiVersion'] == null ? undefined : json['apiVersion'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
+        'emailAddress': json['emailAddress'] == null ? undefined : json['emailAddress'],
+    };
+}
+function SignUpInputToJSON(json) {
+    return SignUpInputToJSONTyped(json, false);
+}
+function SignUpInputToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'apiVersion': value['apiVersion'],
+        'userId': value['userId'],
+        'emailAddress': value['emailAddress'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 8938:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfStatusEntry = instanceOfStatusEntry;
+exports.StatusEntryFromJSON = StatusEntryFromJSON;
+exports.StatusEntryFromJSONTyped = StatusEntryFromJSONTyped;
+exports.StatusEntryToJSON = StatusEntryToJSON;
+exports.StatusEntryToJSONTyped = StatusEntryToJSONTyped;
+/**
+ * Check if a given object implements the StatusEntry interface.
+ */
+function instanceOfStatusEntry(value) {
+    return true;
+}
+function StatusEntryFromJSON(json) {
+    return StatusEntryFromJSONTyped(json, false);
+}
+function StatusEntryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'key': json['key'] == null ? undefined : json['key'],
+        'value': json['value'] == null ? undefined : json['value'],
+        'version': json['version'] == null ? undefined : json['version'],
+    };
+}
+function StatusEntryToJSON(json) {
+    return StatusEntryToJSONTyped(json, false);
+}
+function StatusEntryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'key': value['key'],
+        'value': value['value'],
+        'version': value['version'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3552:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TOTPHashAlgorithm = void 0;
+exports.instanceOfTOTPHashAlgorithm = instanceOfTOTPHashAlgorithm;
+exports.TOTPHashAlgorithmFromJSON = TOTPHashAlgorithmFromJSON;
+exports.TOTPHashAlgorithmFromJSONTyped = TOTPHashAlgorithmFromJSONTyped;
+exports.TOTPHashAlgorithmToJSON = TOTPHashAlgorithmToJSON;
+exports.TOTPHashAlgorithmToJSONTyped = TOTPHashAlgorithmToJSONTyped;
+/**
+ * Representing the TOTP hash algorithms.
+ * @export
+ */
+exports.TOTPHashAlgorithm = {
+    HmacSha1: 'HmacSHA1',
+    HmacSha256: 'HmacSHA256',
+    HmacSha512: 'HmacSHA512'
+};
+function instanceOfTOTPHashAlgorithm(value) {
+    for (const key in exports.TOTPHashAlgorithm) {
+        if (Object.prototype.hasOwnProperty.call(exports.TOTPHashAlgorithm, key)) {
+            if (exports.TOTPHashAlgorithm[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function TOTPHashAlgorithmFromJSON(json) {
+    return TOTPHashAlgorithmFromJSONTyped(json, false);
+}
+function TOTPHashAlgorithmFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function TOTPHashAlgorithmToJSON(value) {
+    return value;
+}
+function TOTPHashAlgorithmToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 2764:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfTemplateDefinition = instanceOfTemplateDefinition;
+exports.TemplateDefinitionFromJSON = TemplateDefinitionFromJSON;
+exports.TemplateDefinitionFromJSONTyped = TemplateDefinitionFromJSONTyped;
+exports.TemplateDefinitionToJSON = TemplateDefinitionToJSON;
+exports.TemplateDefinitionToJSONTyped = TemplateDefinitionToJSONTyped;
+const TemplateVariable_1 = __nccwpck_require__(5408);
+const TemplateType_1 = __nccwpck_require__(4549);
+/**
+ * Check if a given object implements the TemplateDefinition interface.
+ */
+function instanceOfTemplateDefinition(value) {
+    return true;
+}
+function TemplateDefinitionFromJSON(json) {
+    return TemplateDefinitionFromJSONTyped(json, false);
+}
+function TemplateDefinitionFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'type': json['type'] == null ? undefined : (0, TemplateType_1.TemplateTypeFromJSON)(json['type']),
+        'assets': json['assets'] == null ? undefined : json['assets'],
+        'variables': json['variables'] == null ? undefined : (json['variables'].map(TemplateVariable_1.TemplateVariableFromJSON)),
+    };
+}
+function TemplateDefinitionToJSON(json) {
+    return TemplateDefinitionToJSONTyped(json, false);
+}
+function TemplateDefinitionToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'type': (0, TemplateType_1.TemplateTypeToJSON)(value['type']),
+        'assets': value['assets'],
+        'variables': value['variables'] == null ? undefined : (value['variables'].map(TemplateVariable_1.TemplateVariableToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 1005:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfTemplateHealthCheckEntry = instanceOfTemplateHealthCheckEntry;
+exports.TemplateHealthCheckEntryFromJSON = TemplateHealthCheckEntryFromJSON;
+exports.TemplateHealthCheckEntryFromJSONTyped = TemplateHealthCheckEntryFromJSONTyped;
+exports.TemplateHealthCheckEntryToJSON = TemplateHealthCheckEntryToJSON;
+exports.TemplateHealthCheckEntryToJSONTyped = TemplateHealthCheckEntryToJSONTyped;
+/**
+ * Check if a given object implements the TemplateHealthCheckEntry interface.
+ */
+function instanceOfTemplateHealthCheckEntry(value) {
+    return true;
+}
+function TemplateHealthCheckEntryFromJSON(json) {
+    return TemplateHealthCheckEntryFromJSONTyped(json, false);
+}
+function TemplateHealthCheckEntryFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'type': json['type'] == null ? undefined : json['type'],
+        'description': json['description'] == null ? undefined : json['description'],
+        'templateId': json['templateId'] == null ? undefined : json['templateId'],
+        'projects': json['projects'] == null ? undefined : json['projects'],
+        'executorConfigUUID': json['executorConfigUUID'] == null ? undefined : json['executorConfigUUID'],
+        'profiles': json['profiles'] == null ? undefined : json['profiles'],
+        'hints': json['hints'] == null ? undefined : json['hints'],
+        'solution': json['solution'] == null ? undefined : json['solution'],
+        'assetId': json['assetId'] == null ? undefined : json['assetId'],
+        'fileName': json['fileName'] == null ? undefined : json['fileName'],
+    };
+}
+function TemplateHealthCheckEntryToJSON(json) {
+    return TemplateHealthCheckEntryToJSONTyped(json, false);
+}
+function TemplateHealthCheckEntryToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'type': value['type'],
+        'description': value['description'],
+        'templateId': value['templateId'],
+        'projects': value['projects'],
+        'executorConfigUUID': value['executorConfigUUID'],
+        'profiles': value['profiles'],
+        'hints': value['hints'],
+        'solution': value['solution'],
+        'assetId': value['assetId'],
+        'fileName': value['fileName'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 904:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TemplateHealthCheckProblemType = void 0;
+exports.instanceOfTemplateHealthCheckProblemType = instanceOfTemplateHealthCheckProblemType;
+exports.TemplateHealthCheckProblemTypeFromJSON = TemplateHealthCheckProblemTypeFromJSON;
+exports.TemplateHealthCheckProblemTypeFromJSONTyped = TemplateHealthCheckProblemTypeFromJSONTyped;
+exports.TemplateHealthCheckProblemTypeToJSON = TemplateHealthCheckProblemTypeToJSON;
+exports.TemplateHealthCheckProblemTypeToJSONTyped = TemplateHealthCheckProblemTypeToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.TemplateHealthCheckProblemType = {
+    Info: 'INFO',
+    Warning: 'WARNING',
+    Error: 'ERROR'
+};
+function instanceOfTemplateHealthCheckProblemType(value) {
+    for (const key in exports.TemplateHealthCheckProblemType) {
+        if (Object.prototype.hasOwnProperty.call(exports.TemplateHealthCheckProblemType, key)) {
+            if (exports.TemplateHealthCheckProblemType[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function TemplateHealthCheckProblemTypeFromJSON(json) {
+    return TemplateHealthCheckProblemTypeFromJSONTyped(json, false);
+}
+function TemplateHealthCheckProblemTypeFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function TemplateHealthCheckProblemTypeToJSON(value) {
+    return value;
+}
+function TemplateHealthCheckProblemTypeToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 4549:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TemplateType = void 0;
+exports.instanceOfTemplateType = instanceOfTemplateType;
+exports.TemplateTypeFromJSON = TemplateTypeFromJSON;
+exports.TemplateTypeFromJSONTyped = TemplateTypeFromJSONTyped;
+exports.TemplateTypeToJSON = TemplateTypeToJSON;
+exports.TemplateTypeToJSONTyped = TemplateTypeToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.TemplateType = {
+    WebscanLogin: 'WEBSCAN_LOGIN'
+};
+function instanceOfTemplateType(value) {
+    for (const key in exports.TemplateType) {
+        if (Object.prototype.hasOwnProperty.call(exports.TemplateType, key)) {
+            if (exports.TemplateType[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function TemplateTypeFromJSON(json) {
+    return TemplateTypeFromJSONTyped(json, false);
+}
+function TemplateTypeFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function TemplateTypeToJSON(value) {
+    return value;
+}
+function TemplateTypeToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 5408:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfTemplateVariable = instanceOfTemplateVariable;
+exports.TemplateVariableFromJSON = TemplateVariableFromJSON;
+exports.TemplateVariableFromJSONTyped = TemplateVariableFromJSONTyped;
+exports.TemplateVariableToJSON = TemplateVariableToJSON;
+exports.TemplateVariableToJSONTyped = TemplateVariableToJSONTyped;
+const TemplateVariableValidation_1 = __nccwpck_require__(4922);
+/**
+ * Check if a given object implements the TemplateVariable interface.
+ */
+function instanceOfTemplateVariable(value) {
+    return true;
+}
+function TemplateVariableFromJSON(json) {
+    return TemplateVariableFromJSONTyped(json, false);
+}
+function TemplateVariableFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'name': json['name'] == null ? undefined : json['name'],
+        'optional': json['optional'] == null ? undefined : json['optional'],
+        'validation': json['validation'] == null ? undefined : (0, TemplateVariableValidation_1.TemplateVariableValidationFromJSON)(json['validation']),
+    };
+}
+function TemplateVariableToJSON(json) {
+    return TemplateVariableToJSONTyped(json, false);
+}
+function TemplateVariableToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'name': value['name'],
+        'optional': value['optional'],
+        'validation': (0, TemplateVariableValidation_1.TemplateVariableValidationToJSON)(value['validation']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 4922:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfTemplateVariableValidation = instanceOfTemplateVariableValidation;
+exports.TemplateVariableValidationFromJSON = TemplateVariableValidationFromJSON;
+exports.TemplateVariableValidationFromJSONTyped = TemplateVariableValidationFromJSONTyped;
+exports.TemplateVariableValidationToJSON = TemplateVariableValidationToJSON;
+exports.TemplateVariableValidationToJSONTyped = TemplateVariableValidationToJSONTyped;
+/**
+ * Check if a given object implements the TemplateVariableValidation interface.
+ */
+function instanceOfTemplateVariableValidation(value) {
+    return true;
+}
+function TemplateVariableValidationFromJSON(json) {
+    return TemplateVariableValidationFromJSONTyped(json, false);
+}
+function TemplateVariableValidationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'minLength': json['minLength'] == null ? undefined : json['minLength'],
+        'maxLength': json['maxLength'] == null ? undefined : json['maxLength'],
+        'regularExpression': json['regularExpression'] == null ? undefined : json['regularExpression'],
+    };
+}
+function TemplateVariableValidationToJSON(json) {
+    return TemplateVariableValidationToJSONTyped(json, false);
+}
+function TemplateVariableValidationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'minLength': value['minLength'],
+        'maxLength': value['maxLength'],
+        'regularExpression': value['regularExpression'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 5448:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfTemplatesHealthCheckResult = instanceOfTemplatesHealthCheckResult;
+exports.TemplatesHealthCheckResultFromJSON = TemplatesHealthCheckResultFromJSON;
+exports.TemplatesHealthCheckResultFromJSONTyped = TemplatesHealthCheckResultFromJSONTyped;
+exports.TemplatesHealthCheckResultToJSON = TemplatesHealthCheckResultToJSON;
+exports.TemplatesHealthCheckResultToJSONTyped = TemplatesHealthCheckResultToJSONTyped;
+const TemplateHealthCheckEntry_1 = __nccwpck_require__(1005);
+/**
+ * Check if a given object implements the TemplatesHealthCheckResult interface.
+ */
+function instanceOfTemplatesHealthCheckResult(value) {
+    return true;
+}
+function TemplatesHealthCheckResultFromJSON(json) {
+    return TemplatesHealthCheckResultFromJSONTyped(json, false);
+}
+function TemplatesHealthCheckResultFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'status': json['status'] == null ? undefined : json['status'],
+        'entries': json['entries'] == null ? undefined : (json['entries'].map(TemplateHealthCheckEntry_1.TemplateHealthCheckEntryFromJSON)),
+    };
+}
+function TemplatesHealthCheckResultToJSON(json) {
+    return TemplatesHealthCheckResultToJSONTyped(json, false);
+}
+function TemplatesHealthCheckResultToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'status': value['status'],
+        'entries': value['entries'] == null ? undefined : (value['entries'].map(TemplateHealthCheckEntry_1.TemplateHealthCheckEntryToJSON)),
+    };
+}
+
+
+/***/ }),
+
+/***/ 7635:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TemplatesHealthCheckStatus = void 0;
+exports.instanceOfTemplatesHealthCheckStatus = instanceOfTemplatesHealthCheckStatus;
+exports.TemplatesHealthCheckStatusFromJSON = TemplatesHealthCheckStatusFromJSON;
+exports.TemplatesHealthCheckStatusFromJSONTyped = TemplatesHealthCheckStatusFromJSONTyped;
+exports.TemplatesHealthCheckStatusToJSON = TemplatesHealthCheckStatusToJSON;
+exports.TemplatesHealthCheckStatusToJSONTyped = TemplatesHealthCheckStatusToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.TemplatesHealthCheckStatus = {
+    Ok: 'OK',
+    Warning: 'WARNING',
+    Error: 'ERROR'
+};
+function instanceOfTemplatesHealthCheckStatus(value) {
+    for (const key in exports.TemplatesHealthCheckStatus) {
+        if (Object.prototype.hasOwnProperty.call(exports.TemplatesHealthCheckStatus, key)) {
+            if (exports.TemplatesHealthCheckStatus[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function TemplatesHealthCheckStatusFromJSON(json) {
+    return TemplatesHealthCheckStatusFromJSONTyped(json, false);
+}
+function TemplatesHealthCheckStatusFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function TemplatesHealthCheckStatusToJSON(value) {
+    return value;
+}
+function TemplatesHealthCheckStatusToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 5779:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TrafficLight = void 0;
+exports.instanceOfTrafficLight = instanceOfTrafficLight;
+exports.TrafficLightFromJSON = TrafficLightFromJSON;
+exports.TrafficLightFromJSONTyped = TrafficLightFromJSONTyped;
+exports.TrafficLightToJSON = TrafficLightToJSON;
+exports.TrafficLightToJSONTyped = TrafficLightToJSONTyped;
+/**
+ *
+ * @export
+ */
+exports.TrafficLight = {
+    Green: 'GREEN',
+    Yellow: 'YELLOW',
+    Red: 'RED',
+    Off: 'OFF'
+};
+function instanceOfTrafficLight(value) {
+    for (const key in exports.TrafficLight) {
+        if (Object.prototype.hasOwnProperty.call(exports.TrafficLight, key)) {
+            if (exports.TrafficLight[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function TrafficLightFromJSON(json) {
+    return TrafficLightFromJSONTyped(json, false);
+}
+function TrafficLightFromJSONTyped(json, ignoreDiscriminator) {
+    return json;
+}
+function TrafficLightToJSON(value) {
+    return value;
+}
+function TrafficLightToJSONTyped(value, ignoreDiscriminator) {
+    return value;
+}
+
+
+/***/ }),
+
+/***/ 6917:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfUserDetailInformation = instanceOfUserDetailInformation;
+exports.UserDetailInformationFromJSON = UserDetailInformationFromJSON;
+exports.UserDetailInformationFromJSONTyped = UserDetailInformationFromJSONTyped;
+exports.UserDetailInformationToJSON = UserDetailInformationToJSON;
+exports.UserDetailInformationToJSONTyped = UserDetailInformationToJSONTyped;
+/**
+ * Check if a given object implements the UserDetailInformation interface.
+ */
+function instanceOfUserDetailInformation(value) {
+    return true;
+}
+function UserDetailInformationFromJSON(json) {
+    return UserDetailInformationFromJSONTyped(json, false);
+}
+function UserDetailInformationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'projects': json['projects'] == null ? undefined : json['projects'],
+        'superAdmin': json['superAdmin'] == null ? undefined : json['superAdmin'],
+        'userId': json['userId'] == null ? undefined : json['userId'],
+        'email': json['email'] == null ? undefined : json['email'],
+        'ownedProjects': json['ownedProjects'] == null ? undefined : json['ownedProjects'],
+    };
+}
+function UserDetailInformationToJSON(json) {
+    return UserDetailInformationToJSONTyped(json, false);
+}
+function UserDetailInformationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'projects': value['projects'],
+        'superAdmin': value['superAdmin'],
+        'userId': value['userId'],
+        'email': value['email'],
+        'ownedProjects': value['ownedProjects'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 3062:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfWebLoginConfiguration = instanceOfWebLoginConfiguration;
+exports.WebLoginConfigurationFromJSON = WebLoginConfigurationFromJSON;
+exports.WebLoginConfigurationFromJSONTyped = WebLoginConfigurationFromJSONTyped;
+exports.WebLoginConfigurationToJSON = WebLoginConfigurationToJSON;
+exports.WebLoginConfigurationToJSONTyped = WebLoginConfigurationToJSONTyped;
+const WebLoginTOTPConfiguration_1 = __nccwpck_require__(7441);
+const FormLoginConfiguration_1 = __nccwpck_require__(2429);
+const WebLoginVerificationConfiguration_1 = __nccwpck_require__(1807);
+const BasicLoginConfiguration_1 = __nccwpck_require__(4846);
+/**
+ * Check if a given object implements the WebLoginConfiguration interface.
+ */
+function instanceOfWebLoginConfiguration(value) {
+    if (!('url' in value) || value['url'] === undefined)
+        return false;
+    return true;
+}
+function WebLoginConfigurationFromJSON(json) {
+    return WebLoginConfigurationFromJSONTyped(json, false);
+}
+function WebLoginConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'basic': json['basic'] == null ? undefined : (0, BasicLoginConfiguration_1.BasicLoginConfigurationFromJSON)(json['basic']),
+        'form': json['form'] == null ? undefined : (0, FormLoginConfiguration_1.FormLoginConfigurationFromJSON)(json['form']),
+        'url': json['url'],
+        'totp': json['totp'] == null ? undefined : (0, WebLoginTOTPConfiguration_1.WebLoginTOTPConfigurationFromJSON)(json['totp']),
+        'verification': json['verification'] == null ? undefined : (0, WebLoginVerificationConfiguration_1.WebLoginVerificationConfigurationFromJSON)(json['verification']),
+    };
+}
+function WebLoginConfigurationToJSON(json) {
+    return WebLoginConfigurationToJSONTyped(json, false);
+}
+function WebLoginConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'basic': (0, BasicLoginConfiguration_1.BasicLoginConfigurationToJSON)(value['basic']),
+        'form': (0, FormLoginConfiguration_1.FormLoginConfigurationToJSON)(value['form']),
+        'url': value['url'],
+        'totp': (0, WebLoginTOTPConfiguration_1.WebLoginTOTPConfigurationToJSON)(value['totp']),
+        'verification': (0, WebLoginVerificationConfiguration_1.WebLoginVerificationConfigurationToJSON)(value['verification']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 7441:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfWebLoginTOTPConfiguration = instanceOfWebLoginTOTPConfiguration;
+exports.WebLoginTOTPConfigurationFromJSON = WebLoginTOTPConfigurationFromJSON;
+exports.WebLoginTOTPConfigurationFromJSONTyped = WebLoginTOTPConfigurationFromJSONTyped;
+exports.WebLoginTOTPConfigurationToJSON = WebLoginTOTPConfigurationToJSON;
+exports.WebLoginTOTPConfigurationToJSONTyped = WebLoginTOTPConfigurationToJSONTyped;
+const TOTPHashAlgorithm_1 = __nccwpck_require__(3552);
+const EncodingType_1 = __nccwpck_require__(5775);
+/**
+ * Check if a given object implements the WebLoginTOTPConfiguration interface.
+ */
+function instanceOfWebLoginTOTPConfiguration(value) {
+    if (!('seed' in value) || value['seed'] === undefined)
+        return false;
+    return true;
+}
+function WebLoginTOTPConfigurationFromJSON(json) {
+    return WebLoginTOTPConfigurationFromJSONTyped(json, false);
+}
+function WebLoginTOTPConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'seed': json['seed'],
+        'validityInSeconds': json['validityInSeconds'] == null ? undefined : json['validityInSeconds'],
+        'tokenLength': json['tokenLength'] == null ? undefined : json['tokenLength'],
+        'hashAlgorithm': json['hashAlgorithm'] == null ? undefined : (0, TOTPHashAlgorithm_1.TOTPHashAlgorithmFromJSON)(json['hashAlgorithm']),
+        'encodingType': json['encodingType'] == null ? undefined : (0, EncodingType_1.EncodingTypeFromJSON)(json['encodingType']),
+    };
+}
+function WebLoginTOTPConfigurationToJSON(json) {
+    return WebLoginTOTPConfigurationToJSONTyped(json, false);
+}
+function WebLoginTOTPConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'seed': value['seed'],
+        'validityInSeconds': value['validityInSeconds'],
+        'tokenLength': value['tokenLength'],
+        'hashAlgorithm': (0, TOTPHashAlgorithm_1.TOTPHashAlgorithmToJSON)(value['hashAlgorithm']),
+        'encodingType': (0, EncodingType_1.EncodingTypeToJSON)(value['encodingType']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 1807:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfWebLoginVerificationConfiguration = instanceOfWebLoginVerificationConfiguration;
+exports.WebLoginVerificationConfigurationFromJSON = WebLoginVerificationConfigurationFromJSON;
+exports.WebLoginVerificationConfigurationFromJSONTyped = WebLoginVerificationConfigurationFromJSONTyped;
+exports.WebLoginVerificationConfigurationToJSON = WebLoginVerificationConfigurationToJSON;
+exports.WebLoginVerificationConfigurationToJSONTyped = WebLoginVerificationConfigurationToJSONTyped;
+/**
+ * Check if a given object implements the WebLoginVerificationConfiguration interface.
+ */
+function instanceOfWebLoginVerificationConfiguration(value) {
+    if (!('url' in value) || value['url'] === undefined)
+        return false;
+    return true;
+}
+function WebLoginVerificationConfigurationFromJSON(json) {
+    return WebLoginVerificationConfigurationFromJSONTyped(json, false);
+}
+function WebLoginVerificationConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'url': json['url'],
+        'responseCode': json['responseCode'] == null ? undefined : json['responseCode'],
+    };
+}
+function WebLoginVerificationConfigurationToJSON(json) {
+    return WebLoginVerificationConfigurationToJSONTyped(json, false);
+}
+function WebLoginVerificationConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'url': value['url'],
+        'responseCode': value['responseCode'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 2485:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfWebScanDurationConfiguration = instanceOfWebScanDurationConfiguration;
+exports.WebScanDurationConfigurationFromJSON = WebScanDurationConfigurationFromJSON;
+exports.WebScanDurationConfigurationFromJSONTyped = WebScanDurationConfigurationFromJSONTyped;
+exports.WebScanDurationConfigurationToJSON = WebScanDurationConfigurationToJSON;
+exports.WebScanDurationConfigurationToJSONTyped = WebScanDurationConfigurationToJSONTyped;
+const SecHubTimeUnit_1 = __nccwpck_require__(820);
+/**
+ * Check if a given object implements the WebScanDurationConfiguration interface.
+ */
+function instanceOfWebScanDurationConfiguration(value) {
+    if (!('duration' in value) || value['duration'] === undefined)
+        return false;
+    if (!('unit' in value) || value['unit'] === undefined)
+        return false;
+    return true;
+}
+function WebScanDurationConfigurationFromJSON(json) {
+    return WebScanDurationConfigurationFromJSONTyped(json, false);
+}
+function WebScanDurationConfigurationFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'duration': json['duration'],
+        'unit': (0, SecHubTimeUnit_1.SecHubTimeUnitFromJSON)(json['unit']),
+    };
+}
+function WebScanDurationConfigurationToJSON(json) {
+    return WebScanDurationConfigurationToJSONTyped(json, false);
+}
+function WebScanDurationConfigurationToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'duration': value['duration'],
+        'unit': (0, SecHubTimeUnit_1.SecHubTimeUnitToJSON)(value['unit']),
+    };
+}
+
+
+/***/ }),
+
+/***/ 3495:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.instanceOfWebscanFalsePositiveProjectData = instanceOfWebscanFalsePositiveProjectData;
+exports.WebscanFalsePositiveProjectDataFromJSON = WebscanFalsePositiveProjectDataFromJSON;
+exports.WebscanFalsePositiveProjectDataFromJSONTyped = WebscanFalsePositiveProjectDataFromJSONTyped;
+exports.WebscanFalsePositiveProjectDataToJSON = WebscanFalsePositiveProjectDataToJSON;
+exports.WebscanFalsePositiveProjectDataToJSONTyped = WebscanFalsePositiveProjectDataToJSONTyped;
+/**
+ * Check if a given object implements the WebscanFalsePositiveProjectData interface.
+ */
+function instanceOfWebscanFalsePositiveProjectData(value) {
+    if (!('cweId' in value) || value['cweId'] === undefined)
+        return false;
+    if (!('urlPattern' in value) || value['urlPattern'] === undefined)
+        return false;
+    return true;
+}
+function WebscanFalsePositiveProjectDataFromJSON(json) {
+    return WebscanFalsePositiveProjectDataFromJSONTyped(json, false);
+}
+function WebscanFalsePositiveProjectDataFromJSONTyped(json, ignoreDiscriminator) {
+    if (json == null) {
+        return json;
+    }
+    return {
+        'cweId': json['cweId'],
+        'urlPattern': json['urlPattern'],
+        'methods': json['methods'] == null ? undefined : json['methods'],
+    };
+}
+function WebscanFalsePositiveProjectDataToJSON(json) {
+    return WebscanFalsePositiveProjectDataToJSONTyped(json, false);
+}
+function WebscanFalsePositiveProjectDataToJSONTyped(value, ignoreDiscriminator = false) {
+    if (value == null) {
+        return value;
+    }
+    return {
+        'cweId': value['cweId'],
+        'urlPattern': value['urlPattern'],
+        'methods': value['methods'],
+    };
+}
+
+
+/***/ }),
+
+/***/ 2646:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/* tslint:disable */
+/* eslint-disable */
+__exportStar(__nccwpck_require__(1579), exports);
+__exportStar(__nccwpck_require__(454), exports);
+__exportStar(__nccwpck_require__(8044), exports);
+__exportStar(__nccwpck_require__(8382), exports);
+__exportStar(__nccwpck_require__(5615), exports);
+__exportStar(__nccwpck_require__(4846), exports);
+__exportStar(__nccwpck_require__(1360), exports);
+__exportStar(__nccwpck_require__(241), exports);
+__exportStar(__nccwpck_require__(8436), exports);
+__exportStar(__nccwpck_require__(5775), exports);
+__exportStar(__nccwpck_require__(9658), exports);
+__exportStar(__nccwpck_require__(2357), exports);
+__exportStar(__nccwpck_require__(3561), exports);
+__exportStar(__nccwpck_require__(1828), exports);
+__exportStar(__nccwpck_require__(6908), exports);
+__exportStar(__nccwpck_require__(1797), exports);
+__exportStar(__nccwpck_require__(7173), exports);
+__exportStar(__nccwpck_require__(9138), exports);
+__exportStar(__nccwpck_require__(3371), exports);
+__exportStar(__nccwpck_require__(8107), exports);
+__exportStar(__nccwpck_require__(8749), exports);
+__exportStar(__nccwpck_require__(5853), exports);
+__exportStar(__nccwpck_require__(4821), exports);
+__exportStar(__nccwpck_require__(7387), exports);
+__exportStar(__nccwpck_require__(2429), exports);
+__exportStar(__nccwpck_require__(2304), exports);
+__exportStar(__nccwpck_require__(2442), exports);
+__exportStar(__nccwpck_require__(4797), exports);
+__exportStar(__nccwpck_require__(4397), exports);
+__exportStar(__nccwpck_require__(4396), exports);
+__exportStar(__nccwpck_require__(3007), exports);
+__exportStar(__nccwpck_require__(3834), exports);
+__exportStar(__nccwpck_require__(9162), exports);
+__exportStar(__nccwpck_require__(3407), exports);
+__exportStar(__nccwpck_require__(7485), exports);
+__exportStar(__nccwpck_require__(8306), exports);
+__exportStar(__nccwpck_require__(9805), exports);
+__exportStar(__nccwpck_require__(4155), exports);
+__exportStar(__nccwpck_require__(7848), exports);
+__exportStar(__nccwpck_require__(3271), exports);
+__exportStar(__nccwpck_require__(5098), exports);
+__exportStar(__nccwpck_require__(9778), exports);
+__exportStar(__nccwpck_require__(4769), exports);
+__exportStar(__nccwpck_require__(5714), exports);
+__exportStar(__nccwpck_require__(6187), exports);
+__exportStar(__nccwpck_require__(3844), exports);
+__exportStar(__nccwpck_require__(4879), exports);
+__exportStar(__nccwpck_require__(8254), exports);
+__exportStar(__nccwpck_require__(6080), exports);
+__exportStar(__nccwpck_require__(9424), exports);
+__exportStar(__nccwpck_require__(4758), exports);
+__exportStar(__nccwpck_require__(6503), exports);
+__exportStar(__nccwpck_require__(2892), exports);
+__exportStar(__nccwpck_require__(6617), exports);
+__exportStar(__nccwpck_require__(129), exports);
+__exportStar(__nccwpck_require__(9715), exports);
+__exportStar(__nccwpck_require__(523), exports);
+__exportStar(__nccwpck_require__(1350), exports);
+__exportStar(__nccwpck_require__(3971), exports);
+__exportStar(__nccwpck_require__(7553), exports);
+__exportStar(__nccwpck_require__(6899), exports);
+__exportStar(__nccwpck_require__(8806), exports);
+__exportStar(__nccwpck_require__(8592), exports);
+__exportStar(__nccwpck_require__(7678), exports);
+__exportStar(__nccwpck_require__(3878), exports);
+__exportStar(__nccwpck_require__(5503), exports);
+__exportStar(__nccwpck_require__(5657), exports);
+__exportStar(__nccwpck_require__(8966), exports);
+__exportStar(__nccwpck_require__(6575), exports);
+__exportStar(__nccwpck_require__(1198), exports);
+__exportStar(__nccwpck_require__(9142), exports);
+__exportStar(__nccwpck_require__(4972), exports);
+__exportStar(__nccwpck_require__(8879), exports);
+__exportStar(__nccwpck_require__(6087), exports);
+__exportStar(__nccwpck_require__(4605), exports);
+__exportStar(__nccwpck_require__(273), exports);
+__exportStar(__nccwpck_require__(7633), exports);
+__exportStar(__nccwpck_require__(4516), exports);
+__exportStar(__nccwpck_require__(4460), exports);
+__exportStar(__nccwpck_require__(5092), exports);
+__exportStar(__nccwpck_require__(6517), exports);
+__exportStar(__nccwpck_require__(2887), exports);
+__exportStar(__nccwpck_require__(1852), exports);
+__exportStar(__nccwpck_require__(2619), exports);
+__exportStar(__nccwpck_require__(1569), exports);
+__exportStar(__nccwpck_require__(6571), exports);
+__exportStar(__nccwpck_require__(6707), exports);
+__exportStar(__nccwpck_require__(9817), exports);
+__exportStar(__nccwpck_require__(3368), exports);
+__exportStar(__nccwpck_require__(8364), exports);
+__exportStar(__nccwpck_require__(3792), exports);
+__exportStar(__nccwpck_require__(3260), exports);
+__exportStar(__nccwpck_require__(6652), exports);
+__exportStar(__nccwpck_require__(3567), exports);
+__exportStar(__nccwpck_require__(2703), exports);
+__exportStar(__nccwpck_require__(5154), exports);
+__exportStar(__nccwpck_require__(2380), exports);
+__exportStar(__nccwpck_require__(2416), exports);
+__exportStar(__nccwpck_require__(4156), exports);
+__exportStar(__nccwpck_require__(820), exports);
+__exportStar(__nccwpck_require__(4102), exports);
+__exportStar(__nccwpck_require__(1147), exports);
+__exportStar(__nccwpck_require__(8822), exports);
+__exportStar(__nccwpck_require__(1270), exports);
+__exportStar(__nccwpck_require__(7326), exports);
+__exportStar(__nccwpck_require__(2496), exports);
+__exportStar(__nccwpck_require__(6310), exports);
+__exportStar(__nccwpck_require__(6463), exports);
+__exportStar(__nccwpck_require__(8938), exports);
+__exportStar(__nccwpck_require__(3552), exports);
+__exportStar(__nccwpck_require__(2764), exports);
+__exportStar(__nccwpck_require__(1005), exports);
+__exportStar(__nccwpck_require__(904), exports);
+__exportStar(__nccwpck_require__(4549), exports);
+__exportStar(__nccwpck_require__(5408), exports);
+__exportStar(__nccwpck_require__(4922), exports);
+__exportStar(__nccwpck_require__(5448), exports);
+__exportStar(__nccwpck_require__(7635), exports);
+__exportStar(__nccwpck_require__(5779), exports);
+__exportStar(__nccwpck_require__(6917), exports);
+__exportStar(__nccwpck_require__(3062), exports);
+__exportStar(__nccwpck_require__(7441), exports);
+__exportStar(__nccwpck_require__(1807), exports);
+__exportStar(__nccwpck_require__(2485), exports);
+__exportStar(__nccwpck_require__(3495), exports);
+
+
+/***/ }),
+
+/***/ 7886:
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+/* tslint:disable */
+/* eslint-disable */
+/**
+ * SecHub API
+ * The SecHub API is a collection of RESTful endpoints. It is designed to be used by users and administrators of the SecHub application.  Most of the endpoints are protected by basic authentication.
+ *
+ * The version of the OpenAPI document: 1.0.0
+ *
+ *
+ * NOTE: This class is auto generated by OpenAPI Generator (https://openapi-generator.tech).
+ * https://openapi-generator.tech
+ * Do not edit the class manually.
+ */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TextApiResponse = exports.BlobApiResponse = exports.VoidApiResponse = exports.JSONApiResponse = exports.COLLECTION_FORMATS = exports.RequiredError = exports.FetchError = exports.ResponseError = exports.BaseAPI = exports.DefaultConfig = exports.Configuration = exports.BASE_PATH = void 0;
+exports.querystring = querystring;
+exports.exists = exists;
+exports.mapValues = mapValues;
+exports.canConsumeForm = canConsumeForm;
+exports.BASE_PATH = "http://localhost".replace(/\/+$/, "");
+class Configuration {
+    constructor(configuration = {}) {
+        this.configuration = configuration;
+    }
+    set config(configuration) {
+        this.configuration = configuration;
+    }
+    get basePath() {
+        return this.configuration.basePath != null ? this.configuration.basePath : exports.BASE_PATH;
+    }
+    get fetchApi() {
+        return this.configuration.fetchApi;
+    }
+    get middleware() {
+        return this.configuration.middleware || [];
+    }
+    get queryParamsStringify() {
+        return this.configuration.queryParamsStringify || querystring;
+    }
+    get username() {
+        return this.configuration.username;
+    }
+    get password() {
+        return this.configuration.password;
+    }
+    get apiKey() {
+        const apiKey = this.configuration.apiKey;
+        if (apiKey) {
+            return typeof apiKey === 'function' ? apiKey : () => apiKey;
+        }
+        return undefined;
+    }
+    get accessToken() {
+        const accessToken = this.configuration.accessToken;
+        if (accessToken) {
+            return typeof accessToken === 'function' ? accessToken : () => __awaiter(this, void 0, void 0, function* () { return accessToken; });
+        }
+        return undefined;
+    }
+    get headers() {
+        return this.configuration.headers;
+    }
+    get credentials() {
+        return this.configuration.credentials;
+    }
+}
+exports.Configuration = Configuration;
+exports.DefaultConfig = new Configuration();
+/**
+ * This is the base class for all generated API classes.
+ */
+class BaseAPI {
+    constructor(configuration = exports.DefaultConfig) {
+        this.configuration = configuration;
+        this.fetchApi = (url, init) => __awaiter(this, void 0, void 0, function* () {
+            let fetchParams = { url, init };
+            for (const middleware of this.middleware) {
+                if (middleware.pre) {
+                    fetchParams = (yield middleware.pre(Object.assign({ fetch: this.fetchApi }, fetchParams))) || fetchParams;
+                }
+            }
+            let response = undefined;
+            try {
+                response = yield (this.configuration.fetchApi || fetch)(fetchParams.url, fetchParams.init);
+            }
+            catch (e) {
+                for (const middleware of this.middleware) {
+                    if (middleware.onError) {
+                        response = (yield middleware.onError({
+                            fetch: this.fetchApi,
+                            url: fetchParams.url,
+                            init: fetchParams.init,
+                            error: e,
+                            response: response ? response.clone() : undefined,
+                        })) || response;
+                    }
+                }
+                if (response === undefined) {
+                    if (e instanceof Error) {
+                        throw new FetchError(e, 'The request failed and the interceptors did not return an alternative response');
+                    }
+                    else {
+                        throw e;
+                    }
+                }
+            }
+            for (const middleware of this.middleware) {
+                if (middleware.post) {
+                    response = (yield middleware.post({
+                        fetch: this.fetchApi,
+                        url: fetchParams.url,
+                        init: fetchParams.init,
+                        response: response.clone(),
+                    })) || response;
+                }
+            }
+            return response;
+        });
+        this.middleware = configuration.middleware;
+    }
+    withMiddleware(...middlewares) {
+        const next = this.clone();
+        next.middleware = next.middleware.concat(...middlewares);
+        return next;
+    }
+    withPreMiddleware(...preMiddlewares) {
+        const middlewares = preMiddlewares.map((pre) => ({ pre }));
+        return this.withMiddleware(...middlewares);
+    }
+    withPostMiddleware(...postMiddlewares) {
+        const middlewares = postMiddlewares.map((post) => ({ post }));
+        return this.withMiddleware(...middlewares);
+    }
+    /**
+     * Check if the given MIME is a JSON MIME.
+     * JSON MIME examples:
+     *   application/json
+     *   application/json; charset=UTF8
+     *   APPLICATION/JSON
+     *   application/vnd.company+json
+     * @param mime - MIME (Multipurpose Internet Mail Extensions)
+     * @return True if the given MIME is JSON, false otherwise.
+     */
+    isJsonMime(mime) {
+        if (!mime) {
+            return false;
+        }
+        return BaseAPI.jsonRegex.test(mime);
+    }
+    request(context, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { url, init } = yield this.createFetchParams(context, initOverrides);
+            const response = yield this.fetchApi(url, init);
+            if (response && (response.status >= 200 && response.status < 300)) {
+                return response;
+            }
+            throw new ResponseError(response, 'Response returned an error code');
+        });
+    }
+    createFetchParams(context, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let url = this.configuration.basePath + context.path;
+            if (context.query !== undefined && Object.keys(context.query).length !== 0) {
+                // only add the querystring to the URL if there are query parameters.
+                // this is done to avoid urls ending with a "?" character which buggy webservers
+                // do not handle correctly sometimes.
+                url += '?' + this.configuration.queryParamsStringify(context.query);
+            }
+            const headers = Object.assign({}, this.configuration.headers, context.headers);
+            Object.keys(headers).forEach(key => headers[key] === undefined ? delete headers[key] : {});
+            const initOverrideFn = typeof initOverrides === "function"
+                ? initOverrides
+                : () => __awaiter(this, void 0, void 0, function* () { return initOverrides; });
+            const initParams = {
+                method: context.method,
+                headers,
+                body: context.body,
+                credentials: this.configuration.credentials,
+            };
+            const overriddenInit = Object.assign(Object.assign({}, initParams), (yield initOverrideFn({
+                init: initParams,
+                context,
+            })));
+            let body;
+            if (isFormData(overriddenInit.body)
+                || (overriddenInit.body instanceof URLSearchParams)
+                || isBlob(overriddenInit.body)) {
+                body = overriddenInit.body;
+            }
+            else if (this.isJsonMime(headers['Content-Type'])) {
+                body = JSON.stringify(overriddenInit.body);
+            }
+            else {
+                body = overriddenInit.body;
+            }
+            const init = Object.assign(Object.assign({}, overriddenInit), { body });
+            return { url, init };
+        });
+    }
+    /**
+     * Create a shallow clone of `this` by constructing a new instance
+     * and then shallow cloning data members.
+     */
+    clone() {
+        const constructor = this.constructor;
+        const next = new constructor(this.configuration);
+        next.middleware = this.middleware.slice();
+        return next;
+    }
+}
+exports.BaseAPI = BaseAPI;
+BaseAPI.jsonRegex = new RegExp('^(:?application\/json|[^;/ \t]+\/[^;/ \t]+[+]json)[ \t]*(:?;.*)?$', 'i');
+;
+function isBlob(value) {
+    return typeof Blob !== 'undefined' && value instanceof Blob;
+}
+function isFormData(value) {
+    return typeof FormData !== "undefined" && value instanceof FormData;
+}
+class ResponseError extends Error {
+    constructor(response, msg) {
+        super(msg);
+        this.response = response;
+        this.name = "ResponseError";
+    }
+}
+exports.ResponseError = ResponseError;
+class FetchError extends Error {
+    constructor(cause, msg) {
+        super(msg);
+        this.cause = cause;
+        this.name = "FetchError";
+    }
+}
+exports.FetchError = FetchError;
+class RequiredError extends Error {
+    constructor(field, msg) {
+        super(msg);
+        this.field = field;
+        this.name = "RequiredError";
+    }
+}
+exports.RequiredError = RequiredError;
+exports.COLLECTION_FORMATS = {
+    csv: ",",
+    ssv: " ",
+    tsv: "\t",
+    pipes: "|",
+};
+function querystring(params, prefix = '') {
+    return Object.keys(params)
+        .map(key => querystringSingleKey(key, params[key], prefix))
+        .filter(part => part.length > 0)
+        .join('&');
+}
+function querystringSingleKey(key, value, keyPrefix = '') {
+    const fullKey = keyPrefix + (keyPrefix.length ? `[${key}]` : key);
+    if (value instanceof Array) {
+        const multiValue = value.map(singleValue => encodeURIComponent(String(singleValue)))
+            .join(`&${encodeURIComponent(fullKey)}=`);
+        return `${encodeURIComponent(fullKey)}=${multiValue}`;
+    }
+    if (value instanceof Set) {
+        const valueAsArray = Array.from(value);
+        return querystringSingleKey(key, valueAsArray, keyPrefix);
+    }
+    if (value instanceof Date) {
+        return `${encodeURIComponent(fullKey)}=${encodeURIComponent(value.toISOString())}`;
+    }
+    if (value instanceof Object) {
+        return querystring(value, fullKey);
+    }
+    return `${encodeURIComponent(fullKey)}=${encodeURIComponent(String(value))}`;
+}
+function exists(json, key) {
+    const value = json[key];
+    return value !== null && value !== undefined;
+}
+function mapValues(data, fn) {
+    const result = {};
+    for (const key of Object.keys(data)) {
+        result[key] = fn(data[key]);
+    }
+    return result;
+}
+function canConsumeForm(consumes) {
+    for (const consume of consumes) {
+        if ('multipart/form-data' === consume.contentType) {
+            return true;
+        }
+    }
+    return false;
+}
+class JSONApiResponse {
+    constructor(raw, transformer = (jsonValue) => jsonValue) {
+        this.raw = raw;
+        this.transformer = transformer;
+    }
+    value() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return this.transformer(yield this.raw.json());
+        });
+    }
+}
+exports.JSONApiResponse = JSONApiResponse;
+class VoidApiResponse {
+    constructor(raw) {
+        this.raw = raw;
+    }
+    value() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return undefined;
+        });
+    }
+}
+exports.VoidApiResponse = VoidApiResponse;
+class BlobApiResponse {
+    constructor(raw) {
+        this.raw = raw;
+    }
+    value() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.raw.blob();
+        });
+    }
+    ;
+}
+exports.BlobApiResponse = BlobApiResponse;
+class TextApiResponse {
+    constructor(raw) {
+        this.raw = raw;
+    }
+    value() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.raw.text();
+        });
+    }
+    ;
+}
+exports.TextApiResponse = TextApiResponse;
+
+
+/***/ }),
+
+/***/ 1530:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DefaultApiClient = void 0;
+// SPDX-License-Identifier: MIT
+const gen_1 = __nccwpck_require__(4422);
+const executionService_1 = __nccwpck_require__(4730);
+class DefaultApiClient {
+    constructor(apiConfig) {
+        this.apiConfig = apiConfig;
+        this.otherApi = new gen_1.OtherApi(apiConfig);
+        this.systemApi = new gen_1.SystemApi(apiConfig);
+        this.encryptionApi = new gen_1.EncryptionApi(apiConfig);
+        this.jobAdministrationApi = new gen_1.JobAdministrationApi(apiConfig);
+        this.jobManagementApi = new gen_1.JobManagementApi(apiConfig);
+        this.projectAdministrationApi = new gen_1.ProjectAdministrationApi(apiConfig);
+        this.sechubExecutionApi = new gen_1.SecHubExecutionApi(apiConfig);
+        this.signUpApi = new gen_1.SignUpApi(apiConfig);
+        this.userAdministrationApi = new gen_1.UserAdministrationApi(apiConfig);
+        this.userSelfServiceApi = new gen_1.UserSelfServiceApi(apiConfig);
+        this.configurationApi = new gen_1.ConfigurationApi(apiConfig);
+        this.executionApi = new executionService_1.SecHubExecutionApiWorkaround(apiConfig);
+    }
+    withOtherApi() {
+        return this.otherApi;
+    }
+    withSystemApi() {
+        return this.systemApi;
+    }
+    withEncryptionApi() {
+        return this.encryptionApi;
+    }
+    withJobAdministrationApi() {
+        return this.jobAdministrationApi;
+    }
+    withJobManagementApi() {
+        return this.jobManagementApi;
+    }
+    withProjectAdministrationApi() {
+        return this.projectAdministrationApi;
+    }
+    withSecHubExecutionApi() {
+        return this.sechubExecutionApi;
+    }
+    withSignUpApi() {
+        return this.signUpApi;
+    }
+    withUserAdministrationApi() {
+        return this.userAdministrationApi;
+    }
+    withUserSelfServiceApi() {
+        return this.userSelfServiceApi;
+    }
+    withConfigurationApi() {
+        return this.configurationApi;
+    }
+    withExecutionApi() {
+        return this.executionApi;
+    }
+}
+exports.DefaultApiClient = DefaultApiClient;
+
+
+/***/ }),
+
+/***/ 3214:
+/***/ (function(__unused_webpack_module, exports) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FormDataBodyBuilder = void 0;
+class FormDataBodyBuilder {
+    constructor(boundary) {
+        this.formDataContent = [];
+        this.boundary = boundary;
+    }
+    build() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this.formDataContent.length === 0) {
+                throw new Error('Must have at least one part to build a formData message.');
+            }
+            this.formDataContent.push(this.boundaryPart());
+            const parts = [];
+            for (const part of this.formDataContent) {
+                parts.push(this.constructPartHeader(part));
+                if (part.type === 'FILE' && part.file) {
+                    yield this.appendFileInChunks(part.file, parts);
+                }
+                else if (part.type === 'STREAM' && part.stream) {
+                    parts.push(new Uint8Array(yield part.stream()));
+                }
+                if (part.type !== 'BOUNDARY') {
+                    parts.push(new TextEncoder().encode('\r\n'));
+                }
+            }
+            return new Blob(parts);
+        });
+    }
+    addString(name, value) {
+        this.formDataContent.push({ name, type: 'STRING', value });
+        return this;
+    }
+    addFile(name, file) {
+        this.formDataContent.push({ name, type: 'FILE', file, contentType: file.type });
+        return this;
+    }
+    addStream(name, stream, filename, contentType) {
+        this.formDataContent.push({ name, type: 'STREAM', stream, filename, contentType });
+        return this;
+    }
+    boundaryPart() {
+        return { name: '', type: 'BOUNDARY', value: `--${this.boundary}--` };
+    }
+    constructPartHeader(part) {
+        if (part.type === 'STRING') {
+            return new TextEncoder().encode(`--${this.boundary}\r\nContent-Disposition: form-data; name="${part.name}"\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n${part.value}`);
+        }
+        else if (part.type === 'BOUNDARY') {
+            return new TextEncoder().encode(`--${this.boundary}--\r\n`);
+        }
+        else {
+            const filename = part.file ? part.file.name : part.filename;
+            const contentType = part.contentType || 'application/octet-stream';
+            return new TextEncoder().encode(`--${this.boundary}\r\nContent-Disposition: form-data; name="${part.name}"; filename="${filename}"\r\nContent-Type: ${contentType}\r\n\r\n`);
+        }
+    }
+    appendFileInChunks(file, parts) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // const chunkSize = 64 * 1024 * 1024 // 64MB chunks
+            const chunkSize = 8192; // 8KB chunks
+            for (let offset = 0; offset < file.size; offset += chunkSize) {
+                const chunk = file.slice(offset, offset + chunkSize);
+                const arrayBuffer = yield chunk.arrayBuffer();
+                parts.push(new Uint8Array(arrayBuffer));
+            }
+        });
+    }
+}
+exports.FormDataBodyBuilder = FormDataBodyBuilder;
+
+
+/***/ }),
+
+/***/ 4730:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SecHubExecutionApiWorkaround = void 0;
+// SPDX-License-Identifier: MIT
+const gen_1 = __nccwpck_require__(4422);
+const runtime = __nccwpck_require__(7886);
+const FormDataBodyBuilder_1 = __nccwpck_require__(3214);
+const uuid_1 = __nccwpck_require__(4437);
+// We use this class to override the upload functions generated by the openapi client
+class SecHubExecutionApiWorkaround extends gen_1.SecHubExecutionApi {
+    userUploadSourceCode(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userUploadSourceCodeRaw(requestParameters, initOverrides);
+        });
+    }
+    userUploadSourceCodeRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters.projectId == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userUploadSourceCode().');
+            }
+            if (requestParameters.jobUUID == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userUplosadSourceCode().');
+            }
+            if (requestParameters.checkSum == null) {
+                throw new runtime.RequiredError('checkSum', 'Required parameter "checkSum" was null or undefined when calling userUploadSourceCode().');
+            }
+            if (requestParameters.file == null) {
+                throw new runtime.RequiredError('file', 'Required parameter "file" was null or undefined when calling userUploadSourceCode().');
+            }
+            // Create boundary (not generated by openapi)
+            const boundary = (0, uuid_1.v4)();
+            // building header with boundary
+            const headerParameters = {};
+            headerParameters['Content-Type'] = `multipart/form-data; boundary=${boundary}`;
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters.Authorization = 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password);
+            }
+            // building body
+            const builder = new FormDataBodyBuilder_1.FormDataBodyBuilder(boundary);
+            builder.addString('checkSum', requestParameters.checkSum);
+            builder.addFile('file', requestParameters.file);
+            const formData = yield builder.build();
+            const response = yield this.request({
+                path: `/api/project/{projectId}/job/{jobUUID}/sourcecode`.replace(`{${'projectId'}}`, encodeURIComponent(String(requestParameters.projectId))).replace(`{${'jobUUID'}}`, encodeURIComponent(String(requestParameters.jobUUID))),
+                method: 'POST',
+                headers: headerParameters,
+                body: formData,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    userUploadsBinaries(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.userUploadsBinariesRaw(requestParameters, initOverrides);
+        });
+    }
+    userUploadsBinariesRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters.projectId == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userUploadsBinaries().');
+            }
+            if (requestParameters.jobUUID == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userUploadsBinaries().');
+            }
+            if (requestParameters.file == null) {
+                throw new runtime.RequiredError('file', 'Required parameter "file" was null or undefined when calling userUploadsBinaries().');
+            }
+            if (requestParameters.xFileSize == null) {
+                throw new runtime.RequiredError('xFileSize', 'Required parameter "xFileSize" was null or undefined when calling userUploadsBinaries().');
+            }
+            if (requestParameters.checkSum == null) {
+                throw new runtime.RequiredError('checkSum', 'Required parameter "checkSum" was null or undefined when calling userUploadsBinaries().');
+            }
+            // Adding content type and boundary (not generated)
+            const boundary = (0, uuid_1.v4)();
+            // building header
+            const headerParameters = {};
+            headerParameters['Content-Type'] = `multipart/form-data; boundary=${boundary}`;
+            headerParameters['x-file-size'] = requestParameters.xFileSize;
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters.Authorization = 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password);
+            }
+            // building body
+            const builder = new FormDataBodyBuilder_1.FormDataBodyBuilder(boundary);
+            builder.addString('checkSum', requestParameters.checkSum);
+            builder.addFile('file', requestParameters.file);
+            const formData = yield builder.build();
+            const response = yield this.request({
+                path: `/api/project/{projectId}/job/{jobUUID}/binaries`.replace(`{${'projectId'}}`, encodeURIComponent(String(requestParameters.projectId))).replace(`{${'jobUUID'}}`, encodeURIComponent(String(requestParameters.jobUUID))),
+                method: 'POST',
+                headers: headerParameters,
+                body: formData,
+            }, initOverrides);
+            return new runtime.VoidApiResponse(response);
+        });
+    }
+    /**
+     * User downloads sechub job HTML report
+     */
+    userDownloadJobReportHtmlRaw(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (requestParameters.projectId == null) {
+                throw new runtime.RequiredError('projectId', 'Required parameter "projectId" was null or undefined when calling userDownloadJobReportHtml().');
+            }
+            if (requestParameters.jobUUID == null) {
+                throw new runtime.RequiredError('jobUUID', 'Required parameter "jobUUID" was null or undefined when calling userDownloadJobReportHtml().');
+            }
+            const queryParameters = {};
+            const headerParameters = {};
+            headerParameters.Accept = 'text/html';
+            if (this.configuration && (this.configuration.username !== undefined || this.configuration.password !== undefined)) {
+                headerParameters.Authorization = 'Basic ' + btoa(this.configuration.username + ':' + this.configuration.password);
+            }
+            const response = yield this.request({
+                path: `/api/project/{projectId}/report/{jobUUID}`.replace(`{${'projectId'}}`, encodeURIComponent(String(requestParameters.projectId))).replace(`{${'jobUUID'}}`, encodeURIComponent(String(requestParameters.jobUUID))),
+                method: 'GET',
+                headers: headerParameters,
+                query: queryParameters,
+            }, initOverrides);
+            return new runtime.TextApiResponse(response);
+        });
+    }
+    /**
+     * User downloads sechub job HTML report
+     */
+    userDownloadJobReportHtml(requestParameters, initOverrides) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const response = yield this.userDownloadJobReportHtmlRaw(requestParameters, initOverrides);
+            return response.value();
+        });
+    }
+}
+exports.SecHubExecutionApiWorkaround = SecHubExecutionApiWorkaround;
+
+
+/***/ }),
+
+/***/ 4030:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DefaultApiClient = exports.SecHubExecutionApiWorkaround = void 0;
+// SPDX-License-Identifier: MIT
+const executionService_1 = __nccwpck_require__(4730);
+Object.defineProperty(exports, "SecHubExecutionApiWorkaround", ({ enumerable: true, get: function () { return executionService_1.SecHubExecutionApiWorkaround; } }));
+const DefaultApiClient_1 = __nccwpck_require__(1530);
+Object.defineProperty(exports, "DefaultApiClient", ({ enumerable: true, get: function () { return DefaultApiClient_1.DefaultApiClient; } }));
+// export everything from the generated code
+__exportStar(__nccwpck_require__(4422), exports);
+
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -22387,6 +35793,623 @@ module.exports = require("util");
 
 "use strict";
 module.exports = require("zlib");
+
+/***/ }),
+
+/***/ 4437:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.version = exports.validate = exports.v7 = exports.v6ToV1 = exports.v6 = exports.v5 = exports.v4 = exports.v3 = exports.v1ToV6 = exports.v1 = exports.stringify = exports.parse = exports.NIL = exports.MAX = void 0;
+var max_js_1 = __nccwpck_require__(5056);
+Object.defineProperty(exports, "MAX", ({ enumerable: true, get: function () { return max_js_1.default; } }));
+var nil_js_1 = __nccwpck_require__(1185);
+Object.defineProperty(exports, "NIL", ({ enumerable: true, get: function () { return nil_js_1.default; } }));
+var parse_js_1 = __nccwpck_require__(1113);
+Object.defineProperty(exports, "parse", ({ enumerable: true, get: function () { return parse_js_1.default; } }));
+var stringify_js_1 = __nccwpck_require__(7726);
+Object.defineProperty(exports, "stringify", ({ enumerable: true, get: function () { return stringify_js_1.default; } }));
+var v1_js_1 = __nccwpck_require__(6663);
+Object.defineProperty(exports, "v1", ({ enumerable: true, get: function () { return v1_js_1.default; } }));
+var v1ToV6_js_1 = __nccwpck_require__(5900);
+Object.defineProperty(exports, "v1ToV6", ({ enumerable: true, get: function () { return v1ToV6_js_1.default; } }));
+var v3_js_1 = __nccwpck_require__(5722);
+Object.defineProperty(exports, "v3", ({ enumerable: true, get: function () { return v3_js_1.default; } }));
+var v4_js_1 = __nccwpck_require__(8895);
+Object.defineProperty(exports, "v4", ({ enumerable: true, get: function () { return v4_js_1.default; } }));
+var v5_js_1 = __nccwpck_require__(1539);
+Object.defineProperty(exports, "v5", ({ enumerable: true, get: function () { return v5_js_1.default; } }));
+var v6_js_1 = __nccwpck_require__(1489);
+Object.defineProperty(exports, "v6", ({ enumerable: true, get: function () { return v6_js_1.default; } }));
+var v6ToV1_js_1 = __nccwpck_require__(5659);
+Object.defineProperty(exports, "v6ToV1", ({ enumerable: true, get: function () { return v6ToV1_js_1.default; } }));
+var v7_js_1 = __nccwpck_require__(8454);
+Object.defineProperty(exports, "v7", ({ enumerable: true, get: function () { return v7_js_1.default; } }));
+var validate_js_1 = __nccwpck_require__(3761);
+Object.defineProperty(exports, "validate", ({ enumerable: true, get: function () { return validate_js_1.default; } }));
+var version_js_1 = __nccwpck_require__(8411);
+Object.defineProperty(exports, "version", ({ enumerable: true, get: function () { return version_js_1.default; } }));
+
+
+/***/ }),
+
+/***/ 5056:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = 'ffffffff-ffff-ffff-ffff-ffffffffffff';
+
+
+/***/ }),
+
+/***/ 28:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const crypto_1 = __nccwpck_require__(6113);
+function md5(bytes) {
+    if (Array.isArray(bytes)) {
+        bytes = Buffer.from(bytes);
+    }
+    else if (typeof bytes === 'string') {
+        bytes = Buffer.from(bytes, 'utf8');
+    }
+    return (0, crypto_1.createHash)('md5').update(bytes).digest();
+}
+exports["default"] = md5;
+
+
+/***/ }),
+
+/***/ 1687:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const crypto_1 = __nccwpck_require__(6113);
+exports["default"] = { randomUUID: crypto_1.randomUUID };
+
+
+/***/ }),
+
+/***/ 1185:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = '00000000-0000-0000-0000-000000000000';
+
+
+/***/ }),
+
+/***/ 1113:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const validate_js_1 = __nccwpck_require__(3761);
+function parse(uuid) {
+    if (!(0, validate_js_1.default)(uuid)) {
+        throw TypeError('Invalid UUID');
+    }
+    let v;
+    return Uint8Array.of((v = parseInt(uuid.slice(0, 8), 16)) >>> 24, (v >>> 16) & 0xff, (v >>> 8) & 0xff, v & 0xff, (v = parseInt(uuid.slice(9, 13), 16)) >>> 8, v & 0xff, (v = parseInt(uuid.slice(14, 18), 16)) >>> 8, v & 0xff, (v = parseInt(uuid.slice(19, 23), 16)) >>> 8, v & 0xff, ((v = parseInt(uuid.slice(24, 36), 16)) / 0x10000000000) & 0xff, (v / 0x100000000) & 0xff, (v >>> 24) & 0xff, (v >>> 16) & 0xff, (v >>> 8) & 0xff, v & 0xff);
+}
+exports["default"] = parse;
+
+
+/***/ }),
+
+/***/ 421:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/i;
+
+
+/***/ }),
+
+/***/ 1845:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const crypto_1 = __nccwpck_require__(6113);
+const rnds8Pool = new Uint8Array(256);
+let poolPtr = rnds8Pool.length;
+function rng() {
+    if (poolPtr > rnds8Pool.length - 16) {
+        (0, crypto_1.randomFillSync)(rnds8Pool);
+        poolPtr = 0;
+    }
+    return rnds8Pool.slice(poolPtr, (poolPtr += 16));
+}
+exports["default"] = rng;
+
+
+/***/ }),
+
+/***/ 2176:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const crypto_1 = __nccwpck_require__(6113);
+function sha1(bytes) {
+    if (Array.isArray(bytes)) {
+        bytes = Buffer.from(bytes);
+    }
+    else if (typeof bytes === 'string') {
+        bytes = Buffer.from(bytes, 'utf8');
+    }
+    return (0, crypto_1.createHash)('sha1').update(bytes).digest();
+}
+exports["default"] = sha1;
+
+
+/***/ }),
+
+/***/ 7726:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.unsafeStringify = void 0;
+const validate_js_1 = __nccwpck_require__(3761);
+const byteToHex = [];
+for (let i = 0; i < 256; ++i) {
+    byteToHex.push((i + 0x100).toString(16).slice(1));
+}
+function unsafeStringify(arr, offset = 0) {
+    return (byteToHex[arr[offset + 0]] +
+        byteToHex[arr[offset + 1]] +
+        byteToHex[arr[offset + 2]] +
+        byteToHex[arr[offset + 3]] +
+        '-' +
+        byteToHex[arr[offset + 4]] +
+        byteToHex[arr[offset + 5]] +
+        '-' +
+        byteToHex[arr[offset + 6]] +
+        byteToHex[arr[offset + 7]] +
+        '-' +
+        byteToHex[arr[offset + 8]] +
+        byteToHex[arr[offset + 9]] +
+        '-' +
+        byteToHex[arr[offset + 10]] +
+        byteToHex[arr[offset + 11]] +
+        byteToHex[arr[offset + 12]] +
+        byteToHex[arr[offset + 13]] +
+        byteToHex[arr[offset + 14]] +
+        byteToHex[arr[offset + 15]]).toLowerCase();
+}
+exports.unsafeStringify = unsafeStringify;
+function stringify(arr, offset = 0) {
+    const uuid = unsafeStringify(arr, offset);
+    if (!(0, validate_js_1.default)(uuid)) {
+        throw TypeError('Stringified UUID is invalid');
+    }
+    return uuid;
+}
+exports["default"] = stringify;
+
+
+/***/ }),
+
+/***/ 6663:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.updateV1State = void 0;
+const rng_js_1 = __nccwpck_require__(1845);
+const stringify_js_1 = __nccwpck_require__(7726);
+const _state = {};
+function v1(options, buf, offset) {
+    let bytes;
+    const isV6 = options?._v6 ?? false;
+    if (options) {
+        const optionsKeys = Object.keys(options);
+        if (optionsKeys.length === 1 && optionsKeys[0] === '_v6') {
+            options = undefined;
+        }
+    }
+    if (options) {
+        bytes = v1Bytes(options.random ?? options.rng?.() ?? (0, rng_js_1.default)(), options.msecs, options.nsecs, options.clockseq, options.node, buf, offset);
+    }
+    else {
+        const now = Date.now();
+        const rnds = (0, rng_js_1.default)();
+        updateV1State(_state, now, rnds);
+        bytes = v1Bytes(rnds, _state.msecs, _state.nsecs, isV6 ? undefined : _state.clockseq, isV6 ? undefined : _state.node, buf, offset);
+    }
+    return buf ?? (0, stringify_js_1.unsafeStringify)(bytes);
+}
+function updateV1State(state, now, rnds) {
+    state.msecs ??= -Infinity;
+    state.nsecs ??= 0;
+    if (now === state.msecs) {
+        state.nsecs++;
+        if (state.nsecs >= 10000) {
+            state.node = undefined;
+            state.nsecs = 0;
+        }
+    }
+    else if (now > state.msecs) {
+        state.nsecs = 0;
+    }
+    else if (now < state.msecs) {
+        state.node = undefined;
+    }
+    if (!state.node) {
+        state.node = rnds.slice(10, 16);
+        state.node[0] |= 0x01;
+        state.clockseq = ((rnds[8] << 8) | rnds[9]) & 0x3fff;
+    }
+    state.msecs = now;
+    return state;
+}
+exports.updateV1State = updateV1State;
+function v1Bytes(rnds, msecs, nsecs, clockseq, node, buf, offset = 0) {
+    if (rnds.length < 16) {
+        throw new Error('Random bytes length must be >= 16');
+    }
+    if (!buf) {
+        buf = new Uint8Array(16);
+        offset = 0;
+    }
+    else {
+        if (offset < 0 || offset + 16 > buf.length) {
+            throw new RangeError(`UUID byte range ${offset}:${offset + 15} is out of buffer bounds`);
+        }
+    }
+    msecs ??= Date.now();
+    nsecs ??= 0;
+    clockseq ??= ((rnds[8] << 8) | rnds[9]) & 0x3fff;
+    node ??= rnds.slice(10, 16);
+    msecs += 12219292800000;
+    const tl = ((msecs & 0xfffffff) * 10000 + nsecs) % 0x100000000;
+    buf[offset++] = (tl >>> 24) & 0xff;
+    buf[offset++] = (tl >>> 16) & 0xff;
+    buf[offset++] = (tl >>> 8) & 0xff;
+    buf[offset++] = tl & 0xff;
+    const tmh = ((msecs / 0x100000000) * 10000) & 0xfffffff;
+    buf[offset++] = (tmh >>> 8) & 0xff;
+    buf[offset++] = tmh & 0xff;
+    buf[offset++] = ((tmh >>> 24) & 0xf) | 0x10;
+    buf[offset++] = (tmh >>> 16) & 0xff;
+    buf[offset++] = (clockseq >>> 8) | 0x80;
+    buf[offset++] = clockseq & 0xff;
+    for (let n = 0; n < 6; ++n) {
+        buf[offset++] = node[n];
+    }
+    return buf;
+}
+exports["default"] = v1;
+
+
+/***/ }),
+
+/***/ 5900:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const parse_js_1 = __nccwpck_require__(1113);
+const stringify_js_1 = __nccwpck_require__(7726);
+function v1ToV6(uuid) {
+    const v1Bytes = typeof uuid === 'string' ? (0, parse_js_1.default)(uuid) : uuid;
+    const v6Bytes = _v1ToV6(v1Bytes);
+    return typeof uuid === 'string' ? (0, stringify_js_1.unsafeStringify)(v6Bytes) : v6Bytes;
+}
+exports["default"] = v1ToV6;
+function _v1ToV6(v1Bytes) {
+    return Uint8Array.of(((v1Bytes[6] & 0x0f) << 4) | ((v1Bytes[7] >> 4) & 0x0f), ((v1Bytes[7] & 0x0f) << 4) | ((v1Bytes[4] & 0xf0) >> 4), ((v1Bytes[4] & 0x0f) << 4) | ((v1Bytes[5] & 0xf0) >> 4), ((v1Bytes[5] & 0x0f) << 4) | ((v1Bytes[0] & 0xf0) >> 4), ((v1Bytes[0] & 0x0f) << 4) | ((v1Bytes[1] & 0xf0) >> 4), ((v1Bytes[1] & 0x0f) << 4) | ((v1Bytes[2] & 0xf0) >> 4), 0x60 | (v1Bytes[2] & 0x0f), v1Bytes[3], v1Bytes[8], v1Bytes[9], v1Bytes[10], v1Bytes[11], v1Bytes[12], v1Bytes[13], v1Bytes[14], v1Bytes[15]);
+}
+
+
+/***/ }),
+
+/***/ 5722:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.URL = exports.DNS = void 0;
+const md5_js_1 = __nccwpck_require__(28);
+const v35_js_1 = __nccwpck_require__(1045);
+var v35_js_2 = __nccwpck_require__(1045);
+Object.defineProperty(exports, "DNS", ({ enumerable: true, get: function () { return v35_js_2.DNS; } }));
+Object.defineProperty(exports, "URL", ({ enumerable: true, get: function () { return v35_js_2.URL; } }));
+function v3(value, namespace, buf, offset) {
+    return (0, v35_js_1.default)(0x30, md5_js_1.default, value, namespace, buf, offset);
+}
+v3.DNS = v35_js_1.DNS;
+v3.URL = v35_js_1.URL;
+exports["default"] = v3;
+
+
+/***/ }),
+
+/***/ 1045:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.URL = exports.DNS = exports.stringToBytes = void 0;
+const parse_js_1 = __nccwpck_require__(1113);
+const stringify_js_1 = __nccwpck_require__(7726);
+function stringToBytes(str) {
+    str = unescape(encodeURIComponent(str));
+    const bytes = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; ++i) {
+        bytes[i] = str.charCodeAt(i);
+    }
+    return bytes;
+}
+exports.stringToBytes = stringToBytes;
+exports.DNS = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+exports.URL = '6ba7b811-9dad-11d1-80b4-00c04fd430c8';
+function v35(version, hash, value, namespace, buf, offset) {
+    const valueBytes = typeof value === 'string' ? stringToBytes(value) : value;
+    const namespaceBytes = typeof namespace === 'string' ? (0, parse_js_1.default)(namespace) : namespace;
+    if (typeof namespace === 'string') {
+        namespace = (0, parse_js_1.default)(namespace);
+    }
+    if (namespace?.length !== 16) {
+        throw TypeError('Namespace must be array-like (16 iterable integer values, 0-255)');
+    }
+    let bytes = new Uint8Array(16 + valueBytes.length);
+    bytes.set(namespaceBytes);
+    bytes.set(valueBytes, namespaceBytes.length);
+    bytes = hash(bytes);
+    bytes[6] = (bytes[6] & 0x0f) | version;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    if (buf) {
+        offset = offset || 0;
+        for (let i = 0; i < 16; ++i) {
+            buf[offset + i] = bytes[i];
+        }
+        return buf;
+    }
+    return (0, stringify_js_1.unsafeStringify)(bytes);
+}
+exports["default"] = v35;
+
+
+/***/ }),
+
+/***/ 8895:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const native_js_1 = __nccwpck_require__(1687);
+const rng_js_1 = __nccwpck_require__(1845);
+const stringify_js_1 = __nccwpck_require__(7726);
+function v4(options, buf, offset) {
+    if (native_js_1.default.randomUUID && !buf && !options) {
+        return native_js_1.default.randomUUID();
+    }
+    options = options || {};
+    const rnds = options.random ?? options.rng?.() ?? (0, rng_js_1.default)();
+    if (rnds.length < 16) {
+        throw new Error('Random bytes length must be >= 16');
+    }
+    rnds[6] = (rnds[6] & 0x0f) | 0x40;
+    rnds[8] = (rnds[8] & 0x3f) | 0x80;
+    if (buf) {
+        offset = offset || 0;
+        if (offset < 0 || offset + 16 > buf.length) {
+            throw new RangeError(`UUID byte range ${offset}:${offset + 15} is out of buffer bounds`);
+        }
+        for (let i = 0; i < 16; ++i) {
+            buf[offset + i] = rnds[i];
+        }
+        return buf;
+    }
+    return (0, stringify_js_1.unsafeStringify)(rnds);
+}
+exports["default"] = v4;
+
+
+/***/ }),
+
+/***/ 1539:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.URL = exports.DNS = void 0;
+const sha1_js_1 = __nccwpck_require__(2176);
+const v35_js_1 = __nccwpck_require__(1045);
+var v35_js_2 = __nccwpck_require__(1045);
+Object.defineProperty(exports, "DNS", ({ enumerable: true, get: function () { return v35_js_2.DNS; } }));
+Object.defineProperty(exports, "URL", ({ enumerable: true, get: function () { return v35_js_2.URL; } }));
+function v5(value, namespace, buf, offset) {
+    return (0, v35_js_1.default)(0x50, sha1_js_1.default, value, namespace, buf, offset);
+}
+v5.DNS = v35_js_1.DNS;
+v5.URL = v35_js_1.URL;
+exports["default"] = v5;
+
+
+/***/ }),
+
+/***/ 1489:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const stringify_js_1 = __nccwpck_require__(7726);
+const v1_js_1 = __nccwpck_require__(6663);
+const v1ToV6_js_1 = __nccwpck_require__(5900);
+function v6(options, buf, offset) {
+    options ??= {};
+    offset ??= 0;
+    let bytes = (0, v1_js_1.default)({ ...options, _v6: true }, new Uint8Array(16));
+    bytes = (0, v1ToV6_js_1.default)(bytes);
+    if (buf) {
+        for (let i = 0; i < 16; i++) {
+            buf[offset + i] = bytes[i];
+        }
+        return buf;
+    }
+    return (0, stringify_js_1.unsafeStringify)(bytes);
+}
+exports["default"] = v6;
+
+
+/***/ }),
+
+/***/ 5659:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const parse_js_1 = __nccwpck_require__(1113);
+const stringify_js_1 = __nccwpck_require__(7726);
+function v6ToV1(uuid) {
+    const v6Bytes = typeof uuid === 'string' ? (0, parse_js_1.default)(uuid) : uuid;
+    const v1Bytes = _v6ToV1(v6Bytes);
+    return typeof uuid === 'string' ? (0, stringify_js_1.unsafeStringify)(v1Bytes) : v1Bytes;
+}
+exports["default"] = v6ToV1;
+function _v6ToV1(v6Bytes) {
+    return Uint8Array.of(((v6Bytes[3] & 0x0f) << 4) | ((v6Bytes[4] >> 4) & 0x0f), ((v6Bytes[4] & 0x0f) << 4) | ((v6Bytes[5] & 0xf0) >> 4), ((v6Bytes[5] & 0x0f) << 4) | (v6Bytes[6] & 0x0f), v6Bytes[7], ((v6Bytes[1] & 0x0f) << 4) | ((v6Bytes[2] & 0xf0) >> 4), ((v6Bytes[2] & 0x0f) << 4) | ((v6Bytes[3] & 0xf0) >> 4), 0x10 | ((v6Bytes[0] & 0xf0) >> 4), ((v6Bytes[0] & 0x0f) << 4) | ((v6Bytes[1] & 0xf0) >> 4), v6Bytes[8], v6Bytes[9], v6Bytes[10], v6Bytes[11], v6Bytes[12], v6Bytes[13], v6Bytes[14], v6Bytes[15]);
+}
+
+
+/***/ }),
+
+/***/ 8454:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.updateV7State = void 0;
+const rng_js_1 = __nccwpck_require__(1845);
+const stringify_js_1 = __nccwpck_require__(7726);
+const _state = {};
+function v7(options, buf, offset) {
+    let bytes;
+    if (options) {
+        bytes = v7Bytes(options.random ?? options.rng?.() ?? (0, rng_js_1.default)(), options.msecs, options.seq, buf, offset);
+    }
+    else {
+        const now = Date.now();
+        const rnds = (0, rng_js_1.default)();
+        updateV7State(_state, now, rnds);
+        bytes = v7Bytes(rnds, _state.msecs, _state.seq, buf, offset);
+    }
+    return buf ?? (0, stringify_js_1.unsafeStringify)(bytes);
+}
+function updateV7State(state, now, rnds) {
+    state.msecs ??= -Infinity;
+    state.seq ??= 0;
+    if (now > state.msecs) {
+        state.seq = (rnds[6] << 23) | (rnds[7] << 16) | (rnds[8] << 8) | rnds[9];
+        state.msecs = now;
+    }
+    else {
+        state.seq = (state.seq + 1) | 0;
+        if (state.seq === 0) {
+            state.msecs++;
+        }
+    }
+    return state;
+}
+exports.updateV7State = updateV7State;
+function v7Bytes(rnds, msecs, seq, buf, offset = 0) {
+    if (rnds.length < 16) {
+        throw new Error('Random bytes length must be >= 16');
+    }
+    if (!buf) {
+        buf = new Uint8Array(16);
+        offset = 0;
+    }
+    else {
+        if (offset < 0 || offset + 16 > buf.length) {
+            throw new RangeError(`UUID byte range ${offset}:${offset + 15} is out of buffer bounds`);
+        }
+    }
+    msecs ??= Date.now();
+    seq ??= ((rnds[6] * 0x7f) << 24) | (rnds[7] << 16) | (rnds[8] << 8) | rnds[9];
+    buf[offset++] = (msecs / 0x10000000000) & 0xff;
+    buf[offset++] = (msecs / 0x100000000) & 0xff;
+    buf[offset++] = (msecs / 0x1000000) & 0xff;
+    buf[offset++] = (msecs / 0x10000) & 0xff;
+    buf[offset++] = (msecs / 0x100) & 0xff;
+    buf[offset++] = msecs & 0xff;
+    buf[offset++] = 0x70 | ((seq >>> 28) & 0x0f);
+    buf[offset++] = (seq >>> 20) & 0xff;
+    buf[offset++] = 0x80 | ((seq >>> 14) & 0x3f);
+    buf[offset++] = (seq >>> 6) & 0xff;
+    buf[offset++] = ((seq << 2) & 0xff) | (rnds[10] & 0x03);
+    buf[offset++] = rnds[11];
+    buf[offset++] = rnds[12];
+    buf[offset++] = rnds[13];
+    buf[offset++] = rnds[14];
+    buf[offset++] = rnds[15];
+    return buf;
+}
+exports["default"] = v7;
+
+
+/***/ }),
+
+/***/ 3761:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const regex_js_1 = __nccwpck_require__(421);
+function validate(uuid) {
+    return typeof uuid === 'string' && regex_js_1.default.test(uuid);
+}
+exports["default"] = validate;
+
+
+/***/ }),
+
+/***/ 8411:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const validate_js_1 = __nccwpck_require__(3761);
+function version(uuid) {
+    if (!(0, validate_js_1.default)(uuid)) {
+        throw TypeError('Invalid UUID');
+    }
+    return parseInt(uuid.slice(14, 15), 16);
+}
+exports["default"] = version;
+
 
 /***/ }),
 
@@ -27790,8 +41813,11 @@ var extract_zip = __nccwpck_require__(460);
 var extract_zip_default = /*#__PURE__*/__nccwpck_require__.n(extract_zip);
 // EXTERNAL MODULE: external "os"
 var external_os_ = __nccwpck_require__(2037);
+// EXTERNAL MODULE: ../../sechub-openapi-ts-client/dist/src/index.js
+var src = __nccwpck_require__(4030);
 ;// CONCATENATED MODULE: ./src/input-helper.ts
 // SPDX-License-Identifier: MIT
+
 
 const COMMA = ',';
 /**
@@ -27807,6 +41833,30 @@ function split(input) {
         .split(COMMA)
         .map(item => item.trim())
         .filter(item => item.length > 0);
+}
+function safeAcceptedScanTypes(data) {
+    const accepted = [];
+    if (data) {
+        for (const entry of data) {
+            if (equalIgnoreCase(entry, src.ScanType.CodeScan)) {
+                accepted.push(src.ScanType.CodeScan);
+            }
+            else if (equalIgnoreCase(entry, src.ScanType.LicenseScan)) {
+                accepted.push(src.ScanType.LicenseScan);
+            }
+            else if (equalIgnoreCase(entry, src.ScanType.SecretScan)) {
+                accepted.push(src.ScanType.SecretScan);
+            }
+            else if (equalIgnoreCase(entry, src.ScanType.IacScan)) {
+                accepted.push(src.ScanType.IacScan);
+            }
+        }
+    }
+    // the default and fallback is codeScan
+    if (accepted.length == 0) {
+        accepted.push(src.ScanType.CodeScan);
+    }
+    return accepted;
 }
 /**
  * This method checks the default environment variables 'http_proxy' and 'https_proxy' for http/https proxy specification.
@@ -27869,6 +41919,10 @@ function getProtocolDefaultPort(protocol) {
     else {
         throw new Error('Accepted protocols are "http" and "https"');
     }
+}
+function equalIgnoreCase(string1, string2) {
+    return (string1 !== null && string1 !== void 0 ? string1 : '').toLowerCase() === (string2 !== null && string2 !== void 0 ? string2 : '').toLowerCase();
+    ;
 }
 
 ;// CONCATENATED MODULE: ./src/fs-helper.ts
@@ -28029,136 +42083,33 @@ async function downloadClientRelease(context) {
     deleteDirectoryExceptGivenFile(parentDirectory, context.clientExecutablePath);
 }
 
-;// CONCATENATED MODULE: ./src/configuration-model.ts
+;// CONCATENATED MODULE: ./src/content-type.ts
 // SPDX-License-Identifier: MIT
-
 class ContentType {
     static isSource(data) {
         if (!data) {
             return false;
         }
-        return data.toLowerCase() == this.SOURCE;
+        return data.toLowerCase() === this.SOURCE;
     }
     static isBinary(data) {
         if (!data) {
             return false;
         }
-        return data.toLowerCase() == this.BINARIES;
+        return data.toLowerCase() === this.BINARIES;
     }
-    static ensureAccepted(contentType) {
+    static safeAcceptedContentType(contentType) {
         if (ContentType.isSource(contentType)) {
             return ContentType.SOURCE;
         }
         if (ContentType.isBinary(contentType)) {
             return ContentType.BINARIES;
         }
-        return SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE;
+        return ContentType.SOURCE;
     }
 }
 ContentType.SOURCE = 'source';
 ContentType.BINARIES = 'binaries';
-class ScanType {
-    static isCodeScan(data) {
-        if (!data) {
-            return false;
-        }
-        return data.toLowerCase() == this.CODE_SCAN;
-    }
-    static isLicenseScan(data) {
-        if (!data) {
-            return false;
-        }
-        return data.toLowerCase() == this.LICENSE_SCAN;
-    }
-    static isSecretScan(data) {
-        if (!data) {
-            return false;
-        }
-        return data.toLowerCase() == this.SECRET_SCAN;
-    }
-    static isIacScan(data) {
-        if (!data) {
-            return false;
-        }
-        return data.toLowerCase() == this.IAC_SCAN;
-    }
-    static ensureAccepted(data) {
-        const accepted = [];
-        if (data) {
-            for (const entry of data) {
-                if (ScanType.isCodeScan(entry)) {
-                    accepted.push(ScanType.CODE_SCAN);
-                }
-                else if (ScanType.isLicenseScan(entry)) {
-                    accepted.push(ScanType.LICENSE_SCAN);
-                }
-                else if (ScanType.isSecretScan(entry)) {
-                    accepted.push(ScanType.SECRET_SCAN);
-                }
-                else if (ScanType.isIacScan(entry)) {
-                    accepted.push(ScanType.IAC_SCAN);
-                }
-            }
-        }
-        if (accepted.length == 0) {
-            accepted.push(SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE);
-        }
-        return accepted;
-    }
-}
-ScanType.CODE_SCAN = 'codescan';
-ScanType.LICENSE_SCAN = 'licensescan';
-ScanType.SECRET_SCAN = 'secretscan';
-ScanType.IAC_SCAN = 'iacscan';
-/**
- * SecHub configuration model
- */
-class SecHubConfigurationModel {
-    constructor() {
-        this.apiVersion = '1.0';
-        this.data = new DataSection();
-        this.project = '';
-    }
-}
-class DataSection {
-}
-class SourceData {
-    constructor() {
-        this.name = '';
-        this.fileSystem = new FileSystem();
-    }
-}
-class BinaryData {
-    constructor() {
-        this.name = '';
-        this.fileSystem = new FileSystem();
-    }
-}
-class CodeScan {
-    constructor() {
-        this.use = [];
-    }
-}
-class SecretScan {
-    constructor() {
-        this.use = [];
-    }
-}
-class LicenseScan {
-    constructor() {
-        this.use = [];
-    }
-}
-class IacScan {
-    constructor() {
-        this.use = [];
-    }
-}
-class FileSystem {
-    constructor() {
-        this.folders = [];
-    }
-}
 
 ;// CONCATENATED MODULE: ./src/configuration-builder.ts
 // SPDX-License-Identifier: MIT
@@ -28196,8 +42147,8 @@ class SecHubConfigurationModelBuilderData {
         this.scanTypes = [SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE];
     }
 }
-SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE = ScanType.CODE_SCAN; // per default only code scan
-SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE = ContentType.SOURCE; // per default source
+SecHubConfigurationModelBuilderData.DEFAULT_SCAN_TYPE = src.ScanType.CodeScan; // per default only code scan
+SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE = ContentType.SOURCE; // per default sources
 /**
  * Creates a sechub configuration model object for given user input values.
  *
@@ -28207,47 +42158,70 @@ SecHubConfigurationModelBuilderData.DEFAULT_CONTENT_TYPE = ContentType.SOURCE; /
  * @returns model
  */
 function createSecHubConfigurationModel(builderData) {
-    var _a, _b, _c, _d;
-    const model = new SecHubConfigurationModel();
+    let model = {
+        projectId: '',
+        apiVersion: '1.0',
+        data: {
+            sources: undefined,
+            binaries: undefined
+        },
+    };
     const referenceName = 'reference-data-1';
     createSourceOrBinaryDataReference(referenceName, builderData, model);
-    if (((_a = builderData.scanTypes) === null || _a === void 0 ? void 0 : _a.indexOf(ScanType.CODE_SCAN)) != -1) {
-        const codescan = new CodeScan();
-        codescan.use = [referenceName];
-        model.codeScan = codescan;
+    if (isStringInArrayIgnoreCase(src.ScanType.CodeScan, builderData.scanTypes)) {
+        const codeScan = {
+            use: [referenceName]
+        };
+        model.codeScan = codeScan;
     }
-    if (((_b = builderData.scanTypes) === null || _b === void 0 ? void 0 : _b.indexOf(ScanType.LICENSE_SCAN)) != -1) {
-        const licenseScan = new LicenseScan();
-        licenseScan.use = [referenceName];
+    if (isStringInArrayIgnoreCase(src.ScanType.LicenseScan, builderData.scanTypes)) {
+        const licenseScan = {
+            use: [referenceName]
+        };
         model.licenseScan = licenseScan;
     }
-    if (((_c = builderData.scanTypes) === null || _c === void 0 ? void 0 : _c.indexOf(ScanType.SECRET_SCAN)) != -1) {
-        const secretScan = new SecretScan();
-        secretScan.use = [referenceName];
+    if (isStringInArrayIgnoreCase(src.ScanType.SecretScan, builderData.scanTypes)) {
+        const secretScan = {
+            use: [referenceName]
+        };
         model.secretScan = secretScan;
     }
-    if (((_d = builderData.scanTypes) === null || _d === void 0 ? void 0 : _d.indexOf(ScanType.IAC_SCAN)) != -1) {
-        const iacScan = new IacScan();
-        iacScan.use = [referenceName];
+    if (isStringInArrayIgnoreCase(src.ScanType.IacScan, builderData.scanTypes)) {
+        const iacScan = {
+            use: [referenceName]
+        };
         model.iacScan = iacScan;
     }
     return model;
 }
 function createSourceOrBinaryDataReference(referenceName, builderData, model) {
-    if (builderData.contentType == ContentType.SOURCE) {
-        const sourceData1 = new SourceData();
-        sourceData1.name = referenceName;
-        sourceData1.fileSystem.folders = builderData.includeFolders;
-        sourceData1.excludes = builderData.excludeFolders;
-        model.data.sources = [sourceData1];
+    if (!model.data) {
+        model.data = {};
     }
-    else if (builderData.contentType == ContentType.BINARIES) {
-        const binaryData1 = new BinaryData();
-        binaryData1.name = referenceName;
-        binaryData1.fileSystem.folders = builderData.includeFolders;
-        binaryData1.excludes = builderData.excludeFolders;
-        model.data.binaries = [binaryData1];
+    if (builderData.contentType === ContentType.SOURCE) {
+        const sourceData = {
+            name: referenceName,
+            fileSystem: {
+                folders: builderData.includeFolders
+            },
+            excludes: builderData.excludeFolders
+        };
+        model.data.sources = [sourceData];
     }
+    else if (builderData.contentType === ContentType.BINARIES) {
+        const binaryData = {
+            name: referenceName,
+            fileSystem: {
+                folders: builderData.includeFolders
+            },
+            excludes: builderData.excludeFolders
+        };
+        model.data.binaries = [binaryData];
+    }
+}
+function isStringInArrayIgnoreCase(target, array) {
+    const lowerCaseTarget = target.toLowerCase();
+    return array.some(item => item.toLowerCase() === lowerCaseTarget);
 }
 
 ;// CONCATENATED MODULE: ./src/environment.ts
@@ -28514,7 +42488,7 @@ var external_child_process_ = __nccwpck_require__(2081);
 ;// CONCATENATED MODULE: ./src/shell-arg-sanitizer.ts
 // SPDX-License-Identifier: MIT
 
-const commandExistsSync = (__nccwpck_require__(1569).sync);
+const commandExistsSync = (__nccwpck_require__(6724).sync);
 const SHELL_ARGUMENT_CHARACTER_WHITELIST = /^[a-zA-Z0-9._\-\/ ]+$/;
 const FULL_WORD = /^[a-zA-Z]+$/;
 /**
@@ -46598,8 +60572,8 @@ function createSafeBuilderData(gitHubInputData) {
     const builderData = new SecHubConfigurationModelBuilderData();
     builderData.includeFolders = split(gitHubInputData.includeFolders);
     builderData.excludeFolders = split(gitHubInputData.excludeFolders);
-    builderData.scanTypes = ScanType.ensureAccepted(split(gitHubInputData.scanTypes));
-    builderData.contentType = ContentType.ensureAccepted(gitHubInputData.contentType);
+    builderData.scanTypes = safeAcceptedScanTypes(split(gitHubInputData.scanTypes));
+    builderData.contentType = ContentType.safeAcceptedContentType(gitHubInputData.contentType);
     return builderData;
 }
 async function init(context) {

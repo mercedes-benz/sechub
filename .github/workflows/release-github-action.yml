@@ -92,6 +92,13 @@ jobs:
           echo "Pull Request Number - ${{ steps.pr_spdx_headers.outputs.pull-request-number }}"
           echo "Pull Request URL - ${{ steps.pr_spdx_headers.outputs.pull-request-url }}"
 
+      - name: Build sechub-openapi-ts-client
+        working-directory: sechub-openapi-ts-client
+        run: |
+          npm ci
+          npm run generate-api-client
+          npm run build
+
       # ----------------------
       # Build SecHub Github Action + set package version
       # ----------------------

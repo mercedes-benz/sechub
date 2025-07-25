@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
-import {resolveProxyConfig, split} from '../src/input-helper';
+import { resolveProxyConfig, split, safeAcceptedScanTypes } from '../src/input-helper';
+import { ScanType } from 'sechub-openapi-ts-client';
 
 describe('split', function () {
     it('input undefined - returns empty array', function () {
@@ -243,4 +244,53 @@ describe('resolveProxyConfig', function () {
         /* execute + test */
         expect(() => resolveProxyConfig()).toThrowError(/Accepted protocols are "http" and "https"/);
     });
+});
+
+describe('ensureAcceptedScanType', function() {
+
+    test('ensureAcceptedScanType - no params results in default', () => {
+
+        /* execute */
+        const result = safeAcceptedScanTypes([]);
+
+        /* test */
+        expect(result).toEqual([ScanType.CodeScan]);
+
+    });
+
+    test('ensureAcceptedScanType - wrong params results in default', () => {
+
+        /* execute */
+        const result = safeAcceptedScanTypes(['x','y']);
+
+        /* test */
+        expect(result).toEqual([ScanType.CodeScan]);
+
+    });
+
+    test('ensureAcceptedScanType - partly wrong params results in correct one only', () => {
+
+        /* execute */
+        const result = safeAcceptedScanTypes(['licensescan','y']);
+
+        /* test */
+        expect(result).toEqual([ScanType.LicenseScan]);
+
+    });
+
+    test('ensureAcceptedScanType - wellknown params accepted case insensitive but converted', () => {
+
+        /* execute */
+        const result = safeAcceptedScanTypes(['licensescan','SECRETscan','CodeScan', 'IAcScan']);
+
+        /* test */
+        expect(result).toContain(ScanType.LicenseScan);
+        expect(result).toContain(ScanType.CodeScan);
+        expect(result).toContain(ScanType.SecretScan);
+        expect(result).toContain(ScanType.IacScan);
+
+        expect(result.length).toBe(4);
+
+    });
+
 });
