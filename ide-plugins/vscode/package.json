@@ -11,9 +11,9 @@
 		"theme": "dark"
 	},
 	"publisher": "Mercedes-Benz",
-	"homepage": "https://github.com/mercedes-benz/sechub-plugin-vscode/",
+	"homepage": "https://github.com/mercedes-benz/sechub/tree/develop/ide-plugins/vscode",
 	"bugs": {
-		"url": "https://github.com/mercedes-benz/sechub-plugin-vscode/issues"
+		"url": "https://github.com/mercedes-benz/sechub"
 	},
 	"repository": {
 		"type": "git",
