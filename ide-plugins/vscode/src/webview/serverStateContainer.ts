@@ -36,6 +36,10 @@ export class ServerStateContainer {
                 <span class="tooltiptext">Configure SecHub Username and APIToken</span>
                 <p id="connectionState">${serverState}</span></p>
             </div>
+            <div id="webUiContainer">
+                <button id="openWebUiBtn" class="sechubSecondaryButton">Open Web-UI</button>
+            </div>
+                
         </div>`;
 
         return {

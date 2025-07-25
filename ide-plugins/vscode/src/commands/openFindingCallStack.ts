@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
-import { ReportFindingItem, ReportItem } from './../provider/secHubReportTreeDataProvider';
+import { ReportFindingItem, ReportItem } from '../provider/items/reportItems';
 import { SECHUB_COMMANDS } from '../utils/sechubConstants';
 import { SecHubContext } from './../extension';
 

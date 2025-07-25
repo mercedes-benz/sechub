@@ -29,6 +29,32 @@
     background-color: var(--vscode-button-activeBackground);
 }
 
+.sechubSecondaryButton {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border: none;
+    padding: 4px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.sechubSecondaryButton:disabled,
+.sechubSecondaryButton:disabled:hover {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    cursor: default;
+}
+
+.sechubSecondaryButton:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.sechubSecondaryButton:active {
+    background-color: var(--vscode-button-secondaryActiveBackground);
+}   
+
 .traffic-light {
     width: 15px;
     height: 15px;

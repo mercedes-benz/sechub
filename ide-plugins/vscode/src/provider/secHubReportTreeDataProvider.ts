@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
-import * as path from 'path';
-import { SecHubReport, SecHubFinding, SecHubMessage, SecHubStatus, SecHubMessageType } from 'sechub-openapi-ts-client';
+import { SecHubReport, SecHubMessage, SecHubStatus, SecHubMessageType } from 'sechub-openapi-ts-client';
 import { SECHUB_COMMANDS } from '../utils/sechubConstants';
-import { MetaDataInfoItem } from './secHubInfoTreeDataProvider';
+import { ReportItem, ReportMetadataItem, ReportFindingItem } from './items/reportItems';
 
 export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<ReportItem> {
 
@@ -109,6 +108,15 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
         metadataInfoItem.children.push(new ReportMetadataItem("Executed Scans:", executedScans.join(", "), vscode.TreeItemCollapsibleState.None));
       }
 
+      const labelsDataItem = new ReportMetadataItem("Labels:", "", vscode.TreeItemCollapsibleState.Collapsed);
+      const labels: { [key: string]: any; } = this.report.metaData?.labels || {};
+      for (const [key, value] of Object.entries(labels)) {
+        labelsDataItem.children.push(new ReportMetadataItem(key, value, vscode.TreeItemCollapsibleState.None));
+      }
+      if (labelsDataItem.children.length > 0) {
+        metadataInfoItem.children.push(labelsDataItem);
+      }
+
       const messageMetadataItem = new ReportMetadataItem("Messages:", "" + (this.report?.messages?.length || 0), vscode.TreeItemCollapsibleState.Collapsed);
       const reportMessages: SecHubMessage[] = this.report.messages || [];
       reportMessages.forEach(message => {
@@ -125,28 +133,4 @@ export class SecHubReportTreeDataProvider implements vscode.TreeDataProvider<Rep
   }
 }
 
-export class ReportItem extends vscode.TreeItem {
-}
 
-export class ReportMetadataItem extends ReportItem {
-  children: ReportItem[] = [];
-
-  constructor(key: string, value: string | undefined, state: vscode.TreeItemCollapsibleState) {
-    super(key, state);
-    this.description = value;
-  }
-
-}
-
-export class ReportFindingItem extends ReportItem {
-  readonly sechubFinding: SecHubFinding;
-
-  constructor(sechubFinding: SecHubFinding
-  ) {
-    super(sechubFinding.id + " - " + sechubFinding.severity, vscode.TreeItemCollapsibleState.None);
-
-    this.description = sechubFinding.name;
-    this.tooltip = `${this.label}-${this.description}`;
-    this.sechubFinding = sechubFinding;
-  }
-}

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from '../extension';
-import { HierarchyItem } from '../provider/secHubCallHierarchyTreeDataProvider';
+import { HierarchyItem } from '../provider/items/hierarchyItems';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
 export async function openFinding(sechubContext: SecHubContext, hierarchyItem: HierarchyItem ): Promise<void> {
@@ -23,19 +23,22 @@ function showInInfoView(context: SecHubContext, findingNode: SecHubFinding | und
 
 function openInEditor(context: SecHubContext, codeCallStack: SecHubCodeCallStack) {
     if(!codeCallStack.location) {
-        console.error("Element location is undefined, can not open in editor.");
+        console.debug("Element location is undefined, can not open in editor.");
         return;
     }
 
     const result = context.fileLocationExplorer.searchFor(codeCallStack.location);
     if (result.size === 0) {
-        console.log("Can not calculate file location for " + codeCallStack.location + ", can not open in editor.");
+        console.debug("Can not calculate file location for " + codeCallStack.location + ", can not open in editor.");
+        // if file location is not found, we do not open the editor and the open project might not be represented in the report
+        vscode.window.showInformationMessage(
+            `File location for ${codeCallStack.location} not found. Please check if the scanned project is open in your workspace.`);
         return;
     }
     const fileLocation: string = result.values().next().value || '';
 
     if (!codeCallStack.column) {
-        console.error("Element column is undefined, can not open in editor.");
+        console.debug("Element column is undefined, can not open in editor.");
         return;
     }
 

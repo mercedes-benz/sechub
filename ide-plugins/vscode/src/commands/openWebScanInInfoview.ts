@@ -1,4 +1,4 @@
-import { ReportItem, ReportFindingItem } from "../provider/secHubReportTreeDataProvider";
+import { ReportItem, ReportFindingItem } from '../provider/items/reportItems';
 import { SecHubContext } from "../extension";
 import { SecHubFinding } from "sechub-openapi-ts-client";
 

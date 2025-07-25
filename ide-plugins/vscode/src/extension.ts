@@ -5,9 +5,11 @@ import * as path from 'path';
 import * as vscode from 'vscode';
 import { FileLocationExplorer } from './utils/fileLocationExplorer';
 import { FindingNodeLinkBuilder } from './utils/findingNodeLinkBuilder';
-import { HierarchyItem, SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
+import { SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
+import { HierarchyItem } from './provider/items/hierarchyItems';
 import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvider';
-import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
+import { SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
+import { ReportItem } from './provider/items/reportItems';
 
 import { loadFromFile } from './utils/sechubUtils';
 import { SecHubReport, ScanType, ProjectData } from 'sechub-openapi-ts-client';
@@ -179,22 +181,10 @@ export class SecHubContext {
 		}
 
 		const scanTypes: Array<ScanType> = report.metaData?.executed || [];
-		
-		if(scanTypes.length === 0){
-			vscode.window.showErrorMessage("No scan was executed in loaded report.");
-		}
 
-		const webUiUrl = this.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.webUiUrl);
-
-		if (scanTypes.includes(ScanType.WebScan) && scanTypes.length === 1) {
-			const message = "WebScan is not fully supported in this IDE plugin. Please use the SecHub Web UI to view WebScan results.";
-			vscode.window.showInformationMessage(message, 'Open SecHub Web UI').then(selection => {
-				if (selection === 'Open SecHub Web UI' && webUiUrl) {
-					vscode.env.openExternal(vscode.Uri.parse(webUiUrl));
-				}
-			});
-		
-		//	throw new Error("WebScan is not supported in this IDE plugin.");
+		if (scanTypes.includes(ScanType.LicenseScan) && scanTypes.length === 1) {
+			const message = "LicenseScan is not supported in this IDE plugin.";
+			vscode.window.showErrorMessage(message);		
 		}
 	}
 }

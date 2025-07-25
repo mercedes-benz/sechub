@@ -2,7 +2,6 @@
 import * as vscode from 'vscode';
 import { SecHubContext } from "../extension";
 import { SECHUB_CREDENTIAL_KEYS } from "../utils/sechubConstants";
-import { DefaultClient } from "../api/defaultClient";
 
 export async function changeWebUiUrl(sechubContext: SecHubContext): Promise<void> {
     const serverUrl = sechubContext.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
@@ -10,7 +9,7 @@ export async function changeWebUiUrl(sechubContext: SecHubContext): Promise<void
     const currentWebUiUrl = sechubContext.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.webUiUrl);
 
     const newWebUiUrl = await vscode.window.showInputBox({
-        prompt: 'Enter SecHub Web-Ui URL',
+        prompt: 'Change SecHub Web-Ui URL',
         value: currentWebUiUrl || defaultWebUiUrl,
         validateInput: (input) => {
             if (!input) {

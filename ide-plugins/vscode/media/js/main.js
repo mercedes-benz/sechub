@@ -9,6 +9,15 @@ document.getElementById('serverUserContainer').addEventListener('click', () => {
   vscode.postMessage({ type: 'changeCredentials' });
 });
 
+const openWebUiBtn = document.getElementById('openWebUiBtn')
+openWebUiBtn.addEventListener('click', () => {
+  vscode.postMessage({ type: 'openWebUi', data: { leftClick: true } });
+});
+openWebUiBtn.addEventListener('contextmenu', (event) => {
+  event.preventDefault();
+  vscode.postMessage({ type: 'openWebUi', data: { leftClick: false } });
+});
+
 /* jobTable */
 const changeProjectBtn = document.getElementById('changeProjectBtn');
 if (changeProjectBtn) {
