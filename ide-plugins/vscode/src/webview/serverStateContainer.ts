@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { DefaultClient } from '../api/defaultClient';
-import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
+import { SECHUB_API_CLIENT_CONFIG_KEYS } from '../utils/sechubConstants';
 
 export interface ServerState {
     html: string;
@@ -12,7 +12,7 @@ export class ServerStateContainer {
 
     async renderServerStateContainer(context: vscode.ExtensionContext): Promise<ServerState> {
 
-        const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl) || 'No server URL set';
+        const serverUrl = context.globalState.get<string>(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl) || 'No server URL set';
 
         let serverStateContainer = '';
         let isServerConnected = false;

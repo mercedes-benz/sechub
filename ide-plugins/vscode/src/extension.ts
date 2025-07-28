@@ -14,7 +14,7 @@ import { ReportItem } from './provider/items/reportItems';
 import { loadFromFile } from './utils/sechubUtils';
 import { SecHubReport, ScanType, ProjectData } from 'sechub-openapi-ts-client';
 import { multiStepInput } from './utils/sechubCredentialsMultistepInput';
-import { SECHUB_CREDENTIAL_KEYS, SECHUB_REPORT_KEYS, SECHUB_VIEW_IDS } from './utils/sechubConstants';
+import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS, SECHUB_VIEW_IDS } from './utils/sechubConstants';
 import { DefaultClient } from './api/defaultClient';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
 import { commands, hierachyCommands, reportItemCommands } from './commands/commands';
@@ -66,9 +66,9 @@ function registerCommands(sechubContext: SecHubContext) {
 async function setUpApiClient(context: vscode.ExtensionContext) {
 	// Check if SecHub credentials are already set
 	// If not, prompt the user to set them up
-    const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
-    const username = context.secrets.get(SECHUB_CREDENTIAL_KEYS.username);
-    const apiToken = context.secrets.get(SECHUB_CREDENTIAL_KEYS.apiToken);
+    const serverUrl = context.globalState.get<string>(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl);
+    const username = context.secrets.get(SECHUB_API_CLIENT_CONFIG_KEYS.username);
+    const apiToken = context.secrets.get(SECHUB_API_CLIENT_CONFIG_KEYS.apiToken);
     Promise.all([username, apiToken]).then(([username, apiToken]) => {
         if (!serverUrl || !username || !apiToken) {
             multiStepInput(context).then(() => {
@@ -88,7 +88,7 @@ async function setUpApiClient(context: vscode.ExtensionContext) {
 }
 
 async function preSelectedProjectValid(context: vscode.ExtensionContext): Promise<void> {
-	const project = context.globalState.get<ProjectData>(SECHUB_REPORT_KEYS.selectedProject);
+	const project = context.globalState.get<ProjectData>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
 	if (!project) {
 		return;
 	}
@@ -98,7 +98,7 @@ async function preSelectedProjectValid(context: vscode.ExtensionContext): Promis
 
 	if(!projects || !projects.some(p => p.projectId === project.projectId)) {
 		vscode.window.showErrorMessage(`Selected project ${project.projectId} is not valid. Please select a valid project.`);
-		await context.globalState.update(SECHUB_REPORT_KEYS.selectedProject, undefined);
+		await context.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject, undefined);
 		return;
 	}
 }

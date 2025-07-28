@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import { ProjectData, UserListsJobsForProjectRequest } from 'sechub-openapi-ts-client';
 import { DefaultClient } from '../api/defaultClient';
-import { SECHUB_REPORT_KEYS } from '../utils/sechubConstants';
+import { SECHUB_CONTEXT_STORAGE_KEYS } from '../utils/sechubConstants';
 import { Pagination } from './pagination';
 import * as vscode from 'vscode';
 
@@ -15,7 +15,7 @@ export class JobListTable {
     
     async renderJobTable(context: vscode.ExtensionContext) : Promise<string> {
 
-        const project: ProjectData | undefined = context.globalState.get(SECHUB_REPORT_KEYS.selectedProject);
+        const project: ProjectData | undefined = context.globalState.get(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
         const projectId = project?.projectId || 'No Project Selected';
         if (projectId !== this.pagination.getCurrentProject()){
             this.resetPagination();

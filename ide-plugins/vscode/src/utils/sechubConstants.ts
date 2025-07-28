@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
-export const SECHUB_CREDENTIAL_KEYS = {
-    serverUrl: 'sechubServerUrl',
-    webUiUrl: 'sechubWebUiUrl',
+export const SECHUB_API_CLIENT_CONFIG_KEYS = {
     username: 'sechubUsername',
     apiToken: 'sechubApiToken',
+    serverUrl: 'sechubServerUrl',
 };
 
-export const SECHUB_REPORT_KEYS = {
+export const SECHUB_CONTEXT_STORAGE_KEYS = {
     selectedProject: 'selectedProject',
+    webUiUrl: 'sechubWebUiUrl',
 };
 
 export const SECHUB_COMMANDS = {

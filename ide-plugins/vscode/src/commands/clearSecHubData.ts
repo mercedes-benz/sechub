@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from "../extension";
-import {SECHUB_CREDENTIAL_KEYS, SECHUB_REPORT_KEYS } from "../utils/sechubConstants";
+import {SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS } from "../utils/sechubConstants";
 import { DefaultClient } from '../api/defaultClient';
 
 export async function clearSecHubData(sechubContext: SecHubContext): Promise<void> {
@@ -19,11 +19,11 @@ export async function clearSecHubData(sechubContext: SecHubContext): Promise<voi
 
     // Clear global state for SecHub credentials and selected project
     try {
-        await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, undefined);
-        await sechubContext.extensionContext.globalState.update(SECHUB_REPORT_KEYS.selectedProject, undefined);
-        await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.webUiUrl, undefined);
-        await sechubContext.extensionContext.secrets.delete(SECHUB_CREDENTIAL_KEYS.username);
-        await sechubContext.extensionContext.secrets.delete(SECHUB_CREDENTIAL_KEYS.apiToken);
+        await sechubContext.extensionContext.globalState.update(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl, undefined);
+        await sechubContext.extensionContext.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject, undefined);
+        await sechubContext.extensionContext.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.webUiUrl, undefined);
+        await sechubContext.extensionContext.secrets.delete(SECHUB_API_CLIENT_CONFIG_KEYS.username);
+        await sechubContext.extensionContext.secrets.delete(SECHUB_API_CLIENT_CONFIG_KEYS.apiToken);
         // Recreate the API client to ensure it reflects the cleared state
         await DefaultClient.createClient(sechubContext.extensionContext);
     }catch (error) {

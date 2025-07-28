@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 import { SecHubContext } from '../extension';
-import { SECHUB_COMMANDS, SECHUB_VIEW_IDS, SECHUB_CREDENTIAL_KEYS, SECHUB_REPORT_KEYS } from '../utils/sechubConstants';
+import { SECHUB_COMMANDS, SECHUB_VIEW_IDS, SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS } from '../utils/sechubConstants';
 import { JobListTable } from '../webview/jobTable';
 import { ServerStateContainer } from '../webview/serverStateContainer';
 import { DefaultClient } from '../api/defaultClient';
@@ -87,11 +87,11 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
 	private openWebUi(leftClick: any) {
 		if (leftClick) {
-			let webUiUrl = this._sechubContext.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.webUiUrl);
+			let webUiUrl = this._sechubContext.extensionContext.globalState.get<string>(SECHUB_CONTEXT_STORAGE_KEYS.webUiUrl);
 			if (webUiUrl) {
 
 				if (!webUiUrl.endsWith('/login')) {
-					const projectId = this._sechubContext.extensionContext.globalState.get<string>(SECHUB_REPORT_KEYS.selectedProject);
+					const projectId = this._sechubContext.extensionContext.globalState.get<string>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
 					if (projectId) {
 						webUiUrl += `/projects/${projectId}`;
 					}

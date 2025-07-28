@@ -31,5 +31,5 @@ export const hierachyCommands = [
 export const reportItemCommands = [
     { command: SECHUB_COMMANDS.openCWEinBrowser, action: openCWEinBrowser },
     { command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack },
-    { command: SECHUB_COMMANDS.openWebScanInInfoview, action: openWebScanInInfoview } // Reusing the same command for web scans
+    { command: SECHUB_COMMANDS.openWebScanInInfoview, action: openWebScanInInfoview }
 ];
