@@ -1,17 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.settings;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 import javax.swing.*;
 
+import com.intellij.openapi.options.ConfigurationException;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.Nullable;
 
 import com.intellij.credentialStore.Credentials;
 import com.intellij.openapi.options.Configurable;
-import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccess;
-import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccessFactory;
 import com.mercedesbenz.sechub.plugin.idea.window.SecHubServerPanel;
 
 /*
@@ -19,7 +20,7 @@ import com.mercedesbenz.sechub.plugin.idea.window.SecHubServerPanel;
  */
 final class SechubSettingsConfigurable implements Configurable {
 
-    private SechubSettingsComponent sechubSettingsComponent;
+    private SecHubSettingsComponent sechubSettingsComponent;
     private SechubSettingsCredentialsSupport sechubSettingsCredentialsSupport;
 
     // A default constructor with no arguments is required because
@@ -39,7 +40,7 @@ final class SechubSettingsConfigurable implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        sechubSettingsComponent = new SechubSettingsComponent();
+        sechubSettingsComponent = new SecHubSettingsComponent();
         sechubSettingsCredentialsSupport = new SechubSettingsCredentialsSupport();
         return sechubSettingsComponent.getPanel();
     }
@@ -55,18 +56,22 @@ final class SechubSettingsConfigurable implements Configurable {
             currentPassword = credentials.getPasswordAsString();
             currentUserName = credentials.getUserName();
         }
+
         /* @formatter:off */
         return !sechubSettingsComponent.getUserNameText().equals(currentUserName) ||
                 !sechubSettingsComponent.getApiTokenPassword().equals(currentPassword) ||
-                !sechubSettingsComponent.getServerUrlText().equals(state.serverURL);
+                !sechubSettingsComponent.getSecHubServerUrlText().equals(state.serverURL) ||
+                !sechubSettingsComponent.useCustomWebUiUrl() == state.useCustomWebUiUrl ||
+                !sechubSettingsComponent.getWebUiUrlText().equals(state.webUiURL) ||
+                !sechubSettingsComponent.isSslTrustAll() == state.sslTrustAll;
         /* @formatter:on */
     }
 
     @Override
-    public void apply() {
+    public void apply() throws ConfigurationException {
         SechubSettings.State state = Objects.requireNonNull(SechubSettings.getInstance().getState());
 
-        String serverUrl = sechubSettingsComponent.getServerUrlText();
+        String serverUrl = sechubSettingsComponent.getSecHubServerUrlText();
         if (!serverUrl.isBlank() && !serverUrl.startsWith("http")) {
             /*
              * It is necessary to apply http protocol since the sechubClient needs it even
@@ -75,10 +80,36 @@ final class SechubSettingsConfigurable implements Configurable {
             /* using URL instead of URI won't solve the problem */
             serverUrl = "https://" + serverUrl;
         }
+
+        if (!isUriValid(serverUrl)) {
+            throw new ConfigurationException("SecHub server URL must be a valid URI");
+        }
+
         state.serverURL = serverUrl;
 
-        Credentials credentials = new Credentials(sechubSettingsComponent.getUserNameText(), sechubSettingsComponent.getApiTokenPassword());
+        String username = sechubSettingsComponent.getUserNameText();
+        String apiTokenPassword = sechubSettingsComponent.getApiTokenPassword();
+
+        if (username.isBlank()) {
+            throw new ConfigurationException("Username must not be empty");
+        }
+
+        if (apiTokenPassword.isBlank()) {
+            throw new ConfigurationException("API token must not be empty");
+        }
+
+        Credentials credentials = new Credentials(username, apiTokenPassword);
         sechubSettingsCredentialsSupport.storeCredentials(credentials);
+
+        state.useCustomWebUiUrl = sechubSettingsComponent.useCustomWebUiUrl();
+
+        if (state.useCustomWebUiUrl && !isUriValid(sechubSettingsComponent.getWebUiUrlText())) {
+            throw new ConfigurationException("Web UI URL must be a valid URI");
+        }
+
+        state.webUiURL = sechubSettingsComponent.getWebUiUrlText();
+
+        state.sslTrustAll = sechubSettingsComponent.isSslTrustAll();
 
         updateComponents(state);
     }
@@ -86,9 +117,15 @@ final class SechubSettingsConfigurable implements Configurable {
     @Override
     public void reset() {
         SechubSettings.State state = Objects.requireNonNull(SechubSettings.getInstance().getState());
-        sechubSettingsComponent.setServerUrlText(state.serverURL);
+        sechubSettingsComponent.setSecHubServerUrlText(state.serverURL);
 
         Credentials credentials = sechubSettingsCredentialsSupport.retrieveCredentials();
+
+        sechubSettingsComponent.setUseCustomWebUiUrl(state.useCustomWebUiUrl);
+
+        sechubSettingsComponent.setWebUiUrlText(state.webUiURL);
+
+        sechubSettingsComponent.setSslTrustAll(state.sslTrustAll);
 
         displayCredentialsInSettings(credentials);
     }
@@ -115,11 +152,25 @@ final class SechubSettingsConfigurable implements Configurable {
     }
 
     private static void updateComponents(SechubSettings.State state) {
-        // Creating new sechubAccess with new client
-        SecHubAccess secHubAccess = SecHubAccessFactory.create();
-
-        // Updating the server URL in the SecHubServerPanel and check alive status
         SecHubServerPanel secHubServerPanel = SecHubServerPanel.getInstance();
-        secHubServerPanel.update(state.serverURL, secHubAccess.isSecHubServerAlive());
+        secHubServerPanel.updateSettingsState(state);
+    }
+
+    private static boolean isUriValid(String uri) {
+        if (uri == null || uri.isBlank()) {
+            return false;
+        }
+        try {
+            URI parsed = new URI(uri);
+            if (parsed.getScheme() == null || parsed.getScheme().isBlank()) {
+                return false;
+            }
+            if (parsed.getHost() == null || parsed.getHost().isBlank()) {
+                return false;
+            }
+            return true;
+        } catch (URISyntaxException e) {
+            return false;
+        }
     }
 }
