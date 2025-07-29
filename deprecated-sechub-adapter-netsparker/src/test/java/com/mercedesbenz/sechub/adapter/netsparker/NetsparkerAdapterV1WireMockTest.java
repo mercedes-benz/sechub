@@ -30,8 +30,6 @@ public class NetsparkerAdapterV1WireMockTest {
 
     private static final String WEBSITE_ID = "93cc5894f38546f45f7aa8860366c07e";
 
-    private static final int HTTPS_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPSPort();
-
     private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
 
     private static final String LICENSE_ID = "12345licenseID";
@@ -47,7 +45,7 @@ public class NetsparkerAdapterV1WireMockTest {
     private static final String POLICY_ID = "12345POLICY_ID";
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT));
 
     private NetsparkerAdapter adapterToTest;
 

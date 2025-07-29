@@ -43,10 +43,8 @@ public class PDSAdapterV1WireMockTest {
 
     private static final int HTTPS_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPSPort();
 
-    private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
-
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().httpsPort(HTTPS_PORT));
 
     private String productIdentifier;
     private UUID sechubJobUUID;
