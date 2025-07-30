@@ -5,6 +5,20 @@ All notable changes to the "sechub-plugin-vscode" extension will be documented i
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.1.0] - 2025-07-23
+- Added Server View with server connection state and report table
+- New commands:
+  - `SecHub: Change Server URL`: set the SecHub server URL for the plugin.
+  - `SecHub: Change Credentials` set the basic authentication credentials for the SecHub server (userId and ApiToken).
+  - `SecHub: Select Project`: select a SecHub project from the list of your available projects.
+  - `SecHub: Fetch Report by UUID from Server`: Fetch a remote report by its UUID from the SecHub server.
+  - `SecHub: Clear SecHub Data`: Clear all SecHub data from the plugin, except current report in view.
+  - `SecHub: Refresh Server View`: Refresh the server view to show the latest reports.
+  - `SecHub: Change Web UI URL`: Change the SecHub Web UI URL (Button shown when try to open a `WebScan` report)
+- Updated README with new features and usage instructions
+- Updated dependencies
+- Added build script for easier setup
+
 ## [1.0.1] - 2023-06-14
 - Fix README issue by converting AsciiDoc to Markdown
 

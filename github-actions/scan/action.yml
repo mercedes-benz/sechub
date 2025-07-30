@@ -105,7 +105,9 @@ runs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env['ACTIONS_CACHE_URL'])
 
     - name: Run SecHub Scan
-      run: node "$GITHUB_ACTION_PATH"/dist/index.js
+      # Using exec makes the node process the top level process.
+      # This way it receives signals like SIGTERM or SIGINT from the Github runner and can handle them
+      run: exec node "$GITHUB_ACTION_PATH"/dist/index.js
       env:
         config-path: ${{ inputs.config-path }}
         url: ${{ inputs.url }}

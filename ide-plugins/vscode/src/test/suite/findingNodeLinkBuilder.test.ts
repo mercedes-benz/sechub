@@ -2,18 +2,18 @@
 import * as assert from 'assert';
 
 import { Severity, ScanType } from 'sechub-openapi-ts-client';
-import { FindingNodeLinkBuilder } from '../../model/findingNodeLinkBuilder';
+import { FindingNodeLinkBuilder } from '../../utils/findingNodeLinkBuilder';
 
 suite('FindingNodeLinkBuilder Test Suite', () => {
 
-	var builderToTest: FindingNodeLinkBuilder;
+	let builderToTest: FindingNodeLinkBuilder;
 
 	test('cwe 4711 results in link to https://cwe.mitre.org/data/definitions/4711.html', () => {
 		/* prepare */
 		builderToTest = new FindingNodeLinkBuilder();
 
 		/* execute */
-		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: Severity.High,cweId: 4711, type: ScanType.CodeScan});
+		const uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: Severity.High,cweId: 4711, type: ScanType.CodeScan});
 
 		/* test */
 		if (!uri){
@@ -28,7 +28,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 		builderToTest = new FindingNodeLinkBuilder();
 
 		/* execute */
-		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", severity: Severity.High, type: ScanType.CodeScan});
+		const uri = builderToTest.buildCWELink({id: 1, name: "findingX", severity: Severity.High, type: ScanType.CodeScan});
 
 		/* test */
 		if (uri){
@@ -41,7 +41,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 		builderToTest = new FindingNodeLinkBuilder();
 
 		/* execute */
-		var uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: Severity.High, type: ScanType.CodeScan});
+		const uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: Severity.High, type: ScanType.CodeScan});
 
 		/* test */
 		if (uri){
@@ -54,7 +54,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 		builderToTest = new FindingNodeLinkBuilder();
 
 		/* execute */
-		var uri = builderToTest.buildCWELink(undefined);
+		const uri = builderToTest.buildCWELink(undefined);
 
 		/* test */
 		if (uri){

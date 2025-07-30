@@ -5,7 +5,6 @@ import * as fs from 'fs';
 import { failAction, handleError } from './action-helper';
 import { downloadClientRelease } from './client-download';
 import { SecHubConfigurationModelBuilderData } from './configuration-builder';
-import { ContentType, ScanType } from './configuration-model';
 import { initEnvironmentVariables } from './environment';
 import { logExitCode } from './exitcode';
 import { getFiles, getWorkspaceDir } from './fs-helper';
@@ -16,8 +15,9 @@ import * as projectNameResolver from './projectname-resolver';
 import { scan } from './sechub-cli';
 import { defineFalsePositives } from './sechub-cli';
 import { getPlatform, getPlatformDirectory } from './platform-helper';
-import { split } from './input-helper';
+import { safeAcceptedScanTypes, split } from './input-helper';
 import { getClientVersion } from './client-version-helper';
+import { ContentType } from './content-type';
 
 
 /**
@@ -37,7 +37,7 @@ export async function launch(): Promise<LaunchContext> {
         return context;
     }
 
-    executeScan(context);
+    await executeScan(context);
 
     await postScan(context);
 
@@ -167,8 +167,8 @@ function createSafeBuilderData(gitHubInputData: GitHubInputData) {
     builderData.includeFolders = split(gitHubInputData.includeFolders);
     builderData.excludeFolders = split(gitHubInputData.excludeFolders);
 
-    builderData.scanTypes = ScanType.ensureAccepted(split(gitHubInputData.scanTypes));
-    builderData.contentType = ContentType.ensureAccepted(gitHubInputData.contentType);
+    builderData.scanTypes = safeAcceptedScanTypes(split(gitHubInputData.scanTypes));
+    builderData.contentType = ContentType.safeAcceptedContentType(gitHubInputData.contentType);
     return builderData;
 }
 
@@ -183,8 +183,8 @@ async function init(context: LaunchContext) {
  * Executes the scan.
  * @param context launch context
  */
-function executeScan(context: LaunchContext) {
-    scan(context);
+async function executeScan(context: LaunchContext) {
+    await scan(context);
 
     logExitCode(context.lastClientExitCode);
 }

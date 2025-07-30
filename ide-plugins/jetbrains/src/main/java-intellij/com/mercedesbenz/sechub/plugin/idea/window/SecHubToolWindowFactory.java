@@ -4,6 +4,7 @@ package com.mercedesbenz.sechub.plugin.idea.window;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mercedesbenz.sechub.plugin.idea.SecHubSettingsDialogListener;
 import org.jetbrains.annotations.NotNull;
 
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -21,14 +22,18 @@ import com.mercedesbenz.sechub.plugin.idea.action.SechubOpenReportFromFileSystem
 import com.mercedesbenz.sechub.plugin.idea.action.SechubResetReportAction;
 
 public class SecHubToolWindowFactory implements ToolWindowFactory, DumbAware {
+
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 
-        SecHubServerPanel serverPanel = new SecHubServerPanel();
-        SecHubServerPanel.registerInstance(serverPanel);
+        SecHubSettingsDialogListener settingsDialogListener = new SecHubSettingsDialogListener(project, "SecHub");
 
         SecHubReportPanel reportPanel = new SecHubReportPanel(toolWindow);
         SecHubReportPanel.registerInstance(reportPanel);
+
+        SecHubReportTabSwitcher reportTabSwitcher = new SecHubReportTabSwitcher(toolWindow.getContentManager(), "Report");
+        SecHubServerPanel serverPanel = new SecHubServerPanel(settingsDialogListener, reportTabSwitcher);
+        SecHubServerPanel.registerInstance(serverPanel);
 
         DefaultActionGroup toolbarActions = new DefaultActionGroup();
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("SecHub", toolbarActions, false);

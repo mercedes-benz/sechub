@@ -3,6 +3,12 @@ import * as vscode from 'vscode';
 import {
   Configuration,
   DefaultApiClient,
+  ProjectData,
+  UserListsJobsForProjectRequest,
+  SecHubJobInfoForUserListPage,
+  UserDetailInformation,
+  UserDownloadJobReportRequest,
+  SecHubReport,
 } from 'sechub-openapi-ts-client';
 import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
 
@@ -39,8 +45,9 @@ export class DefaultClient {
     const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
 
     if (!serverUrl || !username || !apiToken) {
-      vscode.window.showErrorMessage('SecHub credentials are not set. Please configure them first.');
-      throw new Error('SecHub client is not initialized yet. Please ensure credentials are set.');
+      vscode.window.showErrorMessage('SecHub credentials are not set. Please configure them to connect to the SecHub server.');
+      console.error('SecHub credentials are not set to create an API client. Createing empty client.');
+      return new DefaultApiClient(new Configuration());
     }
 
     const clientConfig = new Configuration({
@@ -58,5 +65,59 @@ export class DefaultClient {
 
   public getApiClient(): DefaultApiClient {
     return this.apiClient;
+  }
+
+  public async getAssignedProjectDataList(): Promise<ProjectData[] | undefined> {
+    try {
+        const response: ProjectData[] = await this.apiClient.withProjectAdministrationApi().getAssignedProjectDataList();
+        return response;
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        vscode.window.showErrorMessage('Failed to fetch projects from the server.');
+        return undefined;
+    }    
+  }
+
+  public async userListsJobsForProject(projectId: string, requestParameter: UserListsJobsForProjectRequest = {
+      projectId: projectId,
+      size: "10", // Example size, adjust as needed
+      page: "0", // Example page number, adjust as needed
+    }): Promise<SecHubJobInfoForUserListPage> {
+
+    try {
+      const response: SecHubJobInfoForUserListPage = await this.apiClient.withOtherApi().userListsJobsForProject(requestParameter);
+      return response;
+    } catch (error) {
+      console.error('Error fetching latest jobs:', error);
+      vscode.window.showErrorMessage('Failed to fetch latest jobs from the server.');
+      return {};
+    }
+  }
+
+  public async userFetchUserDetailInformation(): Promise<UserDetailInformation | undefined> {
+    try {
+      const response: UserDetailInformation = await this.apiClient.withUserSelfServiceApi().userFetchUserDetailInformation();
+      return response;
+    } catch (error) {
+      console.error('Error: could not fetch User Details from Server', error);
+      return undefined;
+    }
+  }
+
+  public async fetchReport(projectId:string, jobUUID: string): Promise<SecHubReport | undefined> {
+
+    const requestParameter: UserDownloadJobReportRequest = {
+      projectId: projectId,
+      jobUUID: jobUUID,
+    };
+
+    try {
+      const response = await this.apiClient.withSecHubExecutionApi().userDownloadJobReport(requestParameter);
+      return response;
+    } catch (error) {
+      console.error('Error fetching report:', error);
+      vscode.window.showErrorMessage('Failed to fetch report from the server.');
+      return undefined;
+    }
   }
 }

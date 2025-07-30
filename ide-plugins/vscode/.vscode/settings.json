@@ -8,4 +8,6 @@
     },
     // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
     "typescript.tsc.autoDetect": "off",
+    // fot lit we need to run vscode with the same ts version as the one used in the project
+    "typescript.tsdk": "./node_modules/typescript/lib"
 }

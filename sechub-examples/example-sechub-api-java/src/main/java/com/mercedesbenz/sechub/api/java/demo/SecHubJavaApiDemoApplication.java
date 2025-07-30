@@ -8,10 +8,9 @@ import java.net.URI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mercedesbenz.sechub.api.OldDefaultSecHubClient;
+import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.java.demo.config.DemoConfigurationProvider;
-import com.mercedesbenz.sechub.api.java.demo.playground.DemoAdminApiPlayground;
 
 public class SecHubJavaApiDemoApplication {
 
@@ -22,6 +21,7 @@ public class SecHubJavaApiDemoApplication {
     }
 
     private void start(String[] args) {
+        
         try {
             DemoConfigurationProvider configProvider = DemoConfigurationProvider.create(args);
 
@@ -37,13 +37,10 @@ public class SecHubJavaApiDemoApplication {
             LOG.trace("*** trustAll: {}", trustAll);
 
             /* create the client */
-            SecHubClient client = OldDefaultSecHubClient.builder().server(serverUri).user(userName).apiToken(apiToken).trustAll(trustAll).build();
+            SecHubClient client = DefaultSecHubClient.builder().server(serverUri).user(userName).apiToken(apiToken).trustAll(trustAll).build();
 
             // test anonymous parts
             testAnonymousApi(client);
-
-            // test admin parts
-            new DemoAdminApiPlayground(client).run();
 
             LOG.info("Sechub server successfully tested.");
             System.out.println("[ OK ] SecHub was accessible with generated Java API");
