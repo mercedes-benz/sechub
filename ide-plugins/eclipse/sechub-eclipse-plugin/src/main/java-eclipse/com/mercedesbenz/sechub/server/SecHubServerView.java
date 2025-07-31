@@ -298,6 +298,9 @@ public class SecHubServerView extends ViewPart {
 
 		toolBarManager.add(searchJobDirectlyAction);
 		toolBarManager.add(new Separator());
+		
+		toolBarManager.add(openProjectFalsePositivesDialogAction);
+		toolBarManager.add(new Separator());
 
 		toolBarManager.add(openWebUIAction);
 
@@ -312,9 +315,11 @@ public class SecHubServerView extends ViewPart {
 		menuManager.add(searchJobDirectlyAction);
 		menuManager.add(new Separator());
 
+		menuManager.add(openProjectFalsePositivesDialogAction);
+		menuManager.add(new Separator());
+
 		menuManager.add(openWebUIAction);
 		menuManager.add(openServerPreferencesAction);
-		menuManager.add(openProjectFalsePositivesDialogAction);
 	}
 
 	private void createJobColumns() {
@@ -434,6 +439,7 @@ public class SecHubServerView extends ViewPart {
 		if (projects.isEmpty()) {
 			serverContext.setSelectedProjectId(null);
 			searchJobDirectlyAction.setEnabled(false);
+			openProjectFalsePositivesDialogAction.setEnabled(false);
 		} else {
 			String selected = serverContext.getSelectedProjectId();
 
@@ -450,6 +456,7 @@ public class SecHubServerView extends ViewPart {
 																					// nothing selected before
 			}
 			searchJobDirectlyAction.setEnabled(true);
+			openProjectFalsePositivesDialogAction.setEnabled(true);
 		}
 	}
 

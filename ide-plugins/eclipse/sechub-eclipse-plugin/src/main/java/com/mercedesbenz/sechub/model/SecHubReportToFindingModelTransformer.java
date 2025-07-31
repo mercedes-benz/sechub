@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveEntry;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveProjectConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
@@ -55,16 +56,24 @@ public class SecHubReportToFindingModelTransformer {
 	}
 
 	public void updateFalsePositiveInfo(FindingModel model) {
-		if (model==null) {
+		if (model == null) {
 			return;
 		}
-		List<FalsePositiveEntry> falsePositivesForSelectedProject = SecHubServerContext.INSTANCE
-				.getFalsePositivesForSelectedProject();
+		FalsePositiveProjectConfiguration falsepPositiveProjectConfiguration = SecHubServerContext.INSTANCE
+				.getFalsepPositiveProjectConfiguration();
+
+		List<FalsePositiveEntry> falsePositivesForSelectedProject = null;
+
+		if (falsepPositiveProjectConfiguration != null) {
+			falsePositivesForSelectedProject = falsepPositiveProjectConfiguration.getFalsePositives();
+		} else {
+			falsePositivesForSelectedProject = Collections.emptyList();
+		}
 
 		Map<Integer, FindingNodeFalsePositiveInfo> falsePositiveFindingForJobMap = mapTransformer
 				.transform(falsePositivesForSelectedProject, model.getJobUUID());
-		
-		for(FindingNode node:  model.getFindings()) {
+
+		for (FindingNode node : model.getFindings()) {
 			node.setFalsePositiveInfo(falsePositiveFindingForJobMap.get(node.getId()));
 		}
 

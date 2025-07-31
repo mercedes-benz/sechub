@@ -5,8 +5,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -23,6 +24,8 @@ import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -32,6 +35,8 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 
@@ -53,11 +58,14 @@ public class ProjectFalsePositivesDialog extends Dialog {
 	private static final String TABLE_ID_DATE = "date";
 	private static final String TABLE_ID_AUTHOR = "author";
 
-	
 	private StyledText jsonText;
 	private TreeViewer treeViewer;
 	private FalsePositiveTreeContentProvider jobTreeProvider;
-	private IAction unmarkFalsePositivesAction;
+	private RemoveFalsePositiveAction removeFalsePositivesAction;
+	private ToolBarManager toolBarManager;
+	private ToolBar toolBar;
+	private MenuManager menuManager;
+	private Menu menu;
 
 	public ProjectFalsePositivesDialog(Shell parentShell) {
 		super(parentShell);
@@ -79,13 +87,15 @@ public class ProjectFalsePositivesDialog extends Dialog {
 		TabFolder tabFolder = new TabFolder(container, SWT.NONE);
 
 		TabItem jobsTab = new TabItem(tabFolder, SWT.NONE);
-		jobsTab.setText("Table");
+		jobsTab.setText("Manage false positives");
 		Composite jobsComposite = new Composite(tabFolder, SWT.NONE);
 
 		GridLayout jobsLayout = new GridLayout();
 		jobsLayout.marginWidth = 0;
 		jobsLayout.marginHeight = 0;
 		jobsComposite.setLayout(jobsLayout);
+
+		createToolbarAndMenu(jobsComposite);
 
 		treeViewer = new TreeViewer(jobsComposite, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
 		createColumns();
@@ -117,34 +127,64 @@ public class ProjectFalsePositivesDialog extends Dialog {
 		jsonText.setAlwaysShowScrollBars(false);
 
 		SecHubServerContext instance = SecHubServerContext.INSTANCE;
-		SecHubAccess access = instance.getAccessOrNull();
-		if (access == null || !instance.isConnectedWithServer()) {
-			jsonText.setText("No connection to server");
-		} else {
-			String projectId = instance.getSelectedProjectId();
-			FalsePositiveProjectConfiguration data;
-			try {
-				data = access.fetchFalsePositiveProjectData(projectId);
-				jsonText.setText(JSONConverter.get().toJSON(data, true));
-				treeViewer.setInput(data);
-			} catch (ApiException e) {
-				EclipseUtil.showErrorDialog("Cannot show false positives", e);
-			}
+		updateJsonViewByServerContext(instance);
+		updateTreeViewByServerContext(instance);
 
-		}
 		createActions();
+		fillToolbarAndMenu();
 		createContextMenu();
 
 		return container;
 	}
 
+	private void updateJsonViewByServerContext(SecHubServerContext instance) {
+		FalsePositiveProjectConfiguration data = instance.getFalsepPositiveProjectConfiguration();
+		if (data == null) {
+			jsonText.setText("No connection to server");
+		} else {
+			jsonText.setText(JSONConverter.get().toJSON(data, true));
+		}
+	}
+	
+	private void updateTreeViewByServerContext(SecHubServerContext instance) {
+		FalsePositiveProjectConfiguration data = instance.getFalsepPositiveProjectConfiguration();
+		if (data == null) {
+			treeViewer.setInput(null);
+		} else {
+			treeViewer.setInput(data);
+		}
+	}
+
+	private void createToolbarAndMenu(Composite jobsComposite) {
+		toolBarManager = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
+		toolBar = toolBarManager.createControl(jobsComposite);
+		GridData toolBarData = new GridData(SWT.END, SWT.TOP, true, false);
+		toolBar.setLayoutData(toolBarData);
+
+		menuManager = new MenuManager();
+		menu = menuManager.createContextMenu(toolBar);
+
+	}
+
+	private void fillToolbarAndMenu() {
+		toolBarManager.add(removeFalsePositivesAction);
+
+		menuManager.add(removeFalsePositivesAction);
+
+		DropdownContributionItem citem = new DropdownContributionItem(menu, toolBar);
+		toolBarManager.add(citem);
+
+		toolBarManager.update(true);
+		menuManager.update(true);
+	}
+
 	private void createActions() {
-		unmarkFalsePositivesAction = new UnmarkFalsePositiveAction();
+		removeFalsePositivesAction = new RemoveFalsePositiveAction();
 	}
 
 	private void createContextMenu() {
 		MenuManager menuManager = new MenuManager();
-		menuManager.add(unmarkFalsePositivesAction);
+		menuManager.add(removeFalsePositivesAction);
 
 		Menu menu = menuManager.createContextMenu(treeViewer.getControl());
 		treeViewer.getControl().setMenu(menu);
@@ -190,10 +230,37 @@ public class ProjectFalsePositivesDialog extends Dialog {
 		return treeViewerColumn;
 	}
 
-	private class UnmarkFalsePositiveAction extends Action {
+	private class DropdownContributionItem extends ContributionItem {
 
-		public UnmarkFalsePositiveAction() {
-			setText("Unmark false positive");
+		private Menu menu;
+		private ToolBar toolBar;
+
+		public DropdownContributionItem(Menu menu, ToolBar toolBar) {
+			super("dropdown");
+			this.menu = menu;
+			this.toolBar = toolBar;
+		}
+
+		@Override
+		public void fill(ToolBar parent, int index) {
+			ToolItem item = new ToolItem(parent, SWT.DROP_DOWN, index);
+			item.addListener(SWT.Selection, event -> {
+				if (event.detail == SWT.ARROW) {
+					Rectangle rect = item.getBounds();
+					Point pt = new Point(rect.x, rect.y + rect.height);
+					pt = toolBar.toDisplay(pt);
+					menu.setLocation(pt.x, pt.y);
+					menu.setVisible(true);
+				}
+			});
+		}
+	}
+
+	private class RemoveFalsePositiveAction extends Action {
+
+		public RemoveFalsePositiveAction() {
+			setText("Remove selected false positive");
+			setImageDescriptor(EclipseUtil.createImageDescriptor("/icons/remove.png"));
 		}
 
 		@Override
@@ -207,7 +274,7 @@ public class ProjectFalsePositivesDialog extends Dialog {
 					FalsePositiveJobData jobData = entry.getJobData();
 					if (jobData == null) {
 						MessageDialog.openInformation(EclipseUtil.getActiveWorkbenchShell(),
-								"Cannot remove false positive", "False positives can currently only removed for jobs");
+								"Cannot remove false positive", "False positives can currently only removeed for jobs");
 						return;
 					}
 					SecHubServerContext serverContext = SecHubServerContext.INSTANCE;
@@ -221,7 +288,7 @@ public class ProjectFalsePositivesDialog extends Dialog {
 					String projectId = serverContext.getSelectedProjectId();
 
 					boolean confirmed = MessageDialog.openConfirm(EclipseUtil.getActiveWorkbenchShell(),
-							"Confirm unmark", "Are you sure you want to unmark the false positive ?");
+							"Confirm remove", "Are you sure you want to remove the false positive ?");
 					if (!confirmed) {
 						return;
 					}
@@ -233,13 +300,16 @@ public class ProjectFalsePositivesDialog extends Dialog {
 
 						/* sync server context */
 						serverContext.reloadFalsePositiveDataForCurrentProject();
+						
+						/* sync JSON content */
+						updateJsonViewByServerContext(serverContext);						
 
 						/* sync report view false positives */
 						SecHubReportView.refreshFalsePositives();
 
 					} catch (ApiException e) {
-						ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), "FP unmark not possble",
-								"Was not able to unmark false psoitive, because of communication error",
+						ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), "FP remove not possble",
+								"Was not able to remove false psoitive, because of communication error",
 								Status.error("Failed", e));
 						return;
 					}
@@ -249,7 +319,6 @@ public class ProjectFalsePositivesDialog extends Dialog {
 
 		}
 	}
-
 
 	private class JobFalsePositiveInfoLabelProvider extends ColumnLabelProvider {
 

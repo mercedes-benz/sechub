@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import com.mercedesbenz.sechub.access.SecHubAccess;
 import com.mercedesbenz.sechub.access.SecHubAccess.ServerAccessStatus;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
-import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveEntry;
 import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveProjectConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.server.data.SecHubServerDataModel;
@@ -25,7 +21,8 @@ public class SecHubServerContext {
 	private String selectedProjectId;
 	private SecHubJobInfoForUserListPage currentJobPage;
 	private int wantedPage;
-	private List<FalsePositiveEntry> falsePositivesForSelectedProject= new ArrayList<FalsePositiveEntry>();
+
+	private FalsePositiveProjectConfiguration falsepPositiveProjectConfiguration;
 
 	private SecHubServerContext() {
 		reset();
@@ -79,7 +76,7 @@ public class SecHubServerContext {
 		}
 		try {
 			FalsePositiveProjectConfiguration projectData = access.fetchFalsePositiveProjectData(projectId);
-			setFalsePositivesForSelectedProject(projectData.getFalsePositives());
+			setFalsePositivesForSelectedProject(projectData);
 		} catch (ApiException e) {
 			Logging.logError("Was not able to fetch false positives for project:" + projectId, e);
 		}
@@ -172,16 +169,12 @@ public class SecHubServerContext {
 		return page + 1;
 	}
 
-	public void setFalsePositivesForSelectedProject(List<FalsePositiveEntry> falsePositives) {
-		this.falsePositivesForSelectedProject.clear();
-		
-		if (falsePositives!=null) {
-			falsePositivesForSelectedProject.addAll(falsePositives);
-		}
-	}
-	
-	public List<FalsePositiveEntry> getFalsePositivesForSelectedProject() {
-		return Collections.unmodifiableList(falsePositivesForSelectedProject);
+	public void setFalsePositivesForSelectedProject(FalsePositiveProjectConfiguration falsepPositiveProjectConfiguration) {
+		this.falsepPositiveProjectConfiguration=falsepPositiveProjectConfiguration;
 	}
 
+	public FalsePositiveProjectConfiguration getFalsepPositiveProjectConfiguration() {
+		return falsepPositiveProjectConfiguration;
+	}
+	
 }

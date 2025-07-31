@@ -185,6 +185,9 @@ public class SecHubReportView extends ViewPart {
 		manager.add(openServerViewAction);
 		manager.add(importAction);
 		manager.add(new Separator());
+		manager.add(markFalsePositivesAction);
+		manager.add(unmarkFalsePositivesAction);
+		manager.add(new Separator());
 		manager.add(removeAllReportData);
 	}
 
@@ -194,10 +197,10 @@ public class SecHubReportView extends ViewPart {
 		manager.add(openServerViewAction);
 		manager.add(importAction);
 		manager.add(new Separator());
-		manager.add(removeAllReportData);
-		manager.add(new Separator());
 		manager.add(markFalsePositivesAction);
 		manager.add(unmarkFalsePositivesAction);
+		manager.add(new Separator());
+		manager.add(removeAllReportData);
 	}
 
 	private void createColumns() {
