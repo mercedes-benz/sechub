@@ -9,6 +9,11 @@ import {
   UserDetailInformation,
   UserDownloadJobReportRequest,
   SecHubReport,
+  FalsePositiveProjectConfiguration,
+  FalsePositives,
+  UserMarkFalsePositivesRequest,
+  FalsePositiveJobData,
+  SecHubFinding
 } from 'sechub-openapi-ts-client';
 import { SECHUB_API_CLIENT_CONFIG_KEYS } from '../utils/sechubConstants';
 
@@ -118,6 +123,39 @@ export class DefaultClient {
       console.error('Error fetching report:', error);
       vscode.window.showErrorMessage('Failed to fetch report from the server.');
       return undefined;
+    }
+  }
+
+  public async userFetchFalsePositiveConfigurationOfProject(projectId: string): Promise<FalsePositiveProjectConfiguration | undefined> {
+    
+    const requestParameter = {
+      projectId: projectId
+    };
+
+    try {
+      const response = await this.apiClient.withExecutionApi().userFetchFalsePositiveConfigurationOfProject(requestParameter);
+      return response;
+
+    } catch (error) {
+      console.error('Error fetching false positives project configuration:', error);
+      vscode.window.showErrorMessage('Failed to fetch false positives project configuration from the server.');
+      return undefined;
+    }
+  }
+
+  public async markFalsePositivesForProject(falsePositves: FalsePositives, projectId: string): Promise<void> {
+
+    const requestParameter: UserMarkFalsePositivesRequest = {
+      projectId: projectId,
+      falsePositives: falsePositves
+    };
+
+    try {
+      await this.apiClient.withExecutionApi().userMarkFalsePositives(requestParameter);
+    } catch (error) {
+      console.error('Error marking findings as false positive:', error);
+      vscode.window.showErrorMessage('Failed to mark findings as false positive.');
+      // todo caching
     }
   }
 }

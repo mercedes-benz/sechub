@@ -45,6 +45,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 				case 'changeProject':
 					{
 						vscode.commands.executeCommand(SECHUB_COMMANDS.selectProject);
+						vscode.commands.executeCommand(SECHUB_COMMANDS.fetchFalsePositives);
 					}
 					break;
 				case 'changeServerUrl':

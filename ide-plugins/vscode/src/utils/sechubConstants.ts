@@ -1,3 +1,5 @@
+import { markFalsePositiveCommands } from "src/commands/commands";
+
 // SPDX-License-Identifier: MIT
 export const SECHUB_API_CLIENT_CONFIG_KEYS = {
     username: 'sechubUsername',
@@ -8,6 +10,7 @@ export const SECHUB_API_CLIENT_CONFIG_KEYS = {
 export const SECHUB_CONTEXT_STORAGE_KEYS = {
     selectedProject: 'selectedProject',
     webUiUrl: 'sechubWebUiUrl',
+    falsePositiveConfiguration: 'selectedProjectFPConfiguration',
 };
 
 export const SECHUB_COMMANDS = {
@@ -21,6 +24,8 @@ export const SECHUB_COMMANDS = {
     openCWEinBrowser: 'sechub.openCWEinBrowser',
     changeWebUiUrl: 'sechub.changeWebUiUrl',
     // internal commands which can not be used by users directly, but are used in the extension
+    fetchFalsePositives: 'sechub-intern.fetchFalsePositives',
+    markFalsePositives: 'sechub-intern.markFalsePositives',
     openFindingCallStack: 'sechub-intern.openFindingCallStack',
     openFinding: 'sechub-intern.openFinding',
     openWebScanInInfoview: 'sechub-intern.openWebScanInInfoview',

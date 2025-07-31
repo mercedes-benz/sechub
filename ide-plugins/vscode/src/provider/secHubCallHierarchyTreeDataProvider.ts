@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
-import { SECHUB_COMMANDS } from '../utils/sechubConstants';
+import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
 import { HierarchyItem } from './items/hierarchyItems';
 
 export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvider<HierarchyItem> {
+
+  public static readonly viewType = SECHUB_VIEW_IDS.callHierarchyView;
 
   public update(finding: SecHubFinding | undefined) {
     this.finding = finding;
@@ -74,7 +76,7 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
       item.command = {
         command: SECHUB_COMMANDS.openFinding,
         title: "Select Node",
-        arguments: [item]
+        arguments: [this.finding, codeCallStack]
       };
       if (items.length === 0) {
         items.push(item);

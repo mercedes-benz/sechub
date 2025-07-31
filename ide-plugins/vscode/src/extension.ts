@@ -8,33 +8,35 @@ import { FindingNodeLinkBuilder } from './utils/findingNodeLinkBuilder';
 import { SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
 import { HierarchyItem } from './provider/items/hierarchyItems';
 import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvider';
-import { SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
 import { ReportItem } from './provider/items/reportItems';
 
 import { loadFromFile } from './utils/sechubUtils';
-import { SecHubReport, ScanType, ProjectData } from 'sechub-openapi-ts-client';
+import { SecHubReport, ScanType, ProjectData, SecHubFinding, SecHubCodeCallStack } from 'sechub-openapi-ts-client';
 import { multiStepInput } from './utils/sechubCredentialsMultistepInput';
 import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS, SECHUB_VIEW_IDS } from './utils/sechubConstants';
 import { DefaultClient } from './api/defaultClient';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
-import { commands, hierachyCommands, reportItemCommands } from './commands/commands';
+import { SecHubReportWebViewProvider } from './provider/secHubReportWebViewProvider';
+import { commands, sechubFindingCommands, reportItemCommands,testCommands, markFalsePositiveCommands } from './commands/commands';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
 	
+	const secHubContext: SecHubContext = new SecHubContext(context);
+
 	let loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
 	let report: SecHubReport | undefined = undefined;
 	if (loadTestData) {
 		report = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
 	}
+	secHubContext.setReport(report);
 
 	await setUpApiClient(context);
 	await preSelectedProjectValid(context);
 
-	let secHubContext: SecHubContext = new SecHubContext(report, context);
 
 	buildServerWebview(secHubContext);
-	buildReportView(secHubContext);
+	buildReportWebview(secHubContext);
 	buildCallHierarchyView(secHubContext);
 	buildInfoView(secHubContext);
 
@@ -49,18 +51,31 @@ function registerCommands(sechubContext: SecHubContext) {
 		vscode.commands.registerCommand(command, () => action(sechubContext))
 	);
 
-	const registeredHierachyCommands = hierachyCommands.map(({ command, action }) =>
-		vscode.commands.registerCommand(command, (hierarchyItem: HierarchyItem) => action(sechubContext, hierarchyItem))
+	const registeredHierachyCommands = sechubFindingCommands.map(({ command, action }) =>
+		vscode.commands.registerCommand(command, (finding: SecHubFinding) => action(sechubContext, finding))
 	);
 
 	const registerReportItemCommands = reportItemCommands.map(({ command, action }) =>
 		vscode.commands.registerCommand(command, (reportItem: ReportItem) => action(sechubContext, reportItem))
 	);
 
+	const registerTestCommands = testCommands.map(({ command, action }) =>
+		vscode.commands.registerCommand(command, (finding: SecHubFinding, callstack: SecHubCodeCallStack) => action(sechubContext, finding, callstack))
+	);
+
+	const registerMarkFalsePositiveCommands = markFalsePositiveCommands.map(({ command, action }) =>
+		vscode.commands.registerCommand(command, async (jobUUID: string, findingIds: number[]) => {
+			await action(sechubContext, findingIds);
+		})
+	);
+
+
 	sechubContext.extensionContext.subscriptions.push(
 		...registeredCommands,
 		...registeredHierachyCommands,
-		...registerReportItemCommands);
+		...registerReportItemCommands,
+	...registerTestCommands,
+...registerMarkFalsePositiveCommands);
 }
 
 async function setUpApiClient(context: vscode.ExtensionContext) {
@@ -103,15 +118,8 @@ async function preSelectedProjectValid(context: vscode.ExtensionContext): Promis
 	}
 }
 
-function buildReportView(context: SecHubContext) {
-	const view =vscode.window.createTreeView(SECHUB_VIEW_IDS.reportView, {
-		treeDataProvider: context.reportTreeProvider
-	});
-	context.reportView=view;
-}
-
 function buildCallHierarchyView(context: SecHubContext) {
-	const view = vscode.window.createTreeView(SECHUB_VIEW_IDS.callHierarchyView, {
+	const view = vscode.window.createTreeView(SecHubCallHierarchyTreeDataProvider.viewType, {
 		treeDataProvider: context.callHierarchyTreeDataProvider
 	});
 	context.callHierarchyView=view;
@@ -130,6 +138,13 @@ function buildServerWebview(context: SecHubContext) {
 	context.serverWebViewProvider = provider;
 }
 
+function buildReportWebview(context: SecHubContext) {
+	const provider = new SecHubReportWebViewProvider(context.extensionContext.extensionUri, context);
+	context.extensionContext.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(SecHubReportWebViewProvider.viewType, provider));
+	context.reportWebViewProvider = provider;
+}
+
 export class SecHubContext {
 	callHierarchyView: vscode.TreeView<HierarchyItem|undefined> | undefined = undefined;
 	reportView: vscode.TreeView<ReportItem> | undefined = undefined;
@@ -138,21 +153,21 @@ export class SecHubContext {
 
 	findingNodeLinkBuilder: FindingNodeLinkBuilder;
 	callHierarchyTreeDataProvider: SecHubCallHierarchyTreeDataProvider;
-	reportTreeProvider: SecHubReportTreeDataProvider;
 	infoTreeProvider: SecHubInfoTreeDataProvider;
 	extensionContext: vscode.ExtensionContext;
 	fileLocationExplorer: FileLocationExplorer;
 	serverWebViewProvider: SecHubServerWebviewProvider;
+	reportWebViewProvider: SecHubReportWebViewProvider;
 
-	constructor(report: SecHubReport| undefined, extensionContext: vscode.ExtensionContext,
+	constructor(extensionContext: vscode.ExtensionContext,
 	) {
-		this.reportTreeProvider = new SecHubReportTreeDataProvider(report);
 		this.callHierarchyTreeDataProvider = new SecHubCallHierarchyTreeDataProvider(undefined);
 		this.infoTreeProvider = new SecHubInfoTreeDataProvider(undefined, undefined);
 		this.extensionContext = extensionContext;
 		this.fileLocationExplorer = new FileLocationExplorer();
 		this.findingNodeLinkBuilder = new FindingNodeLinkBuilder();
 		this.serverWebViewProvider = new SecHubServerWebviewProvider(extensionContext.extensionUri, this);
+		this.reportWebViewProvider = new SecHubReportWebViewProvider(extensionContext.extensionUri, this);
 
 		/* setup search folders for explorer */
 		let workspaceFolders = vscode.workspace.workspaceFolders; // get the open folder path
@@ -161,14 +176,18 @@ export class SecHubContext {
 		});
 	}
 
+	public getReport(): SecHubReport | undefined {
+		return this.report;
+	}
+
 	public setReport(report: SecHubReport | undefined) {
 		try{
 			this.checkReport(report);
 			this.report = report;
-			this.reportTreeProvider.update(report);
+			this.reportWebViewProvider.refresh();
 		}catch (error) {
 			this.report = undefined;
-			this.reportTreeProvider.update({});
+			this.reportWebViewProvider.refresh();
 		}
 
 		this.callHierarchyTreeDataProvider.update(undefined);

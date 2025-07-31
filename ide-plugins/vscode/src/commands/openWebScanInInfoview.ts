@@ -1,15 +1,8 @@
-import { ReportItem, ReportFindingItem } from '../provider/items/reportItems';
 import { SecHubContext } from "../extension";
 import { SecHubFinding } from "sechub-openapi-ts-client";
 
-export function openWebScanInInfoview(context: SecHubContext, reportItem: ReportItem): void {
+export function openWebScanInInfoview(context: SecHubContext, finding: SecHubFinding): void {
 
-    if (!(reportItem instanceof ReportFindingItem)) {
-        console.debug("Invalid report item provided to openWebScan.");
-        return;
-    }
-
-    const finding = reportItem.sechubFinding;
     if (!finding || !finding.web) {
         console.debug("No web scan information available in the finding.");
         return;

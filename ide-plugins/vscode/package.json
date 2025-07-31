@@ -87,6 +87,7 @@
 					"name": "Server"
 				},
 				{
+					"type": "webview",
 					"id": "sechub.reportView",
 					"name": "Report",
 					"icon": "media/sechub-logo-vscode-styled.svg",

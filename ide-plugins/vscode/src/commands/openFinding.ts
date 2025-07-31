@@ -1,24 +1,28 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from '../extension';
-import { HierarchyItem } from '../provider/items/hierarchyItems';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
-export async function openFinding(sechubContext: SecHubContext, hierarchyItem: HierarchyItem ): Promise<void> {
+export async function openFindingWebView(sechubContext: SecHubContext, finding: SecHubFinding, currentCallStack: SecHubCodeCallStack): Promise<void> {
     /* this command is used to open a finding in the editor and show its details in the info view */
+    // todo: callstack should be callstack of hierachy, not finding
 
-    if (!(hierarchyItem instanceof HierarchyItem)) {
-        console.error("Invalid hierarchy item provided to openFinding.");
+    if (!finding) {
+        console.error("No finding provided to open.");
+        return;
+    }
+    
+    if (!currentCallStack) {
+        console.error("No code call stack available for the finding.");
         return;
     }
 
-    const codeCallStack = hierarchyItem.codeCallstack;
-    openInEditor(sechubContext, codeCallStack);
-    showInInfoView(sechubContext, hierarchyItem.finding, codeCallStack);
+    openInEditor(sechubContext, currentCallStack);
+    showInInfoView(sechubContext, finding, currentCallStack);
 }
 
-function showInInfoView(context: SecHubContext, findingNode: SecHubFinding | undefined, callStackItem: SecHubCodeCallStack) {
-    context.infoTreeProvider.update(findingNode, callStackItem);
+function showInInfoView(context: SecHubContext, finding: SecHubFinding | undefined, callStackItem: SecHubCodeCallStack) {
+    context.infoTreeProvider.update(finding, callStackItem);
 }
 
 function openInEditor(context: SecHubContext, codeCallStack: SecHubCodeCallStack) {

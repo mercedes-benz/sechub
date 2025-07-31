@@ -59,6 +59,7 @@
     width: 15px;
     height: 15px;
     border-radius: 50%;
+    margin: 8px;
     display: inline-block;
 }
 
@@ -215,4 +216,47 @@
 #connectionState {
     padding: 0;
     margin: 0;
+}
+
+/* reportTable */
+.expandable-content {
+    display: none;
+    padding-left: 20px; 
+}
+
+.expandable-header {
+  display: flex; 
+  align-items: center; 
+  cursor: pointer; 
+}
+
+.expandable-header i {
+  vertical-align: middle;
+  margin-right: 5px;
+  transition: transform 0.2s ease-in-out; 
+}
+
+.expandable-header.expanded i {
+  transform: rotate(90deg);
+}
+
+.vscode-sidebar-colors {
+    color: var(--vscode-sideBar-foreground);
+    background-color: var(--vscode-sideBar-background);
+}
+
+.item-checkbox:disabled {
+    cursor: not-allowed;
+    background-color: var(--vscode-checkbox-disabled-background);
+    color: var(--vscode-checkbox-disabled-foreground);
+}
+
+.item-checkbox {
+    background-color: var(--vscode-checkbox-background);
+}
+
+.item-checkbox:checked {
+    background-color: var(--vscode-checkbox-selectBackground);
+    color: var(--vscode-checkbox-foreground);
+    border-color: var(--vscode-checkbox-selectBorder);
 }
