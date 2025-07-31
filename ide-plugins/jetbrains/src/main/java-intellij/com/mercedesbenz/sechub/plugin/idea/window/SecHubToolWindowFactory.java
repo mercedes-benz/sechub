@@ -18,8 +18,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.mercedesbenz.sechub.plugin.idea.action.SechubOpenReportFromFileSystemAction;
-import com.mercedesbenz.sechub.plugin.idea.action.SechubResetReportAction;
 
 public class SecHubToolWindowFactory implements ToolWindowFactory, DumbAware {
 
@@ -38,19 +36,11 @@ public class SecHubToolWindowFactory implements ToolWindowFactory, DumbAware {
         DefaultActionGroup toolbarActions = new DefaultActionGroup();
         ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar("SecHub", toolbarActions, false);
 
-        AnAction resetReportData = new SechubResetReportAction();
-        SechubOpenReportFromFileSystemAction importAction = new SechubOpenReportFromFileSystemAction();
-
         // toolbarActions.add(importAction);
         // toolbarActions.add(resetReportData);
 
         addToolWindowTab(toolWindow, reportPanel, toolbar, "Report");
         addToolWindowTab(toolWindow, serverPanel, toolbar, "Server");
-
-        List<AnAction> titleActions = new ArrayList<>();
-        titleActions.add(importAction);
-        titleActions.add(resetReportData);
-        toolWindow.setTitleActions(titleActions);
     }
 
     private static void addToolWindowTab(@NotNull ToolWindow toolWindow, SecHubPanel panel, ActionToolbar toolbar, String name) {

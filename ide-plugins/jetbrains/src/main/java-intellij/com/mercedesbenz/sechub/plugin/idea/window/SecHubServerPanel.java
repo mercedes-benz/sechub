@@ -11,7 +11,9 @@ import java.net.URL;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -31,9 +33,7 @@ import com.intellij.ui.OnePixelSplitter;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
-import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUser;
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.plugin.idea.SecHubReportRequestListener;
 import com.mercedesbenz.sechub.plugin.idea.SecHubSettingsDialogListener;
 import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccess;
@@ -45,6 +45,7 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
 import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccessFactory;
 import com.mercedesbenz.sechub.settings.SechubSettings;
+import org.jetbrains.annotations.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -303,7 +304,7 @@ public class SecHubServerPanel implements SecHubPanel {
         observableProjects.addPropertyChangeListener(event -> {
             List<ProjectData> projects = (List<ProjectData>) event.getNewValue();
             application.invokeLater(() -> {
-                createProjectsDropdown(projects, comboBox, comboBoxLabel, noProjectsLabel, panel);
+                createProjectsDropdown(projects, comboBox, comboBoxLabel, noProjectsLabel);
             });
         });
 
@@ -313,11 +314,9 @@ public class SecHubServerPanel implements SecHubPanel {
             if (isServerAlive) {
                 /* reload projects from server if server is alive */
                 loadProjects();
-                loadJobs();
             } else {
                 /* if server is not alive, clear data */
                 observableProjects.setValue(List.of());
-                observableJobPage.setValue(null);
             }
         });
 
@@ -340,11 +339,8 @@ public class SecHubServerPanel implements SecHubPanel {
     private void createProjectsDropdown(List<ProjectData> projects,
                                         ComboBox<String> comboBox,
                                         JBLabel comboBoxLabel,
-                                        JLabel noProjectsLabel,
-                                        JPanel panel) {
+                                        JLabel noProjectsLabel) {
         /* @formatter:on */
-
-        String currentProjectId = observableCurrentProjectId.getValue();
 
         /* clear combo box */
         comboBox.removeAllItems();
@@ -352,21 +348,18 @@ public class SecHubServerPanel implements SecHubPanel {
         /* add fresh project IDs from SecHub server to the combo box */
         projects.forEach(projectData -> comboBox.addItem(projectData.getProjectId()));
 
-        /* check if the current project ID from cache is still existing */
-        boolean isDeprecatedCurrentProjectId = projects.stream().noneMatch(projectData -> projectData.getProjectId().equals(currentProjectId));
+        String currentProjectId = observableCurrentProjectId.getValue();
 
-        if (isDeprecatedCurrentProjectId) {
-            LOG.debug("Deprecated current project id found: {}", currentProjectId);
-            observableCurrentProjectId.setValue(null);
+        /* check if the current project ID from cache is still existing in list returned by server */
+        if (currentProjectId == null || secHubAccess().isProjectIdDeprecated(currentProjectId)) {
+            currentProjectId = (String) comboBox.getSelectedItem();
         }
 
-        if (currentProjectId == null) {
-            /* no current project id exists, set the first project of the list as current */
-            observableCurrentProjectId.setValue((String) comboBox.getSelectedItem());
-        } else {
-            /* use the project id from the cache */
-            comboBox.setSelectedItem(currentProjectId);
-        }
+        /* use the project id from the cache */
+        comboBox.setSelectedItem(currentProjectId);
+
+        /* update the observable current project ID */
+        observableCurrentProjectId.setValue(currentProjectId);
 
         boolean projectsFound = !projects.isEmpty();
         LOG.debug("SecHub projects found:{}", projectsFound);
@@ -394,7 +387,7 @@ public class SecHubServerPanel implements SecHubPanel {
         TableColumn trafficLightColumn = table.getColumnModel().getColumn(1);
         trafficLightColumn.setWidth(30);
         trafficLightColumn.setMaxWidth(30);
-        trafficLightColumn.setCellRenderer(new SecHubServerPanel.TrafficLightRenderer());
+        trafficLightColumn.setCellRenderer(new TrafficLightRenderer());
 
         TableColumn jobUUIDColumn = table.getColumnModel().getColumn(2);
         jobUUIDColumn.setPreferredWidth(120);
@@ -419,7 +412,8 @@ public class SecHubServerPanel implements SecHubPanel {
                         String currentProjectId = observableCurrentProjectId.getValue();
                         /* Job UUID is in the third column (index 2) */
                         UUID jobUUID = (UUID) table.getValueAt(row, jobUUIDColumn.getModelIndex());
-                        if (currentProjectId != null && jobUUID != null) {
+                        ExecutionState state = (ExecutionState) table.getValueAt(row, stateColumn.getModelIndex());
+                        if (currentProjectId != null && jobUUID != null && state == ExecutionState.ENDED) {
                             secHubReportRequestListener.onReportRequested(currentProjectId, jobUUID);
                         }
                     }
@@ -534,7 +528,9 @@ public class SecHubServerPanel implements SecHubPanel {
 
     private void loadJobs() {
         String projectId = observableCurrentProjectId.getValue();
-        if (projectId != null) {
+        observableJobPage.reset();
+
+        if (projectId != null && !secHubAccess().isProjectIdDeprecated(projectId)) {
             int pageIndex = observableJobPage.getPage();
             application.executeOnPooledThread(() -> {
                 SecHubJobInfoForUserListPage page = secHubAccess().getSecHubJobPage(projectId, JOB_PAGE_SIZE, pageIndex);
@@ -826,19 +822,25 @@ public class SecHubServerPanel implements SecHubPanel {
         }
     }
 
-    private static class TrafficLightRenderer extends DefaultTableCellRenderer {
+    static class TrafficLightRenderer extends DefaultTableCellRenderer {
+
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             JLabel label = (JLabel) super.getTableCellRendererComponent(table, "", isSelected, hasFocus, row, column);
             label.setHorizontalAlignment(SwingConstants.CENTER);
-            label.setIcon(new SecHubServerPanel.TrafficLightRenderer.TrafficLightIcon(value));
+            label.setIcon(new TrafficLightIcon(value));
             return label;
         }
 
         static class TrafficLightIcon implements Icon {
             private final Object status;
-            public TrafficLightIcon(Object status) { this.status = status; }
-            @Override public void paintIcon(Component c, Graphics g, int x, int y) {
+
+            public TrafficLightIcon(Object status) {
+                this.status = status;
+            }
+
+            @Override
+            public void paintIcon(Component c, Graphics g, int x, int y) {
                 JBColor color;
                 String statusString = String.valueOf(status);
 
@@ -854,8 +856,16 @@ public class SecHubServerPanel implements SecHubPanel {
                 g.setColor(JBColor.DARK_GRAY);
                 g.drawOval(x + 4, y + 4, 12, 12);
             }
-            @Override public int getIconWidth() { return 20; }
-            @Override public int getIconHeight() { return 20; }
+
+            @Override
+            public int getIconWidth() {
+                return 20;
+            }
+
+            @Override
+            public int getIconHeight() {
+                return 20;
+            }
         }
     }
 }

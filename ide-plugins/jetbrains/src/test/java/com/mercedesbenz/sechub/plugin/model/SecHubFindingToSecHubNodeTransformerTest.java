@@ -15,12 +15,7 @@ import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 
 public class SecHubFindingToSecHubNodeTransformerTest {
 
-    private SecHubFindingToFindingModelTransformer transformerToTest;
-
-    @Before
-    public void before() {
-        transformerToTest = new SecHubFindingToFindingModelTransformer();
-    }
+    private static final SecHubFindingToFindingModelTransformer transformerToTest = SecHubFindingToFindingModelTransformer.getInstance();
 
     @Test
     public void adding_one_finding_with_two_stacktraces_results_in_node_containing_one_child_having_another_one_with_expected_data() {

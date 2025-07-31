@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import javax.swing.Action;
 
+import com.intellij.ui.components.JBTabbedPane;
+import com.intellij.ui.table.JBTable;
 import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.plugin.model.FindingModel;
 import com.mercedesbenz.sechub.plugin.model.FindingNode;
@@ -43,11 +45,11 @@ public class SecHubToolWindowUISupportTestMain {
             JTree callHierarchyTree = new JTree();
             FindingModel model = createTestModel();
 
-            JTable reportTable = new JTable();
-            JTable callStepDetailTable = new JTable();
+            JTable reportTable = new JBTable();
+            JTable callStepDetailTable = new JBTable();
             JSplitPane callHierarchySplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(callHierarchyTree),
                     new JScrollPane(callStepDetailTable));
-            JTabbedPane tabbedPane = new JTabbedPane();
+            JTabbedPane tabbedPane = new JBTabbedPane();
             JPanel webRequestPanel = new JPanel();
             JPanel webResponsePanel = new JPanel();
             JPanel attackPanel = new JPanel();
@@ -74,7 +76,7 @@ public class SecHubToolWindowUISupportTestMain {
             context.cweIdLabel = new JLabel("cwe");
             context.findingTypeDetailsTabbedPane = tabbedPane;
             context.callHierarchyTabComponent = callHierarchySplitPane;
-            context.descriptionAndSolutionTabbedPane = new JTabbedPane();
+            context.descriptionAndSolutionTabbedPane = new JBTabbedPane();
 
             JTextArea webRequestTextArea = new JTextArea();
             JTextArea webResponseTextArea = new JTextArea();

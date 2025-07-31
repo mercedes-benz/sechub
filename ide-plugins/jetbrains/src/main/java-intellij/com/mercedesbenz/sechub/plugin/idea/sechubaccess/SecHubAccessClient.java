@@ -7,9 +7,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
-import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +45,12 @@ class SecHubAccessClient implements SecHubAccess {
     }
 
     @Override
+    public boolean isProjectIdDeprecated(String projectId) {
+        requireNonNull(projectId, "Parameter 'projectId' must not be null");
+        return getSecHubProjects().stream().noneMatch(p -> p.getProjectId().equals(projectId));
+    }
+
+    @Override
     public SecHubJobInfoForUserListPage getSecHubJobPage(String projectId, int size, int page) {
         requireNonNull(projectId, "Parameter 'projectId' must not be null");
         if (size <= 0) {
@@ -72,6 +76,27 @@ class SecHubAccessClient implements SecHubAccess {
         } catch (ApiException e) {
             LOG.error("Failed to retrieve SecHub report for project: {}, job UUID: {}", projectId, jobUUID, e);
             throw new RuntimeException("Failed to retrieve SecHub report for project: " + projectId + ", job UUID: " + jobUUID, e);
+        }
+    }
+
+    @Override
+    public FalsePositiveProjectConfiguration getFalsePositveProjectConfiguration(String projectId) {
+        requireNonNull(projectId, "Parameter 'projectId' must not be null");
+        try {
+            return client.withSecHubExecutionApi().userFetchFalsePositiveConfigurationOfProject(projectId);
+        } catch (ApiException e) {
+            LOG.error("Failed to retrieve false positives for project: {}", projectId, e);
+            throw new RuntimeException("Failed to retrieve false positives for project: " + projectId, e);
+        }
+    }
+
+    @Override
+    public void markFalsePositive(String projectId, FalsePositives falsePositives) {
+        try {
+            client.withSecHubExecutionApi().userMarkFalsePositives(projectId, falsePositives);
+        } catch (ApiException e) {
+            LOG.error("Failed to mark false positives for project: {}", projectId, e);
+            throw new RuntimeException("Failed to mark false positives for project: " + projectId, e);
         }
     }
 

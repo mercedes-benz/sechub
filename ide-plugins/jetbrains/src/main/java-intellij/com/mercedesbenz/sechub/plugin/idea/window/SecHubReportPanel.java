@@ -4,6 +4,8 @@ package com.mercedesbenz.sechub.plugin.idea.window;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import javax.swing.*;
@@ -11,16 +13,21 @@ import javax.swing.text.Caret;
 import javax.swing.text.DefaultCaret;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.*;
+import com.mercedesbenz.sechub.plugin.idea.SecHubReportImporter;
+import com.mercedesbenz.sechub.plugin.idea.compatiblity.VirtualFileCompatibilityLayer;
 import org.jetbrains.annotations.NotNull;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.Splitter;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.ui.ColoredTreeCellRenderer;
-import com.intellij.ui.JBSplitter;
-import com.intellij.ui.OnePixelSplitter;
-import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.components.*;
 import com.intellij.ui.components.panels.HorizontalLayout;
 import com.intellij.ui.components.panels.VerticalLayout;
@@ -37,6 +44,7 @@ import com.mercedesbenz.sechub.plugin.ui.SecHubToolWindowUIContext;
 import com.mercedesbenz.sechub.plugin.ui.SecHubToolWindowUISupport;
 import com.mercedesbenz.sechub.plugin.ui.SecHubTreeNode;
 import com.mercedesbenz.sechub.plugin.util.SimpleStringUtil;
+import org.jetbrains.annotations.Nullable;
 
 public class SecHubReportPanel implements SecHubPanel {
     private static final Logger LOG = Logger.getInstance(SecHubReportPanel.class);
@@ -82,7 +90,7 @@ public class SecHubReportPanel implements SecHubPanel {
         customizeCallHierarchyTree();
         customizeCallStepDetailsTable();
 
-        reset();
+        resetReport();
     }
 
     private void createComponents() {
@@ -102,7 +110,6 @@ public class SecHubReportPanel implements SecHubPanel {
         contentPanel = new JBPanel();
         contentPanel.setLayout(new BorderLayout());
         contentPanel.add(reportAndDetailsSplitterPanel, BorderLayout.CENTER);
-
     }
 
     private JPanel createReportTablePanel() {
@@ -121,15 +128,28 @@ public class SecHubReportPanel implements SecHubPanel {
         scanResultForJobText.setBorder(null); // avoid jumping field in UI - looks now like a label, but people can select and
                                               // copy the job uuid if wanted...
 
-        JPanel secHubReportHeaderPanel = new JBPanel();
-        secHubReportHeaderPanel.setLayout(new HorizontalLayout(SECHUB_REPORT_DEFAULT_GAP));
-        secHubReportHeaderPanel.add(trafficLightIconLabel);
-        secHubReportHeaderPanel.add(amountOfFindingsLabel);
-        secHubReportHeaderPanel.add(scanResultForJobText);
+        JPanel secHubHeaderPanel = new JBPanel();
+        secHubHeaderPanel.setLayout(new BoxLayout(secHubHeaderPanel, BoxLayout.Y_AXIS));
+
+        secHubHeaderPanel.add(createActionBarPanel());
+
+        JPanel secHubReportResultPanel = new JBPanel();
+        secHubReportResultPanel.setLayout(new HorizontalLayout(SECHUB_REPORT_DEFAULT_GAP));
+
+        JPanel secHubTrafficLightPanel = new JBPanel();
+        secHubTrafficLightPanel.setLayout(new HorizontalLayout(SECHUB_REPORT_DEFAULT_GAP));
+        secHubTrafficLightPanel.add(trafficLightIconLabel);
+        secHubTrafficLightPanel.setBorder(BorderFactory.createEmptyBorder(SECHUB_REPORT_DEFAULT_GAP, 10, 0, 0));
+
+        secHubReportResultPanel.add(secHubTrafficLightPanel);
+        secHubReportResultPanel.add(amountOfFindingsLabel);
+        secHubReportResultPanel.add(scanResultForJobText);
+
+        secHubHeaderPanel.add(secHubReportResultPanel);
 
         JPanel secHubReportContentPanel = new JBPanel();
         secHubReportContentPanel.setLayout(new BorderLayout());
-        secHubReportTablePanel.add(secHubReportHeaderPanel, BorderLayout.NORTH);
+        secHubReportTablePanel.add(secHubHeaderPanel, BorderLayout.NORTH);
         secHubReportTablePanel.add(secHubReportContentPanel, BorderLayout.CENTER);
         secHubReportContentPanel.add(reportTableScrollPane, BorderLayout.CENTER);
 
@@ -141,6 +161,51 @@ public class SecHubReportPanel implements SecHubPanel {
         this.reportTable = reportTable;
 
         return secHubReportTablePanel;
+    }
+
+    @NotNull
+    private JPanel createActionBarPanel() {
+        DefaultActionGroup actionGroup = new DefaultActionGroup();
+
+        AnAction uploadReport = new AnAction("Upload Report", "Upload report from disk", AllIcons.Actions.MenuOpen) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                uploadReportFromDisk(e.getProject());
+            }
+        };
+        actionGroup.add(uploadReport);
+
+        Icon myCustomIcon = new TrafficLightIcon(TrafficLight.OFF);
+        AnAction clearAction = new AnAction("Clear Report", "Clear current report data", AllIcons.Actions.Rollback) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                resetReport();
+            }
+        };
+        actionGroup.add(clearAction);
+
+        Icon checkmarkIcon = new CheckmarkIcon();
+        AnAction syncFalsePositives = new AnAction("Mark False Positives", "Mark false positives", checkmarkIcon) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                uiSupport.syncFalsePositives();
+            }
+        };
+        actionGroup.add(syncFalsePositives);
+
+        ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(ActionPlaces.TOOLBAR, actionGroup, true);
+        toolbar.setTargetComponent(null);
+        toolbar.setMinimumButtonSize(new Dimension(25, 25));
+
+        JPanel actionBar = new JBPanel(new BorderLayout());
+        actionBar.add(toolbar.getComponent(), BorderLayout.WEST);
+        actionBar.setOpaque(false);
+        actionBar.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
+        actionBar.setMinimumSize(new Dimension(0, 30));
+        actionBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        actionBar.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
+
+        return actionBar;
     }
 
     private JPanel createFindingPanel() {
@@ -285,6 +350,10 @@ public class SecHubReportPanel implements SecHubPanel {
         });
     }
 
+    private void getJobUUD() {
+
+    }
+
     private void createAndInstallSupport() {
 
         showInEditorSupport = new IntellijShowInEditorSupport();
@@ -409,11 +478,12 @@ public class SecHubReportPanel implements SecHubPanel {
         uiSupport.showFindingNode(null, false);
 
         UUID jobUUID = model.getJobUUID();
-
         TrafficLight trafficLight = model.getTrafficLight();
+
         if (trafficLight == null) {
             trafficLight = TrafficLight.OFF;
         }
+
         if (jobUUID == null) {
             amountOfFindingsLabel.setText("No SecHub report loaded");
             scanResultForJobText.setText("");
@@ -422,18 +492,98 @@ public class SecHubReportPanel implements SecHubPanel {
             scanResultForJobText.setText(jobUUID.toString());
         }
 
-        trafficLightIconLabel.setIcon(uiSupport.getRenderDataProvider().getIconForTrafficLight(trafficLight));
-        trafficLightIconLabel.setToolTipText("Traffic light is:" + trafficLight.toString());
+        Icon iconForTrafficLight = new TrafficLightIcon(trafficLight);
+        trafficLightIconLabel.setIcon(iconForTrafficLight);
+        trafficLightIconLabel.setToolTipText("Traffic light is:" + trafficLight);
+        trafficLightIconLabel.setBorder(BorderFactory.createEmptyBorder(0, -2, SECHUB_REPORT_DEFAULT_GAP, 0));
 
         uiSupport.setFindingModel(model);
     }
 
-    public void reset() {
+    private void uploadReportFromDisk(Project currentProject) {
+        FileChooserDescriptor fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json");
+        fileChooserDescriptor.setDescription("Open SecHub report");
+        @Nullable
+        VirtualFile file = FileChooser.chooseFile(fileChooserDescriptor, currentProject, null);
+
+        if (file == null) {
+            return;
+        }
+        @NotNull
+        Path p = VirtualFileCompatibilityLayer.toNioPath(file);
+        try {
+            SecHubReportImporter.getInstance().importAndDisplayReport(p.toFile());
+        } catch (IOException ex) {
+            LOG.error("Failed to import " + p, ex);
+        }
+    }
+
+    public void resetReport() {
         update(new FindingModel());
 
         uiSupport.resetTablePresentation();
         uiSupport.resetCallHierarchyStepTable();
         uiSupport.resetFindingNodeTabPane();
         uiSupport.resetDescriptionAndSolutionTabPane(false);
+    }
+
+    private static class TrafficLightIcon implements Icon {
+        private final JBColor color;
+
+        public TrafficLightIcon(TrafficLight trafficLight) {
+            switch (trafficLight) {
+                case RED -> color = JBColor.RED;
+                case YELLOW -> color = JBColor.YELLOW;
+                case GREEN -> color = JBColor.GREEN;
+                default -> color = JBColor.GRAY;
+            }
+        }
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            g.setColor(color);
+            g.fillOval(x + 2, y + 2, 12, 12);
+            g.setColor(JBColor.DARK_GRAY);
+            g.drawOval(x + 2, y + 2, 12, 12);
+        }
+
+        @Override
+        public int getIconWidth() {
+            return 16;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return 16;
+        }
+    }
+
+    private static class CheckmarkIcon implements Icon {
+
+        private static final int SIZE = 16;
+
+        @Override
+        public void paintIcon(Component c, Graphics g, int x, int y) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2.setColor(JBColor.BLUE);
+            g2.setFont(new Font("Dialog", Font.BOLD, SIZE));
+            FontMetrics fm = g2.getFontMetrics();
+            String checkmarkIcon = "✔";
+            int textX = x + (getIconWidth() - fm.stringWidth(checkmarkIcon)) / 2;
+            int textY = y + ((getIconHeight() - fm.getHeight()) / 2) + fm.getAscent();
+            g2.drawString(checkmarkIcon, textX, textY);
+            g2.dispose();
+        }
+
+        @Override
+        public int getIconWidth() {
+            return SIZE;
+        }
+
+        @Override
+        public int getIconHeight() {
+            return SIZE;
+        }
     }
 }

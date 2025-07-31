@@ -24,6 +24,7 @@ public class FindingNode implements Comparable<FindingNode> {
 
     private Integer cweId;
     private String name;
+    private boolean isMarkedAsFalsePositive;
 
     private String description;
     String location;
@@ -46,6 +47,7 @@ public class FindingNode implements Comparable<FindingNode> {
 
     public static class FindingNodeBuilder {
         private String name;
+        private boolean isMarkedAsFalsePositive;
         private String description;
         private String location;
         private Integer line;
@@ -72,6 +74,11 @@ public class FindingNode implements Comparable<FindingNode> {
 
         public FindingNodeBuilder setName(String name) {
             this.name = name;
+            return this;
+        }
+
+        public FindingNodeBuilder setIsMarkedAsFalsePositive(Boolean isMarkedAsFalsePositive) {
+            this.isMarkedAsFalsePositive = isMarkedAsFalsePositive == null ? false : isMarkedAsFalsePositive;
             return this;
         }
 
@@ -140,6 +147,7 @@ public class FindingNode implements Comparable<FindingNode> {
             node.description = description;
             node.location = location;
             node.name = name;
+            node.isMarkedAsFalsePositive = isMarkedAsFalsePositive;
             node.line = line;
             node.column = column;
             node.relevantPart = relevantPart;
@@ -285,6 +293,10 @@ public class FindingNode implements Comparable<FindingNode> {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isMarkedAsFalsePositive() {
+        return isMarkedAsFalsePositive;
     }
 
     public ScanType getScanType() {
