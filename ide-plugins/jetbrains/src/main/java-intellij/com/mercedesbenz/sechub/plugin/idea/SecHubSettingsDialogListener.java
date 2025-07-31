@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea;
 
 import com.intellij.openapi.options.ShowSettingsUtil;
