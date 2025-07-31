@@ -1,21 +1,33 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.server;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import com.mercedesbenz.sechub.access.SecHubAccess;
 import com.mercedesbenz.sechub.access.SecHubAccess.ServerAccessStatus;
+import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveEntry;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveProjectConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.server.data.SecHubServerDataModel;
+import com.mercedesbenz.sechub.util.Logging;
 
 public class SecHubServerContext {
 
+	public static final SecHubServerContext INSTANCE = new SecHubServerContext();
+	
 	private SecHubServerDataModel model = new SecHubServerDataModel();
 	private SecHubAccess access;
 	private ServerAccessStatus status;
 	private String selectedProjectId;
 	private SecHubJobInfoForUserListPage currentJobPage;
 	private int wantedPage;
+	private List<FalsePositiveEntry> falsePositivesForSelectedProject= new ArrayList<FalsePositiveEntry>();
 
-	public SecHubServerContext() {
+	private SecHubServerContext() {
 		reset();
 	}
 
@@ -46,7 +58,31 @@ public class SecHubServerContext {
 	}
 
 	public void setSelectedProjectId(String selectedProjectId) {
+		if (Objects.equals(this.selectedProjectId, selectedProjectId)) {
+			return;
+		}
 		this.selectedProjectId = selectedProjectId;
+		reloadFalsePositiveDataForCurrentProject();
+	}
+	
+	public void reloadFalsePositiveDataForCurrentProject() {
+		setFalsePositivesForSelectedProject(null);
+
+		SecHubAccess access = getAccessOrNull();
+		if (access == null) {
+			return;
+		}
+
+		String projectId = getSelectedProjectId();
+		if (projectId == null) {
+			return;
+		}
+		try {
+			FalsePositiveProjectConfiguration projectData = access.fetchFalsePositiveProjectData(projectId);
+			setFalsePositivesForSelectedProject(projectData.getFalsePositives());
+		} catch (ApiException e) {
+			Logging.logError("Was not able to fetch false positives for project:" + projectId, e);
+		}
 	}
 
 	public String getSelectedProjectId() {
@@ -134,6 +170,18 @@ public class SecHubServerContext {
 			}
 		}
 		return page + 1;
+	}
+
+	public void setFalsePositivesForSelectedProject(List<FalsePositiveEntry> falsePositives) {
+		this.falsePositivesForSelectedProject.clear();
+		
+		if (falsePositives!=null) {
+			falsePositivesForSelectedProject.addAll(falsePositives);
+		}
+	}
+	
+	public List<FalsePositiveEntry> getFalsePositivesForSelectedProject() {
+		return Collections.unmodifiableList(falsePositivesForSelectedProject);
 	}
 
 }

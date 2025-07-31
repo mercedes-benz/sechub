@@ -20,9 +20,6 @@ public class SecHubActivator extends AbstractUIPlugin {
 	private static SecHubActivator plugin;
 	private SecHubReportImporter importer;
 
-	public SecHubActivator() {
-	}
-
 	@Override
 	public void start(BundleContext context) throws Exception {
 		importer = new SecHubReportImporter();

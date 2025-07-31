@@ -6,18 +6,23 @@ import static com.mercedesbenz.sechub.util.EclipseUtil.getSharedImageDescriptor;
 import static com.mercedesbenz.sechub.util.EclipseUtil.safeAsyncExec;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.window.ToolTip;
@@ -26,6 +31,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -40,15 +46,18 @@ import org.eclipse.ui.part.ViewPart;
 import com.mercedesbenz.sechub.SecHubActivator;
 import com.mercedesbenz.sechub.api.internal.gen.model.ScanType;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.callhierarchy.SecHubCallHierarchyView;
 import com.mercedesbenz.sechub.component.DragAndDropCallback;
 import com.mercedesbenz.sechub.component.DragAndDropData;
 import com.mercedesbenz.sechub.component.DragAndDropSupport;
 import com.mercedesbenz.sechub.model.FindingModel;
 import com.mercedesbenz.sechub.model.FindingNode;
+import com.mercedesbenz.sechub.model.SecHubReportToFindingModelTransformer;
 import com.mercedesbenz.sechub.model.WorkspaceFindingNodeLocator;
 import com.mercedesbenz.sechub.provider.FirstFindingNodesOnlyFindingModelTreeContentProvider;
 import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
+import com.mercedesbenz.sechub.server.SecHubServerContext;
 import com.mercedesbenz.sechub.server.SecHubServerView;
 import com.mercedesbenz.sechub.util.EclipseUtil;
 import com.mercedesbenz.sechub.util.Logging;
@@ -58,6 +67,7 @@ import com.mercedesbenz.sechub.webfinding.SecHubWebFindingView;
 public class SecHubReportView extends ViewPart {
 
 	public static final String ID = "com.mercedesbenz.sechub.views.SecHubReportView";
+	private static final SecHubReportToFindingModelTransformer transformer = new SecHubReportToFindingModelTransformer();
 
 	private Text reportUUID;
 	private Label trafficLight;
@@ -75,12 +85,18 @@ public class SecHubReportView extends ViewPart {
 	private Action removeAllReportData;
 
 	private ImportSecHubReportAction importAction;
-	
+
 	private OpenSecHubServerViewAction openServerViewAction;
 
 	private Composite composite;
 
 	private ReportInfoAction showInformationAction;
+
+	private Action markFalsePositivesAction;
+
+	private Action unmarkFalsePositivesAction;
+	
+	private SecHubReport currentReport;
 
 	@Override
 	public void setFocus() {
@@ -91,7 +107,7 @@ public class SecHubReportView extends ViewPart {
 	public void createPartControl(Composite parent) {
 
 		locator = new WorkspaceFindingNodeLocator(workbench);
-		
+
 		composite = new Composite(parent, SWT.BORDER);
 		composite.setLayout(new GridLayout(3, false));
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -105,10 +121,10 @@ public class SecHubReportView extends ViewPart {
 		additionalInfo = new Label(composite, SWT.NONE);
 		additionalInfo.setText("");
 
-		treeViewer = new TreeViewer(parent, SWT.FULL_SELECTION); // we need FULL_SELECTION for windows SWT, otherwise only first column selectable...
+		treeViewer = new TreeViewer(parent, SWT.FULL_SELECTION | SWT.MULTI);
 		treeViewer.setContentProvider(new FirstFindingNodesOnlyFindingModelTreeContentProvider());
 		ColumnViewerToolTipSupport.enableFor(treeViewer, ToolTip.NO_RECREATE);
-		
+
 		Tree tree = treeViewer.getTree();
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
@@ -117,6 +133,7 @@ public class SecHubReportView extends ViewPart {
 		createColumns();
 		hookDoubleClickAction();
 		contributeToActionBars();
+		createContextMenu();
 
 		GridLayoutFactory.fillDefaults().generateLayout(parent);
 
@@ -133,23 +150,27 @@ public class SecHubReportView extends ViewPart {
 
 			}
 		});
+		
+		recalculateFalsePositiveActionEnabledState();
 	}
 
-	
 	public FindingModel getModel() {
 		return (FindingModel) treeViewer.getInput();
 	}
-	
+
 	protected void removeAllReportData() {
-		update(null);
+		setReport(null);
 	}
 
 	private void makeActions() {
 		removeAllReportData = new RemoveAllReportDataAction();
 		importAction = new ImportSecHubReportAction();
-		openServerViewAction= new OpenSecHubServerViewAction();
-		
+		openServerViewAction = new OpenSecHubServerViewAction();
+
 		showInformationAction = new ReportInfoAction(this);
+		
+		markFalsePositivesAction = new MarkFalsePositivesAction(this);
+		unmarkFalsePositivesAction = new UnmarkFalsePositivesAction(this);
 	}
 
 	private void contributeToActionBars() {
@@ -174,9 +195,16 @@ public class SecHubReportView extends ViewPart {
 		manager.add(importAction);
 		manager.add(new Separator());
 		manager.add(removeAllReportData);
+		manager.add(new Separator());
+		manager.add(markFalsePositivesAction);
+		manager.add(unmarkFalsePositivesAction);
 	}
 
 	private void createColumns() {
+		TreeViewerColumn fp = createTreeViewerColumn("", 50);
+		fp.getColumn().setToolTipText("Additional info. e.g marked as false positive");
+		fp.setLabelProvider(columnProviders.falsePositiveColumnLabelProvider);
+
 		TreeViewerColumn id = createTreeViewerColumn("Id", 50);
 		id.setLabelProvider(columnProviders.idLabelProvider);
 
@@ -186,7 +214,7 @@ public class SecHubReportView extends ViewPart {
 		TreeViewerColumn type = createTreeViewerColumn("", 20);
 		type.setLabelProvider(columnProviders.scanTypeLabelProvider);
 		type.getColumn().setToolTipText("Scan type");
-		
+
 		TreeViewerColumn description = createTreeViewerColumn("Name", 220);
 		description.setLabelProvider(columnProviders.descriptionLabelProvider);
 
@@ -195,7 +223,6 @@ public class SecHubReportView extends ViewPart {
 
 		TreeViewerColumn line = createTreeViewerColumn("Line", 60);
 		line.setLabelProvider(columnProviders.lineLabelProvider);
-		
 
 	}
 
@@ -225,28 +252,28 @@ public class SecHubReportView extends ViewPart {
 	}
 
 	private void showFindingInDetailView(FindingNode node) {
-		
-		if (node==null) {
+
+		if (node == null) {
 			// just erase
 			showFindingInCallHierarchyView(null);
 			showFindingInWebFindingView(null);
 			return;
 		}
-		
+
 		SecHubFinding finding = node.getFinding();
 		ScanType scanType = finding.getType();
-		if (scanType== ScanType.WEB_SCAN) {
-			
+		if (scanType == ScanType.WEB_SCAN) {
+
 			showFindingInCallHierarchyView(null);
 			showFindingInWebFindingView(node);
-		}else {
-			
+		} else {
+
 			showFindingInWebFindingView(null);
 			showFindingInCallHierarchyView(node);
 		}
-		
-		
+
 	}
+
 	private void showFindingInCallHierarchyView(FindingNode node) {
 		safeAsyncExec(() -> {
 			try {
@@ -277,6 +304,7 @@ public class SecHubReportView extends ViewPart {
 		});
 
 	}
+
 	private void showFindingInWebFindingView(FindingNode node) {
 		safeAsyncExec(() -> {
 			try {
@@ -308,20 +336,31 @@ public class SecHubReportView extends ViewPart {
 
 	}
 
-	public void update(FindingModel model) {
+	public void setReport(SecHubReport report) {
+		this.currentReport = report;
+
+		rebuildFindingModelAndUpdateUI(true);
+
+	}
+
+	private void rebuildFindingModelAndUpdateUI(boolean selectFirstElement) {
+		FindingModel model = null;
+		if (currentReport != null) {
+			model = transformer.transform(currentReport, SecHubServerContext.INSTANCE.getSelectedProjectId());
+		}
 		treeViewer.setInput(model);
 
 		if (model != null) {
-			this.reportUUID.setText(""+model.getJobUUID());
+			this.reportUUID.setText("" + model.getJobUUID());
 			this.trafficLight.setImage(TrafficLightImageResolver.resolveImage(model.getTrafficLight()));
-			this.trafficLight.setToolTipText("The traffic light for this report is "+model.getTrafficLight());
-			
-			String info = model.getStatus()+" - "+ model.getFindingCount()+" findings";
+			this.trafficLight.setToolTipText("The traffic light for this report is " + model.getTrafficLight());
+
+			String info = model.getStatus() + " - " + model.getFindingCount() + " findings";
 			String projectId = model.getProjectId();
-			if (projectId!=null) {
-				info = info + " for project '"+projectId+"'";
+			if (projectId != null) {
+				info = info + " for project '" + projectId + "'";
 			}
-			
+
 			this.additionalInfo.setText(info);
 		} else {
 			this.reportUUID.setText("No report available");
@@ -330,15 +369,65 @@ public class SecHubReportView extends ViewPart {
 			this.additionalInfo.setText("");
 		}
 		composite.layout();
-		
-		// select first element - will also refresh call hierarchy view
-		handleDoubleClick(null);
 
+		if (selectFirstElement) {
+			// select first element - will also refresh call hierarchy view
+			handleDoubleClick(null);
+		}
 	}
-	
+
 	public void importReport() {
 		SecHubReportImportDialog dialog = new SecHubReportImportDialog(getSite().getShell());
 		dialog.open();
+	}
+
+	private void createContextMenu() {
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(markFalsePositivesAction);
+		menuManager.add(unmarkFalsePositivesAction);
+
+		Menu menu = menuManager.createContextMenu(treeViewer.getControl());
+		treeViewer.getControl().setMenu(menu);
+		
+		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(SelectionChangedEvent event) {
+				
+				recalculateFalsePositiveActionEnabledState();
+			}
+
+		});
+
+		getSite().registerContextMenu(menuManager, treeViewer);
+	}
+	
+	private void recalculateFalsePositiveActionEnabledState() {
+		boolean markFalsePositiveActive = true;
+		boolean unmarkFalsePositiveActive = true;
+		
+		IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+		if(selection.isEmpty()) {
+			markFalsePositiveActive=false;
+			unmarkFalsePositiveActive=false;
+		}else {
+			for(Object selected: selection) {
+				if(selected instanceof FindingNode) {
+					FindingNode node = (FindingNode) selected;
+					markFalsePositiveActive = markFalsePositiveActive && !node.isFalsePositive();
+					unmarkFalsePositiveActive = unmarkFalsePositiveActive && node.isFalsePositive();
+				}
+			}
+		}
+		markFalsePositivesAction.setEnabled(markFalsePositiveActive);
+		unmarkFalsePositivesAction.setEnabled(unmarkFalsePositiveActive);
+	}
+
+	public void recalculateFalsePositives() {
+		transformer.updateFalsePositiveInfo(getModel());
+		treeViewer.refresh();
+		
+		recalculateFalsePositiveActionEnabledState();
 	}
 
 	private class OpenSecHubServerViewAction extends Action {
@@ -369,13 +458,14 @@ public class SecHubReportView extends ViewPart {
 			}
 		}
 	}
+
 	private class ImportSecHubReportAction extends Action {
 		private ImportSecHubReportAction() {
 			setText("Import SecHub report");
 			setToolTipText("Import SecHub report \n(TIP:You can do this also with drag and drop into findings table!)");
 			setImageDescriptor(EclipseUtil.createDescriptor("icons/import_wiz.png"));
 		}
-		
+
 		public void run() {
 			importReport();
 		}
@@ -391,6 +481,76 @@ public class SecHubReportView extends ViewPart {
 		public void run() {
 			removeAllReportData();
 		}
+	}
+
+	public static void clear() {
+		update(null, false);
+	}
+
+	public static void update(SecHubReport report, boolean activate) {
+
+		SecHubReportView reportView = findReportViewOrNull(activate);
+		if (reportView != null) {
+			reportView.setReport(report);
+		}
+	}
+
+	public static void refreshFalsePositives() {
+		SecHubReportView reportView = findReportViewOrNull(false);
+		if (reportView != null) {
+			reportView.recalculateFalsePositives();
+		}
+	}
+
+	private static SecHubReportView findReportViewOrNull(boolean activate) {
+		IWorkbenchPage page = EclipseUtil.getActivePage();
+		if (page == null) {
+			throw new IllegalStateException("Workbench page not found");
+		}
+		IViewPart view = page.findView(SecHubReportView.ID);
+
+		/* create and show the result view if it isn't created yet. */
+		if (view == null) {
+			try {
+				view = page.showView(SecHubReportView.ID, null, IWorkbenchPage.VIEW_VISIBLE);
+			} catch (PartInitException e) {
+				Logging.logError("Wasn't able create new SecHub report view", e);
+				return null;
+			}
+
+		}
+		if (!(view instanceof SecHubReportView)) {
+			throw new IllegalStateException("SecHub report view not found");
+		}
+
+		SecHubReportView reportView = (SecHubReportView) view;
+		if (activate) {
+			page.activate(reportView); // ensure report view is shown
+		}
+		return reportView;
+	}
+
+	public SecHubReport getCurrentReport() {
+		return currentReport;
+	}
+
+	public List<Integer> fetchSelectedFindingIds() {
+		IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+		
+		List<Integer> list = new ArrayList<Integer>();
+
+		for (Object element : selection.toArray()) {
+			if (element instanceof FindingNode) {
+				FindingNode node = (FindingNode) element;
+				SecHubFinding finding = node.getFinding();
+				if (finding==null || ScanType.WEB_SCAN.equals(finding.getType())) {
+					/* we just filter web scans - currently not supported*/
+					continue;
+				}
+				list.add(node.getId());
+			}
+		}
+		return list;
 	}
 
 }

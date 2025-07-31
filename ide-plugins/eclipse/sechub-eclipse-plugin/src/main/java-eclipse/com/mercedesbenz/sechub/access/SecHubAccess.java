@@ -16,6 +16,9 @@ import org.slf4j.LoggerFactory;
 import com.mercedesbenz.sechub.api.DefaultSecHubClient;
 import com.mercedesbenz.sechub.api.SecHubClient;
 import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveJobData;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveProjectConfiguration;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositives;
 import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
@@ -103,5 +106,32 @@ public class SecHubAccess {
 
 	public SecHubReport downloadJobReport(String projectId, UUID jobUUID) throws ApiException {
 		return client.withSecHubExecutionApi().userDownloadJobReport(projectId, jobUUID);
+	}
+
+	public FalsePositiveProjectConfiguration fetchFalsePositiveProjectData(String projectId) throws ApiException {
+		return client.withSecHubExecutionApi().userFetchFalsePositiveConfigurationOfProject(projectId);
+	}
+
+	public void markJobFalsePositives(String projectId, UUID jobUUID, String comment, List<Integer> findingIds) throws ApiException {
+		FalsePositives falsePositives= new FalsePositives();
+		falsePositives.setApiVersion("1.0");
+		
+		for (Integer findingId: findingIds) {
+			FalsePositiveJobData dataItem = new FalsePositiveJobData();
+			dataItem.setFindingId(findingId);
+			dataItem.setComment(comment);
+			dataItem.setJobUUID(jobUUID);
+			falsePositives.addJobDataItem(dataItem);
+		}
+		
+		client.withSecHubExecutionApi().userMarkFalsePositives(projectId, falsePositives);
+		
+	}
+
+	public void unmarkJobFalsePositives(String projectId, UUID jobUUID, List<Integer> list) throws ApiException {
+		for (Integer findingId: list) {
+			client.withSecHubExecutionApi().userUnmarksJobFalsePositives(projectId, ""+jobUUID, ""+findingId);
+		}
+		
 	}
 }

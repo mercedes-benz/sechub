@@ -166,9 +166,10 @@ public class SecHubCallHierarchyView extends ViewPart {
 		label.setLayoutData(labelSourceLayoutData);
 
 		GridData textSourceLayoutData = GridDataFactory.fillDefaults().grab(true, true).create();
-		rightTreeDescriptionText = new StyledText(descriptionComposite, SWT.WRAP | SWT.V_SCROLL);
+		rightTreeDescriptionText = new StyledText(descriptionComposite, SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL);
 		rightTreeDescriptionText.setEditable(false);
 		rightTreeDescriptionText.setLayoutData(textSourceLayoutData);
+		rightTreeDescriptionText.setAlwaysShowScrollBars(false);
 
 		Tree treeRight = treeViewerRight.getTree();
 		treeRight.setHeaderVisible(true);

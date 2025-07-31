@@ -7,28 +7,34 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveEntry;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeCallStack;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubStatus;
 import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 import com.mercedesbenz.sechub.model.FindingNode.FindingNodeBuilder;
+import com.mercedesbenz.sechub.server.SecHubServerContext;
 
 public class SecHubReportToFindingModelTransformer {
 
 	private static final Logger logger = LoggerFactory.getLogger(SecHubReportToFindingModelTransformer.class);
-	
+
 	private static final String EMPTY = "";
+
+	private FalsePositiveEntriesToJobFindingMapTransformer mapTransformer = new FalsePositiveEntriesToJobFindingMapTransformer();
 
 	public FindingModel transform(SecHubReport report, String projectId) {
 		FindingModel model = new FindingModel();
 		model.setProjectId(projectId);
-		model.setJobUUID(report.getJobUUID());
-		
+		UUID jobUUID = report.getJobUUID();
+		model.setJobUUID(jobUUID);
+
 		List<SecHubFinding> findings = report.getResult().getFindings();
 		/* build severity mapping */
 		Map<Severity, List<FindingNode>> map = new LinkedHashMap<>();
@@ -38,16 +44,35 @@ public class SecHubReportToFindingModelTransformer {
 		}
 		addNodesToModel(model, map);
 		model.setReport(report);
-		model.setJobUUID(report.getJobUUID());
+		model.setJobUUID(jobUUID);
 		model.setTrafficLight(report.getTrafficLight());
 		SecHubStatus status = report.getStatus();
-		model.setStatus(status == null ? null: status.getValue());
-		
+		model.setStatus(status == null ? null : status.getValue());
+
+		updateFalsePositiveInfo(model);
+
 		return model;
 	}
 
-	private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubReport report, SecHubFinding finding) {
-		if (finding==null) {
+	public void updateFalsePositiveInfo(FindingModel model) {
+		if (model==null) {
+			return;
+		}
+		List<FalsePositiveEntry> falsePositivesForSelectedProject = SecHubServerContext.INSTANCE
+				.getFalsePositivesForSelectedProject();
+
+		Map<Integer, FindingNodeFalsePositiveInfo> falsePositiveFindingForJobMap = mapTransformer
+				.transform(falsePositivesForSelectedProject, model.getJobUUID());
+		
+		for(FindingNode node:  model.getFindings()) {
+			node.setFalsePositiveInfo(falsePositiveFindingForJobMap.get(node.getId()));
+		}
+
+	}
+
+	private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubReport report,
+			SecHubFinding finding) {
+		if (finding == null) {
 			return;
 		}
 		Severity severity = finding.getSeverity();
@@ -56,18 +81,18 @@ public class SecHubReportToFindingModelTransformer {
 				SecHubReportToFindingModelTransformer::createFindingNodeList);
 
 		Integer id = finding.getId();
-		if (id==null) {
+		if (id == null) {
 			logger.warn("Finding id is null!");
 			return;
 		}
 		int callStackStep = 1;
 		String description = finding.getName();
-		
+
 		SecHubCodeCallStack code = finding.getCode();
 		if (code == null) {
-			
+
 			code = new SecHubCodeCallStack(); // fallback when no code call stack available
-			
+
 			code.setColumn(0); // must do this, otherwise NPE by auto boxing null values
 			code.setLine(0);
 		}
@@ -108,7 +133,6 @@ public class SecHubReportToFindingModelTransformer {
 	}
 
 	private void addNodesToModel(FindingModel model, Map<Severity, List<FindingNode>> map) {
-		
 
 		/* Add first level nodes, to model - sorted by severity */
 		List<Severity> severitySortedCriticalFirst = Arrays.asList(Severity.values());
