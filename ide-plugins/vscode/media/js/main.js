@@ -27,8 +27,16 @@ if (changeProjectBtn) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.sechub-job-row').forEach(row => {
+  
+  const jobRows = document.querySelectorAll('.sechub-job-row')
+  jobRows.forEach(row => {
     row.addEventListener('click', () => {
+
+      jobRows.forEach(otherRow => {
+        otherRow.classList.remove('selected');
+      });
+      row.classList.add('selected');
+      
       const jobUUID = row.getAttribute('data-job-uuid');
       const projectId = row.getAttribute('data-project-id');
         vscode.postMessage({ type: 'fetchReport', jobUUID, projectId });

@@ -2,6 +2,7 @@ import * as vscode from 'vscode';
 import { SecHubContext } from '../extension';
 import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
 import { ReportListTable } from '../webview/reportTable';
+import { openCWEIDInBrowser } from '../utils/sechubUtils';
 
 export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 
@@ -67,15 +68,18 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
                     }
                     break;
                 case 'markAsFalsePositive':
-                    console.log('Marking findings as false positive:', data.findingIds);
                     {
                         const findingIds: number[] = data.findingIds;
-                        console.log('Marking findings as false positive:', findingIds);
                         vscode.commands.executeCommand(SECHUB_COMMANDS.markFalsePositives, this._sechubContext, findingIds);
                     }
                     break;
+                case 'openCWEInBrowser':
+                    {
+                        const cweId = data.cweId;
+                        openCWEIDInBrowser(cweId);
+                    }
+                    break;
                 default:
-                    console.log('Received unknown message type:', data.type);
                     break;
                 }
             });

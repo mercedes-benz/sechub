@@ -26,8 +26,16 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Finding row clicks
-  document.querySelectorAll('.sechub-finding-row').forEach(row => {
+  const findingRows = document.querySelectorAll('.sechub-finding-row');
+  findingRows.forEach(row => {
     row.addEventListener('click', () => {
+
+      findingRows.forEach(otherRow => {
+        otherRow.classList.remove('selected');
+      });
+
+      row.classList.add('selected');
+
       const findingId = row.getAttribute('data-finding-id');
       vscode.postMessage({ type: 'openFinding', findingId });
     });
@@ -37,26 +45,35 @@ document.addEventListener('DOMContentLoaded', () => {
   const selectAllCheckbox = document.getElementById('selectAllFalsePositives');
   const tableBody = document.getElementById('sechubReportTable');
   const markAsFalsePositiveButton = document.getElementById('markAsFalsePositiveButton');
+  const checkboxes = tableBody.querySelectorAll('.item-checkbox');
+  if (checkboxes.length === 0) {
+    markAsFalsePositiveButton.disabled = true;
+    selectAllCheckbox.style.display = "none";
+  }
+
 
   function updateButtonState() {
     const checkboxes = tableBody.querySelectorAll('.item-checkbox:checked');
     markAsFalsePositiveButton.disabled = checkboxes.length === 0;
+    markAsFalsePositiveButton.style.display = checkboxes.length > 0 ? "inline-block" : "none";
   }
 
   updateButtonState();
 
   selectAllCheckbox.addEventListener('change', function() {
     let checkboxes = tableBody.querySelectorAll('.item-checkbox');
+
     checkboxes.forEach(checkbox => {
       checkbox.checked = selectAllCheckbox.checked;
       checkbox.disabled = selectAllCheckbox.checked ? checkbox.disabled : checkbox.disabled;
     });
+    
     updateButtonState();
+  
   });
 
   tableBody.addEventListener('change', function(event) {
     if (event.target.classList.contains('item-checkbox')) {
-      console.log('Checkbox change event fired!'); // Debugging
       updateSelectAllCheckbox();
       updateButtonState();
     }
@@ -80,4 +97,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
     selectAllCheckbox.checked = allChecked;
   }
+
+
+  // Open CWE in browser button
+  const openCWEButtons = document.querySelectorAll('#openCWEinBrowserButton');
+  openCWEButtons.forEach(button => {
+    button.addEventListener('click', (event) => {
+      event.stopPropagation(); // Prevent row click event
+      const cweId = button.textContent.trim();
+      if (cweId) {
+        vscode.postMessage({ type: 'openCWEInBrowser', cweId });
+      }
+    });
+  });
 });

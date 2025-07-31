@@ -34,11 +34,6 @@
 				"icon": "$(file)"
 			},
 			{
-				"command": "sechub.openCWEinBrowser",
-				"title": "SecHub: open CWE in Browser",
-				"icon": "$(info)"
-			},
-			{
 				"command": "sechub.fetchReportByUUID",
 				"title": "SecHub: Fetch Report by UUID from Server",
 				"icon": "$(cloud-download)"
@@ -134,13 +129,6 @@
 					"command": "sechub.clearSecHubData",
 					"when": "view == sechub.serverWebView",
 					"group": "navigation"
-				}
-			],
-			"view/item/context": [
-				{
-					"command": "sechub.openCWEinBrowser",
-					"when": "view == sechub.reportView && viewItem == reportItem",
-					"group": "inline"
 				}
 			]
 		}

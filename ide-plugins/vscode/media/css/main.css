@@ -53,7 +53,14 @@
 
 .sechubSecondaryButton:active {
     background-color: var(--vscode-button-secondaryActiveBackground);
-}   
+}
+
+.sechubIcon {
+    color: var(--vscode-button-background);
+    padding: 4px 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
 
 .traffic-light {
     width: 15px;
@@ -83,7 +90,6 @@
 .tooltip {
     position: relative;
     display: block;
-    margin-bottom: 4px;
 }
 
 .tooltip .tooltiptext {
@@ -96,12 +102,13 @@
     z-index: 1;
     /* position bottom right */
     top: 105%;
-    left: 10%; 
-    white-space: nowrap; 
+    left: 10%;
+    white-space: nowrap;
     padding: 4px 8px;
     /* fade in */
     opacity: 0;
     transition: opacity 0.5s;
+    font: inherit;
 }
 
 .tooltip:hover .tooltiptext {
@@ -124,30 +131,43 @@
 }
 
 /* jobTable */
-#sechubJobTable {
+.sechubTable {
     border-collapse: collapse;
     width: 100%;
 }
 
-#sechubJobTable td,
-#sechubJobTable th {
-    padding: 8px;
+.sechubTable td,
+.sechubTable th {
+    padding: 4px;
 }
 
-#sechubJobTable tbody tr:hover {
+.sechubTable tbody tr:hover {
     background-color: var(--vscode-inputOption-hoverBackground);
     cursor: pointer;
 }
 
-#sechubJobTable tbody tr:active {
+.sechubTable tbody tr:active {
     background-color: var(--vscode-inputOption-activeBackground);
+    color: var(--vscode-inputOption-activeForeground);
 }
 
-#sechubJobTable th {
+.sechubTable tbody tr.selected {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    color: var(--vscode-inputOption-activeForeground);
+}
+
+.sechubTable thead {
+    position: sticky;
+    top: 0;  
+    z-index: 100;
+}
+
+.sechubTable th {
     padding-top: 4px;
     padding-bottom: 4px;
     text-align: left;
     background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
 }
 
 #jobTableTitleContainer {
@@ -221,23 +241,23 @@
 /* reportTable */
 .expandable-content {
     display: none;
-    padding-left: 20px; 
+    padding-left: 20px;
 }
 
 .expandable-header {
-  display: flex; 
-  align-items: center; 
-  cursor: pointer; 
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 
 .expandable-header i {
-  vertical-align: middle;
-  margin-right: 5px;
-  transition: transform 0.2s ease-in-out; 
+    vertical-align: middle;
+    margin-right: 5px;
+    transition: transform 0.2s ease-in-out;
 }
 
 .expandable-header.expanded i {
-  transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 
 .vscode-sidebar-colors {
@@ -253,10 +273,38 @@
 
 .item-checkbox {
     background-color: var(--vscode-checkbox-background);
+    margin-top: 14px;
+    margin-bottom: 14px;
+    margin-left: 8px;
+    padding: 4px 8px;
 }
 
 .item-checkbox:checked {
     background-color: var(--vscode-checkbox-selectBackground);
     color: var(--vscode-checkbox-foreground);
     border-color: var(--vscode-checkbox-selectBorder);
+}
+
+/* round icon */
+#markAsFalsePositiveButton{
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: none;
+    cursor: pointer;
+
+    width: 30px;
+    height: 30px; 
+    border-radius: 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+#reportViewtrafficLight {
+    margin: 0px;
+    margin-right: 8px;
+    height: 10px;
+    width: 10px;
 }

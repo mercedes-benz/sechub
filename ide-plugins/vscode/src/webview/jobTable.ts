@@ -70,7 +70,7 @@ export class JobListTable {
                                 </tbody>`;
                 });
                 
-                const table: string = `${title}<table id="sechubJobTable">${haeder}${tableContent}</table>`;
+                const table: string = `${title}<table id="sechubJobTable" class="sechubTable">${haeder}${tableContent}</table>`;
                 const paginationControls = this.pagination.renderPaginationControls();
 
                 return `${table}${paginationControls}`;

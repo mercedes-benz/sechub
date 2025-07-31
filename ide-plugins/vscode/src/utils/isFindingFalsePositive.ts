@@ -11,7 +11,6 @@ export function getFalsePositivesByIDForJobReport(falsePositiveConfig: FalsePosi
             }
         }
     });
-    console.debug(`Found ${falsePositivesFindingIDs.length} false positives for job ${jobUUID}`);
 
     return falsePositivesFindingIDs;
 }
