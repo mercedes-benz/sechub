@@ -9,8 +9,10 @@ import java.util.UUID;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -29,6 +31,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
@@ -88,6 +91,8 @@ public class SecHubServerView extends ViewPart {
 	private OpenWebUIServerViewAction openWebUIAction;
 
 	private OpenProjectFalsePositivesDialogAction openProjectFalsePositivesDialogAction;
+	
+	private OpenJobInReportViewAction openJobInReportViewAction;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -147,24 +152,7 @@ public class SecHubServerView extends ViewPart {
 		jobTreeViewer.addDoubleClickListener(new IDoubleClickListener() {
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
-
-				SecHubReportView.clear();
-
-				SecHubAccess access = serverContext.getAccessOrNull();
-				if (access == null) {
-					return;
-				}
-
-				IStructuredSelection selection = (IStructuredSelection) jobTreeViewer.getSelection();
-				Object selectedElement = selection.getFirstElement();
-
-				if (selectedElement instanceof SecHubJobInfoForUser info) {
-					UUID jobUUID = info.getJobUUID();
-
-					loadJobFromRemoteAndDisplay(jobUUID);
-
-				}
-
+				openFirstSelectedJobInReportView();
 			}
 
 		});
@@ -198,6 +186,7 @@ public class SecHubServerView extends ViewPart {
 
 		createActions();
 		contributeToActionBars();
+		createContextMenu();
 
 		GridLayoutFactory.fillDefaults().generateLayout(parent);
 
@@ -285,6 +274,16 @@ public class SecHubServerView extends ViewPart {
 		pagesLabel.setText("0");
 	}
 
+	private void createContextMenu() {
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(openJobInReportViewAction);
+
+		Menu menu = menuManager.createContextMenu(jobTreeViewer.getControl());
+		jobTreeViewer.getControl().setMenu(menu);
+		
+		getSite().registerContextMenu(menuManager, jobTreeViewer);
+	}
+	
 	private void contributeToActionBars() {
 		IActionBars actionBars = getViewSite().getActionBars();
 
@@ -313,6 +312,7 @@ public class SecHubServerView extends ViewPart {
 		menuManager.add(new Separator());
 
 		menuManager.add(searchJobDirectlyAction);
+		menuManager.add(openJobInReportViewAction);
 		menuManager.add(new Separator());
 
 		menuManager.add(openProjectFalsePositivesDialogAction);
@@ -365,6 +365,7 @@ public class SecHubServerView extends ViewPart {
 		openWebUIAction = new OpenWebUIServerViewAction(this);
 		
 		openProjectFalsePositivesDialogAction = new OpenProjectFalsePositivesDialogAction(); 
+		openJobInReportViewAction = new OpenJobInReportViewAction();
 	}
 
 	@Override
@@ -524,20 +525,6 @@ public class SecHubServerView extends ViewPart {
 		return serverContext.getSelectedProjectId();
 	}
 	
-	private class RefreshServerJobTableViewJob extends UIJob {
-
-		public RefreshServerJobTableViewJob() {
-			super("Refreshing SecHub server job table ");
-		}
-
-		@Override
-		public IStatus runInUIThread(IProgressMonitor monitor) {
-			refreshJobTableByJob();
-			return Status.OK_STATUS;
-		}
-
-	}
-
 	public void searchJobDirectly() {
 		if (!serverContext.isConnectedWithServer()) {
 			return;
@@ -552,6 +539,51 @@ public class SecHubServerView extends ViewPart {
 			UUID jobUUID = dialog.getJobUUID();
 			loadJobFromRemoteAndDisplay(jobUUID);
 		}
+	}
+
+	private void openFirstSelectedJobInReportView() {
+		SecHubReportView.clear();
+
+		SecHubAccess access = serverContext.getAccessOrNull();
+		if (access == null) {
+			return;
+		}
+
+		IStructuredSelection selection = (IStructuredSelection) jobTreeViewer.getSelection();
+		Object selectedElement = selection.getFirstElement();
+
+		if (selectedElement instanceof SecHubJobInfoForUser info) {
+			UUID jobUUID = info.getJobUUID();
+
+			loadJobFromRemoteAndDisplay(jobUUID);
+
+		}
+	}
+	
+	private class OpenJobInReportViewAction extends Action{
+		public OpenJobInReportViewAction() {
+			setText("Open selected job report");
+			setToolTipText("Downloads job report from server and show it inside report view.\nHint: A double click on the table entry does the same.");
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/open_job_report_from_serverj.png"));
+		}
+		@Override
+		public void run() {
+			openFirstSelectedJobInReportView();
+		}
+	}
+
+	private class RefreshServerJobTableViewJob extends UIJob {
+	
+		public RefreshServerJobTableViewJob() {
+			super("Refreshing SecHub server job table ");
+		}
+	
+		@Override
+		public IStatus runInUIThread(IProgressMonitor monitor) {
+			refreshJobTableByJob();
+			return Status.OK_STATUS;
+		}
+	
 	}
 
 }

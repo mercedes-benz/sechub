@@ -17,6 +17,7 @@ import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class MarkFalsePositivesAction extends Action {
 
+	private static final String TITLE_MARK_FALSE_POSITIVES_NOT_POSSIBLE = "Cannot mark as false positive(s)";
 	private SecHubReportView secHubReportView;
 
 	public MarkFalsePositivesAction(SecHubReportView secHubReportView) {
@@ -41,13 +42,13 @@ public class MarkFalsePositivesAction extends Action {
 
 		int amountOfFindings = list.size();
 		if (amountOfFindings == 0) {
-			MessageDialog.openInformation(EclipseUtil.getActiveWorkbenchShell(), "FP mark not possible",
-					"You have not selected any job specific finding.");
+			MessageDialog.openInformation(EclipseUtil.getActiveWorkbenchShell(), TITLE_MARK_FALSE_POSITIVES_NOT_POSSIBLE,
+					"You have not selected a false positive identifiable by job uuid and finding id. \n(WebScan findings are currently not supported)");
 			return;
 		}
 		SecHubAccess access = SecHubServerContext.INSTANCE.getAccessOrNull();
 		if (access == null || !access.fetchServerAccessStatus().isAlive()) {
-			ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), "FP mark not possble",
+			ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), TITLE_MARK_FALSE_POSITIVES_NOT_POSSIBLE,
 					"Unmark is not possible because currently no server access", Status.error("No connection"));
 			return;
 		}
@@ -64,7 +65,7 @@ public class MarkFalsePositivesAction extends Action {
 		try {
 			access.markJobFalsePositives(projectId, jobUUID, comment, list);
 		} catch (ApiException e) {
-			ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), "FP mark not possble",
+			ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), TITLE_MARK_FALSE_POSITIVES_NOT_POSSIBLE,
 					"Was not able to mark as false psoitive, because of communication error",
 					Status.error("Failed", e));
 			return;

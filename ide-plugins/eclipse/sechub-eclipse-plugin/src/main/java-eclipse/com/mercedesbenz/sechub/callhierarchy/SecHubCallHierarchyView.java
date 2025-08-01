@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.callhierarchy;
 
-import static com.mercedesbenz.sechub.util.EclipseUtil.getSharedImageDescriptor;
-
 import javax.inject.Inject;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ISelection;
@@ -27,12 +27,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
 import com.mercedesbenz.sechub.model.FindingModel;
@@ -44,6 +43,7 @@ import com.mercedesbenz.sechub.provider.OnlyInputElementItselfTreeContentProvide
 import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
 import com.mercedesbenz.sechub.util.BrowserUtil;
 import com.mercedesbenz.sechub.util.CweLinkTextCreator;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 /**
  * This view shows call hierarchy of sechub report entries - shall look similar
@@ -81,6 +81,8 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 	private Composite mainComposite;
 
+	private OpenCallHierarchyEntryInEditor openJobInReportViewAction;
+
 	@Override
 	public void createPartControl(Composite parent) {
 
@@ -92,6 +94,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 		createColumns();
 		hookSelectionListener();
 		contributeToActionBars();
+		createContextMenu();
 
 	}
 
@@ -177,6 +180,17 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 	}
 
+	
+	private void createContextMenu() {
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(openJobInReportViewAction);
+
+		Menu menu = menuManager.createContextMenu(treeViewerLeft.getControl());
+		treeViewerLeft.getControl().setMenu(menu);
+		
+		getSite().registerContextMenu(menuManager, treeViewerLeft);
+	}
+	
 	@Override
 	public void setFocus() {
 		treeViewerLeft.getControl().setFocus();
@@ -191,6 +205,8 @@ public class SecHubCallHierarchyView extends ViewPart {
 		stepNextAction = new MoveToNextStepAction();
 		firstStepAction = new MoveToFirstStepAction();
 		lastStepAction = new MoveToLastStepAction();
+		
+		openJobInReportViewAction = new OpenCallHierarchyEntryInEditor();
 	}
 
 	private void contributeToActionBars() {
@@ -200,6 +216,8 @@ public class SecHubCallHierarchyView extends ViewPart {
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
+		manager.add(openJobInReportViewAction);
+		manager.add(new Separator());
 		manager.add(firstStepAction);
 		manager.add(stepBeforeAction);
 		manager.add(stepNextAction);
@@ -207,6 +225,8 @@ public class SecHubCallHierarchyView extends ViewPart {
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
+		manager.add(openJobInReportViewAction);
+		manager.add(new Separator());
 		manager.add(firstStepAction);
 		manager.add(stepBeforeAction);
 		manager.add(stepNextAction);
@@ -261,19 +281,23 @@ public class SecHubCallHierarchyView extends ViewPart {
 		 * correct code - no annoying dialogs on every selection click in this case.
 		 */
 		treeViewerLeft.addDoubleClickListener(event ->{
-			ISelection selection = treeViewerLeft.getSelection();
-			if (!(selection instanceof IStructuredSelection)) {
-				return;
-			}
-
-			IStructuredSelection ss = (IStructuredSelection) selection;
-			Object element = ss.getFirstElement();
-			if (!(element instanceof FindingNode)) {
-				return;
-			}
-			searchInProjectsForFinding((FindingNode) element);
+			openFirstSelectionInTreeByEditor();
 		});
 
+	}
+
+	private void openFirstSelectionInTreeByEditor() {
+		ISelection selection = treeViewerLeft.getSelection();
+		if (!(selection instanceof IStructuredSelection)) {
+			return;
+		}
+
+		IStructuredSelection ss = (IStructuredSelection) selection;
+		Object element = ss.getFirstElement();
+		if (!(element instanceof FindingNode)) {
+			return;
+		}
+		searchInProjectsForFinding((FindingNode) element);
 	}
 
 	private void searchInProjectsForFinding(FindingNode finding) {
@@ -340,7 +364,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 		public MoveToFirstStepAction() {
 			setText("Move to entry point (first step)");
 			setToolTipText("Move to entry point (first step)");
-			setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_ETOOL_HOME_NAV));
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/move_to_first_step.png"));
 		}
 
 		@Override
@@ -356,7 +380,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 		public MoveToLastStepAction() {
 			setText("Move to data sink(last step)");
 			setToolTipText("Move to data sink(last step)");
-			setImageDescriptor(getSharedImageDescriptor(IDE.SharedImages.IMG_OPEN_MARKER));
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/move_to_last_step.png"));
 		}
 
 		@Override
@@ -372,7 +396,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 		public MoveToStepBeforeAction() {
 			setText("Move to step before");
 			setToolTipText("Move to step before and show editor location");
-			setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_BACK));
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/move_up.png"));
 		}
 
 		@Override
@@ -389,7 +413,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 		public MoveToNextStepAction() {
 			setText("Move to next step");
 			setToolTipText("Move to next step and show editor location");
-			setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/move_down.png"));
 		}
 
 		@Override
@@ -402,5 +426,17 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 		}
 
+	}
+	
+	private class OpenCallHierarchyEntryInEditor extends Action{
+		public OpenCallHierarchyEntryInEditor() {
+			setText("Show in editor");
+			setToolTipText("Opens the call stack element inside editor (if sources are available)\nHint: You can also double click on the tree element");
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/open_callstack_entry.png"));
+		}
+		@Override
+		public void run() {
+			openFirstSelectionInTreeByEditor();
+		}
 	}
 }

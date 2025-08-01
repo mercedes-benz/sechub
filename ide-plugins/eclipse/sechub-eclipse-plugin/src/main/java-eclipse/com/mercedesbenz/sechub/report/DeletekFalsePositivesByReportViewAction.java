@@ -43,7 +43,7 @@ public class DeletekFalsePositivesByReportViewAction extends Action {
 		int amountOfFindings = list.size();
 		if (amountOfFindings == 0) {
 			MessageDialog.openInformation(EclipseUtil.getActiveWorkbenchShell(), TITLE_DELETE_NOT_POSSIBLE,
-					"You have not selected any job specific finding.");
+					"You have not selected a false positive identifiable by job uuid and finding id. \n(WebScan findings are currently not supported)");
 			return;
 		}
 		SecHubAccess access = SecHubServerContext.INSTANCE.getAccessOrNull();

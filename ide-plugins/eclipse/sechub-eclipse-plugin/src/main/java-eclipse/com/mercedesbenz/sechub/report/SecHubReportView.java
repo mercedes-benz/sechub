@@ -97,6 +97,8 @@ public class SecHubReportView extends ViewPart {
 	private Action unmarkFalsePositivesAction;
 	
 	private SecHubReport currentReport;
+	
+	private OpenFindingDetailsAction openDetailsAction;
 
 	@Override
 	public void setFocus() {
@@ -151,7 +153,7 @@ public class SecHubReportView extends ViewPart {
 			}
 		});
 		
-		recalculateFalsePositiveActionEnabledState();
+		recalculateActionsEnabledStateBySelection();
 	}
 
 	public FindingModel getModel() {
@@ -171,6 +173,8 @@ public class SecHubReportView extends ViewPart {
 		
 		markFalsePositivesAction = new MarkFalsePositivesAction(this);
 		unmarkFalsePositivesAction = new DeletekFalsePositivesByReportViewAction(this);
+		
+		openDetailsAction = new OpenFindingDetailsAction();
 	}
 
 	private void contributeToActionBars() {
@@ -180,25 +184,25 @@ public class SecHubReportView extends ViewPart {
 	}
 
 	private void fillLocalToolBar(IToolBarManager manager) {
-		manager.add(showInformationAction);
-		manager.add(new Separator());
 		manager.add(openServerViewAction);
 		manager.add(importAction);
 		manager.add(new Separator());
 		manager.add(markFalsePositivesAction);
 		manager.add(unmarkFalsePositivesAction);
 		manager.add(new Separator());
-		manager.add(removeAllReportData);
+		manager.add(openDetailsAction);
+		manager.add(showInformationAction);
 	}
 
 	private void fillLocalPullDown(IMenuManager manager) {
-		manager.add(showInformationAction);
-		manager.add(new Separator());
 		manager.add(openServerViewAction);
 		manager.add(importAction);
 		manager.add(new Separator());
 		manager.add(markFalsePositivesAction);
 		manager.add(unmarkFalsePositivesAction);
+		manager.add(new Separator());
+		manager.add(openDetailsAction);
+		manager.add(showInformationAction);
 		manager.add(new Separator());
 		manager.add(removeAllReportData);
 	}
@@ -241,12 +245,12 @@ public class SecHubReportView extends ViewPart {
 	private void hookDoubleClickAction() {
 		treeViewer.addDoubleClickListener(new IDoubleClickListener() {
 			public void doubleClick(DoubleClickEvent event) {
-				handleDoubleClick(event);
+				openDetailsForFirstSelectedElement();
 			}
 		});
 	}
 
-	protected void handleDoubleClick(DoubleClickEvent event) {
+	protected void openDetailsForFirstSelectedElement() {
 		IStructuredSelection selectedFinding = treeViewer.getStructuredSelection();
 		FindingNode finding = (FindingNode) selectedFinding.getFirstElement();
 
@@ -375,7 +379,7 @@ public class SecHubReportView extends ViewPart {
 
 		if (selectFirstElement) {
 			// select first element - will also refresh call hierarchy view
-			handleDoubleClick(null);
+			openDetailsForFirstSelectedElement();
 		}
 	}
 
@@ -388,6 +392,8 @@ public class SecHubReportView extends ViewPart {
 		MenuManager menuManager = new MenuManager();
 		menuManager.add(markFalsePositivesAction);
 		menuManager.add(unmarkFalsePositivesAction);
+		menuManager.add(new Separator());
+		menuManager.add(openDetailsAction);
 
 		Menu menu = menuManager.createContextMenu(treeViewer.getControl());
 		treeViewer.getControl().setMenu(menu);
@@ -397,7 +403,7 @@ public class SecHubReportView extends ViewPart {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				
-				recalculateFalsePositiveActionEnabledState();
+				recalculateActionsEnabledStateBySelection();
 			}
 
 		});
@@ -405,14 +411,16 @@ public class SecHubReportView extends ViewPart {
 		getSite().registerContextMenu(menuManager, treeViewer);
 	}
 	
-	private void recalculateFalsePositiveActionEnabledState() {
+	private void recalculateActionsEnabledStateBySelection() {
 		boolean markFalsePositiveActive = true;
 		boolean unmarkFalsePositiveActive = true;
+		boolean openDetailsActionActive=true;
 		
 		IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 		if(selection.isEmpty()) {
 			markFalsePositiveActive=false;
 			unmarkFalsePositiveActive=false;
+			openDetailsActionActive=false;
 		}else {
 			for(Object selected: selection) {
 				if(selected instanceof FindingNode) {
@@ -424,13 +432,14 @@ public class SecHubReportView extends ViewPart {
 		}
 		markFalsePositivesAction.setEnabled(markFalsePositiveActive);
 		unmarkFalsePositivesAction.setEnabled(unmarkFalsePositiveActive);
+		openDetailsAction.setEnabled(openDetailsActionActive);
 	}
 
 	public void recalculateFalsePositives() {
 		transformer.updateFalsePositiveInfo(getModel());
 		treeViewer.refresh();
 		
-		recalculateFalsePositiveActionEnabledState();
+		recalculateActionsEnabledStateBySelection();
 	}
 
 	private class OpenSecHubServerViewAction extends Action {
@@ -555,5 +564,19 @@ public class SecHubReportView extends ViewPart {
 		}
 		return list;
 	}
-
+	
+	public class OpenFindingDetailsAction extends Action {
+		
+		public OpenFindingDetailsAction() {
+			setText("Open details");
+			setToolTipText("Open finding in details view\nHint: You can also double click on table entry");
+			setImageDescriptor(EclipseUtil.createDescriptor("icons/details.png"));
+		}
+		
+		@Override
+		public void run() {
+			openDetailsForFirstSelectedElement();
+		}
+		
+	}
 }
