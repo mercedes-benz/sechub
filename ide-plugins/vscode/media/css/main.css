@@ -2,6 +2,11 @@
 /* vscode theme variables */
 /* https://gist.github.com/estruyf/ba49203e1a7d6868e9320a4ea480c27a */
 
+/* common styles for sechub plugin */
+.margin-bottom {
+    margin-bottom: 8px;
+}
+
 .sechubButton {
     background-color: var(--vscode-button-background);
     color: var(--vscode-button-foreground);
@@ -55,9 +60,7 @@
 
 .sechubIcon {
     color: var(--vscode-button-background);
-    padding: 4px 8px;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-left: 8px;
 }
 
 .traffic-light {
@@ -84,51 +87,6 @@
     background-color: grey;
 }
 
-/* Tooltip container */
-.tooltip {
-    position: relative;
-    display: block;
-}
-
-.tooltip .tooltiptext {
-    border: 1px solid var(--vscode-editorHoverWidget-border);
-    border-radius: 3px;
-    color: var(--vscode-editorHoverWidget-foreground);
-    background-color: var(--vscode-editorHoverWidget-background);
-    visibility: hidden;
-    position: absolute;
-    z-index: 1;
-    /* position bottom right */
-    top: 105%;
-    left: 10%;
-    white-space: nowrap;
-    padding: 4px 8px;
-    /* fade in */
-    opacity: 0;
-    transition: opacity 0.5s;
-    font: inherit;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-    opacity: 1;
-}
-
-/* pagination */
-.pagination-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#prevPageBtn,
-#nextPageBtn {
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
-/* jobTable */
 .sechubTable {
     border-collapse: collapse;
     width: 100%;
@@ -168,6 +126,50 @@
     color: var(--vscode-button-foreground);
 }
 
+.tooltip {
+    position: relative;
+    display: block;
+}
+
+.tooltip .tooltiptext {
+    border: 1px solid var(--vscode-editorHoverWidget-border);
+    border-radius: 3px;
+    color: var(--vscode-editorHoverWidget-foreground);
+    background-color: var(--vscode-editorHoverWidget-background);
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    /* position bottom right */
+    top: 105%;
+    left: 10%;
+    white-space: nowrap;
+    padding: 4px 8px;
+    /* fade in */
+    opacity: 0;
+    transition: opacity 0.5s;
+    font: inherit;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* pagination sytles */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#prevPageBtn,
+#nextPageBtn {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* jobTable styles (serverView) */
 #jobTableTitleContainer {
     display: flex;
     justify-content: space-between;
@@ -195,8 +197,7 @@
     white-space: nowrap;
 }
 
-/* serverStateContainer */
-
+/* serverStateContainer sytels (serverView) */
 #serverUrlContainer {
     align-items: left;
     padding: 2px;
@@ -242,7 +243,7 @@
     margin-bottom: 8px;
 }
 
-/* reportTable */
+/* reportTable styles (reportView) */
 .expandable-content {
     display: none;
     padding-left: 20px;
@@ -286,7 +287,6 @@
     border-color: var(--vscode-checkbox-selectBorder);
 }
 
-/* round icon */
 #markAsFalsePositiveButton{
     border: none;
     padding: 0;
@@ -295,23 +295,23 @@
 
     cursor: pointer;
 
-    width: 30px;
-    height: 30px; 
+    width: 20px;
+    height: 20px; 
     border-radius: 50%; 
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
 }
 
 #markAsFalsePositiveButton i.codicon {
     display: block;
     text-align: center; 
-    line-height: 30px;
+    line-height: 20px;
     background: none;
 }
 
 #reportViewtrafficLight {
+    /* traffic light in report view should be smaller */
     margin: 0px;
     margin-right: 8px;
     height: 10px;

@@ -43,7 +43,7 @@ export class ReportListTable {
             ${htmlMessages.length > 0 ? htmlMessages.join('') : '<div>No messages available.</div>'}
         </div>
         </div>
-        <div class="vscode-sidebar-colors"><b>Findings:</b> ${report.result?.findings?.length || 0}</div>`;
+        <div class="vscode-sidebar-colors margin-bottom"><b>Findings:</b> ${report.result?.findings?.length || 0}</div>`;
     
         const findings = report.result?.findings || [];
         if (findings.length === 0) { return `${jobInfo}`;}

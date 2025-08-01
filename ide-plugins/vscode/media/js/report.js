@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedCheckboxes = tableBody.querySelectorAll('.item-checkbox:checked');
     const findingIds = Array.from(selectedCheckboxes).map(checkbox => {
         const row = checkbox.closest('.sechub-finding-row');
-        // ensure finding id is a number
+        // ensure finding id is an integer
         return parseInt(row.getAttribute('data-finding-id'), 10);
     });
 
