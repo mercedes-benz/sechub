@@ -61,7 +61,7 @@ public class ProjectFalsePositivesDialog extends Dialog {
 	private StyledText jsonText;
 	private TreeViewer treeViewer;
 	private FalsePositiveTreeContentProvider jobTreeProvider;
-	private RemoveFalsePositiveAction removeFalsePositivesAction;
+	private DeleteFalsePositiveAction deleteFalsePositivesAction;
 	private ToolBarManager toolBarManager;
 	private ToolBar toolBar;
 	private MenuManager menuManager;
@@ -167,9 +167,9 @@ public class ProjectFalsePositivesDialog extends Dialog {
 	}
 
 	private void fillToolbarAndMenu() {
-		toolBarManager.add(removeFalsePositivesAction);
+		toolBarManager.add(deleteFalsePositivesAction);
 
-		menuManager.add(removeFalsePositivesAction);
+		menuManager.add(deleteFalsePositivesAction);
 
 		DropdownContributionItem citem = new DropdownContributionItem(menu, toolBar);
 		toolBarManager.add(citem);
@@ -179,12 +179,12 @@ public class ProjectFalsePositivesDialog extends Dialog {
 	}
 
 	private void createActions() {
-		removeFalsePositivesAction = new RemoveFalsePositiveAction();
+		deleteFalsePositivesAction = new DeleteFalsePositiveAction();
 	}
 
 	private void createContextMenu() {
 		MenuManager menuManager = new MenuManager();
-		menuManager.add(removeFalsePositivesAction);
+		menuManager.add(deleteFalsePositivesAction);
 
 		Menu menu = menuManager.createContextMenu(treeViewer.getControl());
 		treeViewer.getControl().setMenu(menu);
@@ -204,6 +204,9 @@ public class ProjectFalsePositivesDialog extends Dialog {
 
 	private void createColumns() {
 
+		TreeViewerColumn icon = createTreeViewerColumn(treeViewer, "", 50);
+		icon.setLabelProvider(new JobFalsePositiveIconLabelProvider());
+		
 		TreeViewerColumn created = createTreeViewerColumn(treeViewer, "Created", 180);
 		created.setLabelProvider(new JobFalsePositiveLabelProvider(TABLE_ID_DATE));
 
@@ -216,7 +219,7 @@ public class ProjectFalsePositivesDialog extends Dialog {
 		TreeViewerColumn definition = createTreeViewerColumn(treeViewer, "Definition", 320);
 		definition.setLabelProvider(new JobFalsePositiveLabelProvider(TABLE_ID_DEFINITION));
 
-		TreeViewerColumn comment = createTreeViewerColumn(treeViewer, "Comment", 300);
+		TreeViewerColumn comment = createTreeViewerColumn(treeViewer, "Comment", 280);
 		comment.setLabelProvider(new JobFalsePositiveLabelProvider(TABLE_ID_COMMENT));
 
 	}
@@ -256,11 +259,12 @@ public class ProjectFalsePositivesDialog extends Dialog {
 		}
 	}
 
-	private class RemoveFalsePositiveAction extends Action {
+	private class DeleteFalsePositiveAction extends Action {
 
-		public RemoveFalsePositiveAction() {
-			setText("Remove selected false positive");
-			setImageDescriptor(EclipseUtil.createImageDescriptor("/icons/remove.png"));
+		public DeleteFalsePositiveAction() {
+			setText("Delete selected false positive");
+			setToolTipText("Will delete the false positive defintion on server side directly");
+			setImageDescriptor(EclipseUtil.createImageDescriptor("/icons/false_positive_delete.png"));
 		}
 
 		@Override
@@ -274,13 +278,13 @@ public class ProjectFalsePositivesDialog extends Dialog {
 					FalsePositiveJobData jobData = entry.getJobData();
 					if (jobData == null) {
 						MessageDialog.openInformation(EclipseUtil.getActiveWorkbenchShell(),
-								"Cannot remove false positive", "False positives can currently only removeed for jobs");
+								"Cannot delete false positive", "Currently only job related false positives can be deleted by this plugin. Please use the client meanwhile for those operations.");
 						return;
 					}
 					SecHubServerContext serverContext = SecHubServerContext.INSTANCE;
 					SecHubAccess access = serverContext.getAccessOrNull();
 					if (access == null || !serverContext.isConnectedWithServer()) {
-						MessageDialog.openError(EclipseUtil.getActiveWorkbenchShell(), "Cannot remove false positive",
+						MessageDialog.openError(EclipseUtil.getActiveWorkbenchShell(), "Cannot delete false positive",
 								"No server connection");
 						return;
 					}
@@ -288,7 +292,7 @@ public class ProjectFalsePositivesDialog extends Dialog {
 					String projectId = serverContext.getSelectedProjectId();
 
 					boolean confirmed = MessageDialog.openConfirm(EclipseUtil.getActiveWorkbenchShell(),
-							"Confirm remove", "Are you sure you want to remove the false positive ?");
+							"Confirm delete", "Are you sure you want to delete this false positive ?");
 					if (!confirmed) {
 						return;
 					}
@@ -308,8 +312,8 @@ public class ProjectFalsePositivesDialog extends Dialog {
 						SecHubReportView.refreshFalsePositives();
 
 					} catch (ApiException e) {
-						ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), "FP remove not possble",
-								"Was not able to remove false psoitive, because of communication error",
+						ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), "FP delete not possble",
+								"Was not able to delete false psoitive, because of communication error",
 								Status.error("Failed", e));
 						return;
 					}
@@ -337,6 +341,31 @@ public class ProjectFalsePositivesDialog extends Dialog {
 			return null;
 		}
 
+		@Override
+		public String getToolTipText(Object element) {
+			if (element instanceof FalsePositiveEntry) {
+				return JSONConverter.get().toJSON(element, true);
+			}
+			return null;
+		}
+	}
+	private class JobFalsePositiveIconLabelProvider extends ColumnLabelProvider {
+		
+		private static final Image IMAGE_INFO = EclipseUtil.getImage("/icons/false_positive_marked.png");
+		
+		@Override
+		public Image getImage(Object element) {
+			if (element instanceof FalsePositiveEntry) {
+				return IMAGE_INFO;
+			}
+			return null;
+		}
+		
+		@Override
+		public String getText(Object element) {
+			return null;
+		}
+		
 		@Override
 		public String getToolTipText(Object element) {
 			if (element instanceof FalsePositiveEntry) {

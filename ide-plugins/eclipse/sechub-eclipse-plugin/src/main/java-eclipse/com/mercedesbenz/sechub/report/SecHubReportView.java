@@ -170,7 +170,7 @@ public class SecHubReportView extends ViewPart {
 		showInformationAction = new ReportInfoAction(this);
 		
 		markFalsePositivesAction = new MarkFalsePositivesAction(this);
-		unmarkFalsePositivesAction = new UnmarkFalsePositivesAction(this);
+		unmarkFalsePositivesAction = new DeletekFalsePositivesByReportViewAction(this);
 	}
 
 	private void contributeToActionBars() {
