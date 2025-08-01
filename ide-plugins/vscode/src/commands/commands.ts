@@ -7,7 +7,7 @@ import { refreshServerView } from './refreshServerView';
 import { fetchReportByUUID } from './fetchReportByUUID';
 import { clearSecHubData } from './clearSecHubData';
 import { importReportFromFile } from './importReportFromFile';
-import { openFindingWebView } from './openFinding';
+import { openFinding } from './openFinding';
 import { openFindingCallStack } from './openFindingCallStack';
 import { changeWebUiUrl } from './changeWebUiUrl';
 import { openWebScanInInfoview } from './openWebScanInInfoview';
@@ -32,7 +32,7 @@ export const sechubFindingCommands = [
 ];
 
 export const testCommands = [
-    { command: SECHUB_COMMANDS.openFinding, action: openFindingWebView }
+    { command: SECHUB_COMMANDS.openFinding, action: openFinding }
 ];
 
 export const markFalsePositiveCommands = [

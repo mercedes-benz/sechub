@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { SecHubContext } from '../extension';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
-export async function openFindingWebView(sechubContext: SecHubContext, finding: SecHubFinding, currentCallStack: SecHubCodeCallStack): Promise<void> {
+export async function openFinding(sechubContext: SecHubContext, finding: SecHubFinding, currentCallStack: SecHubCodeCallStack): Promise<void> {
     /* this command is used to open a finding in the editor and show its details in the info view */
     // todo: callstack should be callstack of hierachy, not finding
 

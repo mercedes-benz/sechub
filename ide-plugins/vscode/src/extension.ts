@@ -8,7 +8,6 @@ import { InfoViewItemMitreCWELinkBuilder } from './provider/items/infoViewItemMi
 import { SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
 import { HierarchyItem } from './provider/items/hierarchyItems';
 import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvider';
-import { ReportItem } from './provider/items/reportItems';
 
 import { loadFromFile, preSelectedProjectValid } from './utils/sechubUtils';
 import { SecHubReport, ScanType, SecHubFinding, SecHubCodeCallStack } from 'sechub-openapi-ts-client';
@@ -126,7 +125,6 @@ function buildReportWebview(context: SecHubContext) {
 
 export class SecHubContext {
 	callHierarchyView: vscode.TreeView<HierarchyItem|undefined> | undefined = undefined;
-	reportView: vscode.TreeView<ReportItem> | undefined = undefined;
 
 	private report: SecHubReport | undefined;
 
