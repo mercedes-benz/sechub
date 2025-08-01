@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
-import * as findingNodeLinkBuilder from '../utils/findingNodeLinkBuilder';
+import * as findingNodeLinkBuilder from './items/infoViewItemMitreCWELinkBuilder';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
-import { InfoItem , InfoMetaDataItem, InfoWebScanItem } from './items/infoItems';
+import { InfoItem , MetaDataInfoItem, WebScanInfoItem } from './items/infoItems';
 
 export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoItem> {
-  findingNodeLinkBuilder: findingNodeLinkBuilder.FindingNodeLinkBuilder;
+  findingNodeLinkBuilder: findingNodeLinkBuilder.InfoViewItemMitreCWELinkBuilder;
 
   constructor(private findingNode: SecHubFinding | undefined, private callStack: SecHubCodeCallStack | undefined) {
-    this.findingNodeLinkBuilder = new findingNodeLinkBuilder.FindingNodeLinkBuilder();
+    this.findingNodeLinkBuilder = new findingNodeLinkBuilder.InfoViewItemMitreCWELinkBuilder();
   }
 
   /* refresh mechanism for tree:*/
@@ -28,7 +28,7 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
   getChildren(element?: InfoItem): Thenable<InfoItem[]> {
 
     if (element) {
-      if (element instanceof InfoMetaDataItem || element instanceof InfoWebScanItem) {
+      if (element instanceof MetaDataInfoItem || element instanceof WebScanInfoItem) {
         return Promise.resolve(element.children);
       } else {
         return Promise.resolve([]); // no children at the moment
@@ -56,22 +56,23 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
 
     // codeScan, iacScan or secretScan
     if(this.callStack){
-      rootItems.push(new InfoMetaDataItem("Name:", this.findingNode?.name, undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem("Description:", this.findingNode?.description, undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem(SecHubInfoTreeDataProvider.cweIdKey, "CWE " + this.findingNode?.cweId, this.findingNodeLinkBuilder.buildCWEOpenInBrowserCommand(this.findingNode), vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem("Source:", this.callStack?.source?.trim(), undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem("Relevant part:", this.callStack?.relevantPart, undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem("Line:", this.callStack?.line, undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem("Column:", this.callStack?.column, undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem("Type:", this.findingNode?.type, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem("Name:", this.findingNode?.name, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem("Description:", this.findingNode?.description, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem(SecHubInfoTreeDataProvider.cweIdKey, "CWE " + this.findingNode?.cweId, this.findingNodeLinkBuilder.buildCWEOpenInBrowserCommand(this.findingNode), vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem("Source:", this.callStack?.source?.trim(), undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem("Relevant part:", this.callStack?.relevantPart, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem("Line:", this.callStack?.line, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem("Column:", this.callStack?.column, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem("Type:", this.findingNode?.type, undefined, vscode.TreeItemCollapsibleState.None));
 
       // webScan
     } else if (this.findingNode?.web){
-      rootItems.push(new InfoMetaDataItem("Summary:", this.findingNode?.name, undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem(SecHubInfoTreeDataProvider.cweIdKey, "CWE " + this.findingNode?.cweId, this.findingNodeLinkBuilder.buildCWEOpenInBrowserCommand(this.findingNode), vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem("Description:", this.findingNode?.description, undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoMetaDataItem("Solution:", this.findingNode?.solution, undefined, vscode.TreeItemCollapsibleState.None));
-      rootItems.push(new InfoWebScanItem("More Details", this.findingNode.web, vscode.TreeItemCollapsibleState.Collapsed));
+      rootItems.push(new MetaDataInfoItem("Summary:", this.findingNode?.name, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem(SecHubInfoTreeDataProvider.cweIdKey, "CWE " + this.findingNode?.cweId, this.findingNodeLinkBuilder.buildCWEOpenInBrowserCommand(this.findingNode), vscode.TreeItemCollapsibleState.None));
+
+      rootItems.push(new MetaDataInfoItem("Description:", this.findingNode?.description, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new MetaDataInfoItem("Solution:", this.findingNode?.solution, undefined, vscode.TreeItemCollapsibleState.None));
+      rootItems.push(new WebScanInfoItem("More Details", this.findingNode.web, vscode.TreeItemCollapsibleState.Collapsed));
 
     }
 

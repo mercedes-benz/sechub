@@ -11,6 +11,7 @@ export const SECHUB_CONTEXT_STORAGE_KEYS = {
     selectedProject: 'selectedProject',
     webUiUrl: 'sechubWebUiUrl',
     falsePositiveConfiguration: 'selectedProjectFPConfiguration',
+    falsePositiveCache: 'falsePositiveCache',
 };
 
 export const SECHUB_COMMANDS = {
@@ -21,7 +22,6 @@ export const SECHUB_COMMANDS = {
     fetchReportByUUID: 'sechub.fetchReportByUUID',
     clearSecHubData: 'sechub.clearSecHubData',
     importReport: 'sechub.importReportFile',
-    openCWEinBrowser: 'sechub.openCWEinBrowser',
     changeWebUiUrl: 'sechub.changeWebUiUrl',
     // internal commands which can not be used by users directly, but are used in the extension
     fetchFalsePositives: 'sechub-intern.fetchFalsePositives',

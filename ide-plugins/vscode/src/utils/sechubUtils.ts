@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
-import { SecHubReport } from 'sechub-openapi-ts-client';
+import { FalsePositiveProjectConfiguration, ProjectData, SecHubReport } from 'sechub-openapi-ts-client';
 import * as fs from 'fs';
 import * as vscode from 'vscode';
+import { DefaultClient } from '../api/defaultClient';
+import { SECHUB_CONTEXT_STORAGE_KEYS } from './sechubConstants';
 
 export function loadFromFile(location: string): SecHubReport {
 
@@ -15,4 +17,35 @@ export function openCWEIDInBrowser(cweId: string | undefined): void {
     }
     const uri = vscode.Uri.parse(`https://cwe.mitre.org/data/definitions/${cweId}.html`);
     vscode.commands.executeCommand("vscode.open", uri);
+}
+
+export function getFalsePositivesByIDForJobReport(falsePositiveConfig: FalsePositiveProjectConfiguration, jobUUID: string): number[] {
+    const falsePositivesEntrys = falsePositiveConfig.falsePositives || [];
+
+    const falsePositivesFindingIDs: number[] = [];
+    falsePositivesEntrys.forEach(entry => {
+        if (entry.jobData?.jobUUID === jobUUID) {
+            if (entry.jobData.findingId) {
+                falsePositivesFindingIDs.push(entry.jobData.findingId);
+            }
+        }
+    });
+
+    return falsePositivesFindingIDs;
+}
+
+export async function preSelectedProjectValid(context: vscode.ExtensionContext): Promise<void> {
+	const project = context.globalState.get<ProjectData>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
+	if (!project) {
+		return;
+	}
+
+	const client = await DefaultClient.getInstance(context);
+	const projects = await client.getAssignedProjectDataList();
+
+	if (!projects || !projects.some(p => p.projectId === project.projectId)) {
+		vscode.window.showErrorMessage(`Selected project ${project.projectId} is not valid. Please select a valid project.`);
+		await context.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject, undefined);
+		return;
+	}
 }

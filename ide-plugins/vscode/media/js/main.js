@@ -9,7 +9,7 @@ document.getElementById('serverUserContainer').addEventListener('click', () => {
   vscode.postMessage({ type: 'changeCredentials' });
 });
 
-const openWebUiBtn = document.getElementById('openWebUiBtn')
+const openWebUiBtn = document.getElementById('openWebUiBtn');
 openWebUiBtn.addEventListener('click', () => {
   vscode.postMessage({ type: 'openWebUi', data: { leftClick: true } });
 });
@@ -28,7 +28,7 @@ if (changeProjectBtn) {
 
 document.addEventListener('DOMContentLoaded', () => {
   
-  const jobRows = document.querySelectorAll('.sechub-job-row')
+  const jobRows = document.querySelectorAll('.sechub-job-row');
   jobRows.forEach(row => {
     row.addEventListener('click', () => {
 
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         otherRow.classList.remove('selected');
       });
       row.classList.add('selected');
-      
+
       const jobUUID = row.getAttribute('data-job-uuid');
       const projectId = row.getAttribute('data-project-id');
         vscode.postMessage({ type: 'fetchReport', jobUUID, projectId });

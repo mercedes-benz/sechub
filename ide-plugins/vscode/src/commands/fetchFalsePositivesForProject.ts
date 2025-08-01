@@ -18,7 +18,7 @@ export async function fetchFalsePositivesForProject(sechubContext: SecHubContext
 
     if (!response) {
         return;
-    } else {
+    } else {        
         sechubContext.extensionContext.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.falsePositiveConfiguration, response);
     }
 }

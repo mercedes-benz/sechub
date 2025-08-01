@@ -5,6 +5,7 @@ import { JobListTable } from '../webview/jobTable';
 import { ServerStateContainer } from '../webview/serverStateContainer';
 import { DefaultClient } from '../api/defaultClient';
 import * as vscode from 'vscode';
+import { preSelectedProjectValid } from '../utils/sechubUtils';
 
 export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
@@ -81,6 +82,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 	public async refresh() {
 		if (this._view) {
 			this._view.show?.(true);
+			await preSelectedProjectValid(this._sechubContext.extensionContext);			
 			this._view.webview.html = await this._getHtmlForWebview(this._view.webview);
 		}
 	}
@@ -120,7 +122,6 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 		const nonce = getNonce();
 
 		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
-
 		const javascriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'main.js'));
 
 		const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')));

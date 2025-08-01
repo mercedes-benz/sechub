@@ -12,8 +12,6 @@ import {
   FalsePositiveProjectConfiguration,
   FalsePositives,
   UserMarkFalsePositivesRequest,
-  FalsePositiveJobData,
-  SecHubFinding
 } from 'sechub-openapi-ts-client';
 import { SECHUB_API_CLIENT_CONFIG_KEYS } from '../utils/sechubConstants';
 
@@ -150,12 +148,11 @@ export class DefaultClient {
       falsePositives: falsePositves
     };
 
+    // catch error is calling method to cache false positives if server could not be reached
     try {
       await this.apiClient.withExecutionApi().userMarkFalsePositives(requestParameter);
     } catch (error) {
-      console.error('Error marking findings as false positive:', error);
-      vscode.window.showErrorMessage('Failed to mark findings as false positive.');
-      // todo caching
+      throw new Error(`Failed to mark false positives for project ${projectId}: ${error}`);
     }
   }
 }

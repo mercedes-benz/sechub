@@ -3,6 +3,7 @@ import { SecHubContext } from '../extension';
 import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
 import { ReportListTable } from '../webview/reportTable';
 import { openCWEIDInBrowser } from '../utils/sechubUtils';
+import { FalsePositiveCache } from '../cache/falsePositiveCache';
 
 export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 
@@ -69,7 +70,8 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
                     break;
                 case 'markAsFalsePositive':
                     {
-                        const findingIds: number[] = data.findingIds;
+                        const findingIds: number[] = data.findingIds as number[];
+                        FalsePositiveCache.removeEntryByJobUUID(this._sechubContext.extensionContext, this._sechubContext.getReport()?.jobUUID || '');
                         vscode.commands.executeCommand(SECHUB_COMMANDS.markFalsePositives, this._sechubContext, findingIds);
                     }
                     break;
@@ -96,6 +98,7 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
     private async _getHtmlForWebview(webview: vscode.Webview): Promise<string> {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'report.js'));
         const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
+        const reportStyleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'report.css'));
         const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')));
 
 
@@ -104,7 +107,11 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
             return `<!DOCTYPE html>
             <html lang="en">
             <head>
-            <div>            <h1>No report available</h1>
+            <div>
+            No SecHub report is loaded.
+            </div>
+            <div>
+            Import a report from your filesystem or load a report from server to view the fndings.
             </div>
             </head>
             <body>`;
@@ -128,7 +135,7 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 				
 				<link href="${styleUri}" rel="stylesheet">
-                <link href="${codiconsUri}" rel="stylesheet" 
+                <link href="${codiconsUri}" rel="stylesheet">
 			</head>
 			<body class="vscode-light">
 				${reportTable}

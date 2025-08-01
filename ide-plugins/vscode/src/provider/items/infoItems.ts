@@ -6,7 +6,7 @@ import { SecHubReportWeb } from 'sechub-openapi-ts-client';
 export class InfoItem extends vscode.TreeItem {
 }
 
-export class InfoMetaDataItem extends InfoItem {
+export class MetaDataInfoItem extends InfoItem {
   children: InfoItem[] = [];
 
   constructor(key: string,
@@ -34,7 +34,7 @@ export class InfoMetaDataItem extends InfoItem {
   }
 }
 
-export class InfoWebScanItem extends InfoItem {
+export class WebScanInfoItem extends InfoItem {
   children: InfoItem[] = [];
 
   constructor(
@@ -51,43 +51,43 @@ export class InfoWebScanItem extends InfoItem {
 
   /* creates tree view items for web scan details from SecHubReportWeb */
   private createWebScanDetails(): InfoItem[] {
-    const requestItem = new InfoMetaDataItem("Request", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
-    const responseItem = new InfoMetaDataItem("Response", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
-    const attackItem = new InfoMetaDataItem("Attack", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
+    const requestItem = new MetaDataInfoItem("Request", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
+    const responseItem = new MetaDataInfoItem("Response", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
+    const attackItem = new MetaDataInfoItem("Attack", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
 
     if (this.web.request) {
-      requestItem.children.push(new InfoMetaDataItem("Method:", this.web.request.protocol + ' ' + this.web.request.version + ' ' + this.web.request.method, undefined, vscode.TreeItemCollapsibleState.None));
-      requestItem.children.push(new InfoMetaDataItem("Target:", this.web.request.target, undefined, vscode.TreeItemCollapsibleState.None));
+      requestItem.children.push(new MetaDataInfoItem("Method:", this.web.request.protocol + ' ' + this.web.request.version + ' ' + this.web.request.method, undefined, vscode.TreeItemCollapsibleState.None));
+      requestItem.children.push(new MetaDataInfoItem("Target:", this.web.request.target, undefined, vscode.TreeItemCollapsibleState.None));
 
-      const headers = new InfoMetaDataItem("Headers:", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
+      const headers = new MetaDataInfoItem("Headers:", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
       if (this.web.request.headers) {
         for (const [key, value] of Object.entries(this.web.request.headers)) {
-          headers.children.push(new InfoMetaDataItem(key, value, undefined, vscode.TreeItemCollapsibleState.None));
+          headers.children.push(new MetaDataInfoItem(key, value, undefined, vscode.TreeItemCollapsibleState.None));
         }
       }
       requestItem.children.push(headers);
 
-      requestItem.children.push(new InfoMetaDataItem("Body:", this.web.request.body?.text || '{}', undefined, vscode.TreeItemCollapsibleState.None));
+      requestItem.children.push(new MetaDataInfoItem("Body:", this.web.request.body?.text || '{}', undefined, vscode.TreeItemCollapsibleState.None));
     }
 
     if (this.web.response) {
-      responseItem.children.push(new InfoMetaDataItem("Status Code:", this.web.response.protocol + ' ' + this.web.response.version + ' ' + this.web.response.statusCode, undefined, vscode.TreeItemCollapsibleState.None));
+      responseItem.children.push(new MetaDataInfoItem("Status Code:", this.web.response.protocol + ' ' + this.web.response.version + ' ' + this.web.response.statusCode, undefined, vscode.TreeItemCollapsibleState.None));
 
-      const headers = new InfoMetaDataItem("Headers:", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
+      const headers = new MetaDataInfoItem("Headers:", "", undefined, vscode.TreeItemCollapsibleState.Collapsed);
       if (this.web.response.headers) {
         for (const [key, value] of Object.entries(this.web.response.headers)) {
-          headers.children.push(new InfoMetaDataItem(key, value, undefined, vscode.TreeItemCollapsibleState.None));
+          headers.children.push(new MetaDataInfoItem(key, value, undefined, vscode.TreeItemCollapsibleState.None));
         }
       }
       responseItem.children.push(headers);
 
-      responseItem.children.push(new InfoMetaDataItem("Body:", this.web.response.body?.text || '{}', undefined, vscode.TreeItemCollapsibleState.None));
+      responseItem.children.push(new MetaDataInfoItem("Body:", this.web.response.body?.text || '{}', undefined, vscode.TreeItemCollapsibleState.None));
     }
 
     if (this.web.attack) {
-      attackItem.children.push(new InfoMetaDataItem("Vector:", this.web.attack.vector || 'N/A', undefined, vscode.TreeItemCollapsibleState.None));
-      attackItem.children.push(new InfoMetaDataItem("Evidence:", this.web.attack.evidence?.snippet || 'N/A', undefined, vscode.TreeItemCollapsibleState.None));
-      attackItem.children.push(new InfoMetaDataItem("Body Location:", this.web.attack.evidence?.bodyLocation?.startLine || 'N/A', undefined, vscode.TreeItemCollapsibleState.None));
+      attackItem.children.push(new MetaDataInfoItem("Vector:", this.web.attack.vector || 'N/A', undefined, vscode.TreeItemCollapsibleState.None));
+      attackItem.children.push(new MetaDataInfoItem("Evidence:", this.web.attack.evidence?.snippet || 'N/A', undefined, vscode.TreeItemCollapsibleState.None));
+      attackItem.children.push(new MetaDataInfoItem("Body Location:", this.web.attack.evidence?.bodyLocation?.startLine || 'N/A', undefined, vscode.TreeItemCollapsibleState.None));
     }
 
     const items: InfoItem[] = [];

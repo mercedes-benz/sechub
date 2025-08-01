@@ -83,7 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const selectedCheckboxes = tableBody.querySelectorAll('.item-checkbox:checked');
     const findingIds = Array.from(selectedCheckboxes).map(checkbox => {
         const row = checkbox.closest('.sechub-finding-row');
-        return row.getAttribute('data-finding-id');
+        // ensure finding id is a number
+        return parseInt(row.getAttribute('data-finding-id'), 10);
     });
 
     vscode.postMessage({

@@ -6,9 +6,9 @@
     background-color: var(--vscode-button-background);
     color: var(--vscode-button-foreground);
     border: none;
-    padding: 4px 8px;
     border-radius: 2px;
     cursor: pointer;
+    padding: 4px 8px;
     margin-top: 8px;
     margin-bottom: 8px;
 }
@@ -33,11 +33,9 @@
     background-color: var(--vscode-button-secondaryBackground);
     color: var(--vscode-button-secondaryForeground);
     border: none;
-    padding: 4px 8px;
     border-radius: 2px;
-    cursor: pointer;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    cursor: pointer;    
+    border-radius: 2px;
 }
 
 .sechubSecondaryButton:disabled,
@@ -238,6 +236,12 @@
     margin: 0;
 }
 
+#openWebUiBtn {
+    padding: 4px 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
 /* reportTable */
 .expandable-content {
     display: none;
@@ -273,10 +277,7 @@
 
 .item-checkbox {
     background-color: var(--vscode-checkbox-background);
-    margin-top: 14px;
-    margin-bottom: 14px;
     margin-left: 8px;
-    padding: 4px 8px;
 }
 
 .item-checkbox:checked {
@@ -291,6 +292,7 @@
     padding: 0;
     margin: 0;
     background: none;
+
     cursor: pointer;
 
     width: 30px;
@@ -300,6 +302,13 @@
     align-items: center;
     justify-content: center;
     font-size: 16px;
+}
+
+#markAsFalsePositiveButton i.codicon {
+    display: block;
+    text-align: center; 
+    line-height: 30px;
+    background: none;
 }
 
 #reportViewtrafficLight {

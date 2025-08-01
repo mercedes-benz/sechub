@@ -8,7 +8,6 @@ import { fetchReportByUUID } from './fetchReportByUUID';
 import { clearSecHubData } from './clearSecHubData';
 import { importReportFromFile } from './importReportFromFile';
 import { openFindingWebView } from './openFinding';
-import { openCWEinBrowser } from './openCWEinBrowser';
 import { openFindingCallStack } from './openFindingCallStack';
 import { changeWebUiUrl } from './changeWebUiUrl';
 import { openWebScanInInfoview } from './openWebScanInInfoview';
@@ -29,11 +28,7 @@ export const commands = [
 
 export const sechubFindingCommands = [
     { command: SECHUB_COMMANDS.openWebScanInInfoview, action: openWebScanInInfoview },
-    { command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack }
-];
-
-export const reportItemCommands = [
-    { command: SECHUB_COMMANDS.openCWEinBrowser, action: openCWEinBrowser },
+    { command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack },
 ];
 
 export const testCommands = [

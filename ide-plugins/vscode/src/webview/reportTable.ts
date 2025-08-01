@@ -4,7 +4,8 @@ import { SecHubReport,
  } from 'sechub-openapi-ts-client';
 import { SECHUB_CONTEXT_STORAGE_KEYS } from '../utils/sechubConstants';
 import * as vscode from 'vscode';
-import { getFalsePositivesByIDForJobReport } from '../utils/isFindingFalsePositive';
+import { getFalsePositivesByIDForJobReport } from '../utils/sechubUtils';
+import { FalsePositiveCache } from '../cache/falsePositiveCache';
 
 export class ReportListTable {
 
@@ -14,6 +15,9 @@ export class ReportListTable {
 
         const htmlLabels: string[] = this.generateHtmlLabels(report);
         const htmlMessages: string[] = this.generateHtmlMessages(report);
+
+        const unsyncedFalsePositives = FalsePositiveCache.getEntryByJobUUID(context, report.jobUUID || '');
+        const unsynchedFindingIds: number[] = unsyncedFalsePositives ? unsyncedFalsePositives.findingIDs : [];
         
         const jobInfo = `
         <div class="vscode-sidebar-colors sidebar-header"> <span id="reportViewtrafficLight" class="traffic-light ${report.trafficLight?.toLowerCase()}"></span><b>Job UUID:</b> ${report.jobUUID}</div>
@@ -69,6 +73,7 @@ export class ReportListTable {
         }
 
         const checkBoxUnchecked = `<input type="checkbox"  class="item-checkbox">`;
+        const checkBoxChecked = `<input type="checkbox" checked class="item-checkbox">`;
         const webScanFidning = `<i class="codicon codicon-globe sechubIcon"></i><span class="tooltiptext">IDE does not support marking webscan findings. <br/> Please use SecHub Web-ui.</span>`;
         const markedFalesPositive = `<i class="codicon codicon-pass sechubIcon"></i><span class="tooltiptext">Finding is already marked as false positive.</span>`;
 
@@ -77,8 +82,9 @@ export class ReportListTable {
             report.result?.findings.forEach(finding => {
                 const isWebFinding = finding.web ? true : false;
                 const isFalsePositive = this.isFalsePositive(finding.id);
+                const isUnsyncedFalsePositive = unsynchedFindingIds.includes(finding.id || 0);
 
-                const type = isWebFinding ? webScanFidning : isFalsePositive ? markedFalesPositive : checkBoxUnchecked;
+                const type = isWebFinding ? webScanFidning : isFalsePositive ? markedFalesPositive : isUnsyncedFalsePositive ? checkBoxChecked : checkBoxUnchecked;
 
                 tableContent += `
                             <tr class="sechub-finding-row" data-finding-id="${finding.id}">

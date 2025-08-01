@@ -4,20 +4,21 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { FileLocationExplorer } from './utils/fileLocationExplorer';
-import { FindingNodeLinkBuilder } from './utils/findingNodeLinkBuilder';
+import { InfoViewItemMitreCWELinkBuilder } from './provider/items/infoViewItemMitreCWELinkBuilder';
 import { SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
 import { HierarchyItem } from './provider/items/hierarchyItems';
 import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvider';
 import { ReportItem } from './provider/items/reportItems';
 
-import { loadFromFile } from './utils/sechubUtils';
-import { SecHubReport, ScanType, ProjectData, SecHubFinding, SecHubCodeCallStack } from 'sechub-openapi-ts-client';
+import { loadFromFile, preSelectedProjectValid } from './utils/sechubUtils';
+import { SecHubReport, ScanType, SecHubFinding, SecHubCodeCallStack } from 'sechub-openapi-ts-client';
 import { multiStepInput } from './utils/sechubCredentialsMultistepInput';
-import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS, SECHUB_VIEW_IDS } from './utils/sechubConstants';
+import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_VIEW_IDS } from './utils/sechubConstants';
 import { DefaultClient } from './api/defaultClient';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
 import { SecHubReportWebViewProvider } from './provider/secHubReportWebViewProvider';
-import { commands, sechubFindingCommands, reportItemCommands,testCommands, markFalsePositiveCommands } from './commands/commands';
+import { commands, sechubFindingCommands ,testCommands, markFalsePositiveCommands } from './commands/commands';
+import { FalsePositiveCache } from './cache/falsePositiveCache';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
@@ -33,7 +34,6 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	await setUpApiClient(context);
 	await preSelectedProjectValid(context);
-
 
 	buildServerWebview(secHubContext);
 	buildReportWebview(secHubContext);
@@ -55,10 +55,6 @@ function registerCommands(sechubContext: SecHubContext) {
 		vscode.commands.registerCommand(command, (finding: SecHubFinding) => action(sechubContext, finding))
 	);
 
-	const registerReportItemCommands = reportItemCommands.map(({ command, action }) =>
-		vscode.commands.registerCommand(command, (reportItem: ReportItem) => action(sechubContext, reportItem))
-	);
-
 	const registerTestCommands = testCommands.map(({ command, action }) =>
 		vscode.commands.registerCommand(command, (finding: SecHubFinding, callstack: SecHubCodeCallStack) => action(sechubContext, finding, callstack))
 	);
@@ -73,9 +69,8 @@ function registerCommands(sechubContext: SecHubContext) {
 	sechubContext.extensionContext.subscriptions.push(
 		...registeredCommands,
 		...registeredHierachyCommands,
-		...registerReportItemCommands,
-	...registerTestCommands,
-...registerMarkFalsePositiveCommands);
+		...registerTestCommands,
+		...registerMarkFalsePositiveCommands);
 }
 
 async function setUpApiClient(context: vscode.ExtensionContext) {
@@ -100,22 +95,6 @@ async function setUpApiClient(context: vscode.ExtensionContext) {
 	}).catch(err => {
 		vscode.window.showErrorMessage(`Failed to initialize SecHub client:	${err}`);
 	});
-}
-
-async function preSelectedProjectValid(context: vscode.ExtensionContext): Promise<void> {
-	const project = context.globalState.get<ProjectData>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
-	if (!project) {
-		return;
-	}
-
-	const client = await DefaultClient.getInstance(context);
-	const projects = await client.getAssignedProjectDataList();
-
-	if(!projects || !projects.some(p => p.projectId === project.projectId)) {
-		vscode.window.showErrorMessage(`Selected project ${project.projectId} is not valid. Please select a valid project.`);
-		await context.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject, undefined);
-		return;
-	}
 }
 
 function buildCallHierarchyView(context: SecHubContext) {
@@ -151,7 +130,7 @@ export class SecHubContext {
 
 	private report: SecHubReport | undefined;
 
-	findingNodeLinkBuilder: FindingNodeLinkBuilder;
+	findingNodeLinkBuilder: InfoViewItemMitreCWELinkBuilder;
 	callHierarchyTreeDataProvider: SecHubCallHierarchyTreeDataProvider;
 	infoTreeProvider: SecHubInfoTreeDataProvider;
 	extensionContext: vscode.ExtensionContext;
@@ -165,7 +144,7 @@ export class SecHubContext {
 		this.infoTreeProvider = new SecHubInfoTreeDataProvider(undefined, undefined);
 		this.extensionContext = extensionContext;
 		this.fileLocationExplorer = new FileLocationExplorer();
-		this.findingNodeLinkBuilder = new FindingNodeLinkBuilder();
+		this.findingNodeLinkBuilder = new InfoViewItemMitreCWELinkBuilder();
 		this.serverWebViewProvider = new SecHubServerWebviewProvider(extensionContext.extensionUri, this);
 		this.reportWebViewProvider = new SecHubReportWebViewProvider(extensionContext.extensionUri, this);
 
@@ -190,6 +169,7 @@ export class SecHubContext {
 			this.reportWebViewProvider.refresh();
 		}
 
+		this.checkForUnsyncedFalsePositives(report?.jobUUID || '');
 		this.callHierarchyTreeDataProvider.update(undefined);
 		this.infoTreeProvider.update(undefined, undefined);
 	}
@@ -204,6 +184,13 @@ export class SecHubContext {
 		if (scanTypes.includes(ScanType.LicenseScan) && scanTypes.length === 1) {
 			const message = "LicenseScan is not supported in this IDE plugin.";
 			vscode.window.showErrorMessage(message);		
+		}
+	}
+
+	private checkForUnsyncedFalsePositives(jobUUID: string) {
+		const entry = FalsePositiveCache.getEntryByJobUUID(this.extensionContext, jobUUID);
+		if (entry) {
+			vscode.window.showWarningMessage(`There are unsynced false positives for job UUID: ${jobUUID}. Please synchronize them.`);
 		}
 	}
 }
