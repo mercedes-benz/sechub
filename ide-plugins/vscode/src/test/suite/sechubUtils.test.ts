@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: MIT
 import * as assert from 'assert';
 import * as path from 'path';
-import { Severity, ScanType } from 'sechub-openapi-ts-client';
-import { loadFromFile } from '../../utils/sechubUtils';
+import * as fs from 'fs';
+import { Severity,
+	ScanType,
+	FalsePositiveProjectConfiguration } from 'sechub-openapi-ts-client';
+import { getFalsePositivesByIDForJobReport, loadFromFile } from '../../utils/sechubUtils';
 
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
@@ -10,10 +13,6 @@ import * as vscode from 'vscode';
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
-
-	test('Smoke test', () => {
-		assert.strictEqual("works", "works");
-	});
 
 	test('SecHub test report file can be loaded and contains job uuid', () => {
 		/* execute */
@@ -159,9 +158,45 @@ suite('Extension Test Suite', () => {
 		let f2CodeCallstack2 = f2CodeCallstack1?.calls;
 		assert.strictEqual(undefined, f2CodeCallstack2);
 	});
+
+	test('Get false positives for job Returns list of False positives', () => {
+		/* prepare */
+		// read fp config from file
+		const location = resolveFileLocation("test_sechub_fp_configuration.json");
+		const fpConfig = readFPConfigFromFile(location);
+		const jobUUID = "24cfa2a4-4a30-4947-92a2-1ea62ce7d88c";
+
+		/* execute */
+		const ids: number[] = getFalsePositivesByIDForJobReport(fpConfig, jobUUID);
+
+		/* test */
+		assert.strictEqual(3, ids.length);
+		assert.strictEqual(1, ids[0]);
+		assert.strictEqual(2, ids[1]);
+		assert.strictEqual(47, ids[2]);
+	});
+
+	test('Get false positives for job Returns empty list if no false positives found', () => {
+		/* prepare */
+		// read fp config from file
+		const location = resolveFileLocation("test_sechub_fp_configuration.json");
+		const fpConfig = readFPConfigFromFile(location);
+		const jobUUID = "non-existing-job-uuid";
+
+		/* execute */
+		const ids: number[] = getFalsePositivesByIDForJobReport(fpConfig, jobUUID);
+
+		/* test */
+		assert.strictEqual(0, ids.length);
+	});
 });
 
 function resolveFileLocation(testfile: string): string {
 	let testReportLocation = path.dirname(__filename) + "/../../../src/test/suite/" + testfile;
 	return testReportLocation;
+}
+
+function readFPConfigFromFile(location: string): FalsePositiveProjectConfiguration{
+	const rawConfig = fs.readFileSync(location, 'utf8');
+	return JSON.parse(rawConfig) as FalsePositiveProjectConfiguration;
 }

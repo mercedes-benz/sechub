@@ -9,8 +9,11 @@ import {
   UserDetailInformation,
   UserDownloadJobReportRequest,
   SecHubReport,
+  FalsePositiveProjectConfiguration,
+  FalsePositives,
+  UserMarkFalsePositivesRequest,
 } from 'sechub-openapi-ts-client';
-import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
+import { SECHUB_API_CLIENT_CONFIG_KEYS } from '../utils/sechubConstants';
 
 export class DefaultClient {
   private static instance: DefaultClient | null = null;
@@ -38,11 +41,11 @@ export class DefaultClient {
   // Creates a new ApiClient instance with the current credentials and server URL loaded from the extension context storage
   private static async createApiClient(context: vscode.ExtensionContext): Promise<DefaultApiClient> {
     const [username, apiToken] = await Promise.all([
-      context.secrets.get(SECHUB_CREDENTIAL_KEYS.username),
-      context.secrets.get(SECHUB_CREDENTIAL_KEYS.apiToken),
+      context.secrets.get(SECHUB_API_CLIENT_CONFIG_KEYS.username),
+      context.secrets.get(SECHUB_API_CLIENT_CONFIG_KEYS.apiToken),
     ]);
 
-    const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
+    const serverUrl = context.globalState.get<string>(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl);
 
     if (!serverUrl || !username || !apiToken) {
       vscode.window.showErrorMessage('SecHub credentials are not set. Please configure them to connect to the SecHub server.');
@@ -118,6 +121,38 @@ export class DefaultClient {
       console.error('Error fetching report:', error);
       vscode.window.showErrorMessage('Failed to fetch report from the server.');
       return undefined;
+    }
+  }
+
+  public async userFetchFalsePositiveConfigurationOfProject(projectId: string): Promise<FalsePositiveProjectConfiguration | undefined> {
+    
+    const requestParameter = {
+      projectId: projectId
+    };
+
+    try {
+      const response = await this.apiClient.withExecutionApi().userFetchFalsePositiveConfigurationOfProject(requestParameter);
+      return response;
+
+    } catch (error) {
+      console.error('Error fetching false positives project configuration:', error);
+      vscode.window.showErrorMessage('Failed to fetch false positives project configuration from the server.');
+      return undefined;
+    }
+  }
+
+  public async markFalsePositivesForProject(falsePositves: FalsePositives, projectId: string): Promise<void> {
+
+    const requestParameter: UserMarkFalsePositivesRequest = {
+      projectId: projectId,
+      falsePositives: falsePositves
+    };
+
+    // catch error is calling method to cache false positives if server could not be reached
+    try {
+      await this.apiClient.withExecutionApi().userMarkFalsePositives(requestParameter);
+    } catch (error) {
+      throw new Error(`Failed to mark false positives for project ${projectId}: ${error}`);
     }
   }
 }

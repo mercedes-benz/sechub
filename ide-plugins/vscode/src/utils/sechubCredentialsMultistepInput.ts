@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 import { window, Disposable, ExtensionContext, QuickInputButton, QuickInputButtons, QuickInput } from 'vscode';
-import { SECHUB_CREDENTIAL_KEYS } from './sechubConstants';
+import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS } from './sechubConstants';
 
 export async function multiStepInput(context: ExtensionContext) {
 
@@ -11,7 +11,6 @@ export async function multiStepInput(context: ExtensionContext) {
         serverUrl: string;
         username: string;
         apiToken: string;
-        webUiUrl?: string;
     }
 
     async function collectInputs() {
@@ -24,7 +23,7 @@ export async function multiStepInput(context: ExtensionContext) {
 
     const title = 'Configure SecHub';
 
-    async function inputStep(input: MultiStepInput, state: Partial<State>, key: keyof typeof SECHUB_CREDENTIAL_KEYS, prompt: string, step: number) {
+    async function inputStep(input: MultiStepInput, state: Partial<State>, key: keyof typeof SECHUB_API_CLIENT_CONFIG_KEYS, prompt: string, step: number) {
         state[key] = await input.showInputBox({
             title,
             step,
@@ -47,10 +46,10 @@ export async function multiStepInput(context: ExtensionContext) {
     }
 
     const state = await collectInputs();
-    await context.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, state.serverUrl);
-    await context.globalState.update(SECHUB_CREDENTIAL_KEYS.webUiUrl, `${state.serverUrl}/login`);
-    await context.secrets.store(SECHUB_CREDENTIAL_KEYS.username, state.username);
-    await context.secrets.store(SECHUB_CREDENTIAL_KEYS.apiToken, state.apiToken);
+    await context.globalState.update(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl, state.serverUrl);
+    await context.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.webUiUrl, `${state.serverUrl}/login`);
+    await context.secrets.store(SECHUB_API_CLIENT_CONFIG_KEYS.username, state.username);
+    await context.secrets.store(SECHUB_API_CLIENT_CONFIG_KEYS.apiToken, state.apiToken);
 
     window.showInformationMessage(`Configured SecHub with Server URL: '${state.serverUrl}', Username: '${state.username}'`);
 }

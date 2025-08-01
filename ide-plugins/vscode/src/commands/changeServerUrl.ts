@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from "../extension";
-import { SECHUB_CREDENTIAL_KEYS } from "../utils/sechubConstants";
+import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS } from "../utils/sechubConstants";
 import { DefaultClient } from "../api/defaultClient";
 
 export async function changeServerUrl(sechubContext: SecHubContext): Promise<void> {
-    const currentServerUrl = sechubContext.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl) || '';
+    const currentServerUrl = sechubContext.extensionContext.globalState.get<string>(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl) || '';
         const newServerUrl = await vscode.window.showInputBox({
             prompt: 'Enter SecHub Server URL',
             value: currentServerUrl,
@@ -21,8 +21,8 @@ export async function changeServerUrl(sechubContext: SecHubContext): Promise<voi
             // Remove trailing slashes
             const trimmedUrl = newServerUrl.replace(/\/+$/, '');
 
-            await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.serverUrl, trimmedUrl);
-            await sechubContext.extensionContext.globalState.update(SECHUB_CREDENTIAL_KEYS.webUiUrl, `${trimmedUrl}/login`);
+            await sechubContext.extensionContext.globalState.update(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl, trimmedUrl);
+            await sechubContext.extensionContext.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.webUiUrl, `${trimmedUrl}/login`);
             await DefaultClient.createClient(sechubContext.extensionContext);
             sechubContext.serverWebViewProvider.refresh();
             vscode.window.showInformationMessage(`SecHub Server URL updated to: '${trimmedUrl}'`);

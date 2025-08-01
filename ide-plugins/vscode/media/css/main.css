@@ -2,13 +2,18 @@
 /* vscode theme variables */
 /* https://gist.github.com/estruyf/ba49203e1a7d6868e9320a4ea480c27a */
 
+/* common styles for sechub plugin */
+.margin-bottom {
+    margin-bottom: 8px;
+}
+
 .sechubButton {
     background-color: var(--vscode-button-background);
     color: var(--vscode-button-foreground);
     border: none;
-    padding: 4px 8px;
     border-radius: 2px;
     cursor: pointer;
+    padding: 4px 8px;
     margin-top: 8px;
     margin-bottom: 8px;
 }
@@ -29,10 +34,40 @@
     background-color: var(--vscode-button-activeBackground);
 }
 
+.sechubSecondaryButton {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;    
+    border-radius: 2px;
+}
+
+.sechubSecondaryButton:disabled,
+.sechubSecondaryButton:disabled:hover {
+    background-color: var(--vscode-button-secondaryBackground);
+    color: var(--vscode-button-secondaryForeground);
+    cursor: default;
+}
+
+.sechubSecondaryButton:hover {
+    background-color: var(--vscode-button-secondaryHoverBackground);
+}
+
+.sechubSecondaryButton:active {
+    background-color: var(--vscode-button-secondaryActiveBackground);
+}
+
+.sechubIcon {
+    color: var(--vscode-button-background);
+    margin-left: 8px;
+}
+
 .traffic-light {
     width: 15px;
     height: 15px;
     border-radius: 50%;
+    margin: 8px;
     display: inline-block;
 }
 
@@ -52,11 +87,48 @@
     background-color: grey;
 }
 
-/* Tooltip container */
+.sechubTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.sechubTable td,
+.sechubTable th {
+    padding: 4px;
+}
+
+.sechubTable tbody tr:hover {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    cursor: pointer;
+}
+
+.sechubTable tbody tr:active {
+    background-color: var(--vscode-inputOption-activeBackground);
+    color: var(--vscode-inputOption-activeForeground);
+}
+
+.sechubTable tbody tr.selected {
+    background-color: var(--vscode-inputOption-hoverBackground);
+    color: var(--vscode-inputOption-activeForeground);
+}
+
+.sechubTable thead {
+    position: sticky;
+    top: 0;  
+    z-index: 100;
+}
+
+.sechubTable th {
+    padding-top: 4px;
+    padding-bottom: 4px;
+    text-align: left;
+    background-color: var(--vscode-button-background);
+    color: var(--vscode-button-foreground);
+}
+
 .tooltip {
     position: relative;
     display: block;
-    margin-bottom: 4px;
 }
 
 .tooltip .tooltiptext {
@@ -69,12 +141,13 @@
     z-index: 1;
     /* position bottom right */
     top: 105%;
-    left: 10%; 
-    white-space: nowrap; 
+    left: 10%;
+    white-space: nowrap;
     padding: 4px 8px;
     /* fade in */
     opacity: 0;
     transition: opacity 0.5s;
+    font: inherit;
 }
 
 .tooltip:hover .tooltiptext {
@@ -82,7 +155,7 @@
     opacity: 1;
 }
 
-/* pagination */
+/* pagination sytles */
 .pagination-container {
     display: flex;
     justify-content: center;
@@ -96,33 +169,7 @@
     margin-right: 20px;
 }
 
-/* jobTable */
-#sechubJobTable {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-#sechubJobTable td,
-#sechubJobTable th {
-    padding: 8px;
-}
-
-#sechubJobTable tbody tr:hover {
-    background-color: var(--vscode-inputOption-hoverBackground);
-    cursor: pointer;
-}
-
-#sechubJobTable tbody tr:active {
-    background-color: var(--vscode-inputOption-activeBackground);
-}
-
-#sechubJobTable th {
-    padding-top: 4px;
-    padding-bottom: 4px;
-    text-align: left;
-    background-color: var(--vscode-button-background);
-}
-
+/* jobTable styles (serverView) */
 #jobTableTitleContainer {
     display: flex;
     justify-content: space-between;
@@ -150,8 +197,7 @@
     white-space: nowrap;
 }
 
-/* serverStateContainer */
-
+/* serverStateContainer sytels (serverView) */
 #serverUrlContainer {
     align-items: left;
     padding: 2px;
@@ -189,4 +235,85 @@
 #connectionState {
     padding: 0;
     margin: 0;
+}
+
+#openWebUiBtn {
+    padding: 4px 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+/* reportTable styles (reportView) */
+.expandable-content {
+    display: none;
+    padding-left: 20px;
+}
+
+.expandable-header {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.expandable-header i {
+    vertical-align: middle;
+    margin-right: 5px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.expandable-header.expanded i {
+    transform: rotate(90deg);
+}
+
+.vscode-sidebar-colors {
+    color: var(--vscode-sideBar-foreground);
+    background-color: var(--vscode-sideBar-background);
+}
+
+.item-checkbox:disabled {
+    cursor: not-allowed;
+    background-color: var(--vscode-checkbox-disabled-background);
+    color: var(--vscode-checkbox-disabled-foreground);
+}
+
+.item-checkbox {
+    background-color: var(--vscode-checkbox-background);
+    margin-left: 8px;
+}
+
+.item-checkbox:checked {
+    background-color: var(--vscode-checkbox-selectBackground);
+    color: var(--vscode-checkbox-foreground);
+    border-color: var(--vscode-checkbox-selectBorder);
+}
+
+#markAsFalsePositiveButton{
+    border: none;
+    padding: 0;
+    margin: 0;
+    background: none;
+
+    cursor: pointer;
+
+    width: 20px;
+    height: 20px; 
+    border-radius: 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#markAsFalsePositiveButton i.codicon {
+    display: block;
+    text-align: center; 
+    line-height: 20px;
+    background: none;
+}
+
+#reportViewtrafficLight {
+    /* traffic light in report view should be smaller */
+    margin: 0px;
+    margin-right: 8px;
+    height: 10px;
+    width: 10px;
 }

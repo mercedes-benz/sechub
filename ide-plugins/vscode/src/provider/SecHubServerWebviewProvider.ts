@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 import { SecHubContext } from '../extension';
-import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
+import { SECHUB_COMMANDS, SECHUB_VIEW_IDS, SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS } from '../utils/sechubConstants';
 import { JobListTable } from '../webview/jobTable';
 import { ServerStateContainer } from '../webview/serverStateContainer';
 import { DefaultClient } from '../api/defaultClient';
 import * as vscode from 'vscode';
+import { preSelectedProjectValid } from '../utils/sechubUtils';
 
 export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
@@ -67,6 +68,13 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 						this.jobListDataTable.changePage(data.direction);
 						this.refresh();
 					}
+					break;
+				case 'openWebUi':
+					{
+						const leftClick = data.data.leftClick;
+						this.openWebUi(leftClick);
+					}
+					break;
 			}
 		});
 	}
@@ -74,7 +82,28 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 	public async refresh() {
 		if (this._view) {
 			this._view.show?.(true);
+			await preSelectedProjectValid(this._sechubContext.extensionContext);			
 			this._view.webview.html = await this._getHtmlForWebview(this._view.webview);
+		}
+	}
+
+	private openWebUi(leftClick: any) {
+		if (leftClick) {
+			let webUiUrl = this._sechubContext.extensionContext.globalState.get<string>(SECHUB_CONTEXT_STORAGE_KEYS.webUiUrl);
+			if (webUiUrl) {
+
+				if (!webUiUrl.endsWith('/login')) {
+					const projectId = this._sechubContext.extensionContext.globalState.get<string>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
+					if (projectId) {
+						webUiUrl += `/projects/${projectId}`;
+					}
+				}
+				vscode.env.openExternal(vscode.Uri.parse(webUiUrl));
+			} else {
+				vscode.window.showErrorMessage('No SecHub Web-UI URL configured. Please set it in with command "SecHub: Change Web-UI URL".');
+			}
+		} else {
+			vscode.commands.executeCommand(SECHUB_COMMANDS.changeWebUiUrl);
 		}
 	}
 
@@ -93,8 +122,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 		const nonce = getNonce();
 
 		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
-
-		const javascriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'main.js'));
+		const javascriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'server.js'));
 
 		const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')));
 

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { DefaultClient } from '../api/defaultClient';
-import { SECHUB_REPORT_KEYS } from '../utils/sechubConstants';
+import { SECHUB_CONTEXT_STORAGE_KEYS, SECHUB_COMMANDS } from '../utils/sechubConstants';
 import { SecHubContext } from '../extension';
 
 export async function selectProject(sechubContext: SecHubContext): Promise<void> {
@@ -24,8 +24,9 @@ export async function selectProject(sechubContext: SecHubContext): Promise<void>
             const projectData = projects.find(p => p.projectId === selectedProject);
             if (projectData) {
                 vscode.window.showInformationMessage(`Selected Project: ${projectData.projectId}`);
-                sechubContext.extensionContext.globalState.update(SECHUB_REPORT_KEYS.selectedProject, projectData);
+                sechubContext.extensionContext.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject, projectData);
                 sechubContext.serverWebViewProvider.refresh();
+                vscode.commands.executeCommand(SECHUB_COMMANDS.fetchFalsePositives);
             }
         }
     } catch (error) {

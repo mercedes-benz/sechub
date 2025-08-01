@@ -1,0 +1,67 @@
+{
+  "falsePositives": [
+    {
+      "jobData": {
+        "jobUUID": "24cfa2a4-4a30-4947-92a2-1ea62ce7d88c",
+        "findingId": 1,
+        "comment": "Inaccurate Alert: This alert is inaccurate or incorrect., "
+      },
+      "author": "int-test_superadmin",
+      "metaData": {
+        "scanType": "codeScan",
+        "name": "this method will not auto-escape HTML. Verify data is well formed.",
+        "severity": "HIGH",
+        "code": {
+          "start": {
+            "sourceCode": "var data = template.HTML(v.TmplFile)",
+            "location": "go-test-bench/pkg/servestd/servestd.go"
+          }
+        },
+        "cweId": 79
+      },
+      "created": "2025-08-01 07:48:59"
+    },
+    {
+      "jobData": {
+        "jobUUID": "24cfa2a4-4a30-4947-92a2-1ea62ce7d88c",
+        "findingId": 2,
+        "comment": "Inaccurate Alert: This alert is inaccurate or incorrect., "
+      },
+      "author": "int-test_superadmin",
+      "metaData": {
+        "scanType": "codeScan",
+        "name": "this method will not auto-escape HTML. Verify data is well formed.",
+        "severity": "HIGH",
+        "code": {
+          "start": {
+            "sourceCode": "return template.HTML(userInput), false",
+            "location": "go-test-bench/internal/xss/xss.go"
+          }
+        },
+        "cweId": 79
+      },
+      "created": "2025-08-01 07:48:59"
+    },
+    {
+      "jobData": {
+        "jobUUID": "24cfa2a4-4a30-4947-92a2-1ea62ce7d88c",
+        "findingId": 47,
+        "comment": "Unused Code: Vulnerable code is not actually used., "
+      },
+      "author": "int-test_superadmin",
+      "metaData": {
+        "scanType": "secretScan",
+        "name": "GitHub Personal Access Token",
+        "severity": "CRITICAL",
+        "code": {
+          "start": {
+            "sourceCode": "invalid-token",
+            "location": "UnSAFE_Bank/iOS/Source Code/Pods/README.adoc"
+          }
+        },
+        "cweId": 798
+      },
+      "created": "2025-08-01 07:52:07"
+    }
+  ]
+}
