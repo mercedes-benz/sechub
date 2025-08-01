@@ -16,7 +16,7 @@ import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_VIEW_IDS } from './utils/sechubCo
 import { DefaultClient } from './api/defaultClient';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
 import { SecHubReportWebViewProvider } from './provider/secHubReportWebViewProvider';
-import { commands, sechubFindingCommands ,testCommands, markFalsePositiveCommands } from './commands/commands';
+import { commands, sechubFindingCommands ,sechubFindingAndCallstackCommands, markFalsePositiveCommands } from './commands/commands';
 import { FalsePositiveCache } from './cache/falsePositiveCache';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -54,7 +54,7 @@ function registerCommands(sechubContext: SecHubContext) {
 		vscode.commands.registerCommand(command, (finding: SecHubFinding) => action(sechubContext, finding))
 	);
 
-	const registerTestCommands = testCommands.map(({ command, action }) =>
+	const registerTestCommands = sechubFindingAndCallstackCommands.map(({ command, action }) =>
 		vscode.commands.registerCommand(command, (finding: SecHubFinding, callstack: SecHubCodeCallStack) => action(sechubContext, finding, callstack))
 	);
 

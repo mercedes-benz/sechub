@@ -31,7 +31,7 @@ export const sechubFindingCommands = [
     { command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack },
 ];
 
-export const testCommands = [
+export const sechubFindingAndCallstackCommands = [
     { command: SECHUB_COMMANDS.openFinding, action: openFinding }
 ];
 
