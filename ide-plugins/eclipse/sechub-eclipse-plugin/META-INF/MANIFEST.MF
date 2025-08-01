@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SecHub
 Bundle-SymbolicName: com.mercedesbenz.sechub.plugin;singleton:=true
-Bundle-Version: 0.4.0
+Bundle-Version: 1.0.0
 Bundle-Activator: com.mercedesbenz.sechub.SecHubActivator
 Bundle-Vendor: Mercedes-Benz Tech Innovation GmbH
 Require-Bundle: org.eclipse.ui,
