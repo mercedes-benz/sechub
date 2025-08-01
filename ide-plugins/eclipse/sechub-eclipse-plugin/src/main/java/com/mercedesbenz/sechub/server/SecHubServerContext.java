@@ -9,7 +9,7 @@ import com.mercedesbenz.sechub.api.internal.gen.invoker.ApiException;
 import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveProjectConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
 import com.mercedesbenz.sechub.server.data.SecHubServerDataModel;
-import com.mercedesbenz.sechub.util.Logging;
+import com.mercedesbenz.sechub.util.IDELogAdapter;
 
 public class SecHubServerContext {
 
@@ -78,7 +78,7 @@ public class SecHubServerContext {
 			FalsePositiveProjectConfiguration projectData = access.fetchFalsePositiveProjectData(projectId);
 			setFalsePositivesForSelectedProject(projectData);
 		} catch (ApiException e) {
-			Logging.logError("Was not able to fetch false positives for project:" + projectId, e);
+			IDELogAdapter.logError("Was not able to fetch false positives for project:" + projectId, e);
 		}
 	}
 
