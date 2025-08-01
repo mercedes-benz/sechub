@@ -14,13 +14,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.commons.TextFileReader;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
-import com.mercedesbenz.sechub.model.FindingModel;
-import com.mercedesbenz.sechub.model.SecHubReportToFindingModelTransformer;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class SecHubReportImporter {
-
-	private SecHubReportToFindingModelTransformer transformer = new SecHubReportToFindingModelTransformer();
-
 
 	public void importAndDisplayReport(File reportFile) {
 		importByJob(new SecHubReportFileImportJob(reportFile));
@@ -68,7 +64,7 @@ public class SecHubReportImporter {
 	}
 
 	private IStatus importAndDisplayReportInsideJob(SecHubReport report, String projectId, IProgressMonitor monitor) {
-		monitor.beginTask("Import SecHub report data from project: "+projectId, 2);
+		monitor.beginTask("Import SecHub report data from project: "+projectId, 1);
 		importReportAndDisplay(report, projectId, monitor);
 		return Status.OK_STATUS;
 	}
@@ -77,10 +73,7 @@ public class SecHubReportImporter {
 	 * Will do 2 works on progress monitor
 	 */
 	private void importReportAndDisplay(SecHubReport report, String projectId, IProgressMonitor monitor) {
-		FindingModel model = transformer.transform(report, projectId);
-		monitor.worked(1);
-
-		SecHubReportViewUpdater.updateReportViewInSWTThread(report, model);
+		EclipseUtil.safeAsyncExec(() -> SecHubReportView.update(report, true));
 
 		monitor.worked(1);
 	}

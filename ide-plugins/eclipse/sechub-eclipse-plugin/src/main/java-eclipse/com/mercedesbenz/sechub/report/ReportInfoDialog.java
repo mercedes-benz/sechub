@@ -57,13 +57,14 @@ public class ReportInfoDialog extends Dialog {
 			sb.append(message.getType()).append(':').append(message.getText()).append("\n");
 		}
 
-		messagesText = new StyledText(container, SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
+		messagesText = new StyledText(container, SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.READ_ONLY);
+		messagesText.setAlwaysShowScrollBars(false);
 		GridData messagesLayoutData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		messagesText.setLayoutData(messagesLayoutData);
 		messagesText.setText(sb.toString());
 
 		Label labelsLabel = new Label(container, SWT.NONE);
-		
+
 		labelsLabel.setText("Labels:");
 
 		SecHubReportMetaData metaData = report.getMetaData();
@@ -75,7 +76,7 @@ public class ReportInfoDialog extends Dialog {
 				label.setText(entry.getKey() + "=" + Objects.toString(entry.getValue()));
 			}
 
-		}else {
+		} else {
 			Label label = new Label(container, SWT.NONE);
 			GridData labelLayoutData = new GridData(SWT.FILL, SWT.TOP, true, false);
 			label.setLayoutData(labelLayoutData);

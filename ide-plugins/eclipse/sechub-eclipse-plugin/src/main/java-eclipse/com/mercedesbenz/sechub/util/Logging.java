@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.Status;
 import com.mercedesbenz.sechub.SecHubActivator;
 
 public class Logging {
+	
 	public static void logInfo(String info) {
 		IStatus status = new Status(IStatus.INFO, SecHubActivator.PLUGIN_ID, info);
 		getLog().log(status);

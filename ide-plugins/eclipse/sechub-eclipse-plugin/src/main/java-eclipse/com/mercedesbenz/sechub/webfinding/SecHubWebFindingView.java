@@ -85,8 +85,9 @@ public class SecHubWebFindingView extends ViewPart {
 		descriptionLabel.setText("Description:");
 		descriptionLabel.setLayoutData(descriptionLabelLayoutData);
 
-		description = new StyledText(mainComposite, SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
+		description = new StyledText(mainComposite, SWT.WRAP | SWT.V_SCROLL| SWT.H_SCROLL | SWT.READ_ONLY);
 		description.setLayoutData(descriptionTextLayoutData);
+		description.setAlwaysShowScrollBars(false);
 
 		GridData solutionLabelLayoutData = GridDataFactory.fillDefaults().grab(true, false).create();
 		GridData solutionTextLayoutData = GridDataFactory.fillDefaults().grab(true, false).hint(SWT.DEFAULT, 75)
@@ -96,8 +97,9 @@ public class SecHubWebFindingView extends ViewPart {
 		solutionLabel.setText("Solution:");
 		solutionLabel.setLayoutData(solutionLabelLayoutData);
 
-		solution = new StyledText(mainComposite, SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
+		solution = new StyledText(mainComposite, SWT.WRAP | SWT.V_SCROLL| SWT.H_SCROLL | SWT.READ_ONLY);
 		solution.setLayoutData(solutionTextLayoutData);
+		solution.setAlwaysShowScrollBars(false);
 
 		GridData jsonLabelLayoutData = GridDataFactory.fillDefaults().grab(true, false).create();
 		Label findingAsJsonLabel = new Label(mainComposite, SWT.NONE);
@@ -105,8 +107,9 @@ public class SecHubWebFindingView extends ViewPart {
 		findingAsJsonLabel.setLayoutData(jsonLabelLayoutData);
 
 		GridData jsonTextLayoutData = GridDataFactory.fillDefaults().grab(true, true).create();
-		findingAsJson = new StyledText(mainComposite, SWT.WRAP | SWT.V_SCROLL | SWT.READ_ONLY);
+		findingAsJson = new StyledText(mainComposite, SWT.WRAP | SWT.V_SCROLL | SWT.H_SCROLL | SWT.READ_ONLY);
 		findingAsJson.setLayoutData(jsonTextLayoutData);
+		findingAsJson.setAlwaysShowScrollBars(false);
 
 		makeActions();
 		contributeToActionBars();
@@ -133,7 +136,7 @@ public class SecHubWebFindingView extends ViewPart {
 		}
 
 		SecHubFinding sechubFinding = node.getFinding();
-		String headDescription =CweLinkTextCreator.createCweLinkTextWithInfos(node);
+		String headDescription = CweLinkTextCreator.createCweLinkTextWithInfos(node);
 		linkDescriptionWithLinks.setText(headDescription);
 
 		description.setText(sechubFinding.getDescription());
@@ -141,7 +144,7 @@ public class SecHubWebFindingView extends ViewPart {
 
 		String asJson = JSONConverter.get().toJSON(sechubFinding, true);
 		findingAsJson.setText(asJson);
-		
+
 		mainComposite.layout();
 	}
 

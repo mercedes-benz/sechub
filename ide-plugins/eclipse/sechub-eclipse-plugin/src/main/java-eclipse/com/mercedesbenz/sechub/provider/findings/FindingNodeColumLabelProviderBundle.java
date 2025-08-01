@@ -14,4 +14,5 @@ public class FindingNodeColumLabelProviderBundle {
 	public final SourceColumnLabelProvider sourceLabelProvider = new SourceColumnLabelProvider();
 	public final LineColumnLabelProvider lineLabelProvider = new LineColumnLabelProvider();
 	public final ScanTypeColumnLabelProvider scanTypeLabelProvider = new ScanTypeColumnLabelProvider();
+	public final FalsePositiveFindingNodeColumnLabelProvider falsePositiveColumnLabelProvider = new FalsePositiveFindingNodeColumnLabelProvider();
 }

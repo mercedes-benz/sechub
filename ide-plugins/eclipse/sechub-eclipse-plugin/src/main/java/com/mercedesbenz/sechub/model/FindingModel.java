@@ -16,6 +16,10 @@ public class FindingModel {
 	private String status;
 	private String projectId;
 	private SecHubReport report;
+	
+	public FindingModel() {
+		
+	}
 
 	public UUID getJobUUID() {
 		return jobUUID;

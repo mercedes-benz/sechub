@@ -30,16 +30,18 @@ public class FindingNode implements Comparable<FindingNode> {
 	private Map<String, Object> metaDataCache;
 	public SecHubFinding finding;
 	private UUID jobUUID;
+	private Object monitor = new Object();
+	private FindingNodeFalsePositiveInfo falsePositiveInfo;
 
-	private FindingNode(UUID jobUUID, String description, String location, Integer line, Integer column, String relevantPart,
-			String source) {
+	private FindingNode(UUID jobUUID, String description, String location, Integer line, Integer column,
+			String relevantPart, String source) {
 		this.description = description;
 		this.location = location;
 		this.line = line;
 		this.column = column;
 		this.relevantPart = relevantPart;
 		this.source = source;
-		this.jobUUID=jobUUID;
+		this.jobUUID = jobUUID;
 	}
 
 	public static class FindingNodeBuilder {
@@ -58,9 +60,10 @@ public class FindingNode implements Comparable<FindingNode> {
 		}
 
 		public FindingNodeBuilder setJobUUID(UUID jobUUID) {
-			this.jobUUID=jobUUID;
+			this.jobUUID = jobUUID;
 			return this;
 		}
+
 		public FindingNodeBuilder setDescription(String description) {
 			this.description = description;
 			return this;
@@ -139,7 +142,7 @@ public class FindingNode implements Comparable<FindingNode> {
 	public UUID getJobUUID() {
 		return jobUUID;
 	}
-	
+
 	public FindingNode getParent() {
 		return parent;
 	}
@@ -192,14 +195,14 @@ public class FindingNode implements Comparable<FindingNode> {
 	}
 
 	public Severity getSeverity() {
-		if (finding==null) {
+		if (finding == null) {
 			return null;
 		}
 		return finding.getSeverity();
 	}
 
 	public int getId() {
-		if (finding==null) {
+		if (finding == null) {
 			return -1;
 		}
 		return finding.getId();
@@ -243,13 +246,23 @@ public class FindingNode implements Comparable<FindingNode> {
 		}
 	}
 
-	private Object monitor = new Object();
+	public FindingNodeFalsePositiveInfo getFalsePositiveInfo() {
+		return falsePositiveInfo;
+	}
+
+	public boolean isFalsePositive() {
+		return falsePositiveInfo != null;
+	}
+
+	public void setFalsePositiveInfo(FindingNodeFalsePositiveInfo value) {
+		this.falsePositiveInfo = value;
+	}
 
 	@Override
 	public String toString() {
-		return "FindingNode [parent=" + parent + ", children=" + children + ", description=" + description
+		return "FindingNode [ id=" + (finding != null ? finding.getId() : "null") + " , description=" + description
 				+ ", location=" + location + ", line=" + line + ", column=" + column + ", relevantPart=" + relevantPart
-				+ ", source=" + source + ", callStackStep=" + callStackStep + ", finding=" + finding + "]";
+				+ ", source=" + source + ", callStackStep=" + callStackStep + "]";
 	}
 
 	@Override
