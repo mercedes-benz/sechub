@@ -54,7 +54,7 @@ public class SecHubReportFindingModelService {
             return new FindingModel();
         }
 
-        FalsePositiveProjectConfiguration falsePositiveProjectConfiguration = secHubAccess.getFalsePositveProjectConfiguration(projectId);
+        FalsePositiveProjectConfiguration falsePositiveProjectConfiguration = secHubAccess.getFalsePositiveProjectConfiguration(projectId);
 
         if (falsePositiveProjectConfiguration == null) {
             LOG.debug("SecHub false positive configuration is null for project: " + projectId);

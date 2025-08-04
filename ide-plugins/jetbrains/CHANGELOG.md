@@ -1,6 +1,10 @@
 <!-- SPDX-License-Identifier: MIT --->
 # Changelog
 
+## [0.5.0]
+### Added
+- Support for mark-false-positive functionality in SecHub reports
+
 ## [0.4.1]
 ## Changed
 - Using new OpenAPI client for robust SecHub server communication

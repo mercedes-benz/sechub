@@ -16,7 +16,7 @@ public interface SecHubAccess {
 
     SecHubReport getSecHubReport(String projectId, UUID jobUUID);
 
-    FalsePositiveProjectConfiguration getFalsePositveProjectConfiguration(String projectId);
+    FalsePositiveProjectConfiguration getFalsePositiveProjectConfiguration(String projectId);
 
     void markFalsePositive(String projectId, FalsePositives falsePositives);
 }

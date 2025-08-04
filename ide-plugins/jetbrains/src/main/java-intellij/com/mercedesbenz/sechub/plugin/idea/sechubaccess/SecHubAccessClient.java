@@ -80,7 +80,7 @@ class SecHubAccessClient implements SecHubAccess {
     }
 
     @Override
-    public FalsePositiveProjectConfiguration getFalsePositveProjectConfiguration(String projectId) {
+    public FalsePositiveProjectConfiguration getFalsePositiveProjectConfiguration(String projectId) {
         requireNonNull(projectId, "Parameter 'projectId' must not be null");
         try {
             return client.withSecHubExecutionApi().userFetchFalsePositiveConfigurationOfProject(projectId);

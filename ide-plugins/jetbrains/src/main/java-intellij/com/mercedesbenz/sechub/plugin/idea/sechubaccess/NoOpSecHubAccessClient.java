@@ -33,7 +33,7 @@ class NoOpSecHubAccessClient implements SecHubAccess {
     }
 
     @Override
-    public FalsePositiveProjectConfiguration getFalsePositveProjectConfiguration(String projectId) {
+    public FalsePositiveProjectConfiguration getFalsePositiveProjectConfiguration(String projectId) {
         return null;
     }
 
