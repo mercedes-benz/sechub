@@ -59,11 +59,11 @@ or without credentials:
     add-scm-history: false
 
     # OPTIONAL: A list of scan types that shall be used when a SecHub configuration file is generated.
-    #           Allowed values: codeScan, secretScan and licenseScan - If you want other scan types you
-    #           have to create a SecHub configuration file and provide it by the config-path attribute
-    #           (ignored in the case of a custom configuration file)
+    #           Allowed values: codeScan, secretScan, iacScan and licenseScan - If you want other scan
+    #           types you have to create a SecHub configuration file and provide it by the config-path
+    #           attribute (ignored in the case of a custom configuration file)
     # DEFAULT: codeScan
-    scan-types: codeScan, secretScan
+    scan-types: 'codeScan,secretScan'
 
     # OPTIONAL: A definition of the content type which shall be used for SecHub configuration file generation.
     #           Allowed values: source,binaries. Cannot be combined.

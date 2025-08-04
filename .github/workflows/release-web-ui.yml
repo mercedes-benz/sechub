@@ -114,8 +114,6 @@ jobs:
       - name: Collect GIT status
         if: always()
         run: |
-          # restore reduced-openapi3.json
-          git restore sechub-api-java/src/main/resources/reduced-openapi3.json
           mkdir -p build/reports
           git status > build/reports/git-status.txt
           echo "--- git tags:" >> build/reports/git-status.txt

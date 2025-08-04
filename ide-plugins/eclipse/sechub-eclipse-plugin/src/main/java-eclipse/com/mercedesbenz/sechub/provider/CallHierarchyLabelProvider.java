@@ -1,14 +1,15 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.provider;
 
+import static com.mercedesbenz.sechub.util.SimpleStringUtil.stringOrUnknown;
+
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.swt.graphics.Image;
 
-import com.mercedesbenz.sechub.EclipseUtil;
 import com.mercedesbenz.sechub.model.FindingNode;
-import static com.mercedesbenz.sechub.util.SimpleStringUtil.*;
+import com.mercedesbenz.sechub.util.EclipseUtil;
 
 public class CallHierarchyLabelProvider extends LabelProvider implements IStyledLabelProvider{
 

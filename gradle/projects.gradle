@@ -2,7 +2,6 @@
 
 
 ext {
-secHubBuildStage = new BuildStage()
 projectType = [
 
             goProjects: [
@@ -11,7 +10,6 @@ projectType = [
             javaProjects: [
                project(':sechub-openapi'),
                project(':sechub-openapi-java-client'),
-               project(':sechub-api-java'),
                project(':sechub-testframework'),
                project(':sechub-analyzer-cli'),
                project(':sechub-commons-core'),

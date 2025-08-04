@@ -32,8 +32,6 @@ public class NessusAdapterV1WireMockTest {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_XML = "application/xml";
 
-    private static final int HTTPS_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPSPort();
-
     private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
 
     private static final String PASSWORD = "12345BASE64_PWD";
@@ -49,7 +47,7 @@ public class NessusAdapterV1WireMockTest {
     private static final String USERNAME = "sechub-user";
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT));
 
     private NessusAdapter adapterToTest;
 

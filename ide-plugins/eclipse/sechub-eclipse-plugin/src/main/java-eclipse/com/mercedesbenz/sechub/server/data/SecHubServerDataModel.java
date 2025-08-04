@@ -2,17 +2,18 @@
 package com.mercedesbenz.sechub.server.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
 
 public class SecHubServerDataModel {
 
-	private List<ServerElement> servers = new ArrayList<ServerElement>();
+	private SecHubServerConnection connection;
+	private List<ProjectData> projects = new ArrayList<ProjectData>();
+	
 
-	public List<ServerElement> getServers() {
-		return servers;
-	}
-
-	public class ServerElement implements SecHubServerData {
+	public class SecHubServerConnection {
 		private String url;
 		private boolean alive;
 		private boolean loginSuccessful;
@@ -44,7 +45,26 @@ public class SecHubServerDataModel {
 		public boolean isLoginSuccessful() {
 			return loginSuccessful;
 		}
-
+		
 	}
 
+
+	public void setConnection(SecHubServerConnection connection) {
+		 this.connection=connection;
+	}
+	
+	public SecHubServerConnection getConnection() {
+		return connection;
+	}
+
+	public void setProjects(List<ProjectData> projects) {
+		this.projects.clear();
+		if (projects!=null) {
+			this.projects.addAll(projects);
+		}
+	}
+	
+	public List<ProjectData> getProjects() {
+		return Collections.unmodifiableList(projects);
+	}
 }

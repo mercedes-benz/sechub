@@ -55,36 +55,6 @@
             sequence="M1+6">
       </key>
    </extension>
-   <!--
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu
-               id="com.mercedesbenz.sechub.plugin.menus.sechubMenu"
-               label="SecHub"
-               mnemonic="M">
-            <command
-                  commandId="com.mercedesbenz.sechub.plugin.commands.importCommand"
-                  id="com.mercedesbenz.sechub.plugin.menus.importCommand"
-                  mnemonic="S">
-            </command>
-         </menu>
-      </menuContribution>
-      <menuContribution
-            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
-         <toolbar
-               id="com.mercedesbenz.sechub.plugin.toolbars.sampleToolbar">
-            <command
-                  id="com.mercedesbenz.sechub.plugin.toolbars.importCommand"
-                  commandId="com.mercedesbenz.sechub.plugin.commands.importCommand"
-                  icon="icons/sechub-logo.png"
-                  tooltip="Import SecHub Report">
-            </command>
-         </toolbar>
-      </menuContribution>
-   </extension>
-   -->
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -112,8 +82,7 @@
          </description>
       </wizard>
    </extension>
-   <extension
-         point="org.eclipse.ui.views">
+   <extension point="org.eclipse.ui.views">
       <category
             name="SecHub"
             id="com.mercedesbenz.sechub.viewcategory">
@@ -142,47 +111,14 @@
             category="com.mercedesbenz.sechub.viewcategory"
             inject="true">
       </view>
-   </extension>
-   <extension
-         point="org.eclipse.ui.perspectiveExtensions">
-         <!-- Java perspective -->
-	      <perspectiveExtension
-	            targetID="org.eclipse.jdt.ui.JavaPerspective">
-	         <view
-	               id="com.mercedesbenz.sechub.views.SecHubReportView"
-	               relative="org.eclipse.ui.views.ProblemView"
-	               relationship="right"
-	               ratio="0.5">
-	         </view>
-	      </perspectiveExtension>
-	      <perspectiveExtension
-	            targetID="org.eclipse.jdt.ui.JavaPerspective">
-	         <view
-	               id="com.mercedesbenz.sechub.views.SecHubServerView"
-	               relative="org.eclipse.ui.navigator.ProjectExplorer"
-	               relationship="bottom"
-	               ratio="0.5">
-	         </view>
-	      </perspectiveExtension>
- 		<!-- Java perspective -->
-	      <perspectiveExtension
-	            targetID="org.eclipse.ui.resourcePerspective">
-	         <view
-	               id="com.mercedesbenz.sechub.views.SecHubReportView"
-	               relative="org.eclipse.ui.views.ProblemView"
-	               relationship="right"
-	               ratio="0.5">
-	         </view>
-	      </perspectiveExtension>
-	      <perspectiveExtension
-	            targetID="org.eclipse.ui.resourcePerspective">
-	         <view
-	               id="com.mercedesbenz.sechub.views.SecHubServerView"
-	               relative="org.eclipse.ui.navigator.ProjectExplorer"
-	               relationship="bottom"
-	               ratio="0.5">
-	         </view>
-	      </perspectiveExtension>
+      <view
+            id="com.mercedesbenz.sechub.views.SecHubWebFindingView"
+            name="SecHub Web Finding"
+            icon="icons/sechub-logo.png"
+            class="com.mercedesbenz.sechub.webfinding.SecHubWebFindingView"
+            category="com.mercedesbenz.sechub.viewcategory"
+            inject="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.help.contexts">
@@ -267,4 +203,23 @@
             name="SecHub">
       </page>
    </extension>
+   <extension
+    point="org.eclipse.core.runtime.preferences">
+    <initializer
+        class="com.mercedesbenz.sechub.preferences.SechubPreferenceInitializer">
+    </initializer>
+</extension>
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <!--                          PERSPECTIVE                                 -->
+   <!-- ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+   <extension
+      point="org.eclipse.ui.perspectives">
+   <perspective
+         name="SecHub"
+         id="com.mercedesbenz.sechub.SecHubPerspective"
+         icon="icons/sechub-logo.png"
+         class="com.mercedesbenz.sechub.SecHubPerspective">
+   </perspective>
+  </extension>
+  
 </plugin>

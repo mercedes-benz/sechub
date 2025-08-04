@@ -1,11 +1,23 @@
 // SPDX-License-Identifier: MIT
 
-import {defineFalsePositives, extractJobUUID, getReport, scan} from '../src/sechub-cli';
-import { execFileSync} from 'child_process';
-import { readFileSync, openSync, closeSync, mkdtempSync} from '../src/fs-wrapper';
-import {sanitize} from '../src/shell-arg-sanitizer';
+import { exec } from 'shelljs';
+import { scan, extractJobUUID, defineFalsePositives, getReport, spawnAndWait } from '../src/sechub-cli';
+import { sanitize } from '../src/shell-arg-sanitizer';
+import { execFileSync, spawn } from 'child_process';
+import { EventEmitter } from 'events';
 
 jest.mock('@actions/core');
+
+jest.mock('../src/shell-arg-sanitizer', () => ({
+    sanitize: jest.fn((arg) => arg),
+}));
+
+jest.mock('../src/fs-wrapper', () => ({
+    readFileSync: jest.fn(() => output),
+    openSync: jest.fn(() => 4711),
+    mkdtempSync: jest.fn(() => '/temp-mocked'),
+    closeSync: jest.fn(),
+}));
 
 const output = `
         WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!
@@ -20,21 +32,9 @@ const output = `
         `;
 
 jest.mock('child_process', () => ({
-    execFileSync: jest.fn(() => output)
+    spawn: jest.fn(),
+    execFileSync: jest.fn(() => output),
 }));
-
-jest.mock('../src/shell-arg-sanitizer',() => ({
-    sanitize: jest.fn((toSanitize) => toSanitize) // just return always input..
-}));
-
-jest.mock('../src/fs-wrapper', () => ({
-    readFileSync: jest.fn(() => output),
-    openSync: jest.fn(() => 4711),
-    mkdtempSync: jest.fn(() => '/temp-mocked'),
-    closeSync: jest.fn(),
-    mkdtempScloseSyncync: jest.fn(),
-}));
-
 
 afterEach(() => {
     jest.clearAllMocks();
@@ -44,24 +44,42 @@ afterAll(() => {
     jest.resetAllMocks();
 });
 
-describe('scan', function() {
+function mockSpawn(exitCode = 0, signal: NodeJS.Signals | null = null) {
+    const events = new EventEmitter();
 
-    it('sanitizes shell arguments', () => {
+    const childMock = {
+        kill: jest.fn(),
+        on: events.on.bind(events),
+        once: events.once.bind(events),
+        emit: events.emit.bind(events),
+    } as any;
+
+    (spawn as jest.Mock).mockReturnValue(childMock);
+
+    // Simulate the process exiting after short delay
+    setTimeout(() => {
+        events.emit('exit', exitCode, signal);
+    }, 5);
+
+    return childMock;
+}
+
+
+describe('scan', () => {
+
+    it('sanitizes shell arguments', async () => {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
             configFileLocation: '/path/to/config.json',
             workspaceFolder: '/path/to/workspace',
-            inputData: {
-                addScmHistory: 'false'
-            }
+            inputData: { addScmHistory: 'false' }
         };
-        (sanitize as jest.Mock).mockImplementation((arg) => {
-            return arg;
-        });
+
+        mockSpawn();
 
         /* execute */
-        scan(context);
+        await scan(context);
 
         /* test */
         expect(sanitize).toBeCalledTimes(4);
@@ -71,88 +89,100 @@ describe('scan', function() {
         expect(sanitize).toBeCalledWith('');
     });
 
-    it('return correct job id', function () {
+    it('returns correct job id', async () => {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
             configFileLocation: '/path/to/config.json',
             workspaceFolder: '/path/to/workspace',
-            inputData: {
-                addScmHistory: 'false'
-            }
+            inputData: { addScmHistory: 'false' }
         };
 
+        mockSpawn();
+
         /* execute */
-        scan(context);
+        await scan(context);
 
         /* test */
         expect(context.lastClientExitCode).toEqual(0);
         expect(context.jobUUID).toEqual('6880e518-88db-406a-bc67-851933e7e5b7');
     });
 
-    it('with addScmHistory flag true - executes SecHub client with -addScmHistory', function () {
+    it('with addScmHistory flag true - executes SecHub client with -addScmHistory', async () => {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
             configFileLocation: '/path/to/config.json',
             workspaceFolder: '/path/to/workspace',
-            inputData: {
-                addScmHistory: 'true'
-            }
+            inputData: { addScmHistory: 'true' }
         };
 
+        mockSpawn();
+
         /* execute */
-        scan(context);
+        await scan(context);
 
         /* test */
-        expect(execFileSync).toBeCalledTimes(1); 
-        expect(execFileSync)
-            .toBeCalledWith(
-                '/path/to/sechub-cli', ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '-addScmHistory', 'scan'],
-                {
-                    env: process.env,
-                    encoding: 'utf-8',
+        const spawnArgs = (spawn as jest.Mock).mock.calls[0];
 
-                    stdio: ['ignore', 4711, 4711]
-                }
-            );
+        expect(spawnArgs[0]).toBe('/path/to/sechub-cli');
+        expect(spawnArgs[1]).toEqual([
+            '-configfile', '/path/to/config.json',
+            '-output', '/path/to/workspace',
+            '-addScmHistory',
+            'scan',
+        ]);
     });
 
-    it('with addScmHistory flag false - executes SecHub client without -addScmHistory', function () {
+    it('with addScmHistory flag false - executes SecHub client without -addScmHistory', async () => {
         /* prepare */
         const context: any = {
             clientExecutablePath: '/path/to/sechub-cli',
             configFileLocation: '/path/to/config.json',
             workspaceFolder: '/path/to/workspace',
-            inputData: {
-                addScmHistory: 'false'
-            }
+            inputData: { addScmHistory: 'false' }
         };
 
+        mockSpawn();
+
         /* execute */
-        scan(context);
+        await scan(context);
 
         /* test */
-        expect(execFileSync).toBeCalledTimes(1);
-        expect(execFileSync)
-            .toBeCalledWith(
-                '/path/to/sechub-cli', 
-                ['-configfile', '/path/to/config.json', '-output', '/path/to/workspace', '', 'scan'],
-                {
-                    env: process.env,
-                    encoding: 'utf-8',
+        const spawnArgs = (spawn as jest.Mock).mock.calls[0];
 
-                    stdio: ['ignore', 4711, 4711]
-                }
-            );
+        expect(spawnArgs[1]).toEqual([
+            '-configfile', '/path/to/config.json',
+            '-output', '/path/to/workspace', '',
+            'scan',
+        ]);
+    });
+
+    it('handles scan failure (non-zero exit)', async () => {
+        /* prepare */
+        const context: any = {
+            clientExecutablePath: '/path/to/sechub-cli',
+            configFileLocation: '/path/to/config.json',
+            workspaceFolder: '/path/to/workspace',
+            inputData: { addScmHistory: 'false' }
+        };
+
+        mockSpawn(1);
+
+        /* execute */
+        await scan(context);
+
+        /* test */
+        expect(context.lastClientExitCode).toBe(1);
     });
 
 });
 
+
 describe('extractJobUUID', function () {
 
     it('returns job uuid from sechub client output snippet', function () {
-
+        /* prepare */
         const output = `
         WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!
         2024-03-08 13:58:18 (+01:00) Zipping folder: __test__/integrationtest/test-sources (/home/xyzgithub-actions/scan/__test__/integrationtest/test-sources)
@@ -173,7 +203,7 @@ describe('extractJobUUID', function () {
     });
 
     it('returns job uuid from string with "job: xxxx"', function () {
-
+        /* prepare */
         const output = `
         The uuid for job:1234
         can be extracted
@@ -187,7 +217,7 @@ describe('extractJobUUID', function () {
     });
 
     it('returns empty string when no job id is available', function () {
-
+        /* prepare */
         const output = `
         WARNING: Configured to trust all - means unknown service certificate is accepted. Don't use this in production!
         2024-03-08 13:58:18 (+01:00) Zipping folder: __test__/integrationtest/test-sources (/home/xyzgithub-actions/scan/__test__/integrationtest/test-sources)
@@ -269,5 +299,125 @@ describe('defineFalsePositives', function () {
         expect(sanitize).toBeCalledTimes(0);
         expect(context.lastClientExitCode).toBe(0);
         expect(context.defineFalsePositivesFile).toBe(file);
+    });
+});
+
+describe('spawnAndWait signal handling', () => {    
+    let mockChildProcess: any;
+
+    beforeEach(() => {
+        // Create a mock child process object
+        mockChildProcess = {
+            kill: jest.fn(),
+            on: jest.fn(),
+        };
+
+        // Set the mock return value for spawn
+        (spawn as jest.Mock).mockReturnValue(mockChildProcess);
+    });
+
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('should forward SIGINT signal to child process', async () => {
+        /* prepare */
+        const command = 'dummyCommand';
+        const args = ['dummyArg'];
+        const options = {};
+
+        /* execute */
+        const promise = spawnAndWait(command, args, options);
+
+        // Emit SIGINT signal
+        expect(process.emit('SIGINT', 'SIGINT'));
+
+        /* test */
+        // Verify that the signal was forwarded
+        expect(mockChildProcess.kill).toHaveBeenCalledWith('SIGINT');
+
+        // Simulate child process exit
+        mockChildProcess.on.mock.calls[0][1](0, null);
+
+        await expect(promise).resolves.toBe(0);
+    });
+
+    it('should forward SIGTERM signal to child process', async () => {
+        /* prepare */
+        const command = 'dummyCommand';
+        const args = ['dummyArg'];
+        const options = {};
+
+        /* execute */
+        const promise = spawnAndWait(command, args, options);
+
+        // Emit SIGTERM signal
+        expect(process.emit('SIGTERM', 'SIGTERM'));
+
+        /* test */
+        // Verify that the signal was forwarded
+        expect(mockChildProcess.kill).toHaveBeenCalledWith('SIGTERM');
+
+        // Simulate child process exit
+        mockChildProcess.on.mock.calls[0][1](0, null);
+
+        await expect(promise).resolves.toBe(0);
+    });
+
+    it('should reject promise if child process is terminated by signal', async () => {
+        /* prepare */
+        const command = 'dummyCommand';
+        const args = ['dummyArg'];
+        const options = {};
+
+        /* execute */
+        const promise = spawnAndWait(command, args, options);
+
+        // Emit SIGTERM signal
+        expect(process.emit('SIGTERM', 'SIGTERM'));
+
+        /* test */
+        // Verify that the signal was forwarded
+        expect(mockChildProcess.kill).toHaveBeenCalledWith('SIGTERM');
+
+        // Simulate child process exit with signal
+        mockChildProcess.on.mock.calls[0][1](null, 'SIGTERM');
+
+        await expect(promise).rejects.toThrow('Process terminated by signal: SIGTERM');
+    });
+
+    it('should reject promise if child process encounters an error', async () => {
+        /* prepare */
+        const command = 'dummyCommand';
+        const args = ['dummyArg'];
+        const options = {};
+
+        /* execute + test */
+        const promise = spawnAndWait(command, args, options);
+
+        const error = new Error('Child process error');
+        mockChildProcess.on.mock.calls[1][1](error);
+
+        await expect(promise).rejects.toThrow('Child process error');
+    });
+
+    it('should NOT reject promise if child process exists without error', async () => {
+        /* prepare */
+        const command = 'dummyCommand';
+        const args = ['dummyArg'];
+        const options = {};
+
+        // Simulate the child process exiting normally
+        mockChildProcess.on.mockImplementation((event: string, callback: (arg0: number, arg1: null) => void) => {
+            if (event === 'exit') {
+                callback(0, null);
+            }
+        });
+
+        /* execute */
+        const promise = spawnAndWait(command, args, options);
+
+        /* test */
+        await expect(promise).resolves.toBe(0);
     });
 });

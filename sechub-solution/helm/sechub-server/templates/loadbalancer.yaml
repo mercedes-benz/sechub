@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: MIT
+
+{{- if .Values.service.loadbalancer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: sechub
+  {{- if .Values.service.loadbalancer.annotations }}
+  annotations:
+    {{ .Values.service.loadbalancer.annotations | indent 4 | trim }}
+  {{- end }}
+  {{- if .Values.service.loadbalancer.finalizers }}
+  finalizers:
+    {{ .Values.service.loadbalancer.finalizers | indent 4 | trim }}
+  {{- end }}
+spec:
+  type: LoadBalancer
+  selector:
+    lbtype: external
+  ports:
+  {{- range .Values.service.loadbalancer.portmappings }}
+    - name: {{ .name }}
+      port: {{ .port }}
+      targetPort: {{ .targetPort | quote }}
+      protocol: {{ .protocol }}
+  {{- end }}
+{{- end }}

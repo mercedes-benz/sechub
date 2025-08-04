@@ -1,5 +1,9 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea.sechubaccess;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubJobInfoForUserListPage;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.api.internal.gen.model.*;
 
 import java.util.List;

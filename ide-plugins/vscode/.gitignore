@@ -5,3 +5,6 @@ out
 
 # Plugin installation packages
 *.vsix
+
+# Plugin build artifacts
+yarn.lock

@@ -15,11 +15,13 @@ spec:
     matchLabels:
       name: {{ .Values.name }}
       app: sechub
+      lbtype: external
   template:
     metadata:
       labels:
         name: {{ .Values.name }}
         app: sechub
+        lbtype: external
 {{- if .Values.templateMetadataAnnotations }}
       annotations:
         {{ .Values.templateMetadataAnnotations | indent 8 | trim }}
@@ -63,42 +65,42 @@ spec:
             sizeLimit: "{{ .Values.volumes.tmpVolume.size }}"
   {{- end }}
 {{- end }}
-{{- if .Values.go_mmproxy.enabled }}
-      initContainers:
-      - name: setup
-        image: {{ .Values.go_mmproxy.image }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-        - "/bin/sh"
-        - "-cx"
-        args:
-        - |
-          /sbin/ip rule add from 127.0.0.1/8 iif lo table 123
-          /sbin/ip route add local 0.0.0.0/0 dev lo table 123
-        securityContext:
-          capabilities:
-            add:
-              - NET_ADMIN
-{{- end }}
+# {{- if .Values.go_mmproxy.enabled }}
+#       initContainers:
+#       - name: setup
+#         image: {{ .Values.go_mmproxy.image }}
+#         imagePullPolicy: {{ .Values.image.pullPolicy }}
+#         command:
+#         - "/bin/sh"
+#         - "-cx"
+#         args:
+#         - |
+#           /sbin/ip rule add from 127.0.0.1/8 iif lo table 123
+#           /sbin/ip route add local 0.0.0.0/0 dev lo table 123
+#         securityContext:
+#           capabilities:
+#             add:
+#               - NET_ADMIN
+# {{- end }}
       containers:
-{{- if .Values.go_mmproxy.enabled }}
-      # go-mmproxy sidecar container
-      - name: go-mmproxy
-        image: {{ .Values.go_mmproxy.image }}
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        ports:
-        - containerPort: 8080
-        securityContext:
-          capabilities:
-            add:
-              - NET_ADMIN
-        args:
-        - "-v=0"           # loglevel 0 - no logging ; 1 - log errors ; 2 - log all state changes
-        - "-l"             # listen
-        - "0.0.0.0:8080"   # on port 8080
-        - "-4"             # tcp v4
-        - "127.0.0.1:8443" # forward to SecHub server container (localhost port 8443)
-{{- end }}
+# {{- if .Values.go_mmproxy.enabled }}
+#       # go-mmproxy sidecar container
+#       - name: go-mmproxy
+#         image: {{ .Values.go_mmproxy.image }}
+#         imagePullPolicy: {{ .Values.image.pullPolicy }}
+#         ports:
+#         - containerPort: 8080
+#         securityContext:
+#           capabilities:
+#             add:
+#               - NET_ADMIN
+#         args:
+#         - "-v=0"           # loglevel 0 - no logging ; 1 - log errors ; 2 - log all state changes
+#         - "-l"             # listen
+#         - "0.0.0.0:8080"   # on port 8080
+#         - "-4"             # tcp v4
+#         - "127.0.0.1:8443" # forward to SecHub server container (localhost port 8443)
+# {{- end }}
       # SecHub server container
       - name: sechub-server
         image: {{ .Values.image.registry }}:{{ .Values.image.tag }}
@@ -113,13 +115,13 @@ spec:
         ports:
           - name: health-port
             containerPort: 10250
-          - name: https-port
-            containerPort: 8443
+          - name: {{ .Values.targetPort.name }}
+            containerPort: {{ .Values.targetPort.port }}
         startupProbe:
           httpGet:
             scheme: HTTPS
             path: /api/anonymous/check/alive
-            port: https-port
+            port: {{ .Values.targetPort.name }}
           initialDelaySeconds: 10
           periodSeconds: 1
           # probe every 1s x 600 = 10 mins before restart of container
@@ -139,7 +141,7 @@ spec:
           httpGet:
             scheme: HTTPS
             path: /api/anonymous/check/alive
-            port: https-port
+            port: {{ .Values.targetPort.name }}
           periodSeconds: 20
           # probe every 20s x 3 = 60s before restart of container
           failureThreshold: 3
@@ -172,6 +174,8 @@ spec:
         # Base url for sechub server - e.g. https://sechub.example.com
         - name: SECHUB_SERVER_BASEURL
           value: "{{ .Values.server.baseURL.userAccess }}"
+        - name: SECHUB_SERVER_PORT
+          value: "{{ .Values.targetPort.port }}"
         # Static resources for login page
         - name: SPRING_WEB_RESOURCES_STATICLOCATIONS
 {{- if .Values.staticResources.enabled }}
@@ -457,6 +461,18 @@ spec:
         # Port of SMTP server
         - name: SECHUB_NOTIFICATION_SMTP_PORT
           value: "{{ .Values.server.email.smtp.port }}"
+        # Java mail configs
+        - name: SECHUB_NOTIFICATION_SMTP_CONFIG
+          value: "{{ .Values.server.email.smtp.config }}"
+{{- if .Values.server.email.smtp.user }}
+        # SMTP user
+        - name: SECHUB_NOTIFICATION_SMTP_CREDENTIAL_USERNAME
+          value: "{{ .Values.server.email.smtp.user }}"
+{{- end }}
+{{- if .Values.server.email.smtp.password }}
+        - name: SECHUB_NOTIFICATION_SMTP_CREDENTIAL_PASSWORD
+          value: "{{ .Values.server.email.smtp.password }}"
+{{- end }}
 # ----------------------------------------------------------------------------------------------#
 # - Scope: scheduler
 # --------------------------------------------------------------------------------------------- #
@@ -584,20 +600,22 @@ spec:
 {{- else if .Values.storage.s3.enabled }}
         - name: S3_ENABLED
           value: "true"
-        - name: S3_ENDPOINT
+        - name: SECHUB_STORAGE_S3_ENDPOINT
           value: "{{ .Values.storage.s3.endpoint }}"
-        - name: S3_BUCKETNAME
+        - name: SECHUB_STORAGE_S3_BUCKETNAME
           value: "{{ .Values.storage.s3.bucketname }}"
-        - name: S3_ACCESSKEY
+        - name: SECHUB_STORAGE_S3_ACCESSKEY
           valueFrom:
             secretKeyRef:
               name: secret-storage
               key: sechub_storage_s3_accesskey
-        - name: S3_SECRETKEY
+        - name: SECHUB_STORAGE_S3_SECRETKEY
           valueFrom:
             secretKeyRef:
               name: secret-storage
               key: sechub_storage_s3_secretkey
+        - name: SECHUB_STORAGE_S3_REGION
+          value: "{{ .Values.storage.s3.region }}"
         - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_MAX_MILLISECONDS
           value: "{{ .Values.storage.s3.connectionPool.maxIdleTimeInMilliseconds }}"
         - name: SECHUB_STORAGE_S3_CONNECTION_IDLE_VALIDATE_MILLISECONDS

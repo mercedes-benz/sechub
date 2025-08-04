@@ -2,8 +2,8 @@
 
 import * as core from '@actions/core';
 import * as shell from 'shelljs';
-import { ScanType, ContentType, SecHubConfigurationModel } from './configuration-model';
-import * as cm from './configuration-model';
+import { ScanType, SecHubConfiguration, SecHubCodeScanConfiguration, SecHubLicenseScanConfiguration, SecHubSecretScanConfiguration, SecHubIacScanConfiguration, SecHubSourceDataConfiguration, SecHubBinaryDataConfiguration } from 'sechub-openapi-ts-client';
+import { ContentType } from './content-type';
 
 /**
  * Creates the sechub.json configuration file with the given user input values.
@@ -33,8 +33,8 @@ export function createSecHubConfigJsonString(data: SecHubConfigurationModelBuild
 
 export class SecHubConfigurationModelBuilderData {
 
-    static DEFAULT_SCAN_TYPE=ScanType.CODE_SCAN;  // per default only code scan
-    static DEFAULT_CONTENT_TYPE=ContentType.SOURCE;  // per default source
+    static DEFAULT_SCAN_TYPE = ScanType.CodeScan;  // per default only code scan
+    static DEFAULT_CONTENT_TYPE = ContentType.SOURCE;  // per default sources
 
     includeFolders: string[] = [];
     excludeFolders: string[] = [];
@@ -51,51 +51,74 @@ export class SecHubConfigurationModelBuilderData {
  * 
  * @returns model
  */
-export function createSecHubConfigurationModel(builderData: SecHubConfigurationModelBuilderData): SecHubConfigurationModel {
-    const model = new SecHubConfigurationModel();
+export function createSecHubConfigurationModel(builderData: SecHubConfigurationModelBuilderData): SecHubConfiguration {
+    let model: SecHubConfiguration = {
+        projectId: '',
+        apiVersion: '1.0',
+        data: {
+            sources: undefined,
+            binaries: undefined
+        },
+    };
 
     const referenceName = 'reference-data-1';
 
     createSourceOrBinaryDataReference(referenceName, builderData, model);
 
-    if (builderData.scanTypes?.indexOf(ScanType.CODE_SCAN) != -1) {
-        const codescan = new cm.CodeScan();
-        codescan.use = [referenceName];
-        model.codeScan = codescan;
+    if (isStringInArrayIgnoreCase(ScanType.CodeScan, builderData.scanTypes)) {
+        const codeScan: SecHubCodeScanConfiguration = {
+            use: [referenceName]
+        };
+        model.codeScan = codeScan;
     }
-    if (builderData.scanTypes?.indexOf(ScanType.LICENSE_SCAN) != -1) {
-        const licenseScan = new cm.LicenseScan();
-        licenseScan.use = [referenceName];
+    if (isStringInArrayIgnoreCase(ScanType.LicenseScan, builderData.scanTypes)) {
+        const licenseScan: SecHubLicenseScanConfiguration = {
+            use: [referenceName]
+        };
         model.licenseScan = licenseScan;
     }
-    if (builderData.scanTypes?.indexOf(ScanType.SECRET_SCAN) != -1) {
-        const secretScan = new cm.SecretScan();
-        secretScan.use = [referenceName];
+    if (isStringInArrayIgnoreCase(ScanType.SecretScan, builderData.scanTypes)) {
+        const secretScan: SecHubSecretScanConfiguration = {
+            use: [referenceName]
+        };
         model.secretScan = secretScan;
+    }
+    if (isStringInArrayIgnoreCase(ScanType.IacScan, builderData.scanTypes)) {
+        const iacScan: SecHubIacScanConfiguration = {
+            use: [referenceName]
+        };
+        model.iacScan = iacScan;
     }
 
     return model;
 }
 
-function createSourceOrBinaryDataReference(referenceName: string, builderData: SecHubConfigurationModelBuilderData, model: SecHubConfigurationModel) {
-    if (builderData.contentType == cm.ContentType.SOURCE) {
-
-        const sourceData1 = new cm.SourceData();
-        sourceData1.name = referenceName;
-
-        sourceData1.fileSystem.folders = builderData.includeFolders;
-        sourceData1.excludes = builderData.excludeFolders;
-
-        model.data.sources = [sourceData1];
-
-    } else if (builderData.contentType == cm.ContentType.BINARIES) {
-        const binaryData1 = new cm.BinaryData();
-        binaryData1.name = referenceName;
-
-        binaryData1.fileSystem.folders = builderData.includeFolders;
-        binaryData1.excludes = builderData.excludeFolders;
-
-        model.data.binaries = [binaryData1];
+function createSourceOrBinaryDataReference(referenceName: string, builderData: SecHubConfigurationModelBuilderData, model: SecHubConfiguration) {
+    if (!model.data) {
+        model.data = {};
     }
+    if (builderData.contentType === ContentType.SOURCE) {
+        const sourceData: SecHubSourceDataConfiguration = {
+            name: referenceName,
+            fileSystem: {
+                folders: builderData.includeFolders
+            },
+            excludes: builderData.excludeFolders
+        };
+        model.data.sources = [sourceData];
+    } else if (builderData.contentType === ContentType.BINARIES) {
+        const binaryData: SecHubBinaryDataConfiguration = {
+            name: referenceName,
+            fileSystem: {
+                folders: builderData.includeFolders
+            },
+            excludes: builderData.excludeFolders
+        };
+        model.data.binaries = [binaryData];
+    }    
 }
 
+function isStringInArrayIgnoreCase(target: string, array: string[]): boolean {
+    const lowerCaseTarget = target.toLowerCase();
+    return array.some(item => item.toLowerCase() === lowerCaseTarget);
+}

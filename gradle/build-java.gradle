@@ -84,12 +84,9 @@ subprojects{
 
         // we must set the gradle properties as system properties, so available inside test framework.
         systemProperties groovyPropertiesMap([
-            'sechub.test.wiremock.http_port',
-            'sechub.test.wiremock.https_port',
             'sechub.test.restdoc.https.port',
-            'sechub.test.mvcmock.https.port',
-            'sechub.test.s3mock.http.port',
-            'sechub.test.s3mock.https.port' ])
+            'sechub.test.mvcmock.https.port'
+             ])
 
         systemProperty 'sechub.build.gradle', 'true' // we can use this to check for gradle build inside java tests
 

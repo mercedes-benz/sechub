@@ -48,6 +48,11 @@ server:
     smtp:
       host: mailhost.to.be.defined
       port: 25
+      # Java mail config options. See https://javaee.github.io/javamail/docs/api/com/sun/mail/smtp/package-summary.html
+      config: mail.smtp.auth=false,mail.transport.protocol=smtp
+      # Optional: SMTP user credentials
+      # user: exampleuser
+      # password: example
   initialAdminUser:
     # Define initial admin user. The link to get the api token will be sent to this email address.
     id: sechubadm
@@ -121,23 +126,37 @@ server:
     # When `true` then Port 5005 will be opened for Java debugging.
     enableJavaDebugging: false
 
+# Define port for outside access to sechub server:
+targetPort:
+  # Name must be matched in 'service.loadbalancer.portmappings' below
+  name: "8443-port"
+  port: 8443
+
+# Load balancer definition for external access:
 service:
   loadbalancer:
-    # ip: set ip address. if "" then a new ip is aquired. none -> define no ip for service
-    ip: none
-    port:
-      name: https
-      number: 8443
-  # optional: Add annotations (goes to metadata.annotations)
-  #           Can contain multiple lines. Example:
-  # annotations: |-
-  #   loadbalancer.openstack.org/keep-floatingip: "true"
-  #   loadbalancer.openstack.org/proxy-protocol: "true"
-  #
-  # optional: Add finalizers (goes to metadata.finalizers)
-  #           Can contain multiple lines. Example:
-  # finalizers: |-
-  #   - service.kubernetes.io/load-balancer-cleanup
+    enabled: true
+    # Here you can add your own services. Selector is: lbtype: external
+    portmappings:
+      - name: sechub-server
+        port: 443
+        targetPort: "8443-port"
+        protocol: TCP
+      - name: web-ui
+        port: 4443
+        targetPort: "4443-port"
+        protocol: TCP
+
+    # optional: Add annotations (goes to metadata.annotations)
+    #           Can contain multiple lines. Example:
+    # annotations: |-
+    #   loadbalancer.openstack.org/keep-floatingip: "true"
+    #   loadbalancer.openstack.org/proxy-protocol: "true"
+    #
+    # optional: Add finalizers (goes to metadata.finalizers)
+    #           Can contain multiple lines. Example:
+    # finalizers: |-
+    #   - service.kubernetes.io/load-balancer-cleanup
 
 # optional: Add annotations to template.metadata.annotations
 #           Can contain multiple lines. Example for Prometheus actuator:
@@ -249,9 +268,10 @@ storage:
     enabled: false
     endpoint: "https://to.be.defined:<port>"
     bucketname: "<my-bucketname>"
-    # Defines the access key for used S3 bucket
-    # Put the S3 access key in k8s secret secret-storage:sechub_storage_s3_accesskey
-    # Put the S3 secret key in k8s secret secret-storage:sechub_storage_s3_secretkey
+    region: "current"
+    # Please define the access credentials for S3 bucket as Kubernetes secrets:
+    # - Put the S3 access key in k8s secret secret-storage:sechub_storage_s3_accesskey
+    # - Put the S3 secret key in k8s secret secret-storage:sechub_storage_s3_secretkey
     connectionPool:
       # Maximum idle time (in milliseconds) for a connection in the connection pool.
       maxIdleTimeInMilliseconds: 60000

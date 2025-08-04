@@ -71,4 +71,6 @@ public interface S3Setup extends StorageSetup {
     /* signer */
     String getSignerOverride();
 
+    String getRegion();
+
 }

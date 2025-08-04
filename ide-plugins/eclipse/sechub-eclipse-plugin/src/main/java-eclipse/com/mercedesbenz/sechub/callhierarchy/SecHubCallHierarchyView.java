@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.callhierarchy;
 
-import static com.mercedesbenz.sechub.EclipseUtil.getSharedImageDescriptor;
-
-import java.net.URI;
-import java.net.URL;
+import static com.mercedesbenz.sechub.util.EclipseUtil.getSharedImageDescriptor;
 
 import javax.inject.Inject;
 
@@ -20,6 +17,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
@@ -29,24 +27,23 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Layout;
 import org.eclipse.swt.widgets.Link;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
-import com.mercedesbenz.sechub.Logging;
 import com.mercedesbenz.sechub.model.FindingModel;
 import com.mercedesbenz.sechub.model.FindingNode;
 import com.mercedesbenz.sechub.model.WorkspaceFindingNodeLocator;
 import com.mercedesbenz.sechub.provider.CallHierarchyLabelProvider;
 import com.mercedesbenz.sechub.provider.FindingModelTreeContentProvider;
-import com.mercedesbenz.sechub.provider.FindingNodeColumLabelProviderBundle;
 import com.mercedesbenz.sechub.provider.OnlyInputElementItselfTreeContentProvider;
+import com.mercedesbenz.sechub.provider.findings.FindingNodeColumLabelProviderBundle;
+import com.mercedesbenz.sechub.util.BrowserUtil;
+import com.mercedesbenz.sechub.util.CweLinkTextCreator;
 
 /**
  * This view shows call hierarchy of sechub report entries - shall look similar
@@ -80,7 +77,9 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 	private MoveToLastStepAction lastStepAction;
 
-	private Text rightTreeDescriptionText;
+	private StyledText rightTreeDescriptionText;
+
+	private Composite mainComposite;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -113,7 +112,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 		GridData mainCompositelayoutData1 = GridDataFactory.fillDefaults().grab(true, true).create();
 
-		Composite mainComposite = new Composite(parent, SWT.NONE);
+		mainComposite = new Composite(parent, SWT.NONE);
 		mainComposite.setLayoutData(mainCompositelayoutData1);
 		mainComposite.setLayout(mainCompositeLayout);
 
@@ -133,12 +132,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 				if (selectedText==null) {
 					return;
 				}
-				try {
-					URL url = new URI(selectedText).toURL();
-					PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(url);
-				}catch(Exception ex) {
-					Logging.logError("Was not able to open url in external browser:"+selectedText,ex);
-				}
+				BrowserUtil.openInExternalBrowser(selectedText);
 
 			}
 		});
@@ -172,7 +166,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 		label.setLayoutData(labelSourceLayoutData);
 
 		GridData textSourceLayoutData = GridDataFactory.fillDefaults().grab(true, true).create();
-		rightTreeDescriptionText = new Text(descriptionComposite, SWT.NONE);
+		rightTreeDescriptionText = new StyledText(descriptionComposite, SWT.WRAP | SWT.V_SCROLL);
 		rightTreeDescriptionText.setEditable(false);
 		rightTreeDescriptionText.setLayoutData(textSourceLayoutData);
 
@@ -244,6 +238,7 @@ public class SecHubCallHierarchyView extends ViewPart {
 	}
 
 	private void hookSelectionListener() {
+		/* on selection just show details */
 		treeViewerLeft.addSelectionChangedListener(event -> {
 			ISelection selection = treeViewerLeft.getSelection();
 			if (!(selection instanceof IStructuredSelection)) {
@@ -256,8 +251,26 @@ public class SecHubCallHierarchyView extends ViewPart {
 				return;
 			}
 			selectNodeOnRightTree((FindingNode) element);
-			searchInProjectsForFinding((FindingNode) element);
 
+		});
+		
+		/* On double click open in editor - means 
+		 * when no double click, we can easy look into findings without 
+		 * opening. Interesting to show findings where we do not have the
+		 * correct code - no annoying dialogs on every selection click in this case.
+		 */
+		treeViewerLeft.addDoubleClickListener(event ->{
+			ISelection selection = treeViewerLeft.getSelection();
+			if (!(selection instanceof IStructuredSelection)) {
+				return;
+			}
+
+			IStructuredSelection ss = (IStructuredSelection) selection;
+			Object element = ss.getFirstElement();
+			if (!(element instanceof FindingNode)) {
+				return;
+			}
+			searchInProjectsForFinding((FindingNode) element);
 		});
 
 	}
@@ -271,10 +284,11 @@ public class SecHubCallHierarchyView extends ViewPart {
 		String text = null;
 		if (node != null) {
 			text = node.getSource();
-		} else {
-			text = "";
+		} 
+		if (text==null) {
+			text=""; // may not be null
 		}
-		rightTreeDescriptionText.setText(text);
+		rightTreeDescriptionText.setText(text.trim());
 	}
 
 	public void update(FindingModel model) {
@@ -283,16 +297,16 @@ public class SecHubCallHierarchyView extends ViewPart {
 
 		FindingNode finding = model.getFirstFinding();
 		if (finding != null) {
-			String description = "Finding " + finding.getId() + " - " + finding.getDescription();
-			if (finding.getCweId() != null) {
-				description+=" - <a href=\"https://cwe.mitre.org/data/definitions/"+finding.getCweId()+".html\">CWE-"+finding.getCweId()+"</a>";
-			}
-			linkDescriptionWithLinks.setText(description);
-
+			String headDescription =CweLinkTextCreator.createCweLinkTextWithInfos(finding);
+			
+			linkDescriptionWithLinks.setText(headDescription);
 			treeViewerLeft.setSelection(new StructuredSelection(finding));
+			mainComposite.layout();
+			
 		} else {
 			linkDescriptionWithLinks.setText("");
 			treeViewerRight.setInput(null);
+			rightTreeDescriptionText.setText("");
 		}
 	}
 

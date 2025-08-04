@@ -39,8 +39,6 @@ public class CheckmarxAdapterV1WireMockTest {
     private static final String APPLICATION_JSON = "application/json";
     private static final String APPLICATION_FORM_URL_ENCODED_UTF_8 = "application/x-www-form-urlencoded;charset=UTF-8";
 
-    private static final int HTTPS_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPSPort();
-
     private static final int HTTP_PORT = TestPortProvider.DEFAULT_INSTANCE.getWireMockTestHTTPPort();
     private static final String PASSWORD = "12345BASE64_PWD";
 
@@ -61,7 +59,7 @@ public class CheckmarxAdapterV1WireMockTest {
     private AdapterMetaDataCallback callback;
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT).httpsPort(HTTPS_PORT));
+    public WireMockRule wireMockRule = new WireMockRule(wireMockConfig().port(HTTP_PORT));
 
     private CheckmarxAdapterV1 adapterToTest;
 

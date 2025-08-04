@@ -42,6 +42,11 @@ const mockedInputMap = new Map();
 
 let mockedUploadFunction: jest.Mock;
 
+// Set the timeout for each test of this file to 15 seconds: https://jestjs.io/docs/jest-object#jestsettimeouttimeout
+// This is more than enough, but the default of 5 seconds is not enough sometimes.
+// If timeout values need to be configured for each test individually refer to: https://jestjs.io/docs/api#testname-fn-timeout
+jest.setTimeout(15000);
+
 beforeEach(() => {
 
     shell.echo('----------------------------------------------------------------------------------------------------------------------------------');
@@ -267,6 +272,28 @@ describe('integrationtest licensescan generated config', () => {
 
 });
 
+describe('integrationtest iacscan generated config', () => {
+    test('iacscan red, json', async () => {
+
+        /* prepare */
+        initInputMap();
+        mockedInputMap.set(input.PARAM_INCLUDED_FOLDERS, '__test__/integrationtest/test-sources');
+        mockedInputMap.set(input.PARAM_PROJECT_NAME, 'test-project-8');
+        mockedInputMap.set(input.PARAM_SCAN_TYPES, 'iacScan');
+        mockedInputMap.set(input.PARAM_REPORT_FORMATS, 'json');
+
+        /* execute */
+        const result = await launcher.launch();
+
+        /* test */
+        assertLastClientExitCode(result, 1);
+        assertTrafficLight(result, 'RED');
+        assertJsonReportContains(result, 'alicloud/trail.tf');
+        assertUploadDone();
+    });
+
+});
+
 describe('integrationtest non-generated config', () => {
     test('config-path defined, but file not found', async () => {
 
@@ -322,6 +349,29 @@ describe('integrationtest non-generated config', () => {
         assertJsonReportContains(result, 'XSS attackable parameter output: </p><script>alert(1)');
         assertUploadDone();
 
+    });
+
+});
+
+describe('integrationtest iacscan non-generated config', () => {
+    test('iacscan red, json', async () => {
+
+        /* prepare */
+        initInputMap();
+
+        const pwd = shell.pwd();
+        const configDir = `${pwd}/__test__/integrationtest/test-config`;
+
+        mockedInputMap.set(input.PARAM_CONFIG_PATH, `${configDir}/sechub-config-iacscan-test-project-8.json`);
+
+        /* execute */
+        const result = await launcher.launch();
+
+        /* test */
+        assertLastClientExitCode(result, 1);
+        assertTrafficLight(result, 'RED');
+        assertJsonReportContains(result, 'alicloud/trail.tf');
+        assertUploadDone();
     });
 
 });

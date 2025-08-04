@@ -3,6 +3,8 @@
 
 SLEEP_TIME_IN_WAIT_LOOP="2h"
 
+SECHUB_SERVER_PORT_DEFAULT="8443"
+
 ###########################
 # Trap and process signals
 trap trigger_shutdown INT QUIT TERM
@@ -59,21 +61,19 @@ init_scheduler_settings() {
   export SECHUB_CONFIG_TRIGGER_NEXTJOB_INITIALDELAY=$(( $SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY / 10 * $(shuf -i 0-10 -n 1) ))
 }
 
-init_s3_settings() {
+verify_s3_settings() {
   # Set storage variables for Java Spring app:
-  check_variable "$S3_ENDPOINT" "S3_ENDPOINT"
-  export SECHUB_STORAGE_S3_ENDPOINT="$S3_ENDPOINT"
-  check_variable "$S3_BUCKETNAME" "S3_BUCKETNAME"
-  export SECHUB_STORAGE_S3_BUCKETNAME="$S3_BUCKETNAME"
-  check_variable "$S3_ACCESSKEY" "S3_ACCESSKEY"
-  export SECHUB_STORAGE_S3_ACCESSKEY="$S3_ACCESSKEY"
-  check_variable "$S3_SECRETKEY" "S3_SECRETKEY"
-  export SECHUB_STORAGE_S3_SECRETKEY="$S3_SECRETKEY"
+  check_variable "$SECHUB_STORAGE_S3_ENDPOINT" "SECHUB_STORAGE_S3_ENDPOINT"
+  check_variable "$SECHUB_STORAGE_S3_BUCKETNAME" "SECHUB_STORAGE_S3_BUCKETNAME"
+  check_variable "$SECHUB_STORAGE_S3_ACCESSKEY" "SECHUB_STORAGE_S3_ACCESSKEY"
+  check_variable "$SECHUB_STORAGE_S3_SECRETKEY" "SECHUB_STORAGE_S3_SECRETKEY"
+  check_variable "$SECHUB_STORAGE_S3_REGION" "SECHUB_STORAGE_S3_REGION"
 
   cat - <<EOF
 Using S3 object storage:
-- Endpoint: $S3_ENDPOINT
-- Bucket: $S3_BUCKETNAME
+- Endpoint: $SECHUB_STORAGE_S3_ENDPOINT
+- Bucket: $SECHUB_STORAGE_S3_BUCKETNAME
+- Region: $SECHUB_STORAGE_S3_REGION
 EOF
 }
 
@@ -145,7 +145,7 @@ prepare_localserver_startup() {
   export SECHUB_NOTIFICATION_EMAIL_FROM="example@example.org"
   export SECHUB_NOTIFICATION_SMTP_HOSTNAME="example.org"
 
-  SECHUB_SERVER_JAVA_OPTIONS="-Dserver.port=8443 -Dserver.address=0.0.0.0"
+  SECHUB_SERVER_JAVA_OPTIONS="$SECHUB_SERVER_JAVA_OPTIONS -Dserver.address=0.0.0.0"
 }
 
 prepare_server_startup() {
@@ -177,8 +177,9 @@ EOF
   cat - <<EOF
 SecHub server settings:
 - Activated Spring profiles: $SPRING_PROFILES_ACTIVE
-- base url: $SECHUB_SERVER_BASEURL
-- administration url: $SECHUB_SERVER_ADMINISTRATION_BASEURL
+- Base url: $SECHUB_SERVER_BASEURL
+- Administration url: $SECHUB_SERVER_ADMINISTRATION_BASEURL
+- Local listen port: $SECHUB_SERVER_PORT
 - Upload source code maximum size: $SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE
 - Upload binaries maximum bytes: $SECHUB_UPLOAD_BINARIES_MAXIMUM_BYTES
 - Job scheduling is activated every ${SECHUB_CONFIG_TRIGGER_NEXTJOB_DELAY}ms
@@ -186,7 +187,7 @@ SecHub server settings:
 
 EOF
 
-  SECHUB_SERVER_JAVA_OPTIONS="-XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=80 -XshowSettings:vm"
+  SECHUB_SERVER_JAVA_OPTIONS="$SECHUB_SERVER_JAVA_OPTIONS -XX:InitialRAMPercentage=50 -XX:MaxRAMPercentage=80 -XshowSettings:vm"
 }
 
 #####################################
@@ -201,13 +202,17 @@ if [ "$JAVA_ENABLE_DEBUG" = "true" ] ; then
 fi
 
 if [ "$S3_ENABLED" = "true" ] ; then
-  init_s3_settings
+  verify_s3_settings
 fi
 
 # check if key is set
 set_up_encryption_key
 
 # Prepare SecHub server startup
+if [ -z "$SECHUB_SERVER_PORT" ] ; then
+  SECHUB_SERVER_PORT=$SECHUB_SERVER_PORT_DEFAULT
+fi
+SECHUB_SERVER_JAVA_OPTIONS="-Dserver.port=$SECHUB_SERVER_PORT"
 case "$SECHUB_START_MODE" in
   localserver) prepare_localserver_startup ;;
   server) prepare_server_startup ;;
