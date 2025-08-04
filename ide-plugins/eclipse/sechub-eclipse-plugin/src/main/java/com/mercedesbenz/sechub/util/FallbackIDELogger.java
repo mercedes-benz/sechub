@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.util;
 
 public class FallbackIDELogger implements IDELogger{
