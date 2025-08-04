@@ -10,6 +10,7 @@ import java.util.List;
 import javax.swing.*;
 import javax.swing.table.*;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.progress.ProgressManager;
@@ -316,6 +317,7 @@ public class SecHubToolWindowUISupport {
                 int clickedCol = reportTable.columnAtPoint(e.getPoint());
                 int markFalsePositiveCol = markFalsePositiveColumn.getModelIndex();
                 int findingIdCol = idColumn.getModelIndex();
+                int scanTypeCol = typeColumn.getModelIndex();
 
                 if (clickedCol == markFalsePositiveColumn.getModelIndex() && clickedRow != -1) {
                     Boolean currentValue = getCurrentCheckboxValue(clickedRow, markFalsePositiveCol);
@@ -329,7 +331,8 @@ public class SecHubToolWindowUISupport {
 
                     UUID jobUUID = findingModel.getJobUUID();
                     int findingId = (int) reportTable.getValueAt(clickedRow, findingIdCol);
-                    FalsePositiveTableModel model = new FalsePositiveTableModel(false);
+                    ScanType scanType = (ScanType) reportTable.getValueAt(clickedRow, scanTypeCol);
+                    FalsePositiveTableModel model = new FalsePositiveTableModel(false, scanType);
                     model.setChecked(!currentValue);
                     reportTable.setValueAt(model, clickedRow, clickedCol);
 
@@ -367,7 +370,7 @@ public class SecHubToolWindowUISupport {
             for (int row = 0; row < reportTable.getRowCount(); row++) {
                 FalsePositiveTableModel falsePositiveTableModel = (FalsePositiveTableModel) reportTable.getValueAt(row, falsePositiveColumn);
 
-                if (!falsePositiveTableModel.isAlreadyMarkedAsFalsePositive()) {
+                if (ScanType.WEB_SCAN != falsePositiveTableModel.getScanType() && !falsePositiveTableModel.isAlreadyMarkedAsFalsePositive()) {
                     falsePositiveTableModel.setChecked(isChecked);
                     reportTable.setValueAt(falsePositiveTableModel, row, falsePositiveColumn);
                     UUID jobUUID = findingModel.getJobUUID();
@@ -606,11 +609,11 @@ public class SecHubToolWindowUISupport {
             FalsePositiveTableModel falsePositiveTableModel;
 
             if (finding.isMarkedAsFalsePositive()) {
-                falsePositiveTableModel = new FalsePositiveTableModel(true);
+                falsePositiveTableModel = new FalsePositiveTableModel(true, finding.getScanType());
             } else {
                 falsePositiveTableModel = cacheManager.findFalsePositive(findingModel.getJobUUID(), finding.getId())
-                        .map(falsePositive -> new FalsePositiveTableModel(false, true))
-                        .orElse(new FalsePositiveTableModel(false, false));
+                        .map(falsePositive -> new FalsePositiveTableModel(false, true, finding.getScanType()))
+                        .orElse(new FalsePositiveTableModel(false, false, finding.getScanType()));
 
             }
             Object[] rowData = new Object[] { falsePositiveTableModel, finding.getId(), finding.getSeverity(), finding.getScanType(), finding.getName(), finding.getLocation() };
@@ -683,16 +686,24 @@ public class SecHubToolWindowUISupport {
     }
 
     private static class FalsePositiveCellRenderer implements TableCellRenderer {
-        private final JCheckBox checkBox = new JCheckBox();
-        private final JLabel hintLabel;
+        private static final JCheckBox checkBox = new JCheckBox();
+        private static final JLabel alreadyMarkedLabel;
+        private static final JLabel webScanLabel;
 
-        public FalsePositiveCellRenderer() {
+        static {
             checkBox.setHorizontalAlignment(SwingConstants.CENTER);
-            hintLabel = new JLabel("✔");
-            hintLabel.setToolTipText("Already marked as false positive");
-            hintLabel.setHorizontalAlignment(SwingConstants.CENTER);
-            hintLabel.setFont(hintLabel.getFont().deriveFont(Font.BOLD, 14f));
-            hintLabel.setForeground(JBColor.BLUE);
+
+            alreadyMarkedLabel = new JLabel("✔");
+            alreadyMarkedLabel.setToolTipText("Already marked as false positive");
+            alreadyMarkedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            alreadyMarkedLabel.setFont(alreadyMarkedLabel.getFont().deriveFont(Font.BOLD, 14f));
+            alreadyMarkedLabel.setForeground(JBColor.BLUE);
+
+            webScanLabel = new JLabel(AllIcons.General.Web);
+            webScanLabel.setToolTipText("Plugin does not support marking web scan findings. Please use the Web UI to web scan findings.");
+            webScanLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            webScanLabel.setFont(webScanLabel.getFont().deriveFont(Font.BOLD, 14f));
+            webScanLabel.setForeground(JBColor.BLUE);
         }
 
         @Override
@@ -711,7 +722,11 @@ public class SecHubToolWindowUISupport {
             if (value instanceof FalsePositiveTableModel falsePositiveTableModel) {
 
                 if (falsePositiveTableModel.isAlreadyMarkedAsFalsePositive()) {
-                    return hintLabel;
+                    return alreadyMarkedLabel;
+                }
+
+                if (ScanType.WEB_SCAN == falsePositiveTableModel.getScanType()) {
+                    return webScanLabel;
                 }
 
                 boolean isChecked = falsePositiveTableModel.isChecked();
