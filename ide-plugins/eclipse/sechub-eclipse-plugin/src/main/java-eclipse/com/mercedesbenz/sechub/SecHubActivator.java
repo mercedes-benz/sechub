@@ -7,6 +7,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.mercedesbenz.sechub.report.SecHubReportImporter;
+import com.mercedesbenz.sechub.util.EclipseIDELogger;
+import com.mercedesbenz.sechub.util.IDELogAdapter;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -20,9 +22,6 @@ public class SecHubActivator extends AbstractUIPlugin {
 	private static SecHubActivator plugin;
 	private SecHubReportImporter importer;
 
-	public SecHubActivator() {
-	}
-
 	@Override
 	public void start(BundleContext context) throws Exception {
 		importer = new SecHubReportImporter();
@@ -32,6 +31,8 @@ public class SecHubActivator extends AbstractUIPlugin {
 		
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		workbench.addWorkbenchListener(new SecHubWorkbenchListener());
+		
+		IDELogAdapter.use(new EclipseIDELogger());
 	}
 
 	@Override
