@@ -14,12 +14,12 @@ import com.mercedesbenz.sechub.api.internal.gen.model.SecHubReport;
 import com.mercedesbenz.sechub.server.SecHubServerContext;
 import com.mercedesbenz.sechub.util.EclipseUtil;
 
-public class DeletekFalsePositivesByReportViewAction extends Action {
+public class DeleteFalsePositivesByReportViewAction extends Action {
 
 	private static final String TITLE_DELETE_NOT_POSSIBLE = "False positive delete not possible";
 	private SecHubReportView secHubReportView;
 
-	public DeletekFalsePositivesByReportViewAction(SecHubReportView secHubReportView) {
+	public DeleteFalsePositivesByReportViewAction(SecHubReportView secHubReportView) {
 		this.secHubReportView = secHubReportView;
 		
 		setText("Delete false positive marker(s)");

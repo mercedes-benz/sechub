@@ -49,7 +49,7 @@ public class MarkFalsePositivesAction extends Action {
 		SecHubAccess access = SecHubServerContext.INSTANCE.getAccessOrNull();
 		if (access == null || !access.fetchServerAccessStatus().isAlive()) {
 			ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), TITLE_MARK_FALSE_POSITIVES_NOT_POSSIBLE,
-					"Unmark is not possible because currently no server access", Status.error("No connection"));
+					"Mark as false positive(s) not possible because currently no server access", Status.error("No connection"));
 			return;
 		}
 		MarkJobFalsePositivesDialog dialog = new MarkJobFalsePositivesDialog(EclipseUtil.getActiveWorkbenchShell(),
@@ -66,7 +66,7 @@ public class MarkFalsePositivesAction extends Action {
 			access.markJobFalsePositives(projectId, jobUUID, comment, list);
 		} catch (ApiException e) {
 			ErrorDialog.openError(EclipseUtil.getActiveWorkbenchShell(), TITLE_MARK_FALSE_POSITIVES_NOT_POSSIBLE,
-					"Was not able to mark as false psoitive, because of communication error",
+					"Was not able to mark as false positive(s), because of communication error",
 					Status.error("Failed", e));
 			return;
 		}
