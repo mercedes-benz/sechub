@@ -2,7 +2,7 @@ const vscode = acquireVsCodeApi();
 
 /* reportTable */
 function toggleDiv(divId) {
-    var div = document.getElementById(divId);
+    const div = document.getElementById(divId);
     if (div.style.display === "none") {
         div.style.display = "block";
     } else {
@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tableBody = document.getElementById('sechubReportTable');
   const markAsFalsePositiveButton = document.getElementById('markAsFalsePositiveButton');
   const checkboxes = tableBody.querySelectorAll('.item-checkbox');
+  
   if (checkboxes.length === 0) {
     markAsFalsePositiveButton.disabled = true;
     selectAllCheckbox.style.display = "none";
@@ -59,9 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   updateButtonState();
+  updateSelectAllCheckbox();
 
   selectAllCheckbox.addEventListener('change', function() {
-    let checkboxes = tableBody.querySelectorAll('.item-checkbox');
+    const checkboxes = tableBody.querySelectorAll('.item-checkbox');
 
     checkboxes.forEach(checkbox => {
       checkbox.checked = selectAllCheckbox.checked;
@@ -69,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     updateButtonState();
+    updateLocalCache();
   
   });
 
@@ -76,20 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.target.classList.contains('item-checkbox')) {
       updateSelectAllCheckbox();
       updateButtonState();
+      updateLocalCache();
     }
   });
 
   markAsFalsePositiveButton.addEventListener('click', function() {
-    const selectedCheckboxes = tableBody.querySelectorAll('.item-checkbox:checked');
-    const findingIds = Array.from(selectedCheckboxes).map(checkbox => {
-        const row = checkbox.closest('.sechub-finding-row');
-        // ensure finding id is an integer
-        return parseInt(row.getAttribute('data-finding-id'), 10);
-    });
-
     vscode.postMessage({
       type: 'markAsFalsePositive',
-      findingIds: findingIds
     });
   });
 
@@ -99,6 +95,21 @@ document.addEventListener('DOMContentLoaded', () => {
     selectAllCheckbox.checked = allChecked;
   }
 
+  function updateLocalCache() {
+    // Collect all checked checkboxes and their finding IDs to update the local cache
+    const checkedCheckboxes = tableBody.querySelectorAll('.item-checkbox:checked');
+    const findingIds = Array.from(checkedCheckboxes).map(checkbox => {
+      const row = checkbox.closest('.sechub-finding-row');
+      // ensure finding id is an integer
+      return parseInt(row.getAttribute('data-finding-id'), 10);
+    });
+
+    vscode.postMessage({
+      type: 'updateFalsePositiveCache',
+      findingIds: findingIds
+    });
+
+  }
 
   // Open CWE in browser button
   const openCWEButtons = document.querySelectorAll('#openCWEinBrowserButton');

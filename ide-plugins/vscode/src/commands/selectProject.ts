@@ -9,7 +9,11 @@ export async function selectProject(sechubContext: SecHubContext): Promise<void>
 
     try {
         const projects = await client.getAssignedProjectDataList();
-        if (!projects || projects.length === 0) {
+        if (!projects){
+            vscode.window.showErrorMessage('Failed to fetch projects from the server.');
+            return;
+            
+        } else if(projects.length === 0) {
             vscode.window.showInformationMessage('No projects available.');
             return;
         }

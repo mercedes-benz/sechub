@@ -42,7 +42,8 @@ const setupJobTable = () => {
 
         const jobUUID = row.getAttribute('data-job-uuid');
         const projectId = row.getAttribute('data-project-id');
-        vscode.postMessage({ type: 'fetchReport', jobUUID, projectId });
+        const result = row.getAttribute('data-result');
+        vscode.postMessage({ type: 'fetchReport', jobUUID, projectId, result });
       });
     });
   });

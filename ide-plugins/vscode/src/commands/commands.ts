@@ -24,6 +24,7 @@ export const commands = [
     { command: SECHUB_COMMANDS.importReport, action: importReportFromFile },
     { command: SECHUB_COMMANDS.changeWebUiUrl, action: changeWebUiUrl },
     { command: SECHUB_COMMANDS.fetchFalsePositives, action: fetchFalsePositivesForProject },
+    { command: SECHUB_COMMANDS.markFalsePositives, action: markFalsePositivesForProject },
 ];
 
 export const sechubFindingCommands = [
@@ -33,8 +34,4 @@ export const sechubFindingCommands = [
 
 export const sechubFindingAndCallstackCommands = [
     { command: SECHUB_COMMANDS.openFinding, action: openFinding }
-];
-
-export const markFalsePositiveCommands = [
-    { command: SECHUB_COMMANDS.markFalsePositives, action: markFalsePositivesForProject }
 ];

@@ -5,7 +5,26 @@ import { SecHubContext } from '../extension';
 import { SECHUB_COMMANDS, SECHUB_CONTEXT_STORAGE_KEYS } from '../utils/sechubConstants';
 import { FalsePositiveCache } from '../cache/falsePositiveCache';
 
-export async function markFalsePositivesForProject(context: SecHubContext, findingIds: number[]): Promise<void> {
+export async function markFalsePositivesForProject(context: SecHubContext): Promise<void> {
+
+  const jobUUID = context.getReport()?.jobUUID;
+
+  const project = context.extensionContext.globalState.get<ProjectData>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
+
+  if (!jobUUID) {
+      vscode.window.showErrorMessage('No job UUID found in the report. Please ensure a report jobUUID is available.');
+      return;
+  }
+    
+  if (!project || !project.projectId) {
+      return;
+  }
+
+  const findingIds = FalsePositiveCache.getEntryByJobUUID(context.extensionContext, jobUUID)?.findingIDs;
+
+  if (!findingIds || findingIds.length === 0) {
+    return; 
+  }
 
   const falsePositiveReasons = [
       { label: 'Fix Already Started', description: 'A fix has already been started.' },
@@ -30,65 +49,48 @@ export async function markFalsePositivesForProject(context: SecHubContext, findi
       return; 
   }
 
-      let comment = '';
-      if (selectedReason && customComment !== undefined) {
-        comment = `${selectedReason.label}: ${selectedReason.description}, ${customComment}`;
-      } else {
-        comment = `${selectedReason.label}: ${selectedReason.description}`;
-      }
+  if (customComment === undefined) {
+    return;
+  }
 
-    const project = context.extensionContext.globalState.get<ProjectData>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
+  let comment = '';
+  if (selectedReason && customComment !== undefined) {
+    comment = `${selectedReason.label}: ${selectedReason.description}, ${customComment}`;
+  } else {
+    comment = `${selectedReason.label}: ${selectedReason.description}`;
+  }
 
-    const jobUUID = context.getReport()?.jobUUID;
-    if (!jobUUID) {
-        vscode.window.showErrorMessage('No job UUID found in the report. Please ensure a report jobUUID is available.');
-        return;
-    }
-    
-    if (!project || !project.projectId) {
+  const falsePositives: FalsePositives = createFalsePositives(findingIds, jobUUID, comment);
+  const client = await DefaultClient.getInstance(context.extensionContext);
 
-        FalsePositiveCache.addFalsePositiveEntry(context.extensionContext, {
-            jobUUID: jobUUID,
-            findingIDs: findingIds
-        });
-        vscode.window.showInformationMessage('False positive entry added to cache. Please select a valid project to synchronize later.');
-        return;
-    }
+  const success = await client.markFalsePositivesForProject(falsePositives, project.projectId);
 
-    const falsePositives: FalsePositives = createFalsePositives(findingIds, jobUUID, comment);
-    const client = await DefaultClient.getInstance(context.extensionContext);
+  if (!success) {
+    vscode.window.showErrorMessage(`Failed to mark findings as false positive. Please try synchronizing later.`);
+    return;
+  }
 
-    try {
-      await client.markFalsePositivesForProject(falsePositives, project.projectId);
-    } catch (error) {
-      vscode.window.showErrorMessage(`Failed to mark findings as false positive. Please try synchronizing later.`);
-      FalsePositiveCache.addFalsePositiveEntry(context.extensionContext, {
-        jobUUID: jobUUID,
-        findingIDs: findingIds
-      });
-      return;
-    }
-
-    await vscode.commands.executeCommand(SECHUB_COMMANDS.fetchFalsePositives, context, project.projectId);
-    await context.reportWebViewProvider?.refresh();
+  FalsePositiveCache.removeEntryByJobUUID(context.extensionContext, jobUUID);
+  await vscode.commands.executeCommand(SECHUB_COMMANDS.fetchFalsePositives, context, project.projectId);
+  await context.reportWebViewProvider?.refresh();
 }
 
 function createFalsePositives (selectedFindings: number[], jobUUID: string, comment: string): FalsePositives {
-    const falsePositiveJobData: Array<FalsePositiveJobData> = [];
-    selectedFindings.forEach(finding => {
-      const data: FalsePositiveJobData = {
-        findingId: finding,
-        jobUUID,
-        comment: comment,
-      };
-      falsePositiveJobData.push(data);
-    });
-
-    const falsePositives: FalsePositives = {
-      apiVersion: '1.0',
-      type: 'falsePositiveDataList',
-      jobData: falsePositiveJobData,
+  const falsePositiveJobData: Array<FalsePositiveJobData> = [];
+  selectedFindings.forEach(finding => {
+    const data: FalsePositiveJobData = {
+      findingId: finding,
+      jobUUID,
+      comment: comment,
     };
+    falsePositiveJobData.push(data);
+  });
 
-    return falsePositives;
-  }
+  const falsePositives: FalsePositives = {
+    apiVersion: '1.0',
+    type: 'falsePositiveDataList',
+    jobData: falsePositiveJobData,
+  };
+
+  return falsePositives;
+}

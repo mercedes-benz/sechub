@@ -125,7 +125,7 @@ suite('FileLocationExplorer Test Suite', () => {
 	});
 
 	function getEnsuredTestPath(testfile: String): string {
-		let testReportLocation = path.dirname(__filename) + "../../../../src/test/resources/" + testfile;
+		const testReportLocation = path.dirname(__filename) + "../../../../src/test/resources/" + testfile;
 		const resolved = path.resolve(testReportLocation);
 		if (!fs.existsSync(resolved)) {
 			assert.fail("test report location does not exist:"+resolved);

@@ -16,7 +16,7 @@ import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_VIEW_IDS } from './utils/sechubCo
 import { DefaultClient } from './api/defaultClient';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
 import { SecHubReportWebViewProvider } from './provider/secHubReportWebViewProvider';
-import { commands, sechubFindingCommands ,sechubFindingAndCallstackCommands, markFalsePositiveCommands } from './commands/commands';
+import { commands, sechubFindingCommands ,sechubFindingAndCallstackCommands } from './commands/commands';
 import { FalsePositiveCache } from './cache/falsePositiveCache';
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -24,7 +24,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	
 	const secHubContext: SecHubContext = new SecHubContext(context);
 
-	let loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
+	const loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
 	let report: SecHubReport | undefined = undefined;
 	if (loadTestData) {
 		report = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
@@ -58,18 +58,10 @@ function registerCommands(sechubContext: SecHubContext) {
 		vscode.commands.registerCommand(command, (finding: SecHubFinding, callstack: SecHubCodeCallStack) => action(sechubContext, finding, callstack))
 	);
 
-	const registerMarkFalsePositiveCommands = markFalsePositiveCommands.map(({ command, action }) =>
-		vscode.commands.registerCommand(command, async (jobUUID: string, findingIds: number[]) => {
-			await action(sechubContext, findingIds);
-		})
-	);
-
-
 	sechubContext.extensionContext.subscriptions.push(
 		...registeredCommands,
 		...registeredHierachyCommands,
-		...registerTestCommands,
-		...registerMarkFalsePositiveCommands);
+		...registerTestCommands);
 }
 
 async function setUpApiClient(context: vscode.ExtensionContext) {
@@ -147,7 +139,7 @@ export class SecHubContext {
 		this.reportWebViewProvider = new SecHubReportWebViewProvider(extensionContext.extensionUri, this);
 
 		/* setup search folders for explorer */
-		let workspaceFolders = vscode.workspace.workspaceFolders; // get the open folder path
+		const workspaceFolders = vscode.workspace.workspaceFolders; // get the open folder path
 		workspaceFolders?.forEach((workspaceFolder) => {
 			this.fileLocationExplorer.searchFolders.add(workspaceFolder.uri.fsPath);
 		});
@@ -196,6 +188,6 @@ export class SecHubContext {
 export function deactivate() { }
 
 function resolveFileLocation(testfile: string): string {
-	let testReportLocation = path.dirname(__filename) + "/../src/test/suite/" + testfile;
+	const testReportLocation = path.dirname(__filename) + "/../src/test/suite/" + testfile;
 	return testReportLocation;
 }

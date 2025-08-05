@@ -29,9 +29,6 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
 
   getChildren(item?: HierarchyItem): Thenable<HierarchyItem[]> {
     if (!this.finding) {
-      // console.debug("No finding available, returning empty hierarchy items.");
-      // item = new EmptyHierarchyItem("Webscan:", "Code Call Hierarchy is not available for webscan findings.");
-      // return Promise.resolve([item]);
       return Promise.resolve([]);
     }
 
@@ -59,10 +56,10 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
 
   private createHierarchyItems(): HierarchyItem[] {
 
-    let items: HierarchyItem[] = [];
+    const items: HierarchyItem[] = [];
 
     let codeCallStack: SecHubCodeCallStack | undefined = this.finding?.code;
-    let state: vscode.TreeItemCollapsibleState = codeCallStack?.calls ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None;
+    const state: vscode.TreeItemCollapsibleState = codeCallStack?.calls ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None;
 
     if (!(codeCallStack)) {
       console.debug("No code callstack found for this finding, returning empty hierarchy item.");
@@ -72,7 +69,7 @@ export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvi
     let parent: HierarchyItem | undefined;
 
     do {
-      let item: HierarchyItem = new HierarchyItem(this.finding, codeCallStack, state);
+      const item: HierarchyItem = new HierarchyItem(this.finding, codeCallStack, state);
       item.command = {
         command: SECHUB_COMMANDS.openFinding,
         title: "Select Node",

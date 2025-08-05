@@ -52,7 +52,7 @@ export class SecHubInfoTreeDataProvider implements vscode.TreeDataProvider<InfoI
    * Given the path to package.json, read all its dependencies and devDependencies.
    */
   private getReportItems(): InfoItem[] {
-    let rootItems: InfoItem[] = [];
+    const rootItems: InfoItem[] = [];
 
     // codeScan, iacScan or secretScan
     if(this.callStack){

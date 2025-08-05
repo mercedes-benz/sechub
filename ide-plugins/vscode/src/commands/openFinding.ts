@@ -46,7 +46,7 @@ function openInEditor(context: SecHubContext, codeCallStack: SecHubCodeCallStack
         return;
     }
 
-    let column = codeCallStack.column > 0 ? codeCallStack.column : 1;
+    const column = codeCallStack.column > 0 ? codeCallStack.column : 1;
     
     /* necessary to check if undefined because relevant part can be 'false' */
     if (codeCallStack.relevantPart === undefined || !codeCallStack.line) {
@@ -58,7 +58,7 @@ function openInEditor(context: SecHubContext, codeCallStack: SecHubCodeCallStack
     if ("relevantPart" in codeCallStack) {
         endPosLength = codeCallStack.relevantPart.length;
     } else if ("source" in codeCallStack) {
-        let source: string = codeCallStack["source"] || '';
+        const source: string = codeCallStack["source"] || '';
         endPosLength = source.length;
     }
 

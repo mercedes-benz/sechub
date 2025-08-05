@@ -59,7 +59,8 @@ export class JobListTable {
                 data.content.forEach(job => {
                     const date = this.formatDate(job.created + '');
                     tableContent += `<tbody>
-                                    <tr class="sechub-job-row" data-job-uuid="${job.jobUUID}" data-project-id="${projectId}">
+                                    <tr class="sechub-job-row" data-job-uuid="${job.jobUUID}" data-project-id="${projectId}"
+                                    data-result="${job.executionResult}">
                                     <td>${date}</td>
                                     <td>${job.executionState}</td>
                                     <td>${job.executionResult}</td>
@@ -77,6 +78,8 @@ export class JobListTable {
             } else {
                 return `${title}${this.noJobsRanMessage}`;
             }
+        } else {
+            vscode.window.showErrorMessage('Failed to fetch latest jobs from the server.');
         }
         return `${title}${this.failedToFetchJobsMessage}`;
     }

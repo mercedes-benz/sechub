@@ -44,7 +44,7 @@ export async function fetchReportByUUID(sechubContext: SecHubContext): Promise<v
             sechubContext.setReport(data);
             vscode.window.showInformationMessage(`Report for job ${jobUUID} fetched successfully.`);
         } else {
-            vscode.window.showErrorMessage(`No report found for job ${jobUUID}.`);
+            vscode.window.showErrorMessage(`Failed to fetch report from the server for job ${jobUUID}.`);
         }
 
     } catch (error) {

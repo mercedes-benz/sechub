@@ -5,7 +5,8 @@ import { JobListTable } from '../webview/jobTable';
 import { ServerStateContainer } from '../webview/serverStateContainer';
 import { DefaultClient } from '../api/defaultClient';
 import * as vscode from 'vscode';
-import { preSelectedProjectValid } from '../utils/sechubUtils';
+import { preSelectedProjectValid, getNonce } from '../utils/sechubUtils';
+
 
 export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
@@ -60,7 +61,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 					break;
 				case 'fetchReport':
 					{
-						this.syncReportFromServer(data.jobUUID, data.projectId);
+						this.syncReportFromServer(data.jobUUID, data.projectId, data.result);
 					}
 					break;
 				case 'changePage':
@@ -107,7 +108,17 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 		}
 	}
 
-	private async syncReportFromServer(jobUUID: string, projectId: string) {
+	private async syncReportFromServer(jobUUID: string, projectId: string, result: string) {
+		if (!jobUUID || !projectId || !result) {
+			vscode.window.showErrorMessage('Invalid parameters to fetch report. Please ensure job UUID, project ID, and result are provided.');
+			return;
+		}
+
+		if (result !== 'OK') {
+			vscode.window.showErrorMessage(`Job has no report yet. Please wait for the job to finish.`);
+			return;
+		}
+
 		const client = await DefaultClient.getInstance(this._sechubContext.extensionContext);
 		const report = await client.fetchReport(projectId, jobUUID);
 		if (report) {
@@ -165,13 +176,4 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
 		return htmlSource;
 	}
-}
-
-function getNonce() {
-	let text = '';
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	for (let i = 0; i < 32; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	return text;
 }

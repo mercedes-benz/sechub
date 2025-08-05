@@ -17,6 +17,7 @@ export async function fetchFalsePositivesForProject(sechubContext: SecHubContext
     const response = await client.userFetchFalsePositiveConfigurationOfProject(project.projectId);
 
     if (!response) {
+        vscode.window.showErrorMessage('Failed to fetch false positives project configuration from the server.');
         return;
     } else {        
         sechubContext.extensionContext.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.falsePositiveConfiguration, response);

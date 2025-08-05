@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { SecHubContext } from '../extension';
 import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
 import { ReportListTable } from '../webview/reportTable';
-import { openCWEIDInBrowser } from '../utils/sechubUtils';
+import { openCWEIDInBrowser, getNonce } from '../utils/sechubUtils';
 import { FalsePositiveCache } from '../cache/falsePositiveCache';
 
 export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
@@ -70,15 +70,25 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
                     break;
                 case 'markAsFalsePositive':
                     {
-                        const findingIds: number[] = data.findingIds as number[];
-                        FalsePositiveCache.removeEntryByJobUUID(this._sechubContext.extensionContext, this._sechubContext.getReport()?.jobUUID || '');
-                        vscode.commands.executeCommand(SECHUB_COMMANDS.markFalsePositives, this._sechubContext, findingIds);
+                        vscode.commands.executeCommand(SECHUB_COMMANDS.markFalsePositives, this._sechubContext);
                     }
                     break;
                 case 'openCWEInBrowser':
                     {
                         const cweId = data.cweId;
                         openCWEIDInBrowser(cweId);
+                    }
+                    break;
+                case 'updateFalsePositiveCache':
+                    {
+                        const findingIds: number[] = data.findingIds as number[];
+                        const jobUUID = this._sechubContext.getReport()?.jobUUID;
+                        if (jobUUID) {
+                            FalsePositiveCache.updateCacheForEntry(this._sechubContext.extensionContext, {
+                                jobUUID: jobUUID,
+                                findingIDs: findingIds
+                            });
+                        }
                     }
                     break;
                 default:
@@ -144,13 +154,4 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 			</html>
 		`;
     }
-}
-
-function getNonce() {
-	let text = '';
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	for (let i = 0; i < 32; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	return text;
 }

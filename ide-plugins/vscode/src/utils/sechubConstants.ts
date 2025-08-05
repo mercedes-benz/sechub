@@ -1,4 +1,3 @@
-import { markFalsePositiveCommands } from "src/commands/commands";
 
 // SPDX-License-Identifier: MIT
 export const SECHUB_API_CLIENT_CONFIG_KEYS = {
