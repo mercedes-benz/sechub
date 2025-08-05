@@ -41,8 +41,9 @@ export async function preSelectedProjectValid(context: vscode.ExtensionContext):
 	}
 
 	const client = await DefaultClient.getInstance(context);
-    const alive = await client.isAlive();
-    if(!alive) {
+    try {
+        await client.isAlive();
+    } catch (error) {
         vscode.window.showErrorMessage('SecHub client is not alive. Please check your connection or credentials.');
         return;
     }

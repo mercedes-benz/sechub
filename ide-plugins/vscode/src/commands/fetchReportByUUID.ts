@@ -38,11 +38,13 @@ export async function fetchReportByUUID(sechubContext: SecHubContext): Promise<v
 
     const client = await DefaultClient.getInstance(sechubContext.extensionContext);
 
-    const alive = await client.isAlive();
-    if(!alive) {
+    try {
+        await client.isAlive();
+    } catch (error) {
         vscode.window.showErrorMessage('SecHub client is not alive. Please check your connection or credentials.');
         return;
     }
+    
     try {
         const data = await client.fetchReport(project.projectId, jobUUID);
         if (data) {

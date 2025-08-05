@@ -136,30 +136,27 @@ export class DefaultClient {
     }
   }
 
-  public async markFalsePositivesForProject(falsePositves: FalsePositives, projectId: string): Promise<boolean> {
+  public async markFalsePositivesForProject(falsePositves: FalsePositives, projectId: string): Promise<void> {
 
     const requestParameter: UserMarkFalsePositivesRequest = {
       projectId: projectId,
       falsePositives: falsePositves
     };
 
-    // catch error is calling method to cache false positives if server could not be reached
     try {
       await this.apiClient.withExecutionApi().userMarkFalsePositives(requestParameter);
-      return true;
     } catch (error) {
       console.error('Error marking findings as false positive:', error);
-      return false;
+      throw error;
     }
   }
 
-  public async isAlive(): Promise<boolean> {
+  public async isAlive(): Promise<void> {
     try {
       await this.apiClient.withSystemApi().anonymousCheckAliveGet();
-      return true;
     } catch (error) {
-      console.error('Error checking if client is alive:', error);
-      return false;
+      console.error('Error client is not alive!', error);
+      throw error;
     }
   }
 }
