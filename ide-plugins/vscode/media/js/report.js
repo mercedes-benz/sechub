@@ -28,14 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Finding row clicks
   const findingRows = document.querySelectorAll('.sechub-finding-row');
   findingRows.forEach(row => {
+
     const firstCell = row.querySelector('td:first-child');
-
-    row.addEventListener('click', event => {
-
     firstCell.addEventListener('click', event => {
       // Prevent the row click event when clicking on the first cell
       event.stopPropagation(); 
     });
+
+    row.addEventListener('click', () => {
 
     findingRows.forEach(otherRow => {
       otherRow.classList.remove('selected');
