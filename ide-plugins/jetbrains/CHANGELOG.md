@@ -3,7 +3,7 @@
 
 ## [0.5.0]
 ### Added
-- Support for mark-false-positive functionality in SecHub reports
+- Support for marking false positives for SAST, Secret and IaC scans
 
 ## [0.4.1]
 ## Changed

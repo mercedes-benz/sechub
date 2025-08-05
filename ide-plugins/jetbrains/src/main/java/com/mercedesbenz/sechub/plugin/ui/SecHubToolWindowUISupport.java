@@ -318,8 +318,9 @@ public class SecHubToolWindowUISupport {
                 int markFalsePositiveCol = markFalsePositiveColumn.getModelIndex();
                 int findingIdCol = idColumn.getModelIndex();
                 int scanTypeCol = typeColumn.getModelIndex();
+                ScanType scanType = (ScanType) reportTable.getValueAt(clickedRow, scanTypeCol);
 
-                if (clickedCol == markFalsePositiveColumn.getModelIndex() && clickedRow != -1) {
+                if (clickedCol == markFalsePositiveColumn.getModelIndex() && ScanType.WEB_SCAN != scanType && clickedRow != -1) {
                     Boolean currentValue = getCurrentCheckboxValue(clickedRow, markFalsePositiveCol);
 
                     if (currentValue == null) {
@@ -331,7 +332,6 @@ public class SecHubToolWindowUISupport {
 
                     UUID jobUUID = findingModel.getJobUUID();
                     int findingId = (int) reportTable.getValueAt(clickedRow, findingIdCol);
-                    ScanType scanType = (ScanType) reportTable.getValueAt(clickedRow, scanTypeCol);
                     FalsePositiveTableModel model = new FalsePositiveTableModel(false, scanType);
                     model.setChecked(!currentValue);
                     reportTable.setValueAt(model, clickedRow, clickedCol);

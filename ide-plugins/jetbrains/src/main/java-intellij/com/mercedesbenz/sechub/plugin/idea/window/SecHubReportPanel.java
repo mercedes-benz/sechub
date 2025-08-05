@@ -167,15 +167,14 @@ public class SecHubReportPanel implements SecHubPanel {
     private JPanel createActionBarPanel() {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
 
-        AnAction uploadReport = new AnAction("Upload Report", "Upload report from disk", AllIcons.Actions.MenuOpen) {
+        AnAction importReport = new AnAction("Import Report", "Import report from disk", AllIcons.Actions.MenuOpen) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
-                uploadReportFromDisk(e.getProject());
+                importReportFromDisk(e.getProject());
             }
         };
-        actionGroup.add(uploadReport);
+        actionGroup.add(importReport);
 
-        Icon myCustomIcon = new TrafficLightIcon(TrafficLight.OFF);
         AnAction clearAction = new AnAction("Clear Report", "Clear current report data", AllIcons.Actions.Rollback) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -500,7 +499,7 @@ public class SecHubReportPanel implements SecHubPanel {
         uiSupport.setFindingModel(model);
     }
 
-    private void uploadReportFromDisk(Project currentProject) {
+    private void importReportFromDisk(Project currentProject) {
         FileChooserDescriptor fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFileDescriptor("json");
         fileChooserDescriptor.setDescription("Open SecHub report");
         @Nullable

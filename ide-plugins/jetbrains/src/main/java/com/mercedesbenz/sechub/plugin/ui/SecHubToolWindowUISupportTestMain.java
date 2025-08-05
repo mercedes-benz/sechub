@@ -4,10 +4,12 @@ package com.mercedesbenz.sechub.plugin.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.io.Serial;
 
 import javax.swing.*;
 import javax.swing.Action;
 
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.table.JBTable;
 import com.mercedesbenz.sechub.api.internal.gen.model.*;
@@ -97,29 +99,12 @@ public class SecHubToolWindowUISupportTestMain {
             context.attackTabComponent = attackPanel;
             context.webRequestTabComponent = webRequestPanel;
             context.webResponseTabComponent = webResponsePanel;
-
-            context.componentFactory = new ComponentBuilder() {
-
-                @Override
-                public JScrollPane createScrollPane(JComponent component) {
-                    return new JScrollPane(component);
+            context.componentFactory = JBScrollPane::new;
+            context.findingRenderDataProvider = scanType -> {
+                if (ScanType.CODE_SCAN.equals(scanType)) {
+                    return codeScanIcon;
                 }
-            };
-            context.findingRenderDataProvider = new FindingRenderDataProvider() {
-
-                @Override
-                public Icon getIconForScanType(ScanType scanType) {
-                    if (ScanType.CODE_SCAN.equals(scanType)) {
-                        return codeScanIcon;
-                    }
-                    return null;
-                }
-
-                @Override
-                public Icon getIconForTrafficLight(TrafficLight trafficLight) {
-                    return null;
-                }
-
+                return null;
             };
             supportToTest = new SecHubToolWindowUISupport(context);
             supportToTest.initialize();
@@ -219,6 +204,7 @@ public class SecHubToolWindowUISupportTestMain {
         }
 
         private class SetNewModelAction extends AbstractAction {
+            @Serial
             private static final long serialVersionUID = 1L;
 
             private SetNewModelAction() {
