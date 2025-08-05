@@ -63,6 +63,12 @@ export async function markFalsePositivesForProject(context: SecHubContext): Prom
   const falsePositives: FalsePositives = createFalsePositives(findingIds, jobUUID, comment);
   const client = await DefaultClient.getInstance(context.extensionContext);
 
+  const alive = await client.isAlive();
+  if(!alive) {
+      vscode.window.showErrorMessage('SecHub client is not alive. Please check your connection or credentials.');
+      return;
+  }
+
   const success = await client.markFalsePositivesForProject(falsePositives, project.projectId);
 
   if (!success) {

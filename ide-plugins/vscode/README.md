@@ -81,7 +81,9 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
 
    NOTE: VSCodium and Eclipse Theia distribute free/libre open source software binaries. VS Code, on the other hand, distributes non-free binaries and collects telemetry data.
 
-4. In VSCodium toolbar: `Run -> Start Debugging`.
+4. Open the folder sechub/ide-plugins/vscode in your IDE
+
+5. In VSCodium toolbar: `Run -> Start Debugging`.
 
    ![VSCode start debugging](README/start_debugging.png)
 

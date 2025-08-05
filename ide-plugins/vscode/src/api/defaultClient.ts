@@ -35,7 +35,6 @@ export class DefaultClient {
     const apiClient = await DefaultClient.createApiClient(context);
     const instance = await DefaultClient.getInstance(context);
     instance.apiClient = apiClient;
-    vscode.window.showInformationMessage('SecHub client updated successfully.');
   }
 
   // Creates a new ApiClient instance with the current credentials and server URL loaded from the extension context storage
@@ -150,6 +149,16 @@ export class DefaultClient {
       return true;
     } catch (error) {
       console.error('Error marking findings as false positive:', error);
+      return false;
+    }
+  }
+
+  public async isAlive(): Promise<boolean> {
+    try {
+      await this.apiClient.withSystemApi().anonymousCheckAliveGet();
+      return true;
+    } catch (error) {
+      console.error('Error checking if client is alive:', error);
       return false;
     }
   }

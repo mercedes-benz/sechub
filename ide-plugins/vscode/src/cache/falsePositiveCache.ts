@@ -9,6 +9,8 @@ export interface FalsePositiveCacheEntry {
 export class FalsePositiveCache {
 
     public static readonly cacheKey = SECHUB_CONTEXT_STORAGE_KEYS.falsePositiveCache;
+    
+    /* limit the cache size as it might grow large over time and user will not need old entries after some time */
     public static readonly cacheSizeLimit = 10;
 
     public static getFalsePositiveCache(context: vscode.ExtensionContext){

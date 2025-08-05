@@ -7,6 +7,12 @@ import { SecHubContext } from '../extension';
 export async function selectProject(sechubContext: SecHubContext): Promise<void> {
     const client = await DefaultClient.getInstance(sechubContext.extensionContext);
 
+    const alive = await client.isAlive();
+    if(!alive) {
+        vscode.window.showErrorMessage('SecHub client is not alive. Please check your connection or credentials.');
+        return;
+    }
+    
     try {
         const projects = await client.getAssignedProjectDataList();
         if (!projects){

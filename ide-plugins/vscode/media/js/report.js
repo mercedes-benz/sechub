@@ -28,16 +28,23 @@ document.addEventListener('DOMContentLoaded', () => {
   // Finding row clicks
   const findingRows = document.querySelectorAll('.sechub-finding-row');
   findingRows.forEach(row => {
-    row.addEventListener('click', () => {
+    const firstCell = row.querySelector('td:first-child');
 
-      findingRows.forEach(otherRow => {
-        otherRow.classList.remove('selected');
-      });
+    row.addEventListener('click', event => {
 
-      row.classList.add('selected');
+    firstCell.addEventListener('click', event => {
+      // Prevent the row click event when clicking on the first cell
+      event.stopPropagation(); 
+    });
 
-      const findingId = row.getAttribute('data-finding-id');
-      vscode.postMessage({ type: 'openFinding', findingId });
+    findingRows.forEach(otherRow => {
+      otherRow.classList.remove('selected');
+    });
+
+    row.classList.add('selected');
+
+    const findingId = row.getAttribute('data-finding-id');
+    vscode.postMessage({ type: 'openFinding', findingId });
     });
   });
 
