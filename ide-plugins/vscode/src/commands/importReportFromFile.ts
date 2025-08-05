@@ -20,11 +20,11 @@ export async function importReportFromFile(context: sechubExtension.SecHubContex
 
     vscode.window.showOpenDialog(options).then(fileUri => {
         if (fileUri && fileUri[0]) {
-            let filePath = fileUri[0].fsPath;
+            const filePath = fileUri[0].fsPath;
 
             vscode.window.showInformationMessage('Started SecHub report import...');
 
-            let report = loadFromFile(filePath);
+            const report = loadFromFile(filePath);
             context.setReport(report);
         }
     });

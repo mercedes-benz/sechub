@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from "../extension";
-import { SECHUB_COMMANDS, SECHUB_CREDENTIAL_KEYS, SECHUB_REPORT_KEYS } from "../utils/sechubConstants";
+import { SECHUB_COMMANDS, SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS } from "../utils/sechubConstants";
 import { DefaultClient } from "../api/defaultClient";
-import { ProjectData, ScanType, SecHubReport } from 'sechub-openapi-ts-client';
+import { ProjectData } from 'sechub-openapi-ts-client';
 import { multiStepInput } from '../utils/sechubCredentialsMultistepInput';
 
 export async function fetchReportByUUID(sechubContext: SecHubContext): Promise<void>{
 
-    const serverUrl = sechubContext.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
+    const serverUrl = sechubContext.extensionContext.globalState.get<string>(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl);
     if (!serverUrl) {
         vscode.window.showErrorMessage('Please configure SecHubServer URL first.');
         multiStepInput(sechubContext.extensionContext).
@@ -18,7 +18,7 @@ export async function fetchReportByUUID(sechubContext: SecHubContext): Promise<v
         return;
     }
 
-    const project = sechubContext.extensionContext.globalState.get<ProjectData>(SECHUB_REPORT_KEYS.selectedProject);
+    const project = sechubContext.extensionContext.globalState.get<ProjectData>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
 
     if (!project) {
         vscode.commands.executeCommand(SECHUB_COMMANDS.selectProject);
@@ -39,12 +39,19 @@ export async function fetchReportByUUID(sechubContext: SecHubContext): Promise<v
     const client = await DefaultClient.getInstance(sechubContext.extensionContext);
 
     try {
+        await client.isAlive();
+    } catch (error) {
+        vscode.window.showErrorMessage('SecHub client is not alive. Please check your connection or credentials.');
+        return;
+    }
+    
+    try {
         const data = await client.fetchReport(project.projectId, jobUUID);
         if (data) {
             sechubContext.setReport(data);
             vscode.window.showInformationMessage(`Report for job ${jobUUID} fetched successfully.`);
         } else {
-            vscode.window.showErrorMessage(`No report found for job ${jobUUID}.`);
+            vscode.window.showErrorMessage(`Failed to fetch report from the server for job ${jobUUID}.`);
         }
 
     } catch (error) {

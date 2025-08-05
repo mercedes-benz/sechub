@@ -2,15 +2,15 @@
 import * as assert from 'assert';
 
 import { Severity, ScanType } from 'sechub-openapi-ts-client';
-import { FindingNodeLinkBuilder } from '../../utils/findingNodeLinkBuilder';
+import { InfoViewItemMitreCWELinkBuilder } from '../../provider/items/infoViewItemMitreCWELinkBuilder';
 
 suite('FindingNodeLinkBuilder Test Suite', () => {
 
-	let builderToTest: FindingNodeLinkBuilder;
+	let builderToTest: InfoViewItemMitreCWELinkBuilder;
 
 	test('cwe 4711 results in link to https://cwe.mitre.org/data/definitions/4711.html', () => {
 		/* prepare */
-		builderToTest = new FindingNodeLinkBuilder();
+		builderToTest = new InfoViewItemMitreCWELinkBuilder();
 
 		/* execute */
 		const uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: Severity.High,cweId: 4711, type: ScanType.CodeScan});
@@ -25,7 +25,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 
 	test('cwe and description not defined results in undefined', () => {
 		/* prepare */
-		builderToTest = new FindingNodeLinkBuilder();
+		builderToTest = new InfoViewItemMitreCWELinkBuilder();
 
 		/* execute */
 		const uri = builderToTest.buildCWELink({id: 1, name: "findingX", severity: Severity.High, type: ScanType.CodeScan});
@@ -38,7 +38,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 
 	test('cwe not defined results in undefined', () => {
 		/* prepare */
-		builderToTest = new FindingNodeLinkBuilder();
+		builderToTest = new InfoViewItemMitreCWELinkBuilder();
 
 		/* execute */
 		const uri = builderToTest.buildCWELink({id: 1, name: "findingX", description: "description for findingX", severity: Severity.High, type: ScanType.CodeScan});
@@ -51,7 +51,7 @@ suite('FindingNodeLinkBuilder Test Suite', () => {
 
 	test('findingNode not defined results in undefined', () => {
 		/* prepare */
-		builderToTest = new FindingNodeLinkBuilder();
+		builderToTest = new InfoViewItemMitreCWELinkBuilder();
 
 		/* execute */
 		const uri = builderToTest.buildCWELink(undefined);

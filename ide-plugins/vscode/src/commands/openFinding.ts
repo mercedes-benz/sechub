@@ -1,45 +1,52 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from '../extension';
-import { HierarchyItem } from '../provider/secHubCallHierarchyTreeDataProvider';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
 
-export async function openFinding(sechubContext: SecHubContext, hierarchyItem: HierarchyItem ): Promise<void> {
+export async function openFinding(sechubContext: SecHubContext, finding: SecHubFinding, currentCallStack: SecHubCodeCallStack): Promise<void> {
     /* this command is used to open a finding in the editor and show its details in the info view */
+    // todo: callstack should be callstack of hierachy, not finding
 
-    if (!(hierarchyItem instanceof HierarchyItem)) {
-        console.error("Invalid hierarchy item provided to openFinding.");
+    if (!finding) {
+        console.error("No finding provided to open.");
+        return;
+    }
+    
+    if (!currentCallStack) {
+        console.error("No code call stack available for the finding.");
         return;
     }
 
-    const codeCallStack = hierarchyItem.codeCallstack;
-    openInEditor(sechubContext, codeCallStack);
-    showInInfoView(sechubContext, hierarchyItem.finding, codeCallStack);
+    openInEditor(sechubContext, currentCallStack);
+    showInInfoView(sechubContext, finding, currentCallStack);
 }
 
-function showInInfoView(context: SecHubContext, findingNode: SecHubFinding | undefined, callStackItem: SecHubCodeCallStack) {
-    context.infoTreeProvider.update(findingNode, callStackItem);
+function showInInfoView(context: SecHubContext, finding: SecHubFinding | undefined, callStackItem: SecHubCodeCallStack) {
+    context.infoTreeProvider.update(finding, callStackItem);
 }
 
 function openInEditor(context: SecHubContext, codeCallStack: SecHubCodeCallStack) {
     if(!codeCallStack.location) {
-        console.error("Element location is undefined, can not open in editor.");
+        console.debug("Element location is undefined, can not open in editor.");
         return;
     }
 
     const result = context.fileLocationExplorer.searchFor(codeCallStack.location);
     if (result.size === 0) {
-        console.log("Can not calculate file location for " + codeCallStack.location + ", can not open in editor.");
+        console.debug("Can not calculate file location for " + codeCallStack.location + ", can not open in editor.");
+        // if file location is not found, we do not open the editor and the open project might not be represented in the report
+        vscode.window.showInformationMessage(
+            `File location for ${codeCallStack.location} not found. Please check if the scanned project is open in your workspace.`);
         return;
     }
     const fileLocation: string = result.values().next().value || '';
 
     if (!codeCallStack.column) {
-        console.error("Element column is undefined, can not open in editor.");
+        console.debug("Element column is undefined, can not open in editor.");
         return;
     }
 
-    let column = codeCallStack.column > 0 ? codeCallStack.column : 1;
+    const column = codeCallStack.column > 0 ? codeCallStack.column : 1;
     
     /* necessary to check if undefined because relevant part can be 'false' */
     if (codeCallStack.relevantPart === undefined || !codeCallStack.line) {
@@ -51,7 +58,7 @@ function openInEditor(context: SecHubContext, codeCallStack: SecHubCodeCallStack
     if ("relevantPart" in codeCallStack) {
         endPosLength = codeCallStack.relevantPart.length;
     } else if ("source" in codeCallStack) {
-        let source: string = codeCallStack["source"] || '';
+        const source: string = codeCallStack["source"] || '';
         endPosLength = source.length;
     }
 

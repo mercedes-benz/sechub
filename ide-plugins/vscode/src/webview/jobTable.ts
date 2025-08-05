@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 import { ProjectData, UserListsJobsForProjectRequest } from 'sechub-openapi-ts-client';
 import { DefaultClient } from '../api/defaultClient';
-import { SECHUB_REPORT_KEYS } from '../utils/sechubConstants';
+import { SECHUB_CONTEXT_STORAGE_KEYS } from '../utils/sechubConstants';
 import { Pagination } from './pagination';
 import * as vscode from 'vscode';
 
@@ -15,7 +15,7 @@ export class JobListTable {
     
     async renderJobTable(context: vscode.ExtensionContext) : Promise<string> {
 
-        const project: ProjectData | undefined = context.globalState.get(SECHUB_REPORT_KEYS.selectedProject);
+        const project: ProjectData | undefined = context.globalState.get(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
         const projectId = project?.projectId || 'No Project Selected';
         if (projectId !== this.pagination.getCurrentProject()){
             this.resetPagination();
@@ -59,7 +59,8 @@ export class JobListTable {
                 data.content.forEach(job => {
                     const date = this.formatDate(job.created + '');
                     tableContent += `<tbody>
-                                    <tr class="sechub-job-row" data-job-uuid="${job.jobUUID}" data-project-id="${projectId}">
+                                    <tr class="sechub-job-row" data-job-uuid="${job.jobUUID}" data-project-id="${projectId}"
+                                    data-result="${job.executionResult}">
                                     <td>${date}</td>
                                     <td>${job.executionState}</td>
                                     <td>${job.executionResult}</td>
@@ -70,13 +71,15 @@ export class JobListTable {
                                 </tbody>`;
                 });
                 
-                const table: string = `${title}<table id="sechubJobTable">${haeder}${tableContent}</table>`;
+                const table: string = `${title}<table id="sechubJobTable" class="sechubTable">${haeder}${tableContent}</table>`;
                 const paginationControls = this.pagination.renderPaginationControls();
 
                 return `${table}${paginationControls}`;
             } else {
                 return `${title}${this.noJobsRanMessage}`;
             }
+        } else {
+            vscode.window.showErrorMessage('Failed to fetch latest jobs from the server.');
         }
         return `${title}${this.failedToFetchJobsMessage}`;
     }

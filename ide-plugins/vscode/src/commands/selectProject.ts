@@ -1,15 +1,26 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { DefaultClient } from '../api/defaultClient';
-import { SECHUB_REPORT_KEYS } from '../utils/sechubConstants';
+import { SECHUB_CONTEXT_STORAGE_KEYS, SECHUB_COMMANDS } from '../utils/sechubConstants';
 import { SecHubContext } from '../extension';
 
 export async function selectProject(sechubContext: SecHubContext): Promise<void> {
     const client = await DefaultClient.getInstance(sechubContext.extensionContext);
 
     try {
+        await client.isAlive();
+    } catch (error) {
+        vscode.window.showErrorMessage('SecHub client is not alive. Please check your connection or credentials.');
+        return;
+    }
+
+    try {
         const projects = await client.getAssignedProjectDataList();
-        if (!projects || projects.length === 0) {
+        if (!projects){
+            vscode.window.showErrorMessage('Failed to fetch projects from the server.');
+            return;
+            
+        } else if(projects.length === 0) {
             vscode.window.showInformationMessage('No projects available.');
             return;
         }
@@ -24,8 +35,9 @@ export async function selectProject(sechubContext: SecHubContext): Promise<void>
             const projectData = projects.find(p => p.projectId === selectedProject);
             if (projectData) {
                 vscode.window.showInformationMessage(`Selected Project: ${projectData.projectId}`);
-                sechubContext.extensionContext.globalState.update(SECHUB_REPORT_KEYS.selectedProject, projectData);
+                sechubContext.extensionContext.globalState.update(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject, projectData);
                 sechubContext.serverWebViewProvider.refresh();
+                vscode.commands.executeCommand(SECHUB_COMMANDS.fetchFalsePositives);
             }
         }
     } catch (error) {

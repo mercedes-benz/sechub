@@ -11,9 +11,9 @@
 		"theme": "dark"
 	},
 	"publisher": "Mercedes-Benz",
-	"homepage": "https://github.com/mercedes-benz/sechub-plugin-vscode/",
+	"homepage": "https://github.com/mercedes-benz/sechub/tree/develop/ide-plugins/vscode",
 	"bugs": {
-		"url": "https://github.com/mercedes-benz/sechub-plugin-vscode/issues"
+		"url": "https://github.com/mercedes-benz/sechub"
 	},
 	"repository": {
 		"type": "git",
@@ -32,11 +32,6 @@
 				"command": "sechub.importReportFile",
 				"title": "SecHub: Import Report from File",
 				"icon": "$(file)"
-			},
-			{
-				"command": "sechub.openCWEinBrowser",
-				"title": "SecHub: open CWE in Browser",
-				"icon": "$(info)"
 			},
 			{
 				"command": "sechub.fetchReportByUUID",
@@ -87,6 +82,7 @@
 					"name": "Server"
 				},
 				{
+					"type": "webview",
 					"id": "sechub.reportView",
 					"name": "Report",
 					"icon": "media/sechub-logo-vscode-styled.svg",
@@ -133,13 +129,6 @@
 					"command": "sechub.clearSecHubData",
 					"when": "view == sechub.serverWebView",
 					"group": "navigation"
-				}
-			],
-			"view/item/context": [
-				{
-					"command": "sechub.openCWEinBrowser",
-					"when": "view == sechub.reportView && viewItem == reportItem",
-					"group": "inline"
 				}
 			]
 		}

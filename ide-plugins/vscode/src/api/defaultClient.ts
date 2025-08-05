@@ -9,8 +9,11 @@ import {
   UserDetailInformation,
   UserDownloadJobReportRequest,
   SecHubReport,
+  FalsePositiveProjectConfiguration,
+  FalsePositives,
+  UserMarkFalsePositivesRequest,
 } from 'sechub-openapi-ts-client';
-import { SECHUB_CREDENTIAL_KEYS } from '../utils/sechubConstants';
+import { SECHUB_API_CLIENT_CONFIG_KEYS } from '../utils/sechubConstants';
 
 export class DefaultClient {
   private static instance: DefaultClient | null = null;
@@ -32,17 +35,16 @@ export class DefaultClient {
     const apiClient = await DefaultClient.createApiClient(context);
     const instance = await DefaultClient.getInstance(context);
     instance.apiClient = apiClient;
-    vscode.window.showInformationMessage('SecHub client updated successfully.');
   }
 
   // Creates a new ApiClient instance with the current credentials and server URL loaded from the extension context storage
   private static async createApiClient(context: vscode.ExtensionContext): Promise<DefaultApiClient> {
     const [username, apiToken] = await Promise.all([
-      context.secrets.get(SECHUB_CREDENTIAL_KEYS.username),
-      context.secrets.get(SECHUB_CREDENTIAL_KEYS.apiToken),
+      context.secrets.get(SECHUB_API_CLIENT_CONFIG_KEYS.username),
+      context.secrets.get(SECHUB_API_CLIENT_CONFIG_KEYS.apiToken),
     ]);
 
-    const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
+    const serverUrl = context.globalState.get<string>(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl);
 
     if (!serverUrl || !username || !apiToken) {
       vscode.window.showErrorMessage('SecHub credentials are not set. Please configure them to connect to the SecHub server.');
@@ -73,15 +75,14 @@ export class DefaultClient {
         return response;
     } catch (error) {
         console.error('Error fetching projects:', error);
-        vscode.window.showErrorMessage('Failed to fetch projects from the server.');
         return undefined;
     }    
   }
 
   public async userListsJobsForProject(projectId: string, requestParameter: UserListsJobsForProjectRequest = {
       projectId: projectId,
-      size: "10", // Example size, adjust as needed
-      page: "0", // Example page number, adjust as needed
+      size: "10",
+      page: "0", 
     }): Promise<SecHubJobInfoForUserListPage> {
 
     try {
@@ -89,7 +90,6 @@ export class DefaultClient {
       return response;
     } catch (error) {
       console.error('Error fetching latest jobs:', error);
-      vscode.window.showErrorMessage('Failed to fetch latest jobs from the server.');
       return {};
     }
   }
@@ -116,8 +116,47 @@ export class DefaultClient {
       return response;
     } catch (error) {
       console.error('Error fetching report:', error);
-      vscode.window.showErrorMessage('Failed to fetch report from the server.');
       return undefined;
+    }
+  }
+
+  public async userFetchFalsePositiveConfigurationOfProject(projectId: string): Promise<FalsePositiveProjectConfiguration | undefined> {
+    
+    const requestParameter = {
+      projectId: projectId
+    };
+
+    try {
+      const response = await this.apiClient.withExecutionApi().userFetchFalsePositiveConfigurationOfProject(requestParameter);
+      return response;
+
+    } catch (error) {
+      console.error('Error fetching false positives project configuration:', error);
+      return undefined;
+    }
+  }
+
+  public async markFalsePositivesForProject(falsePositves: FalsePositives, projectId: string): Promise<void> {
+
+    const requestParameter: UserMarkFalsePositivesRequest = {
+      projectId: projectId,
+      falsePositives: falsePositves
+    };
+
+    try {
+      await this.apiClient.withExecutionApi().userMarkFalsePositives(requestParameter);
+    } catch (error) {
+      console.error('Error marking findings as false positive:', error);
+      throw error;
+    }
+  }
+
+  public async isAlive(): Promise<void> {
+    try {
+      await this.apiClient.withSystemApi().anonymousCheckAliveGet();
+    } catch (error) {
+      console.error('Error client is not alive!', error);
+      throw error;
     }
   }
 }
