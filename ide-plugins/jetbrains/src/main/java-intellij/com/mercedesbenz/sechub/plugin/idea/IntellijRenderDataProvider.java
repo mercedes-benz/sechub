@@ -14,8 +14,6 @@ import com.mercedesbenz.sechub.plugin.ui.FindingRenderDataProvider;
 
 public class IntellijRenderDataProvider implements FindingRenderDataProvider {
 
-    private Map<String, Icon> iconMap = new TreeMap<>();
-
     @Override
     public Icon getIconForScanType(ScanType scanType) {
         if (scanType == null) {
@@ -48,32 +46,6 @@ public class IntellijRenderDataProvider implements FindingRenderDataProvider {
         }
         }
         return AllIcons.FileTypes.Any_type;
-    }
-
-    @Override
-    public Icon getIconForTrafficLight(TrafficLight trafficLight) {
-        if (trafficLight == null) {
-            return null;
-        }
-        switch (trafficLight) {
-        case GREEN -> {
-            return findIcon("/icons/trafficlight-green.svg");
-        }
-        case YELLOW -> {
-            return findIcon("/icons/trafficlight-yellow.svg");
-        }
-        case RED -> {
-            return findIcon("/icons/trafficlight-red.svg");
-        }
-        case OFF -> {
-            return findIcon("/icons/trafficlight-off.svg");
-        }
-        }
-        return null;
-    }
-
-    private Icon findIcon(String path) {
-        return iconMap.computeIfAbsent(path, iconPath -> IconLoader.findIcon(iconPath, getClass().getClassLoader()));
     }
 
 }

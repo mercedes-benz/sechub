@@ -1,30 +1,35 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.*;
 
 public class SecHubFindingToFindingModelTransformer {
 
     private static final String EMPTY = "";
+    private static final SecHubFindingToFindingModelTransformer instance = new SecHubFindingToFindingModelTransformer();
 
-    public FindingModel transform(List<SecHubFinding> findings) {
+    private SecHubFindingToFindingModelTransformer() {
+        /* private constructor to enforce singleton */
+    }
+
+    public static SecHubFindingToFindingModelTransformer getInstance() {
+        return instance;
+    }
+
+    public FindingModel transform(List<SecHubFinding> findings, List<FalsePositiveEntry> falsePositiveEntries) {
         /* build severity mapping */
         Map<Severity, List<FindingNode>> map = new LinkedHashMap<>();
         for (SecHubFinding finding : findings) {
-            addNodesToMapForFinding(map, finding);
+            boolean isMarkedAsFalsePositive = isMarkedAsFalsePositive(finding, falsePositiveEntries);
+            addNodesToMapForFinding(map, finding, isMarkedAsFalsePositive);
         }
 
         return createRootNodeWithChildren(map);
     }
 
-    private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubFinding finding) {
+    private void addNodesToMapForFinding(Map<Severity, List<FindingNode>> map, SecHubFinding finding, boolean isMarkedAsFalsePositive) {
         Severity severity = finding.getSeverity();
 
         List<FindingNode> list = map.computeIfAbsent(severity, SecHubFindingToFindingModelTransformer::createFindingNodeList);
@@ -49,6 +54,7 @@ public class SecHubFindingToFindingModelTransformer {
 				setId(id).
 				setSecHubFinding(finding).
 				setName(finding.getName()).
+                setIsMarkedAsFalsePositive(isMarkedAsFalsePositive).
 				setScanType(finding.getType()).
 				setCweId(cweId).
 				setCallStackStep(callStackStep++).
@@ -119,5 +125,14 @@ public class SecHubFindingToFindingModelTransformer {
 
     private static List<FindingNode> createFindingNodeList(Severity severity) {
         return new ArrayList<>();
+    }
+
+    private static boolean isMarkedAsFalsePositive(SecHubFinding finding, List<FalsePositiveEntry> falsePositiveEntries) {
+        /* @formatter:off */
+        return falsePositiveEntries.stream()
+                .map(FalsePositiveEntry::getJobData)
+                .filter(Objects::nonNull)
+                .anyMatch(jobData -> jobData.getFindingId() != null && jobData.getFindingId().equals(finding.getId()));
+        /* @formatter:on */
     }
 }

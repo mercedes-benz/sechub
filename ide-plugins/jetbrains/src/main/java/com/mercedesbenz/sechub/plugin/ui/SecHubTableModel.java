@@ -15,7 +15,14 @@ public class SecHubTableModel extends DefaultTableModel {
         super(columnNames, 0);
     }
 
+    @Override
     public boolean isCellEditable(int row, int column) {
+        if (column == 0) {
+            Object value = getValueAt(row, column);
+            if (value instanceof FalsePositiveTableModel falsePositiveTableModel) {
+                return falsePositiveTableModel.isAlreadyMarkedAsFalsePositive();
+            }
+        }
         return false;
     }
 

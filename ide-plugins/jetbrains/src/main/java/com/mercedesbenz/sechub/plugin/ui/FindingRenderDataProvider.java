@@ -11,8 +11,6 @@ public interface FindingRenderDataProvider {
 
     Icon getIconForScanType(ScanType scanType);
 
-    Icon getIconForTrafficLight(TrafficLight trafficLight);
-
     default String getTextForSeverity(Severity severity) {
         if (severity == null) {
             return null;

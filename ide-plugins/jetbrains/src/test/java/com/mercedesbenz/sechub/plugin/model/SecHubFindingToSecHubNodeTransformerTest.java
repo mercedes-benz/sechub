@@ -4,23 +4,17 @@ package com.mercedesbenz.sechub.plugin.model;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubCodeCallStack;
-import com.mercedesbenz.sechub.api.internal.gen.model.SecHubFinding;
-import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
-
 public class SecHubFindingToSecHubNodeTransformerTest {
 
-    private SecHubFindingToFindingModelTransformer transformerToTest;
-
-    @Before
-    public void before() {
-        transformerToTest = new SecHubFindingToFindingModelTransformer();
-    }
+    private static final SecHubFindingToFindingModelTransformer transformerToTest = SecHubFindingToFindingModelTransformer.getInstance();
 
     @Test
     public void adding_one_finding_with_two_stacktraces_results_in_node_containing_one_child_having_another_one_with_expected_data() {
@@ -29,7 +23,7 @@ public class SecHubFindingToSecHubNodeTransformerTest {
         createOneExampleFindingWithChildAndSubChild(findings);
 
         /* execute */
-        FindingModel node = transformerToTest.transform(findings);
+        FindingModel node = transformerToTest.transform(findings, Collections.emptyList());
 
         /* test */
         assertNotNull(node);
@@ -41,11 +35,13 @@ public class SecHubFindingToSecHubNodeTransformerTest {
         assertEquals(Integer.valueOf(11), child1.getColumn());
         assertEquals(1, child1.getCallStackStep());
         assertTrue(child1.getName().contentEquals("myname"));
+        assertFalse(child1.isMarkedAsFalsePositive());
 
         // sub child
         FindingNode child21 = child1.getChildren().get(0);
         assertEquals(Integer.valueOf(21), child21.getColumn());
         assertEquals(2, child21.getCallStackStep());
+        assertFalse(child21.isMarkedAsFalsePositive());
 
     }
 
@@ -75,4 +71,45 @@ public class SecHubFindingToSecHubNodeTransformerTest {
         findings.add(finding);
     }
 
+    @Test
+    public void transform_with_finding_being_marked_as_false_positive() {
+        /* prepare */
+        List<SecHubFinding> findings = new ArrayList<>();
+        SecHubFinding finding = new SecHubFinding();
+        finding.setId(1);
+        finding.setName("myname");
+        finding.setSeverity(Severity.HIGH);
+        finding.setDescription("description");
+
+        SecHubCodeCallStack stack1 = new SecHubCodeCallStack();
+        stack1.setColumn(11);
+        stack1.setLine(11);
+        stack1.setLocation("location1");
+        stack1.setRelevantPart("relevant1");
+        stack1.setSource("source1");
+
+        finding.setCode(stack1);
+
+        findings.add(finding);
+
+        FalsePositiveJobData jobData = new FalsePositiveJobData();
+        jobData.setFindingId(1);
+        jobData.setJobUUID(UUID.randomUUID());
+        jobData.setComment("comment");
+        FalsePositiveEntry entry = new FalsePositiveEntry();
+        entry.setJobData(jobData);
+        List<FalsePositiveEntry> falsePositiveEntries = new ArrayList<>();
+        falsePositiveEntries.add(entry);
+
+        /* execute */
+        FindingModel node = transformerToTest.transform(findings, falsePositiveEntries);
+
+        /* test */
+        assertNotNull(node);
+        List<FindingNode> children = node.getFindings();
+        assertEquals(1, children.size());
+
+        FindingNode child = children.get(0);
+        assertTrue(child.isMarkedAsFalsePositive());
+    }
 }

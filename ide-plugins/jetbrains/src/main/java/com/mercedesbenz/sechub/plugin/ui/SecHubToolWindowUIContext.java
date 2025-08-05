@@ -5,6 +5,9 @@ import javax.swing.*;
 
 import com.mercedesbenz.sechub.plugin.util.ErrorLog;
 
+import java.util.UUID;
+import java.util.function.Supplier;
+
 public class SecHubToolWindowUIContext {
     public JTable findingTable;
     public JTree callHierarchyTree;
