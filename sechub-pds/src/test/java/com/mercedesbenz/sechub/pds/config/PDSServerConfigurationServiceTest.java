@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import com.mercedesbenz.sechub.commons.model.ScanType;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
-import com.mercedesbenz.sechub.pds.PDSShutdownService;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductSetup;
@@ -26,8 +25,8 @@ public class PDSServerConfigurationServiceTest {
     private PDSServerConfigurationService serviceToTest;
     private PDSServerConfigurationValidator serverConfigurationValidator;
 
-    private PDSShutdownService shutdownService;
     private PDSConfigurationAutoFix serverConfigurationAutoFix;
+    private PDSHardExitSupport exitSupport;
 
     @BeforeEach
     public void before() throws Exception {
@@ -35,12 +34,12 @@ public class PDSServerConfigurationServiceTest {
         serverConfigurationValidator = mock(PDSServerConfigurationValidator.class);
         serverConfigurationAutoFix = mock(PDSConfigurationAutoFix.class);
 
-        shutdownService = mock(PDSShutdownService.class);
+        exitSupport = mock(PDSHardExitSupport.class);
 
         serviceToTest = new PDSServerConfigurationService();
         serviceToTest.serverConfigurationValidator = serverConfigurationValidator;
         serviceToTest.serverConfigurationAutoFix = serverConfigurationAutoFix;
-        serviceToTest.shutdownService = shutdownService;
+        serviceToTest.exitSupport = exitSupport;
     }
 
     @Test
@@ -260,7 +259,7 @@ public class PDSServerConfigurationServiceTest {
 
     }
 
-    void when_config_file_loaded_but_server_configuration_validator_returns_validator_error_message_shutdown_service_called() {
+    void when_config_file_loaded_but_server_configuration_validator_returns_validator_error_message_hardexit_support_called() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
         when(serverConfigurationValidator.createValidationErrorMessage(any())).thenReturn("reason");
@@ -269,12 +268,12 @@ public class PDSServerConfigurationServiceTest {
         serviceToTest.postConstruct();
 
         /* test */
-        verify(shutdownService).shutdownApplication();
+        verifyNoInteractions(exitSupport);
 
     }
 
     @Test
-    void when_config_file_loaded_and_server_configuration_validator_returns_NO_validator_error_message_shutdown_service_is_NOT_called() {
+    void when_config_file_loaded_and_server_configuration_validator_returns_NO_validator_error_message_hardexit_support_is_NOT_called() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example1.json";
         // no serverConfigurationValidator mock setup means null returned...
@@ -283,12 +282,12 @@ public class PDSServerConfigurationServiceTest {
         serviceToTest.postConstruct();
 
         /* test */
-        verify(shutdownService, never()).shutdownApplication();
+        verifyNoInteractions(exitSupport);
 
     }
 
     @Test
-    void when_config_file_NOT_exists_shutdown_service_is_called() {
+    void when_config_file_NOT_exists_hardexit_support_is_called() {
         /* prepare */
         serviceToTest.pathToConfigFile = "./src/test/resources/config/pds-config-example-NOT_EXISTING.json";
 
@@ -296,7 +295,7 @@ public class PDSServerConfigurationServiceTest {
         serviceToTest.postConstruct();
 
         /* test */
-        verify(shutdownService).shutdownApplication();
+        verify(exitSupport).exit(1, "Server start not possible because missing server configuration.");
 
     }
 

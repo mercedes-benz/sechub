@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.pds.monitoring;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -21,9 +18,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
-import com.mercedesbenz.sechub.pds.PDSShutdownService;
 import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.config.PDSConfigurationAutoFix;
+import com.mercedesbenz.sechub.pds.config.PDSHardExitSupport;
 import com.mercedesbenz.sechub.pds.config.PDSPathExecutableValidator;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
@@ -31,11 +28,21 @@ import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationValidator;
 import com.mercedesbenz.sechub.pds.config.PDSServerIdentifierValidator;
 import com.mercedesbenz.sechub.pds.job.PDSJobRepository;
 
-@ActiveProfiles({ PDSProfiles.TEST/* , PDSProfiles.SQL_TRACE */ })
+/* @formatter:off */
+@ActiveProfiles({ PDSProfiles.TEST })
 @DataJpaTest
-@ContextConfiguration(classes = { PDSPathExecutableValidator.class, PDSServerIdentifierValidator.class, PDSServerConfigurationValidator.class,
-        PDSProductIdentifierValidator.class, PDSShutdownService.class, PDSJobRepository.class, PDSServerConfigurationService.class,
-        PDSPDSHeartBeatRepositoryDBTest.SimpleTestConfiguration.class, PDSConfigurationAutoFix.class, SecHubDataConfigurationTypeListParser.class })
+@ContextConfiguration(classes = {
+        PDSPathExecutableValidator.class,
+        PDSServerIdentifierValidator.class,
+        PDSServerConfigurationValidator.class,
+        PDSProductIdentifierValidator.class,
+        PDSHardExitSupport.class,
+        PDSJobRepository.class,
+        PDSServerConfigurationService.class,
+        PDSPDSHeartBeatRepositoryDBTest.SimpleTestConfiguration.class,
+        PDSConfigurationAutoFix.class,
+        SecHubDataConfigurationTypeListParser.class })
+/* @formatter:on */
 public class PDSPDSHeartBeatRepositoryDBTest {
     @Autowired
     private TestEntityManager entityManager;

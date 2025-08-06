@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterValueConstants;
 import com.mercedesbenz.sechub.pds.PDSMustBeDocumented;
-import com.mercedesbenz.sechub.pds.PDSShutdownService;
 import com.mercedesbenz.sechub.pds.commons.core.PDSJSONConverterException;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterDefinition;
 import com.mercedesbenz.sechub.pds.commons.core.config.PDSProductParameterSetup;
@@ -54,10 +53,10 @@ public class PDSServerConfigurationService {
     int maximumConfigurableMinutesToWaitForProduct = defaultMaxConfigurableMinutesToWaitForProduct;
 
     @Autowired
-    PDSShutdownService shutdownService;
+    PDSServerConfigurationValidator serverConfigurationValidator;
 
     @Autowired
-    PDSServerConfigurationValidator serverConfigurationValidator;
+    PDSHardExitSupport exitSupport;
 
     @Autowired
     PDSConfigurationAutoFix serverConfigurationAutoFix;
@@ -68,6 +67,8 @@ public class PDSServerConfigurationService {
 
     @PostConstruct
     protected void postConstruct() {
+        LOG.debug("Initialize server configuration with path: {}", pathToConfigFile);
+
         Path p = Paths.get(pathToConfigFile);
         File file = p.toFile();
         if (file.exists()) {
@@ -92,9 +93,21 @@ public class PDSServerConfigurationService {
             LOG.error("No configuration file found at {} !", file.getAbsolutePath());
         }
         if (configuration == null) {
-            LOG.error(
-                    "PDS configuration failure\n*****************************\nCONFIG ERROR CANNOT START PDS\n*****************************\nNo configuration available (see former logs for reason), so cannot start PDS server - trigger shutdown to ensure application no longer alive");
-            shutdownService.shutdownApplication();
+            String message = """
+                    PDS configuration failure
+                    *****************************
+                    CONFIG ERROR CANNOT START PDS
+                    *****************************
+                    No configuration available (see former logs for reason), so cannot start PDS server.")
+                    """;
+            LOG.error(message);
+
+            /*
+             * Trigger hard exit to ensure application no longer alive. We do NOT use the
+             * shutdown service here because it would produce unnecessary log entries and
+             * the application start may never proceed in any way at this point.
+             */
+            exitSupport.exit(1, "Server start not possible because missing server configuration.");
         }
         /* define storage id */
         storageId = "pds/" + getServerId();
