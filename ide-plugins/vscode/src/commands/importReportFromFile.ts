@@ -4,28 +4,26 @@ import * as sechubExtension from './../extension';
 import { loadFromFile } from './../utils/sechubUtils';
 
 export async function importReportFromFile(context: sechubExtension.SecHubContext) {
+	const options: vscode.OpenDialogOptions = {
+		title: 'Import SecHub report file',
+		canSelectMany: false,
+		openLabel: 'Open',
+		filters: {
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'SecHub report files': ['json'],
+			// eslint-disable-next-line @typescript-eslint/naming-convention
+			'All files': ['*'],
+		},
+	};
 
-    const options: vscode.OpenDialogOptions = {
+	vscode.window.showOpenDialog(options).then(fileUri => {
+		if (fileUri && fileUri[0]) {
+			const filePath = fileUri[0].fsPath;
 
-        title: "Import SecHub report file",
-        canSelectMany: false,
-        openLabel: 'Open',
-        filters: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            'SecHub report files': ['json'],
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            'All files': ['*']
-        }
-    };
+			vscode.window.showInformationMessage('Started SecHub report import...');
 
-    vscode.window.showOpenDialog(options).then(fileUri => {
-        if (fileUri && fileUri[0]) {
-            const filePath = fileUri[0].fsPath;
-
-            vscode.window.showInformationMessage('Started SecHub report import...');
-
-            const report = loadFromFile(filePath);
-            context.setReport(report);
-        }
-    });
+			const report = loadFromFile(filePath);
+			context.setReport(report);
+		}
+	});
 }

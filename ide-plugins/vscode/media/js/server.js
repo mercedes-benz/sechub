@@ -1,3 +1,6 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-undef */
+
 const vscode = acquireVsCodeApi();
 /* JavaScript for SecHub Server Webview */
 

@@ -87,6 +87,22 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
 
    ![VSCode start debugging](README/start_debugging.png)
 
+6. Tipps:
+- Adjust VS Code settings to align with the Prettier config:
+
+   ```json
+   {
+     "editor.insertSpaces": true,
+     "editor.tabSize": 4
+   }
+   ```
+  
+- Run eslint before committing (this will lint and format your code)
+
+   ```shell
+   npm run lint
+   ```
+
 #### Develop with SecHub Integrationtest Server
 
 1. Start the SecHub Server as integration test server from your IDE (see [setup SecHub from IDE](https://mercedes-benz.github.io/sechub/latest/sechub-developer-quickstart-guide.html#setup-ide-for-sechub))
@@ -103,6 +119,7 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
 Prerequisite: 
 - The Node package manager NPM needs to be installed.
 - The SecHub OpenAPI TypeScript client needs to be generated and built first (see [README.md](../../sechub-openapi-ts-client/README.md)).
+- Extension tests follow the [VSCode test setup](https://code.visualstudio.com/api/working-with-extensions/testing-extension)
 
 1. Install dependencies (make sure you have generated and build t+he sechub-openapi-typescript client first)
 
