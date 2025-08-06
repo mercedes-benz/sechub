@@ -52,6 +52,11 @@ public class DownloadScanReportService {
         if (report == null) {
             throw new NotFoundException("Report not found or you have no access to report!");
         }
+
+        if (!projectId.equals(report.getProjectId())) {
+            throw new NotFoundException("Job is not for the given project!");
+        }
+
         scanAssertService.assertUserHasAccessToReport(report);
 
         ScanSecHubReport scanSecHubReport = new ScanSecHubReport(report);
