@@ -72,9 +72,11 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
    * [Node.js releases](https://nodejs.dev/en/about/releases/)
 
 2. Build sechub api client and install dependencies by running the build script.
+Additional run npm install to ensure eslint runs correctly.
 
    ```shell
     ./build-plugin.sh
+    npm install
    ```
 
 3. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
