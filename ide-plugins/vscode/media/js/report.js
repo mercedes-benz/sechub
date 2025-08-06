@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable prettier/prettier */
 const vscode = acquireVsCodeApi();
 
 /* reportTable */
