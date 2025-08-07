@@ -1600,4 +1600,10 @@ public class AsUser {
         return JSONConverter.get().fromJSONtoListOf(ProjectData.class, json);
     }
 
+    public String explainFinding(String projectId, UUID jobUUID, int findingId) {
+        String url = getUrlBuilder().buildExplainFinding(projectId, jobUUID, findingId);
+        String json = getRestHelper().getJSON(url);
+        return json;
+    }
+
 }

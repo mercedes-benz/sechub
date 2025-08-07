@@ -870,4 +870,9 @@ public class DeveloperAdministration {
         asTestUser().deleteTemplate(templateId);
     }
 
+    public String explainFinding(String projectId, UUID jobUUID, int findingId) {
+        // TODO Auto-generated method stub
+        return asTestUser().explainFinding(projectId, jobUUID, findingId);
+    }
+
 }
