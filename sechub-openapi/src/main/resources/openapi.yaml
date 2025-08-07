@@ -2005,6 +2005,74 @@ components:
         passwordSourceData:
           description: Password source data for used type. E.g. for ENVIRONMENT_VARIABLE the name of the variable
           type: string
+          
+    ###############
+    ## Assistant ##
+    ###############
+    TextBlock:
+      title: TextBlock
+      type: object
+      properties:
+        title:
+          description: Title of the text block
+          type: string
+        content:
+          description: Content of the text block
+          type: string
+          
+    Reference:
+      title: Reference
+      type: object
+      properties:
+        title:
+          description: Title of the reference
+          type: string
+        content:
+          description: URL of the reference
+          type: string
+    
+    CodeExample:
+      title: CodeExample
+      type: object
+      properties:
+        vulnerableExample:
+          description: Code example with a vulnerable code snippet for the security finding
+          type: string
+        secureExample:
+          description: Code example with a secure code snippet for the security finding
+          type: string
+        explanation:
+          description: Explanation of the code exmaples regarding the security finding
+          type: object
+          $ref: '#/components/schemas/TextBlock'
+    
+    SecHubExplanationResponse:
+      title: SecHubExplanationResponse
+      type: object
+      properties:
+        findingExplanation:
+          description: Explanation of the security finding
+          type: object
+          $ref: '#/components/schemas/TextBlock'
+        potentialImpact:
+          description: Potential impact of the security finding
+          type: object
+          $ref: '#/components/schemas/TextBlock'
+        recommendations:
+          description: List of recommendations for the security finding
+          type: array
+          items:
+            $ref: '#/components/schemas/TextBlock'
+        codeExample:
+          description: Code example with vulnerable and secure code snippets of the security finding
+          type: object
+          $ref: '#/components/schemas/CodeExample'
+        references:
+          description: References for futher reading on the security finding
+          type: array
+          items:
+            $ref: '#/components/schemas/Reference'
+    
     ###########
     ## Other ##
     ###########

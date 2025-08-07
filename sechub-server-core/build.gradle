@@ -15,6 +15,7 @@ dependencies {
     api project(':sechub-scan-product-pds')
     api project(':sechub-sereco')
     api project(':sechub-statistic')
+    api project(':sechub-assistant')
     
     api project(':deprecated-sechub-scan-product-netsparker')
     api project(':deprecated-sechub-scan-product-nessus')
