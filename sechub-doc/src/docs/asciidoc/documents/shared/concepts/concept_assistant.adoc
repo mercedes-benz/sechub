@@ -1,0 +1,17 @@
+// SPDX-License-Identifier: MIT
+[[sechub-concept-assistant]]
+==== SecHub Assistant
+Sometimes a security product does not provide enough or no information for the {sechub} users, to remediate the finding.
+The official Mitre Link for the CWE-ID we can provide as a fallback, often does not apply to the developers context
+or it is too generic to provide helpful information for the evaluation and remediation.
+
+[[sechub-assistant-response-model]]
+===== Response model
+plantuml::./diagrams/diagram_concept_sechub_assistant-model.puml[format=svg, title="SecHub assistant response model"]
+
+===== API
+The {sechub} assistant API
+
+- starts with `/api/assistant`
+- provides and API `/api/assistant/explanation/project/{projectId}/job/{jobUUID}/finding/{findingId}`,
+which will return a JSON representation of an <<sechub-assistant-response-model, SecHubExplanationResponse>>.
