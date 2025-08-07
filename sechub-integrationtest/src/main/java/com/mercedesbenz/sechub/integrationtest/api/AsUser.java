@@ -1601,7 +1601,7 @@ public class AsUser {
     }
 
     public String explainFinding(String projectId, UUID jobUUID, int findingId) {
-        String url = getUrlBuilder().buildExplainFinding(projectId, jobUUID, findingId);
+        String url = getUrlBuilder().buildExplainFinding(projectId, jobUUID.toString(), String.valueOf(findingId));
         String json = getRestHelper().getJSON(url);
         return json;
     }

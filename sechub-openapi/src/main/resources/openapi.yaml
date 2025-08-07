@@ -2027,7 +2027,7 @@ components:
         title:
           description: Title of the reference
           type: string
-        content:
+        url:
           description: URL of the reference
           type: string
     

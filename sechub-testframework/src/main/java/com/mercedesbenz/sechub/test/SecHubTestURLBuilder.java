@@ -801,7 +801,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
         return buildUrl(API_ANONYMOUS, "integrationtest/caching/opaque-token/shutdown-test-cache");
     }
 
-    public String buildExplainFinding(String projectId, UUID jobUUID, int findingId) {
+    public String buildExplainFinding(String projectId, String jobUUID, String findingId) {
         return buildUrl(API_ASSISTANT, "explanation", "project", projectId, "job", jobUUID, "finding", findingId);
     }
 

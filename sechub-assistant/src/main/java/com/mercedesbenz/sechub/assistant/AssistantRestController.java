@@ -44,7 +44,7 @@ public class AssistantRestController {
             @PathVariable("findingId") Integer findingId
             ) {
         /* @formatter:on */
-        return findingAssistantService.createSecHubExplanationResponse(projectId, projectId, findingId);
+        return findingAssistantService.createSecHubExplanationResponse(projectId, jobUUID, findingId);
     }
 
 }

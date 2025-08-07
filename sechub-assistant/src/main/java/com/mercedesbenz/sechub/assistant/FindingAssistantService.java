@@ -2,6 +2,7 @@ package com.mercedesbenz.sechub.assistant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import com.mercedesbenz.sechub.api.internal.gen.model.TextBlock;
 @Service
 public class FindingAssistantService {
     
-    public SecHubExplanationResponse createSecHubExplanationResponse(String projectId, String jobUUID, int findingId) {
+    public SecHubExplanationResponse createSecHubExplanationResponse(String projectId, UUID jobUUID, int findingId) {
         SecHubExplanationResponse response = new SecHubExplanationResponse();
 
         // Create and set FindingExplanation
@@ -64,17 +65,17 @@ public class FindingAssistantService {
 
         Reference reference1 = new Reference();
         reference1.setTitle("OWASP Path Traversal");
-        reference1.setContent("https://owasp.org/www-community/attacks/Path_Traversal");
+        reference1.setUrl("https://owasp.org/www-community/attacks/Path_Traversal");
         references.add(reference1);
 
         Reference reference2 = new Reference();
         reference2.setTitle("CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')");
-        reference2.setContent("https://cwe.mitre.org/data/definitions/22.html");
+        reference2.setUrl("https://cwe.mitre.org/data/definitions/22.html");
         references.add(reference2);
 
         Reference reference3 = new Reference();
         reference3.setTitle("Snyk Path Traversal");
-        reference3.setContent("https://snyk.io/learn/path-traversal/");
+        reference3.setUrl("https://snyk.io/learn/path-traversal/");
         references.add(reference3);
 
 

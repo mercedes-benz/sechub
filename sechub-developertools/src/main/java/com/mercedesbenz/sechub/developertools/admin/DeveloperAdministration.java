@@ -871,7 +871,6 @@ public class DeveloperAdministration {
     }
 
     public String explainFinding(String projectId, UUID jobUUID, int findingId) {
-        // TODO Auto-generated method stub
         return asTestUser().explainFinding(projectId, jobUUID, findingId);
     }
 
