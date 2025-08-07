@@ -29,7 +29,7 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_PROJECTS = "/api/projects";
     private static final String API_MANAGEMENT = "/api/management";
     private static final String API_MANAGEMENT_PROJECT = "/api/management/project";
-    
+
     private static final String API_ASSISTANT = "/api/assistant";
 
     public static SecHubTestURLBuilder https(int port) {

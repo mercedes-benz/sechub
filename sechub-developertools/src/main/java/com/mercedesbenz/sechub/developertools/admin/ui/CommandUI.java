@@ -458,7 +458,7 @@ public class CommandUI {
         menu.addSeparator();
         add(menu, new DownloadFullscanDataForJobAction(context));
     }
-    
+
     private void createAssistantMenu() {
         JMenu menu = new JMenu("Assistant");
         menuBar.add(menu);

@@ -59,9 +59,10 @@ public class APIConstants {
      * API starting with this is accessible by users for project jobs
      */
     public static final String API_MANAGEMENT = "/api/management/";
-    
+
     /**
-     * API starting with this is accessible by users for finding assistance and explanation
+     * API starting with this is accessible by users for finding assistance and
+     * explanation
      */
     public static final String API_ASSISTANT = "/api/assistant/";
 

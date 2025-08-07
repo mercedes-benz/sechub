@@ -25,7 +25,7 @@ import jakarta.annotation.security.RolesAllowed;
 @RequestMapping(APIConstants.API_ASSISTANT)
 @RolesAllowed({ RoleConstants.ROLE_USER, RoleConstants.ROLE_OWNER, RoleConstants.ROLE_SUPERADMIN })
 public class AssistantRestController {
-    
+
     private final FindingAssistantService findingAssistantService;
 
     /* @formatter:off */
@@ -33,7 +33,7 @@ public class AssistantRestController {
         this.findingAssistantService = findingAssistantService;
         /* @formatter:on */
     }
-    
+
     /* @formatter:off */
     @UseCaseUserRequestsFindingExplanation(@Step(number=1, name="REST API call to get an explanation for the given finding.", needsRestDoc=true))
     @GetMapping(path = "/explanation/project/{projectId}/job/{jobUUID}/finding/{findingId}", produces= {MediaType.APPLICATION_JSON_VALUE})

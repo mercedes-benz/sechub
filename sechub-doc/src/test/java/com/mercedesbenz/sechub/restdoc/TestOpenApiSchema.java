@@ -67,7 +67,7 @@ enum TestOpenApiSchema {
     TEMPLATES("Templates"),
 
     ASSETS("Assets"),
-    
+
     ASSISTENT("Assistent"),
 
     ;

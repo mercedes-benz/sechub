@@ -1,4 +1,5 @@
 package com.mercedesbenz.sechub.sharedkernel.assistant;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
