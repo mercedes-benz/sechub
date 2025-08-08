@@ -4470,3 +4470,44 @@ paths:
       tags:
         - Job Management
       x-accepts: application/json
+      
+  ###############
+  ## Assistant ##
+  ###############
+  /api/assistant/explanation/project/{projectId}/job/{jobUUID}/finding/{findingId}:
+    get:
+      summary: User requests an explanation for a finding
+      description: A user requests a more detailed explanation of a specific finding
+      operationId: userRequestsFindingExplanation
+      parameters:
+        - name: projectId
+          description: The project ID the job with the findign belongs to.
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: jobUUID
+          description: The SecHub job UUID the finding belongs to.
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: findingId
+          description: Finding id - in combination with job UUID this identifies the finding
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecHubExplanationResponse'
+          description: "Ok"
+        "404":
+          description: "Not found"
+      tags:
+        - Assistant
