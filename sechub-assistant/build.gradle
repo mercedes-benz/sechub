@@ -9,7 +9,7 @@ dependencies {
 
     api project(':sechub-shared-kernel')
     implementation project(':sechub-openapi-java-client')
-    implementation library.springboot_starter_thymeleaf
+    implementation library.springboot_starter_web
 
     testImplementation project(':sechub-testframework')
 
