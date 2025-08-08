@@ -41,7 +41,7 @@ import com.mercedesbenz.sechub.assistant.AssistantRestController;
 import com.mercedesbenz.sechub.assistant.FindingAssistantService;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
-import com.mercedesbenz.sechub.sharedkernel.assistant.UseCaseUserRequestsFindingExplanation;
+import com.mercedesbenz.sechub.sharedkernel.assistant.UseCaseUserRequestFindingExplanation;
 import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseRestDoc;
 import com.mercedesbenz.sechub.test.ExampleConstants;
 import com.mercedesbenz.sechub.test.TestIsNecessaryForDocumentation;
@@ -71,7 +71,7 @@ public class AssistantRestControllerRestDocTest implements TestIsNecessaryForDoc
     }
 
     @Test
-    @UseCaseRestDoc(useCase = UseCaseUserRequestsFindingExplanation.class)
+    @UseCaseRestDoc(useCase = UseCaseUserRequestFindingExplanation.class)
     public void restdoc_request_finding_explanation() throws Exception {
         /* prepare */
         UUID jobUUID = UUID.fromString("f1d02a9d-5e1b-4f52-99e5-401854ccf936");
@@ -79,7 +79,7 @@ public class AssistantRestControllerRestDocTest implements TestIsNecessaryForDoc
 
         String apiEndpoint = https(PORT_USED).buildExplainFinding(PROJECT_ID.pathElement(), JOB_UUID.pathElement(), FINDING_ID.pathElement());
 
-        Class<? extends Annotation> useCase = UseCaseUserRequestsFindingExplanation.class;
+        Class<? extends Annotation> useCase = UseCaseUserRequestFindingExplanation.class;
 
         SecHubExplanationResponse response = new SecHubExplanationResponse();
         // Create and set FindingExplanation
@@ -165,7 +165,7 @@ public class AssistantRestControllerRestDocTest implements TestIsNecessaryForDoc
                 with().
                     useCaseData(useCase).
                     tag(RestDocFactory.extractTag(apiEndpoint)).
-                    requestSchema(TestOpenApiSchema.ASSISTENT.getSchema()).
+                    requestSchema(TestOpenApiSchema.ASSISTANT.getSchema()).
                 and().
                 document(
                             requestHeaders(

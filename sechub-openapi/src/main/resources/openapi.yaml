@@ -4478,7 +4478,7 @@ paths:
     get:
       summary: User requests an explanation for a finding
       description: A user requests a more detailed explanation of a specific finding
-      operationId: userRequestsFindingExplanation
+      operationId: userRequestFindingExplanation
       parameters:
         - name: projectId
           description: The project ID the job with the findign belongs to.

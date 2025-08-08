@@ -16,10 +16,10 @@ import com.mercedesbenz.sechub.sharedkernel.usecases.UseCaseIdentifier;
 @UseCaseDefinition(
 id = UseCaseIdentifier.UC_USER_REQUESTS_FINDING_EXPLANATION,
 group = UseCaseGroup.USER_SELF_SERVICE,
-apiName = "userRequestsFindingExplanation",
+apiName = "userRequestFindingExplanation",
 title = "User requests finding explanation",
 description = "In this usecase the user requests an explanation for a finding.")
-public @interface UseCaseUserRequestsFindingExplanation {
+public @interface UseCaseUserRequestFindingExplanation {
 
 	Step value();
 }

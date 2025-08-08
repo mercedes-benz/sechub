@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubExplanationResponse;
 import com.mercedesbenz.sechub.sharedkernel.Step;
-import com.mercedesbenz.sechub.sharedkernel.assistant.UseCaseUserRequestsFindingExplanation;
+import com.mercedesbenz.sechub.sharedkernel.assistant.UseCaseUserRequestFindingExplanation;
 import com.mercedesbenz.sechub.sharedkernel.security.APIConstants;
 import com.mercedesbenz.sechub.sharedkernel.security.RoleConstants;
 
@@ -35,7 +35,7 @@ public class AssistantRestController {
     }
 
     /* @formatter:off */
-    @UseCaseUserRequestsFindingExplanation(@Step(number=1, name="REST API call to get an explanation for the given finding.", needsRestDoc=true))
+    @UseCaseUserRequestFindingExplanation(@Step(number=1, name="REST API call to get an explanation for the given finding.", needsRestDoc=true))
     @GetMapping(path = "/explanation/project/{projectId}/job/{jobUUID}/finding/{findingId}", produces= {MediaType.APPLICATION_JSON_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public SecHubExplanationResponse explainFinding(
