@@ -36,6 +36,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubExplanationResponse;
 import com.mercedesbenz.sechub.commons.TextFileWriter;
 import com.mercedesbenz.sechub.commons.mapping.MappingData;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
@@ -1600,10 +1601,10 @@ public class AsUser {
         return JSONConverter.get().fromJSONtoListOf(ProjectData.class, json);
     }
 
-    public String explainFinding(String projectId, UUID jobUUID, int findingId) {
+    public SecHubExplanationResponse explainFinding(String projectId, UUID jobUUID, int findingId) {
         String url = getUrlBuilder().buildExplainFinding(projectId, jobUUID.toString(), String.valueOf(findingId));
         String json = getRestHelper().getJSON(url);
-        return json;
+        return JSONConverter.get().fromJSON(SecHubExplanationResponse.class, json);
     }
 
 }

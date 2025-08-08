@@ -28,6 +28,8 @@ dependencies {
     api library.junit4
 
     api library.apache_commons_lang3
+    
+    implementation project(':sechub-openapi-java-client')
 
     implementation spring_boot_dependency.junit_jupiter
     implementation spring_boot_dependency.mockito_core

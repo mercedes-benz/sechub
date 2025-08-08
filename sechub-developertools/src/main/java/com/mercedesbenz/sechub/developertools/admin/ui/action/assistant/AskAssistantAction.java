@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubExplanationResponse;
+import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.developertools.admin.ui.UIContext;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.AbstractUIAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.cache.InputCacheIdentifier;
@@ -33,7 +35,9 @@ public class AskAssistantAction extends AbstractUIAction {
         }
         int findingId = Integer.parseInt(findingIdAsString.get().toLowerCase().trim());
 
-        String infoMessage = getContext().getAdministration().explainFinding(projectId.get().toLowerCase().trim(), jobUUID, findingId);
+        SecHubExplanationResponse explanationResponse = getContext().getAdministration().explainFinding(projectId.get().toLowerCase().trim(), jobUUID,
+                findingId);
+        String infoMessage = JSONConverter.get().toJSON(explanationResponse);
         outputAsTextOnSuccess(infoMessage);
     }
 

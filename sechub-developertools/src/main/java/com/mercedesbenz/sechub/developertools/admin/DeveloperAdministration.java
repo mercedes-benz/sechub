@@ -21,6 +21,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubExplanationResponse;
 import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.commons.model.template.TemplateDefinition;
 import com.mercedesbenz.sechub.commons.pds.PDSDefaultParameterKeyConstants;
@@ -870,7 +871,7 @@ public class DeveloperAdministration {
         asTestUser().deleteTemplate(templateId);
     }
 
-    public String explainFinding(String projectId, UUID jobUUID, int findingId) {
+    public SecHubExplanationResponse explainFinding(String projectId, UUID jobUUID, int findingId) {
         return asTestUser().explainFinding(projectId, jobUUID, findingId);
     }
 
