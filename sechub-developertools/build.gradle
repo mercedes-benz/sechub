@@ -19,6 +19,8 @@ dependencies {
     implementation project(':sechub-commons-pds')
     implementation project(':sechub-commons-encryption')
     implementation project(':sechub-wrapper-checkmarx')
+    
+    implementation project(':sechub-openapi-java-client')
    
     implementation library.apache_commons_io
     implementation library.apache_commons_compress // we need TAR archive support

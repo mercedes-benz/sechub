@@ -1,0 +1,39 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+package com.mercedesbenz.sechub.domain.assistant.model {
+
+	class SecHubExplanationResponse {
+	  TextBlock findingExplanation
+	  TextBlock potentialImpact
+	  List<TextBlock> recommendations
+	  CodeExample codeExample
+	  List<Reference> references
+	}
+	
+	class CodeExample {
+	  String vulnerableExample
+	  String secureExample
+	  TextBlock explanation
+	}
+	
+	class Reference {
+	  String title
+	  String url
+	}
+	
+	class TextBlock {
+	  String title
+	  String content
+	}
+}
+
+SecHubExplanationResponse *-- CodeExample
+SecHubExplanationResponse *-- Reference
+SecHubExplanationResponse *-- TextBlock
+
+@enduml

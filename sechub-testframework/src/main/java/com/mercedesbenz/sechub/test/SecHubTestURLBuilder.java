@@ -30,6 +30,8 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
     private static final String API_MANAGEMENT = "/api/management";
     private static final String API_MANAGEMENT_PROJECT = "/api/management/project";
 
+    private static final String API_ASSISTANT = "/api/assistant";
+
     public static SecHubTestURLBuilder https(int port) {
         return new SecHubTestURLBuilder("https", port);
     }
@@ -797,6 +799,10 @@ public class SecHubTestURLBuilder extends AbstractTestURLBuilder {
 
     public String buildIntegrationTestOpaqueTokenShutdownTestCaching() {
         return buildUrl(API_ANONYMOUS, "integrationtest/caching/opaque-token/shutdown-test-cache");
+    }
+
+    public String buildExplainFinding(String projectId, String jobUUID, String findingId) {
+        return buildUrl(API_ASSISTANT, "explanation", "project", projectId, "job", jobUUID, "finding", findingId);
     }
 
 }
