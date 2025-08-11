@@ -1,33 +1,33 @@
 // SPDX-License-Identifier: MIT
 import { SecHubContext } from '../extension';
-import { SECHUB_COMMANDS, SECHUB_VIEW_IDS, SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_CONTEXT_STORAGE_KEYS } from '../utils/sechubConstants';
+import { SECHUB_COMMANDS, SECHUB_VIEW_IDS, SECHUB_CONTEXT_STORAGE_KEYS } from '../utils/sechubConstants';
 import { JobListTable } from '../webview/jobTable';
 import { ServerStateContainer } from '../webview/serverStateContainer';
 import { DefaultClient } from '../api/defaultClient';
 import * as vscode from 'vscode';
 import { preSelectedProjectValid, getNonce } from '../utils/sechubUtils';
 
-
 export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
-
 	public static readonly viewType = SECHUB_VIEW_IDS.serverView;
 
 	private _view?: vscode.WebviewView;
 	private _sechubContext: SecHubContext;
 	private jobListDataTable = new JobListTable();
 	private serverStateContainer = new ServerStateContainer();
-	private isConnected: boolean = false;
+	private isConnected = false;
 
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
 		_sechubContext: SecHubContext,
-	) { 
+	) {
 		this._sechubContext = _sechubContext;
 	}
 
 	public async resolveWebviewView(
 		webviewView: vscode.WebviewView,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_context: vscode.WebviewViewResolveContext,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_token: vscode.CancellationToken,
 	) {
 		this._view = webviewView;
@@ -35,9 +35,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 		webviewView.webview.options = {
 			enableScripts: true,
 
-			localResourceRoots: [
-				this._extensionUri
-			]
+			localResourceRoots: [this._extensionUri],
 		};
 
 		webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
@@ -83,25 +81,30 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 	public async refresh() {
 		if (this._view) {
 			this._view.show?.(true);
-			await preSelectedProjectValid(this._sechubContext.extensionContext);			
+			await preSelectedProjectValid(this._sechubContext.extensionContext);
 			this._view.webview.html = await this._getHtmlForWebview(this._view.webview);
 		}
 	}
 
-	private openWebUi(leftClick: any) {
+	private openWebUi(leftClick: boolean) {
 		if (leftClick) {
-			let webUiUrl = this._sechubContext.extensionContext.globalState.get<string>(SECHUB_CONTEXT_STORAGE_KEYS.webUiUrl);
+			let webUiUrl = this._sechubContext.extensionContext.globalState.get<string>(
+				SECHUB_CONTEXT_STORAGE_KEYS.webUiUrl,
+			);
 			if (webUiUrl) {
-
 				if (!webUiUrl.endsWith('/login')) {
-					const projectId = this._sechubContext.extensionContext.globalState.get<string>(SECHUB_CONTEXT_STORAGE_KEYS.selectedProject);
+					const projectId = this._sechubContext.extensionContext.globalState.get<string>(
+						SECHUB_CONTEXT_STORAGE_KEYS.selectedProject,
+					);
 					if (projectId) {
 						webUiUrl += `/projects/${projectId}`;
 					}
 				}
 				vscode.env.openExternal(vscode.Uri.parse(webUiUrl));
 			} else {
-				vscode.window.showErrorMessage('No SecHub Web-UI URL configured. Please set it in with command "SecHub: Change Web-UI URL".');
+				vscode.window.showErrorMessage(
+					'No SecHub Web-UI URL configured. Please set it in with command "SecHub: Change Web-UI URL".',
+				);
 			}
 		} else {
 			vscode.commands.executeCommand(SECHUB_COMMANDS.changeWebUiUrl);
@@ -110,7 +113,9 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 
 	private async syncReportFromServer(jobUUID: string, projectId: string, result: string) {
 		if (!jobUUID || !projectId || !result) {
-			vscode.window.showErrorMessage('Invalid parameters to fetch report. Please ensure job UUID, project ID, and result are provided.');
+			vscode.window.showErrorMessage(
+				'Invalid parameters to fetch report. Please ensure job UUID, project ID, and result are provided.',
+			);
 			return;
 		}
 
@@ -135,10 +140,15 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
 		const javascriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'server.js'));
 
-		const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')));
+		const codiconsUri = webview.asWebviewUri(
+			vscode.Uri.joinPath(
+				vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'),
+			),
+		);
 
-
-		const serverState = await this.serverStateContainer.renderServerStateContainer(this._sechubContext.extensionContext);
+		const serverState = await this.serverStateContainer.renderServerStateContainer(
+			this._sechubContext.extensionContext,
+		);
 		const serverStateHtml = serverState.html;
 		this.isConnected = serverState.isConnected;
 		let dataTableHtml = '<div> Can not load Data without SecHub connection. </div>';
@@ -146,7 +156,7 @@ export class SecHubServerWebviewProvider implements vscode.WebviewViewProvider {
 		if (this.isConnected) {
 			dataTableHtml = await this.jobListDataTable.renderJobTable(this._sechubContext.extensionContext);
 		}
-		
+
 		const htmlSource = `
 		<!DOCTYPE html>
 			<html lang="en">

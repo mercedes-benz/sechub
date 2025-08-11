@@ -1,15 +1,6 @@
 const vscode = acquireVsCodeApi();
 
 /* reportTable */
-function toggleDiv(divId) {
-    const div = document.getElementById(divId);
-    if (div.style.display === "none") {
-        div.style.display = "block";
-    } else {
-        div.style.display = "none";
-    }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   // Expandable headers
   document.querySelectorAll('.expandable-header').forEach(header => {

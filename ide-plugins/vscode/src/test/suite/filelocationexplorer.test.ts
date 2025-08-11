@@ -8,129 +8,131 @@ import * as fs from 'fs';
 import { FileLocationExplorer } from '../../utils/fileLocationExplorer';
 
 suite('FileLocationExplorer Test Suite', () => {
-
 	let explorerToTest: FileLocationExplorer;
 
 	test('scenario1_projects_TestMe_java_found', () => {
 		/* prepare */
 		explorerToTest = new FileLocationExplorer();
-		
-		const project1 = getEnsuredTestPath("explorer/scenario1/project1");
-		const project2 = getEnsuredTestPath("explorer/scenario1/project2");
-		const expectedFilePath = getEnsuredTestPath("explorer/scenario1/project1/src/main/java/com/example/TestMe.java");
+
+		const project1 = getEnsuredTestPath('explorer/scenario1/project1');
+		const project2 = getEnsuredTestPath('explorer/scenario1/project2');
+		const expectedFilePath = getEnsuredTestPath(
+			'explorer/scenario1/project1/src/main/java/com/example/TestMe.java',
+		);
 
 		explorerToTest.searchFolders.add(project1);
 		explorerToTest.searchFolders.add(project2);
 
 		/* execute */
-		const locationString = "example/TestMe.java";
+		const locationString = 'example/TestMe.java';
 		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
-		assert.strictEqual(1, found.size,"Not expected size of locations returned");
+		assert.strictEqual(1, found.size, 'Not expected size of locations returned');
 		const firstValue = found.values().next().value;
-		assert.deepStrictEqual(firstValue,expectedFilePath,"must be expected result path");
+		assert.deepStrictEqual(firstValue, expectedFilePath, 'must be expected result path');
 	});
 
 	test('scenario1_projects_source_TestMe_c_found', () => {
 		/* prepare */
 		explorerToTest = new FileLocationExplorer();
-		
-		const project1 = getEnsuredTestPath("explorer/scenario1/project1");
-		const project2 = getEnsuredTestPath("explorer/scenario1/project2");
-		const expectedFilePath = getEnsuredTestPath("explorer/scenario1/project2/source/TestMe.c");
+
+		const project1 = getEnsuredTestPath('explorer/scenario1/project1');
+		const project2 = getEnsuredTestPath('explorer/scenario1/project2');
+		const expectedFilePath = getEnsuredTestPath('explorer/scenario1/project2/source/TestMe.c');
 
 		explorerToTest.searchFolders.add(project1);
 		explorerToTest.searchFolders.add(project2);
 
 		/* execute */
-		const locationString = "source/TestMe.c";
+		const locationString = 'source/TestMe.c';
 		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
-		assert.strictEqual(1, found.size,"Not expected size of locations returned");
+		assert.strictEqual(1, found.size, 'Not expected size of locations returned');
 		const firstValue = found.values().next().value;
-		assert.deepStrictEqual(firstValue,expectedFilePath,"must be expected result path");
-
+		assert.deepStrictEqual(firstValue, expectedFilePath, 'must be expected result path');
 	});
 
 	test('scenario1_projects_TestMe_c_found', () => {
 		/* prepare */
 		explorerToTest = new FileLocationExplorer();
-		
-		const project1 = getEnsuredTestPath("explorer/scenario1/project1");
-		const project2 = getEnsuredTestPath("explorer/scenario1/project2");
-		const expectedFilePath = getEnsuredTestPath("explorer/scenario1/project2/source/TestMe.c");
+
+		const project1 = getEnsuredTestPath('explorer/scenario1/project1');
+		const project2 = getEnsuredTestPath('explorer/scenario1/project2');
+		const expectedFilePath = getEnsuredTestPath('explorer/scenario1/project2/source/TestMe.c');
 
 		explorerToTest.searchFolders.add(project1);
 		explorerToTest.searchFolders.add(project2);
 
 		/* execute */
-		const locationString = "TestMe.c";
+		const locationString = 'TestMe.c';
 		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
-		assert.strictEqual(1, found.size,"Not expected size of locations returned");
+		assert.strictEqual(1, found.size, 'Not expected size of locations returned');
 		const firstValue = found.values().next().value;
-		assert.deepStrictEqual(firstValue,expectedFilePath,"must be expected result path");
-
+		assert.deepStrictEqual(firstValue, expectedFilePath, 'must be expected result path');
 	});
 
 	test('scenario1_projects_com_example_TestMe_java_found', () => {
 		/* prepare */
 		explorerToTest = new FileLocationExplorer();
-		
-		const project1 = getEnsuredTestPath("explorer/scenario1/project1");
-		const project2 = getEnsuredTestPath("explorer/scenario1/project2");
-		const expectedFilePath = getEnsuredTestPath("explorer/scenario1/project1/src/main/java/com/example/TestMe.java");
+
+		const project1 = getEnsuredTestPath('explorer/scenario1/project1');
+		const project2 = getEnsuredTestPath('explorer/scenario1/project2');
+		const expectedFilePath = getEnsuredTestPath(
+			'explorer/scenario1/project1/src/main/java/com/example/TestMe.java',
+		);
 
 		explorerToTest.searchFolders.add(project1);
 		explorerToTest.searchFolders.add(project2);
 
 		/* execute */
-		const locationString = "com/example/TestMe.java";
+		const locationString = 'com/example/TestMe.java';
 		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
-		assert.strictEqual(1, found.size,"Not expected size of locations returned");
+		assert.strictEqual(1, found.size, 'Not expected size of locations returned');
 		const firstValue = found.values().next().value;
-		assert.deepStrictEqual(firstValue,expectedFilePath,"must be expected result path");
-
+		assert.deepStrictEqual(firstValue, expectedFilePath, 'must be expected result path');
 	});
 
 	test('scenario1_projects_SameName_java_found', () => {
 		/* prepare */
 		explorerToTest = new FileLocationExplorer();
-		
-		const project1 = getEnsuredTestPath("explorer/scenario1/project1");
-		const project2 = getEnsuredTestPath("explorer/scenario1/project2");
-		const expectedFilePath1 = getEnsuredTestPath("explorer/scenario1/project1/src/main/java/com/example/SameName.java");
-		const expectedFilePath2 = getEnsuredTestPath("explorer/scenario1/project1/src/test/java/com/example/subpackage/SameName.java");
+
+		const project1 = getEnsuredTestPath('explorer/scenario1/project1');
+		const project2 = getEnsuredTestPath('explorer/scenario1/project2');
+		const expectedFilePath1 = getEnsuredTestPath(
+			'explorer/scenario1/project1/src/main/java/com/example/SameName.java',
+		);
+		const expectedFilePath2 = getEnsuredTestPath(
+			'explorer/scenario1/project1/src/test/java/com/example/subpackage/SameName.java',
+		);
 
 		explorerToTest.searchFolders.add(project1);
 		explorerToTest.searchFolders.add(project2);
 
 		/* execute */
-		const locationString = "SameName.java";
+		const locationString = 'SameName.java';
 		const found = explorerToTest.searchFor(locationString);
 
 		/* test */
-		assert.strictEqual(2, found.size,"Not expected size of locations returned");
+		assert.strictEqual(2, found.size, 'Not expected size of locations returned');
 		const valuesIterator = found.values();
 		const firstValue = valuesIterator.next().value;
 		const secondValue = valuesIterator.next().value;
-		assert.deepStrictEqual(firstValue,expectedFilePath1,"must be expected result path");
-		assert.deepStrictEqual(secondValue,expectedFilePath2,"must be expected result path");
-
+		assert.deepStrictEqual(firstValue, expectedFilePath1, 'must be expected result path');
+		assert.deepStrictEqual(secondValue, expectedFilePath2, 'must be expected result path');
 	});
 
-	function getEnsuredTestPath(testfile: String): string {
-		const testReportLocation = path.dirname(__filename) + "../../../../src/test/resources/" + testfile;
+	function getEnsuredTestPath(testfile: string): string {
+		const testReportLocation = path.dirname(__filename) + '../../../../src/test/resources/' + testfile;
 		const resolved = path.resolve(testReportLocation);
 		if (!fs.existsSync(resolved)) {
-			assert.fail("test report location does not exist:"+resolved);
+			assert.fail('test report location does not exist:' + resolved);
 		}
 		return resolved;
 	}
-
 });

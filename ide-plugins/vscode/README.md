@@ -72,9 +72,11 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
    * [Node.js releases](https://nodejs.dev/en/about/releases/)
 
 2. Build sechub api client and install dependencies by running the build script.
+Additional run npm install to ensure eslint runs correctly.
 
    ```shell
     ./build-plugin.sh
+    npm install
    ```
 
 3. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
@@ -86,6 +88,22 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
 5. In VSCodium toolbar: `Run -> Start Debugging`.
 
    ![VSCode start debugging](README/start_debugging.png)
+
+6. Tipps:
+- Adjust VS Code settings to align with the Prettier config:
+
+   ```json
+   {
+     "editor.insertSpaces": true,
+     "editor.tabSize": 4
+   }
+   ```
+  
+- Run eslint before committing (this will lint and format your code)
+
+   ```shell
+   npm run lint
+   ```
 
 #### Develop with SecHub Integrationtest Server
 
@@ -103,6 +121,7 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
 Prerequisite: 
 - The Node package manager NPM needs to be installed.
 - The SecHub OpenAPI TypeScript client needs to be generated and built first (see [README.md](../../sechub-openapi-ts-client/README.md)).
+- Extension tests follow the [VSCode test setup](https://code.visualstudio.com/api/working-with-extensions/testing-extension)
 
 1. Install dependencies (make sure you have generated and build t+he sechub-openapi-typescript client first)
 

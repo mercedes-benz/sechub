@@ -15,23 +15,21 @@ import { fetchFalsePositivesForProject } from './fetchFalsePositivesForProject';
 import { markFalsePositivesForProject } from './markFalsePositivesForProject';
 
 export const commands = [
-    { command: SECHUB_COMMANDS.changeServerUrl, action: changeServerUrl },
-    { command: SECHUB_COMMANDS.changeCredentials, action: changeCredentials },
-    { command: SECHUB_COMMANDS.selectProject, action: selectProject },
-    { command: SECHUB_COMMANDS.refreshServerView, action: refreshServerView },
-    { command: SECHUB_COMMANDS.fetchReportByUUID, action: fetchReportByUUID },
-    { command: SECHUB_COMMANDS.clearSecHubData, action: clearSecHubData },
-    { command: SECHUB_COMMANDS.importReport, action: importReportFromFile },
-    { command: SECHUB_COMMANDS.changeWebUiUrl, action: changeWebUiUrl },
-    { command: SECHUB_COMMANDS.fetchFalsePositives, action: fetchFalsePositivesForProject },
-    { command: SECHUB_COMMANDS.markFalsePositives, action: markFalsePositivesForProject },
+	{ command: SECHUB_COMMANDS.changeServerUrl, action: changeServerUrl },
+	{ command: SECHUB_COMMANDS.changeCredentials, action: changeCredentials },
+	{ command: SECHUB_COMMANDS.selectProject, action: selectProject },
+	{ command: SECHUB_COMMANDS.refreshServerView, action: refreshServerView },
+	{ command: SECHUB_COMMANDS.fetchReportByUUID, action: fetchReportByUUID },
+	{ command: SECHUB_COMMANDS.clearSecHubData, action: clearSecHubData },
+	{ command: SECHUB_COMMANDS.importReport, action: importReportFromFile },
+	{ command: SECHUB_COMMANDS.changeWebUiUrl, action: changeWebUiUrl },
+	{ command: SECHUB_COMMANDS.fetchFalsePositives, action: fetchFalsePositivesForProject },
+	{ command: SECHUB_COMMANDS.markFalsePositives, action: markFalsePositivesForProject },
 ];
 
 export const sechubFindingCommands = [
-    { command: SECHUB_COMMANDS.openWebScanInInfoview, action: openWebScanInInfoview },
-    { command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack },
+	{ command: SECHUB_COMMANDS.openWebScanInInfoview, action: openWebScanInInfoview },
+	{ command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack },
 ];
 
-export const sechubFindingAndCallstackCommands = [
-    { command: SECHUB_COMMANDS.openFinding, action: openFinding }
-];
+export const sechubFindingAndCallstackCommands = [{ command: SECHUB_COMMANDS.openFinding, action: openFinding }];

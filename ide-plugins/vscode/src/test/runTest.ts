@@ -21,6 +21,7 @@ async function main() {
 		// The common denominator of VS Code and Eclipse Theia
 		//await runTests({ version: '1.74.0', extensionDevelopmentPath, extensionTestsPath });
 	} catch (err) {
+		console.error(err);
 		console.error('Failed to run tests');
 		process.exit(1);
 	}
