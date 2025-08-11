@@ -1,4 +1,4 @@
 # See: https://github.com/securego/gosec/releases
-GOSEC_VERSION="2.16.0"
+GOSEC_VERSION="2.22.7"
 PDS_ENCRYPTION_ALGORITHM="NONE"
 PDS_ENCRYPTION_SECRET_KEY=""
