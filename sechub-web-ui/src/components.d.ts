@@ -7,12 +7,14 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AiExplanationDialog: typeof import('./components/AiExplanationDialog.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     AsyncButton: typeof import('./components/AsyncButton.vue')['default']
     ConfirmationDialog: typeof import('./components/ConfirmationDialog.vue')['default']
     EmailVerificationSuccess: typeof import('./components/EmailVerificationSuccess.vue')['default']
     FalsePositiveDialog: typeof import('./components/FalsePositiveDialog.vue')['default']
     FalsePositivesMethodsDialog: typeof import('./components/FalsePositivesMethodsDialog.vue')['default']
+    FindingAiExplanation: typeof import('./components/FindingAiExplanation.vue')['default']
     JobReport: typeof import('./components/JobReport.vue')['default']
     JobReportCodescanCallsRecursive: typeof import('./components/JobReportCodescanCallsRecursive.vue')['default']
     JobReportCodescanDetails: typeof import('./components/JobReportCodescanDetails.vue')['default']
