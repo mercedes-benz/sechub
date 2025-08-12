@@ -63,6 +63,7 @@ export class ReportListTable {
                 <th>ID</th>
                 <th>Severity</th>
                 <th>CWE</th>
+                <th></th>
                 <th>Name</th>
             </tr>
         <thead>`;
@@ -91,7 +92,8 @@ export class ReportListTable {
                                 <td class="tooltip">${type}</td>
                                 <td>${finding.id}</td>
                                 <td>${finding.severity}</td>
-                                <td><button id="openCWEinBrowserButton" class="sechubSecondaryButton">${finding.cweId}</button></td>
+                                <td><button id="openCWEinBrowserButton" class="sechubSecondaryButton" title="Open CWE (Common Weakness Enumeration) in Browser">${finding.cweId}</button></td>
+                                <td><button id="explainVulnerabilityByAiButton" class="sechubSecondaryButton"><i class="codicon codicon-lightbulb-sparkle" title="Get an AI-powered explanation of this vulnerability"></i></button></td>
                                 <td>${finding.name}</td>
                             </tr>`;
             });

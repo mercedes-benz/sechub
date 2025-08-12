@@ -122,11 +122,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const openCWEButtons = document.querySelectorAll('#openCWEinBrowserButton');
   openCWEButtons.forEach(button => {
     button.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent row click event
       const cweId = button.textContent.trim();
       if (cweId) {
         vscode.postMessage({ type: 'openCWEInBrowser', cweId });
       }
+    });
+  });
+
+  // Explain vulnerability by AI button
+  const explainButtons = document.querySelectorAll('#explainVulnerabilityByAiButton');
+  explainButtons.forEach(button => {
+    button.addEventListener('click', (event) => {
+      const findingRow = button.closest('.sechub-finding-row');
+      const findingId = parseInt(findingRow.getAttribute('data-finding-id'), 10);
+      vscode.postMessage({ type: 'explainVulnerabilityByAi', findingId });
     });
   });
 });

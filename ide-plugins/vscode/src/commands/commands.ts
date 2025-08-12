@@ -13,6 +13,7 @@ import { changeWebUiUrl } from './changeWebUiUrl';
 import { openWebScanInInfoview } from './openWebScanInInfoview';
 import { fetchFalsePositivesForProject } from './fetchFalsePositivesForProject';
 import { markFalsePositivesForProject } from './markFalsePositivesForProject';
+import { explainVulnerabilityByAi } from './explainVulnerabilityByAi';
 
 export const commands = [
     { command: SECHUB_COMMANDS.changeServerUrl, action: changeServerUrl },
@@ -30,6 +31,7 @@ export const commands = [
 export const sechubFindingCommands = [
     { command: SECHUB_COMMANDS.openWebScanInInfoview, action: openWebScanInInfoview },
     { command: SECHUB_COMMANDS.openFindingCallStack, action: openFindingCallStack },
+    { command: SECHUB_COMMANDS.explainVulnerabilityByAi, action: explainVulnerabilityByAi },
 ];
 
 export const sechubFindingAndCallstackCommands = [

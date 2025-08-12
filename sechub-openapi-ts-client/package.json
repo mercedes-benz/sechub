@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "@openapitools/openapi-generator-cli": "^2.20.0",
-    "@types/node": "^24.0.10",
     "typescript": "^5.8.3",
     "uuid": "^11.0.3"
   },
@@ -15,5 +14,8 @@
   "keywords": [],
   "license": "MIT",
   "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts"
+  "types": "dist/src/index.d.ts",
+  "devDependencies": {
+    "@types/node": "^24.2.1"
+  }
 }
