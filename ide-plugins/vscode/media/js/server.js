@@ -1,3 +1,4 @@
+
 const vscode = acquireVsCodeApi();
 /* JavaScript for SecHub Server Webview */
 

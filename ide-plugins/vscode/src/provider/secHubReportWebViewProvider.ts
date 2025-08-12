@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
 import { SecHubContext } from '../extension';
 import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
@@ -7,111 +8,114 @@ import { FalsePositiveCache } from '../cache/falsePositiveCache';
 import { SecHubFinding } from 'sechub-openapi-ts-client';
 
 export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
+	public static readonly viewType = SECHUB_VIEW_IDS.reportView;
 
-    public static readonly viewType = SECHUB_VIEW_IDS.reportView;
+	private _view?: vscode.WebviewView;
+	private _sechubContext: SecHubContext;
+	private reportListTable = new ReportListTable();
 
-    private _view?: vscode.WebviewView;
-    private _sechubContext: SecHubContext;
-    private reportListTable = new ReportListTable();
+	constructor(
+		private readonly _extensionUri: vscode.Uri,
+		_sechubContext: SecHubContext,
+	) {
+		this._sechubContext = _sechubContext;
+	}
 
-    constructor(
-        private readonly _extensionUri: vscode.Uri,
-        _sechubContext: SecHubContext,
-    ) { 
-        this._sechubContext = _sechubContext;
-    }
+	public async resolveWebviewView(
+		webviewView: vscode.WebviewView,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		_context: vscode.WebviewViewResolveContext,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		_token: vscode.CancellationToken,
+	) {
+		this._view = webviewView;
 
-    public async resolveWebviewView(
-        webviewView: vscode.WebviewView,
-        _context: vscode.WebviewViewResolveContext,
-        _token: vscode.CancellationToken,
-    ) {
-        this._view = webviewView;
+		webviewView.webview.options = {
+			enableScripts: true,
 
-        webviewView.webview.options = {
-            enableScripts: true,
+			localResourceRoots: [this._extensionUri],
+		};
 
-            localResourceRoots: [
-                this._extensionUri
-            ]
-        };
+		webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
 
-        webviewView.webview.html = await this._getHtmlForWebview(webviewView.webview);
-
-        webviewView.webview.onDidReceiveMessage(data => {
+		webviewView.webview.onDidReceiveMessage(data => {
 			switch (data.type) {
-                case 'openFinding':
-                    {
+				case 'openFinding':
+					{
+						const findingId = Number(data.findingId);
+						const finding = this.getSecHubFindingById(findingId);
 
-                    const findingId: number = Number(data.findingId); 
-                    const finding = this.getSecHubFindingById(findingId);
+						if (finding) {
+							if (finding.web) {
+								vscode.commands.executeCommand(SECHUB_COMMANDS.openWebScanInInfoview, finding);
+							} else {
+								vscode.commands.executeCommand(
+									SECHUB_COMMANDS.openFinding,
+									finding,
+									finding.code?.calls,
+								);
+								vscode.commands.executeCommand(SECHUB_COMMANDS.openFindingCallStack, finding);
+							}
+						} else {
+							vscode.window.showErrorMessage(`Finding with ID ${findingId} not found in the report.`);
+						}
+					}
+					break;
+				case 'markAsFalsePositive':
+					{
+						vscode.commands.executeCommand(SECHUB_COMMANDS.markFalsePositives, this._sechubContext);
+					}
+					break;
+				case 'openCWEInBrowser':
+					{
+						const cweId = data.cweId;
+						openCWEIDInBrowser(cweId);
+					}
+					break;
+				case 'updateFalsePositiveCache':
+					{
+						const findingIds: number[] = data.findingIds as number[];
+						const jobUUID = this._sechubContext.getReport()?.jobUUID;
+						if (jobUUID) {
+							FalsePositiveCache.updateCacheForEntry(this._sechubContext.extensionContext, {
+								jobUUID: jobUUID,
+								findingIDs: findingIds,
+							});
+						}
+					}
+					break;
+				case 'explainVulnerabilityByAi':
+					{
+						const findingId = Number(data.findingId);
+						const finding = this.getSecHubFindingById(findingId);
+						vscode.commands.executeCommand(SECHUB_COMMANDS.explainVulnerabilityByAi, finding);
+					}
+					break;
+				default:
+					break;
+			}
+		});
+	}
 
-                    if (finding) {
-                        if(finding.web){
-                            vscode.commands.executeCommand(SECHUB_COMMANDS.openWebScanInInfoview, finding);
-                        }else {
-                            vscode.commands.executeCommand(SECHUB_COMMANDS.openFinding, finding, finding.code?.calls);
-                            vscode.commands.executeCommand(SECHUB_COMMANDS.openFindingCallStack, finding);
-                        }
-                        } else {
-                            vscode.window.showErrorMessage(`Finding with ID ${findingId} not found in the report.`);
-                        }
-                    }
-                    break;
-                case 'markAsFalsePositive':
-                    {
-                        vscode.commands.executeCommand(SECHUB_COMMANDS.markFalsePositives, this._sechubContext);
-                    }
-                    break;
-                case 'openCWEInBrowser':
-                    {
-                        const cweId = data.cweId;
-                        openCWEIDInBrowser(cweId);
-                    }
-                    break;
-                case 'updateFalsePositiveCache':
-                    {
-                        const findingIds: number[] = data.findingIds as number[];
-                        const jobUUID = this._sechubContext.getReport()?.jobUUID;
-                        if (jobUUID) {
-                            FalsePositiveCache.updateCacheForEntry(this._sechubContext.extensionContext, {
-                                jobUUID: jobUUID,
-                                findingIDs: findingIds
-                            });
-                        }
-                    }
-                    break;
-                case 'explainVulnerabilityByAi':
-                    {
-                        const findingId: number = Number(data.findingId); 
-                        const finding = this.getSecHubFindingById(findingId);
-                        vscode.commands.executeCommand(SECHUB_COMMANDS.explainVulnerabilityByAi, finding);
-                    }
-                    break;
-                default:
-                    break;
-                }
-            });
-
-    }
-
-    	public async refresh() {
+	public async refresh() {
 		if (this._view) {
 			this._view.show?.(true);
 			this._view.webview.html = await this._getHtmlForWebview(this._view.webview);
 		}
 	}
 
-    private async _getHtmlForWebview(webview: vscode.Webview): Promise<string> {
-        const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'report.js'));
-        const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
-        const reportStyleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'report.css'));
-        const codiconsUri = webview.asWebviewUri(vscode.Uri.joinPath(vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css')));
+	private async _getHtmlForWebview(webview: vscode.Webview): Promise<string> {
+		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'js', 'report.js'));
+		const styleUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'css', 'main.css'));
+		const codiconsUri = webview.asWebviewUri(
+			vscode.Uri.joinPath(
+				vscode.Uri.joinPath(this._extensionUri, 'node_modules', '@vscode/codicons', 'dist', 'codicon.css'),
+			),
+		);
 
-
-        const report = this._sechubContext.getReport();
-        if (!report) {
-            return `<!DOCTYPE html>
+		const report = this._sechubContext.getReport();
+		if (!report) {
+			return `<!DOCTYPE html>
             <html lang="en">
             <head>
             <div>
@@ -122,12 +126,12 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
             </div>
             </head>
             <body>`;
-        }
+		}
 
-        const reportTable = await this.reportListTable.renderReportTable(this._sechubContext.extensionContext, report);
-        const nonce = getNonce();
+		const reportTable = await this.reportListTable.renderReportTable(this._sechubContext.extensionContext, report);
+		const nonce = getNonce();
 
-        return `
+		return `
 		<!DOCTYPE html>
 			<html lang="en">
 			<head>
@@ -150,22 +154,22 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 			</body>
 			</html>
 		`;
-    }
+	}
 
-    private getSecHubFindingById(findingId: number): SecHubFinding | undefined {
-        const report = this._sechubContext.getReport();
-        if (!report) {
-            vscode.window.showErrorMessage('No report available to open finding.');
-            return;
-        }
-        if (!report.result || !report.result.findings) {
-            vscode.window.showErrorMessage('No findings available in the report.');
-            return;
-        }
-        const finding = report.result.findings.find(f => {
-                return f.id === findingId;
-        });
+	private getSecHubFindingById(findingId: number): SecHubFinding | undefined {
+		const report = this._sechubContext.getReport();
+		if (!report) {
+			vscode.window.showErrorMessage('No report available to open finding.');
+			return;
+		}
+		if (!report.result || !report.result.findings) {
+			vscode.window.showErrorMessage('No findings available in the report.');
+			return;
+		}
+		const finding = report.result.findings.find(f => {
+			return f.id === findingId;
+		});
 
-        return finding;
-    }
+		return finding;
+	}
 }

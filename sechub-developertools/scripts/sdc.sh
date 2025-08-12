@@ -132,12 +132,8 @@ function handleExitCodes(){
 }
 
 SCRIPT_DIR="$(dirname -- "$0")"
-cd ${SCRIPT_DIR}
-cd ..
-cd ..
-
-# At this point we are inside sechub root folder as current working directory
-SECHUB_ROOT_DIR=$(pwd)
+SECHUB_ROOT_DIR="$(dirname -- "$(realpath "$0")")/../.."
+cd "${SECHUB_ROOT_DIR}"
 
 if [[ "$SECHUB_DEBUG" = "true" ]]; then
     echo "PWD=$(pwd)"
@@ -336,9 +332,13 @@ if [[ "$FORMAT_CODE_ALL" = "YES" ]]; then
     cd $SECHUB_ROOT_DIR
     ./gradlew spotlessApply
     
-    cd sechub-web-ui
+    cd "${SECHUB_ROOT_DIR}/sechub-web-ui"
     npm run lint
-    cd $SECHUB_ROOT_DIR
+    cd "${SECHUB_ROOT_DIR}"
+
+    cd "${SECHUB_ROOT_DIR}/ide-plugins/vscode"
+    npm run lint
+    cd "${SECHUB_ROOT_DIR}"
 fi
 
 if [[ "$UNIT_TESTS" = "YES" ]]; then
@@ -449,11 +449,10 @@ if [[ "$WEBUI_TESTSETUP_DOCKER" = "YES" ]]; then
 fi
 
 if [[ "$WEBUI_GENERATE" = "YES" ]]; then
-    startJob "Generate Web UI parts"
-    cd $SECHUB_ROOT_DIR
-    cd sechub-web-ui
-    npm run generate-api-client
-    cd $SECHUB_ROOT_DIR
+    startJob "Generate SecHub Web UI"
+    cd "${SECHUB_ROOT_DIR}/sechub-web-ui"
+    ./build-sechub-web-ui.sh
+    cd "${SECHUB_ROOT_DIR}"
 fi
 
 if [[ "$GITHUB_ACTION_PREPARE_INTEGRATIONTEST" = "YES" ]]; then
