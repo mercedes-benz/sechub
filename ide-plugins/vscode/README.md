@@ -19,10 +19,10 @@ NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extens
 
 ## Features
 
-- **Import SecHub Reports**: Import SecHub `.json` reports from files and navigate through them.
-- **Connect to SecHub Server**: Connect to a SecHub server to load reports directly from the server.
-- **Fetch Reports**: Fetch SecHub reports by UUID directly from the server.
-- **Supported Modules**: `iacScan`, `codeScan` and `secretScan`
+- **Import SecHub Reports**: Import SecHub `.json` reports from file system and navigate through them.
+- **Connect to SecHub Server**: Connect to a SecHub server to view jobs and load reports directly from the server.
+- **Fetch Remote Reports**: Fetch SecHub reports directly from the server.
+- **Resolve Issues**: Resolve issues by marking them as false positives directly in the report.
 
 ## Usage
 
@@ -45,7 +45,18 @@ Alternatively you can use the import button in the sidebar to import a SecHub re
 5. Navigate through the report using the tree view in the sidebar.
 
 ![VSCodium connect to SecHub Server](README/vscode-plugin-server-connect.png)
-![VSCodium select project and report](README/vscode-plugin-project.png)
+
+### Resolve Issues
+
+1. Open the report in the sidebar.
+2. Click on the issue you want to resolve.
+3. Check the checkbox in the issue details to mark it as a false positive/ resolved.
+4. Click on the synchronize button in the table header to synchronize the changes with the SecHub server.
+5. Select a reason for the resolution from the dropdown menu.
+6. Optionally, add a custom comment to the resolution.
+
+![VSCodium resolve issues](README/vscode-plugin-mark-false-positives-1.png)
+![VSCodium resolve issues with comment](README/vscode-plugin-mark-false-positives-2.png)
 
 ## Contributing
 
@@ -60,28 +71,39 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
    * [`deb` and `rpm` packages (Debian/Ubuntu, RHEL/Fedora etc.)](https://github.com/nodesource/distributions/tree/master)
    * [Node.js releases](https://nodejs.dev/en/about/releases/)
 
-2. Build the SecHub Openapi Typescript client
-
-   Switch to the `sechub-openapi-ts-client` directory and follow the instructions in the [README.md](../sechub-openapi-ts-client/README.md) to generate the SecHub OpenAPI client or run:
+2. Build sechub api client and install dependencies by running the build script.
+Additional run npm install to ensure eslint runs correctly.
 
    ```shell
-   cd ../../sechub-openapi-ts-client
-    ./build-typescript-client.sh
-    ```
-
-3. Install the dependencies
-
-    ```shell
+    ./build-plugin.sh
     npm install
-    ```
+   ```
 
-4. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
+3. Install [VSCodium](https://vscodium.com/), [Eclipse Theia](https://theia-ide.org/) or [VSCode](https://code.visualstudio.com/)
 
    NOTE: VSCodium and Eclipse Theia distribute free/libre open source software binaries. VS Code, on the other hand, distributes non-free binaries and collects telemetry data.
+
+4. Open the folder sechub/ide-plugins/vscode in your IDE
 
 5. In VSCodium toolbar: `Run -> Start Debugging`.
 
    ![VSCode start debugging](README/start_debugging.png)
+
+6. Tipps:
+- Adjust VS Code settings to align with the Prettier config:
+
+   ```json
+   {
+     "editor.insertSpaces": true,
+     "editor.tabSize": 4
+   }
+   ```
+  
+- Run eslint before committing (this will lint and format your code)
+
+   ```shell
+   npm run lint
+   ```
 
 #### Develop with SecHub Integrationtest Server
 
@@ -99,6 +121,7 @@ If you want to contribute to this project, please read our [CONTRIBUTING.md](../
 Prerequisite: 
 - The Node package manager NPM needs to be installed.
 - The SecHub OpenAPI TypeScript client needs to be generated and built first (see [README.md](../../sechub-openapi-ts-client/README.md)).
+- Extension tests follow the [VSCode test setup](https://code.visualstudio.com/api/working-with-extensions/testing-extension)
 
 1. Install dependencies (make sure you have generated and build t+he sechub-openapi-typescript client first)
 

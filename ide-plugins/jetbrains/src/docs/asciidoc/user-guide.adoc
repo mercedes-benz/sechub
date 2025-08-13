@@ -6,16 +6,44 @@
 
 = image:sechub-logo.png[sechub] SecHub IntelliJ Plugin User Guide
 
-
 == About
+
 This is an IntelliJ plugin for a convenient IDE integration of https://github.com/mercedes-benz/sechub[SecHub]
 
 The project website can be found at https://github.com/mercedes-benz/sechub-plugin-intellij[SecHub Plugin IntelliJ]
 Marketplace entry available at https://plugins.jetbrains.com/plugin/23379-sechub[IntelliJ Plugin Page]
 
 == Features
+
 Here you will find all implemented features of the plugin. Planned features and ideas can be found at
 https://github.com/mercedes-benz/sechub-plugin-intellij/issues[GitHub issue tracker].
+
+=== Connect to the SecHub Server
+
+You can connect to a SecHub server by using the `Server` tab. It allows you to enter the URL of the SecHub server
+and the API token to authenticate against the SecHub server. Once connected, you can use the plugin to interact with the SecHub server,
+such as loading projects and jobs. The `Server` tab also provides a link to the Web UI.
+
+.Overview of the SecHub server configuration
+image::sechub-server.png[]
+
+=== Select a project
+
+You can select a project by using the `Project` dropdown in the `Server` tab. It allows you to select a project from the SecHub server and
+list its jobs. Note that you'll only see projects that you have access to. If you don't see any projects, speak to your
+administrator.
+
+.Select project in project dropdown
+image::sechub-select-project.png[]
+
+=== List jobs of a project
+
+Once you have selected a project, the plugin will list all jobs of that project in the `Jobs` table.
+Each job will show its ID, state, result, creation date and by whom it was executed. You can double-click
+a job which is in `ENDED` state to open the SecHub report in the `Report` tab.
+
+.List jobs of a SecHub project
+image::sechub-list-jobs.png[]
 
 === Import an existing SecHub report
 
@@ -25,7 +53,6 @@ by dragging a report file from the file explorer into the report table (marked a
 .Overview of the SecHub tool window
 image::sechub-toolwindow-overview.png[]
 TIP: Since V0.4.0 the UI has been improved/changed a bit, but functionality is still as described
-
 
 === Use call hierarchy view to traverse finding steps
 Double-click on an entry inside the report table (marked as [.small]#1.# in figure [.small]#1# ).
@@ -40,3 +67,16 @@ and open the editor, highlighting the reported line.
 If you have already changed your code and the report location does no longer match 100% to the finding location, the
 editor will still mark reported location - in this case please look at the origin reported source code and search for
 the origin part. If the file cannot be found by plugin, no editor will be opened.
+
+=== Mark a finding as false positive
+
+You can mark a finding as false positive by checking the `False Positive` checkbox in the report table.
+Findings that have been marked as false positive before will show a blue checkmark. They can not be interacted with anymore.
+False positive markings are cached by default locally until they are successfully sent to the SecHub server.
+
+.Mark a finding as false positive
+image::sechub-mark-false-positive.png[]
+
+.Mark false positives
+image::sechub-mark-false-positives.png[]
+

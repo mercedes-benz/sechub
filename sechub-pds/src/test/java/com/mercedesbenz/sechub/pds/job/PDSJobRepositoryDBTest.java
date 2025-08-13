@@ -28,9 +28,9 @@ import org.springframework.test.context.ContextConfiguration;
 
 import com.mercedesbenz.sechub.commons.model.SecHubDataConfigurationTypeListParser;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
-import com.mercedesbenz.sechub.pds.PDSShutdownService;
 import com.mercedesbenz.sechub.pds.commons.core.PDSProfiles;
 import com.mercedesbenz.sechub.pds.config.PDSConfigurationAutoFix;
+import com.mercedesbenz.sechub.pds.config.PDSHardExitSupport;
 import com.mercedesbenz.sechub.pds.config.PDSPathExecutableValidator;
 import com.mercedesbenz.sechub.pds.config.PDSProductIdentifierValidator;
 import com.mercedesbenz.sechub.pds.config.PDSServerConfigurationService;
@@ -47,11 +47,11 @@ import com.mercedesbenz.sechub.pds.config.PDSServerIdentifierValidator;
 		PDSServerConfigurationValidator.class,
         PDSProductIdentifierValidator.class,
         PDSJobRepository.class,
-        PDSShutdownService.class,
+        PDSHardExitSupport.class,
         PDSConfigurationAutoFix.class,
         PDSServerConfigurationService.class,
         PDSJobRepositoryDBTest.SimpleTestConfiguration.class,
-        SecHubDataConfigurationTypeListParser.class })
+        SecHubDataConfigurationTypeListParser.class, })
 /* @formatter:on */
 public class PDSJobRepositoryDBTest {
 

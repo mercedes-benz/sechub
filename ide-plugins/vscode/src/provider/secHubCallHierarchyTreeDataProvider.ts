@@ -1,116 +1,93 @@
 // SPDX-License-Identifier: MIT
 import * as vscode from 'vscode';
-import * as path from 'path';
 import { SecHubCodeCallStack, SecHubFinding } from 'sechub-openapi-ts-client';
-import { SECHUB_COMMANDS } from '../utils/sechubConstants';
+import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
+import { HierarchyItem } from './items/hierarchyItems';
 
 export class SecHubCallHierarchyTreeDataProvider implements vscode.TreeDataProvider<HierarchyItem> {
+	public static readonly viewType = SECHUB_VIEW_IDS.callHierarchyView;
 
-  public update(finding: SecHubFinding | undefined) {
-    this.finding = finding;
-    this.refresh();
-  }
+	public update(finding: SecHubFinding | undefined) {
+		this.finding = finding;
+		this.refresh();
+	}
 
-  /* refresh mechanism for tree:*/
-  private _onDidChangeTreeData: vscode.EventEmitter<HierarchyItem | undefined | null | void> = new vscode.EventEmitter<HierarchyItem | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<HierarchyItem | undefined | null | void> = this._onDidChangeTreeData.event;
+	/* refresh mechanism for tree:*/
+	private _onDidChangeTreeData: vscode.EventEmitter<HierarchyItem | undefined | null | void> =
+		new vscode.EventEmitter<HierarchyItem | undefined | null | void>();
+	readonly onDidChangeTreeData: vscode.Event<HierarchyItem | undefined | null | void> =
+		this._onDidChangeTreeData.event;
 
-  constructor(private finding: SecHubFinding | undefined) { }
+	constructor(private finding: SecHubFinding | undefined) {}
 
-  private refresh(): void {
-    this._onDidChangeTreeData.fire();
-  }
+	private refresh(): void {
+		this._onDidChangeTreeData.fire();
+	}
 
-  getTreeItem(item: HierarchyItem): vscode.TreeItem {
-    return item;
-  }
+	getTreeItem(item: HierarchyItem): vscode.TreeItem {
+		return item;
+	}
 
-  getChildren(item?: HierarchyItem): Thenable<HierarchyItem[]> {
-    if (!this.finding) {
-      return Promise.resolve([]);
-    }
+	getChildren(item?: HierarchyItem): Thenable<HierarchyItem[]> {
+		if (!this.finding) {
+			return Promise.resolve([]);
+		}
 
-    if (item) {
-      return Promise.resolve(item.children);
-    } else {
-      // no element found, so create...
-      return Promise.resolve(
-        this.createtHierarchyItems()
-      );
-    }
-  }
+		if (item) {
+			return Promise.resolve(item.children);
+		} else {
+			// no element found, so create...
+			return Promise.resolve(this.createHierarchyItems());
+		}
+	}
 
-  getParent(item?: HierarchyItem): vscode.ProviderResult<HierarchyItem> {
-    if (!this.finding) {
-      return undefined;
-    }
+	getParent(item?: HierarchyItem): vscode.ProviderResult<HierarchyItem> {
+		if (!this.finding) {
+			return undefined;
+		}
 
-    if (!item) {
-      return undefined;
-    } else {
-      return item.parent;
-    }
-  }
+		if (!item) {
+			return undefined;
+		} else {
+			return item.parent;
+		}
+	}
 
-  private createtHierarchyItems(): HierarchyItem[] {
+	private createHierarchyItems(): HierarchyItem[] {
+		const items: HierarchyItem[] = [];
 
-    let items: HierarchyItem[] = [];
+		let codeCallStack: SecHubCodeCallStack | undefined = this.finding?.code;
+		const state: vscode.TreeItemCollapsibleState = codeCallStack?.calls
+			? vscode.TreeItemCollapsibleState.Expanded
+			: vscode.TreeItemCollapsibleState.None;
 
-    let codeCallStack: SecHubCodeCallStack | undefined = this.finding?.code;
-    let state: vscode.TreeItemCollapsibleState = codeCallStack?.calls ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None;
+		if (!codeCallStack) {
+			console.debug('No code callstack found for this finding, returning empty hierarchy item.');
+			return items;
+		}
 
-    if (!(codeCallStack)) {
-      return items;
-    }
-    let parent: HierarchyItem | undefined;
+		let parent: HierarchyItem | undefined;
 
-    do {
-      let item: HierarchyItem = new HierarchyItem(this.finding, codeCallStack, state);
-      item.command = {
-        command: SECHUB_COMMANDS.openFinding,
-        title: "Select Node",
-        arguments: [item]
-      };
-      if (items.length === 0) {
-        items.push(item);
-      }
-      item.contextValue = "callHierarchyitem";
-      if (parent) {
-        parent.add(item);
-        item.parent = parent;
-      }
-      /* go deeper ...*/
-      codeCallStack = codeCallStack.calls;
-      parent = item;
+		do {
+			const item: HierarchyItem = new HierarchyItem(this.finding, codeCallStack, state);
+			item.command = {
+				command: SECHUB_COMMANDS.openFinding,
+				title: 'Select Node',
+				arguments: [this.finding, codeCallStack],
+			};
+			if (items.length === 0) {
+				items.push(item);
+			}
+			item.contextValue = 'callHierarchyItem';
+			if (parent) {
+				parent.add(item);
+				item.parent = parent;
+			}
+			/* go deeper ...*/
+			codeCallStack = codeCallStack.calls;
+			parent = item;
+		} while (codeCallStack);
 
-    } while (codeCallStack);
-
-    return items;
-  }
-
-}
-
-export class HierarchyItem extends vscode.TreeItem {
-
-  readonly children: HierarchyItem[] = [];
-  codeCallstack: SecHubCodeCallStack;
-  finding: SecHubFinding | undefined;
-  parent: HierarchyItem | undefined;
-
-  constructor(finding: SecHubFinding | undefined, codeCallstack: SecHubCodeCallStack, state: vscode.TreeItemCollapsibleState
-  ) {
-    if(!codeCallstack.relevantPart){
-      codeCallstack.relevantPart = "";
-    }
-    super(codeCallstack.relevantPart, state);
-
-    this.description = codeCallstack.location;
-    this.tooltip = `${this.label}-${this.description}`;
-    this.codeCallstack = codeCallstack;
-    this.finding = finding;
-  }
-
-  add(child: HierarchyItem) {
-    this.children.push(child);
-  }
+		return items;
+	}
 }

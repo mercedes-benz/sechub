@@ -9,9 +9,18 @@ import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 
 public class FindingModel {
 
-    private List<FindingNode> findings = new ArrayList<>();
+    private final List<FindingNode> findings = new ArrayList<>();
+    private String projectId;
     private UUID jobUUID;
     private TrafficLight trafficLight;
+
+    public String getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
     public UUID getJobUUID() {
         return jobUUID;

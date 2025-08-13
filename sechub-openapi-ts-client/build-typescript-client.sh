@@ -1,6 +1,8 @@
 #!/bin/bash
 # SPDX-License-Identifier: MIT
 
+cd `dirname $0`
+
 # This script builds the typescript OpenAPI client for the Sechub API (used by sechub-web-ui and ide-plugins/vscode).
 set -e
 which npm >/dev/null 2>&1 || {

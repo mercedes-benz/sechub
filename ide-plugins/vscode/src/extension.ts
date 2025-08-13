@@ -4,35 +4,38 @@
 import * as path from 'path';
 import * as vscode from 'vscode';
 import { FileLocationExplorer } from './utils/fileLocationExplorer';
-import { FindingNodeLinkBuilder } from './utils/findingNodeLinkBuilder';
-import { HierarchyItem, SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
+import { InfoViewItemMitreCWELinkBuilder } from './provider/items/infoViewItemMitreCWELinkBuilder';
+import { SecHubCallHierarchyTreeDataProvider } from './provider/secHubCallHierarchyTreeDataProvider';
+import { HierarchyItem } from './provider/items/hierarchyItems';
 import { SecHubInfoTreeDataProvider } from './provider/secHubInfoTreeDataProvider';
-import { ReportItem, SecHubReportTreeDataProvider } from './provider/secHubReportTreeDataProvider';
 
-import { loadFromFile } from './utils/sechubUtils';
-import { SecHubReport, ScanType, ProjectData } from 'sechub-openapi-ts-client';
+import { loadFromFile, preSelectedProjectValid } from './utils/sechubUtils';
+import { SecHubReport, ScanType, SecHubFinding, SecHubCodeCallStack } from 'sechub-openapi-ts-client';
 import { multiStepInput } from './utils/sechubCredentialsMultistepInput';
-import { SECHUB_CREDENTIAL_KEYS, SECHUB_REPORT_KEYS, SECHUB_VIEW_IDS } from './utils/sechubConstants';
+import { SECHUB_API_CLIENT_CONFIG_KEYS, SECHUB_VIEW_IDS } from './utils/sechubConstants';
 import { DefaultClient } from './api/defaultClient';
 import { SecHubServerWebviewProvider } from './provider/SecHubServerWebviewProvider';
-import { commands, hierachyCommands, reportItemCommands } from './commands/commands';
+import { SecHubReportWebViewProvider } from './provider/secHubReportWebViewProvider';
+import { commands, sechubFindingCommands, sechubFindingAndCallstackCommands } from './commands/commands';
+import { FalsePositiveCache } from './cache/falsePositiveCache';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('SecHub plugin activation requested.');
-	
-	let loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
+
+	const secHubContext: SecHubContext = new SecHubContext(context);
+
+	const loadTestData = context.extensionMode === vscode.ExtensionMode.Development;
 	let report: SecHubReport | undefined = undefined;
 	if (loadTestData) {
-		report = loadFromFile(resolveFileLocation("test_sechub_report-1.json"));
+		report = loadFromFile(resolveFileLocation('test_sechub_report-1.json'));
 	}
+	secHubContext.setReport(report);
 
 	await setUpApiClient(context);
 	await preSelectedProjectValid(context);
 
-	let secHubContext: SecHubContext = new SecHubContext(report, context);
-
 	buildServerWebview(secHubContext);
-	buildReportView(secHubContext);
+	buildReportWebview(secHubContext);
 	buildCallHierarchyView(secHubContext);
 	buildInfoView(secHubContext);
 
@@ -42,165 +45,159 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 function registerCommands(sechubContext: SecHubContext) {
-
-	const registeredCommands = commands.map(({ command, action}) =>
-		vscode.commands.registerCommand(command, () => action(sechubContext))
+	const registeredCommands = commands.map(({ command, action }) =>
+		vscode.commands.registerCommand(command, () => action(sechubContext)),
 	);
 
-	const registeredHierachyCommands = hierachyCommands.map(({ command, action }) =>
-		vscode.commands.registerCommand(command, (hierarchyItem: HierarchyItem) => action(sechubContext, hierarchyItem))
+	const registeredHierachyCommands = sechubFindingCommands.map(({ command, action }) =>
+		vscode.commands.registerCommand(command, (finding: SecHubFinding) => action(sechubContext, finding)),
 	);
 
-	const registerReportItemCommands = reportItemCommands.map(({ command, action }) =>
-		vscode.commands.registerCommand(command, (reportItem: ReportItem) => action(sechubContext, reportItem))
+	const registerTestCommands = sechubFindingAndCallstackCommands.map(({ command, action }) =>
+		vscode.commands.registerCommand(command, (finding: SecHubFinding, callstack: SecHubCodeCallStack) =>
+			action(sechubContext, finding, callstack),
+		),
 	);
 
 	sechubContext.extensionContext.subscriptions.push(
 		...registeredCommands,
 		...registeredHierachyCommands,
-		...registerReportItemCommands);
+		...registerTestCommands,
+	);
 }
 
 async function setUpApiClient(context: vscode.ExtensionContext) {
 	// Check if SecHub credentials are already set
 	// If not, prompt the user to set them up
-    const serverUrl = context.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.serverUrl);
-    const username = context.secrets.get(SECHUB_CREDENTIAL_KEYS.username);
-    const apiToken = context.secrets.get(SECHUB_CREDENTIAL_KEYS.apiToken);
-    Promise.all([username, apiToken]).then(([username, apiToken]) => {
-        if (!serverUrl || !username || !apiToken) {
-            multiStepInput(context).then(() => {
-                vscode.window.showInformationMessage('SecHub credentials have been set.');
-            }).catch(err => {
-                vscode.window.showErrorMessage(`Failed to set SecHub credentials: ${err}`);
-            });
-        }
-    });
+	const serverUrl = context.globalState.get<string>(SECHUB_API_CLIENT_CONFIG_KEYS.serverUrl);
+	const username = context.secrets.get(SECHUB_API_CLIENT_CONFIG_KEYS.username);
+	const apiToken = context.secrets.get(SECHUB_API_CLIENT_CONFIG_KEYS.apiToken);
+	Promise.all([username, apiToken]).then(([username, apiToken]) => {
+		if (!serverUrl || !username || !apiToken) {
+			multiStepInput(context)
+				.then(() => {
+					vscode.window.showInformationMessage('SecHub credentials have been set.');
+				})
+				.catch(err => {
+					vscode.window.showErrorMessage(`Failed to set SecHub credentials: ${err}`);
+				});
+		}
+	});
 
 	// Initialize the SecHub client
-	await DefaultClient.createClient(context).then(() => {
-		vscode.window.showInformationMessage('SecHub client initialized successfully.');
-	}).catch(err => {
-		vscode.window.showErrorMessage(`Failed to initialize SecHub client:	${err}`);
-	});
-}
-
-async function preSelectedProjectValid(context: vscode.ExtensionContext): Promise<void> {
-	const project = context.globalState.get<ProjectData>(SECHUB_REPORT_KEYS.selectedProject);
-	if (!project) {
-		return;
-	}
-
-	const client = await DefaultClient.getInstance(context);
-	const projects = await client.getAssignedProjectDataList();
-
-	if(!projects || !projects.some(p => p.projectId === project.projectId)) {
-		vscode.window.showErrorMessage(`Selected project ${project.projectId} is not valid. Please select a valid project.`);
-		await context.globalState.update(SECHUB_REPORT_KEYS.selectedProject, undefined);
-		return;
-	}
-}
-
-function buildReportView(context: SecHubContext) {
-	const view =vscode.window.createTreeView(SECHUB_VIEW_IDS.reportView, {
-		treeDataProvider: context.reportTreeProvider
-	});
-	context.reportView=view;
+	await DefaultClient.createClient(context)
+		.then(() => {
+			vscode.window.showInformationMessage('SecHub client initialized successfully.');
+		})
+		.catch(err => {
+			vscode.window.showErrorMessage(`Failed to initialize SecHub client:	${err}`);
+		});
 }
 
 function buildCallHierarchyView(context: SecHubContext) {
-	const view = vscode.window.createTreeView(SECHUB_VIEW_IDS.callHierarchyView, {
-		treeDataProvider: context.callHierarchyTreeDataProvider
+	const view = vscode.window.createTreeView(SecHubCallHierarchyTreeDataProvider.viewType, {
+		treeDataProvider: context.callHierarchyTreeDataProvider,
 	});
-	context.callHierarchyView=view;
+	context.callHierarchyView = view;
 }
 
 function buildInfoView(context: SecHubContext) {
 	vscode.window.createTreeView(SECHUB_VIEW_IDS.infoView, {
-		treeDataProvider: context.infoTreeProvider
+		treeDataProvider: context.infoTreeProvider,
 	});
 }
 
 function buildServerWebview(context: SecHubContext) {
 	const provider = new SecHubServerWebviewProvider(context.extensionContext.extensionUri, context);
 	context.extensionContext.subscriptions.push(
-		vscode.window.registerWebviewViewProvider(SecHubServerWebviewProvider.viewType, provider));
+		vscode.window.registerWebviewViewProvider(SecHubServerWebviewProvider.viewType, provider),
+	);
 	context.serverWebViewProvider = provider;
 }
 
+function buildReportWebview(context: SecHubContext) {
+	const provider = new SecHubReportWebViewProvider(context.extensionContext.extensionUri, context);
+	context.extensionContext.subscriptions.push(
+		vscode.window.registerWebviewViewProvider(SecHubReportWebViewProvider.viewType, provider),
+	);
+	context.reportWebViewProvider = provider;
+}
+
 export class SecHubContext {
-	callHierarchyView: vscode.TreeView<HierarchyItem|undefined> | undefined = undefined;
-	reportView: vscode.TreeView<ReportItem> | undefined = undefined;
+	callHierarchyView: vscode.TreeView<HierarchyItem | undefined> | undefined = undefined;
 
 	private report: SecHubReport | undefined;
 
-	findingNodeLinkBuilder: FindingNodeLinkBuilder;
+	findingNodeLinkBuilder: InfoViewItemMitreCWELinkBuilder;
 	callHierarchyTreeDataProvider: SecHubCallHierarchyTreeDataProvider;
-	reportTreeProvider: SecHubReportTreeDataProvider;
 	infoTreeProvider: SecHubInfoTreeDataProvider;
 	extensionContext: vscode.ExtensionContext;
 	fileLocationExplorer: FileLocationExplorer;
 	serverWebViewProvider: SecHubServerWebviewProvider;
+	reportWebViewProvider: SecHubReportWebViewProvider;
 
-	constructor(report: SecHubReport| undefined, extensionContext: vscode.ExtensionContext,
-	) {
-		this.reportTreeProvider = new SecHubReportTreeDataProvider(report);
+	constructor(extensionContext: vscode.ExtensionContext) {
 		this.callHierarchyTreeDataProvider = new SecHubCallHierarchyTreeDataProvider(undefined);
 		this.infoTreeProvider = new SecHubInfoTreeDataProvider(undefined, undefined);
 		this.extensionContext = extensionContext;
 		this.fileLocationExplorer = new FileLocationExplorer();
-		this.findingNodeLinkBuilder = new FindingNodeLinkBuilder();
+		this.findingNodeLinkBuilder = new InfoViewItemMitreCWELinkBuilder();
 		this.serverWebViewProvider = new SecHubServerWebviewProvider(extensionContext.extensionUri, this);
+		this.reportWebViewProvider = new SecHubReportWebViewProvider(extensionContext.extensionUri, this);
 
 		/* setup search folders for explorer */
-		let workspaceFolders = vscode.workspace.workspaceFolders; // get the open folder path
-		workspaceFolders?.forEach((workspaceFolder) => {
+		const workspaceFolders = vscode.workspace.workspaceFolders; // get the open folder path
+		workspaceFolders?.forEach(workspaceFolder => {
 			this.fileLocationExplorer.searchFolders.add(workspaceFolder.uri.fsPath);
 		});
 	}
 
+	public getReport(): SecHubReport | undefined {
+		return this.report;
+	}
+
 	public setReport(report: SecHubReport | undefined) {
-		try{
+		try {
 			this.checkReport(report);
 			this.report = report;
-			this.reportTreeProvider.update(report);
-		}catch (error) {
+			this.reportWebViewProvider.refresh();
+		} catch (error) {
 			this.report = undefined;
-			this.reportTreeProvider.update({});
+			this.reportWebViewProvider.refresh();
 		}
 
+		this.checkForUnsyncedFalsePositives(report?.jobUUID || '');
 		this.callHierarchyTreeDataProvider.update(undefined);
 		this.infoTreeProvider.update(undefined, undefined);
 	}
 
 	private checkReport(report: SecHubReport | undefined) {
 		if (!report) {
-			throw new Error("Report is undefined");
+			throw new Error('Report is undefined');
 		}
 
 		const scanTypes: Array<ScanType> = report.metaData?.executed || [];
-		
-		if(scanTypes.length === 0){
-			vscode.window.showErrorMessage("No scan was executed in loaded report.");
+
+		if (scanTypes.includes(ScanType.LicenseScan) && scanTypes.length === 1) {
+			const message = 'LicenseScan is not supported in this IDE plugin.';
+			vscode.window.showErrorMessage(message);
 		}
+	}
 
-		const webUiUrl = this.extensionContext.globalState.get<string>(SECHUB_CREDENTIAL_KEYS.webUiUrl);
-
-		if (scanTypes.includes(ScanType.WebScan) && scanTypes.length === 1) {
-			const message = "WebScan is not supported in this IDE plugin. Please use the SecHub Web UI to view WebScan results.";
-			vscode.window.showInformationMessage(message, 'Open SecHub Web UI').then(selection => {
-				if (selection === 'Open SecHub Web UI' && webUiUrl) {
-					vscode.env.openExternal(vscode.Uri.parse(webUiUrl));
-				}
-			});
-			throw new Error("WebScan is not supported in this IDE plugin.");
+	private checkForUnsyncedFalsePositives(jobUUID: string) {
+		const entry = FalsePositiveCache.getEntryByJobUUID(this.extensionContext, jobUUID);
+		if (entry) {
+			vscode.window.showWarningMessage(
+				`There are unsynced false positives for job UUID: ${jobUUID}. Please synchronize them.`,
+			);
 		}
 	}
 }
 
-export function deactivate() { }
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export function deactivate() {}
 
 function resolveFileLocation(testfile: string): string {
-	let testReportLocation = path.dirname(__filename) + "/../src/test/suite/" + testfile;
+	const testReportLocation = path.dirname(__filename) + '/../src/test/resources/' + testfile;
 	return testReportLocation;
 }

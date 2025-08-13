@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea;
 
-import java.util.UUID;
-
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.progress.ProgressManager;
@@ -10,21 +8,28 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.mercedesbenz.sechub.api.internal.gen.model.TrafficLight;
 import com.mercedesbenz.sechub.plugin.idea.window.SecHubReportPanel;
 import com.mercedesbenz.sechub.plugin.model.FindingModel;
 
 public class SecHubReportViewUpdater {
 
     private static final Logger LOG = Logger.getInstance(SecHubReportViewUpdater.class);
+    private static final SecHubReportViewUpdater instance = new SecHubReportViewUpdater();
 
-    public void updateReportViewInAWTThread(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
+    public static SecHubReportViewUpdater getInstance() {
+        return instance;
+    }
 
-        ProgressManager.getInstance().executeProcessUnderProgress(() -> internalUpdateReportView(jobUUID, trafficLight, model),
+    private SecHubReportViewUpdater() {
+        /* private constructor to enforce singleton */
+    }
+
+    public void updateReportViewInAWTThread(FindingModel model) {
+        ProgressManager.getInstance().executeProcessUnderProgress(() -> internalUpdateReportView(model),
                 ProgressIndicatorProvider.getGlobalProgressIndicator());
     }
 
-    private void internalUpdateReportView(UUID jobUUID, TrafficLight trafficLight, FindingModel model) {
+    private void internalUpdateReportView(FindingModel model) {
         Project project = null;
 
         Project[] projects = ProjectManager.getInstance().getOpenProjects();

@@ -25,18 +25,4 @@
                                  id="com.mercedesbenz.sechub.settings.SechubSettingsConfigurable"
                                  displayName="SecHub"/>
     </extensions>
-
-    <actions>
-        <!-- Add your actions here -->
-        <action id="com.mercedesbenz.sechub.plugin.idea.action.SechubOpenReportFromFileSystemAction" class="com.mercedesbenz.sechub.plugin.idea.action.SechubOpenReportFromFileSystemAction"
-                text="Import SecHub Report"
-                description="Import an SecHub Report JSON file into IDE"
-
-        ><add-to-group group-id="ToolsMenu" anchor="first" />
-        </action>
-        <action id="com.mercedesbenz.sechub.plugin.idea.action.SechubResetReportAction" class="com.mercedesbenz.sechub.plugin.idea.action.SechubResetReportAction"
-                text="Reset SecHub Report"
-                description="Remove all existing SecHub report data"
-        ></action>
-    </actions>
 </idea-plugin>

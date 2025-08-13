@@ -61,6 +61,12 @@ public class APIConstants {
     public static final String API_MANAGEMENT = "/api/management/";
 
     /**
+     * API starting with this is accessible by users for finding assistance and
+     * explanation
+     */
+    public static final String API_ASSISTANT = "/api/assistant/";
+
+    /**
      * Actuator endpoints are available anonymous
      */
     public static final String ACTUATOR = "/actuator/";

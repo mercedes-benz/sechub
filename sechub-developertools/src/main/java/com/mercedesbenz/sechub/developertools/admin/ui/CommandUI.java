@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.ActionSupport;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.adapter.ShowProductExecutorTemplatesDialogAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.asset.ManageAssetsAction;
+import com.mercedesbenz.sechub.developertools.admin.ui.action.assistant.AskAssistantAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.client.TriggerSecHubClientSynchronousScanAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigureAutoCleanupAction;
 import com.mercedesbenz.sechub.developertools.admin.ui.action.config.ConfigurePDSAutoCleanupAction;
@@ -215,6 +216,7 @@ public class CommandUI {
         createSchedulerMenu();
         createIntegrationTestServerMenu();
         createMassOperationsMenu();
+        createAssistantMenu();
 
         createConfigMenu();
         createPDSMenu();
@@ -455,6 +457,12 @@ public class CommandUI {
         add(menu, new DownloadHTMLReportForJobAction(context));
         menu.addSeparator();
         add(menu, new DownloadFullscanDataForJobAction(context));
+    }
+
+    private void createAssistantMenu() {
+        JMenu menu = new JMenu("Assistant");
+        menuBar.add(menu);
+        add(menu, new AskAssistantAction(context));
     }
 
     private void createSecHubClientMenu() {

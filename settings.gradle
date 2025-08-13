@@ -109,8 +109,10 @@ include 'sechub-cli',
 'sechub-pds-tools',
 
 // Examples (are below 'sechub-examples' folder)
-'sechub-examples:example-sechub-api-java'
+'sechub-examples:example-sechub-api-java',
 
+/* SecHub Assistant */
+'sechub-assistant'
 
 
 buildCache {
@@ -124,4 +126,3 @@ buildCache {
     }
 
 }
-

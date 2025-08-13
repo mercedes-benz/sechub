@@ -3,7 +3,7 @@
 	"name": "sechub",
 	"displayName": "SecHub",
 	"description": "SecHub plugin for VSCode/VSCodium/Eclipse Theia",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"license": "MIT",
 	"icon": "other/images/sechub-logo-big.png",
 	"galleryBanner": {
@@ -11,9 +11,9 @@
 		"theme": "dark"
 	},
 	"publisher": "Mercedes-Benz",
-	"homepage": "https://github.com/mercedes-benz/sechub-plugin-vscode/",
+	"homepage": "https://github.com/mercedes-benz/sechub/tree/develop/ide-plugins/vscode",
 	"bugs": {
-		"url": "https://github.com/mercedes-benz/sechub-plugin-vscode/issues"
+		"url": "https://github.com/mercedes-benz/sechub"
 	},
 	"repository": {
 		"type": "git",
@@ -32,11 +32,6 @@
 				"command": "sechub.importReportFile",
 				"title": "SecHub: Import Report from File",
 				"icon": "$(file)"
-			},
-			{
-				"command": "sechub.openCWEinBrowser",
-				"title": "SecHub: open CWE in Browser",
-				"icon": "$(info)"
 			},
 			{
 				"command": "sechub.fetchReportByUUID",
@@ -87,6 +82,7 @@
 					"name": "Server"
 				},
 				{
+					"type": "webview",
 					"id": "sechub.reportView",
 					"name": "Report",
 					"icon": "media/sechub-logo-vscode-styled.svg",
@@ -134,13 +130,6 @@
 					"when": "view == sechub.serverWebView",
 					"group": "navigation"
 				}
-			],
-			"view/item/context": [
-				{
-					"command": "sechub.openCWEinBrowser",
-					"when": "view == sechub.reportView && viewItem == reportItem",
-					"group": "inline"
-				}
 			]
 		}
 	},
@@ -149,7 +138,7 @@
 		"compile": "tsc -p ./",
 		"watch": "tsc -w -p ./",
 		"pretest": "npm run compile && npm run lint",
-		"lint": "eslint src --ext ts",
+		"lint": "eslint src --ext ts --fix",
 		"test": "node ./out/test/runTest.js"
 	},
 	"devDependencies": {
@@ -161,6 +150,8 @@
 		"@typescript-eslint/parser": "^5.59.9",
 		"@vscode/test-electron": "^2.3.2",
 		"eslint": "^8.42.0",
+		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-prettier": "^5.5.4",
 		"glob": "^8.1.0",
 		"http-proxy": "^1.18.1",
 		"mocha": "^10.8.2",

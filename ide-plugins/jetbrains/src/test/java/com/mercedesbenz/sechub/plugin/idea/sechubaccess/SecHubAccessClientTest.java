@@ -4,10 +4,14 @@ package com.mercedesbenz.sechub.plugin.idea.sechubaccess;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.matching.UrlPattern;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveEntry;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveJobData;
+import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveProjectConfiguration;
 import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
 import org.junit.*;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 import static org.junit.Assert.*;
@@ -47,6 +51,49 @@ public class SecHubAccessClientTest {
                                   "isOwned": true,
                                   "assignedUsers": [],
                                   "enabledProfileIds": []
+                                }
+                                """)));
+
+        /* Mock /api/project/{projectId}/false-positives endpoint */
+        WireMock.stubFor(WireMock.get("/api/project/example-project/false-positives")
+                .willReturn(WireMock.aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/ajson")
+                        .withBody("""
+                                {
+                                  "falsePositives": [
+                                    {
+                                      "jobData": {
+                                        "jobUUID": "117bbc23-309d-4ff3-b805-515b73c823fd",
+                                        "findingId": 1,
+                                        "comment": "A fix has already been started - "
+                                      },
+                                      "author": "owner-id",
+                                      "metaData": {
+                                        "scanType": "codeScan",
+                                        "name": "Absolute Path Traversal",
+                                        "severity": "MEDIUM",
+                                        "code": {
+                                          "start": {
+                                            "sourceCode": "public static void main(String[] args) throws Exception {",
+                                            "relevantPart": "args",
+                                            "location": "java/com/example/example-project/docgen/AsciidocGenerator.java"
+                                          },
+                                          "end": {
+                                            "sourceCode": "File documentsGenFolder = new File(path);",
+                                            "relevantPart": "File",
+                                            "location": "java/com/example/example-project/docgen/AsciidocGenerator.java"
+                                          }
+                                        },
+                                        "web": null,
+                                        "cweId": 36,
+                                        "cveId": null,
+                                        "owasp": null
+                                      },
+                                      "projectData": null,
+                                      "created": "2025-08-04 09:03:36"
+                                    }
+                                  ]
                                 }
                                 """)));
 
@@ -140,6 +187,24 @@ public class SecHubAccessClientTest {
         }
     }
 
+    @Test
+    public void isProjectIdDeprecated_returns_false_for_non_deprecated_project() {
+        /* execute */
+        boolean isDeprecated = clientToTest.isProjectIdDeprecated("example-project");
+
+        /* test */
+        assertFalse(isDeprecated);
+    }
+
+    @Test
+    public void isProjectIdDeprecated_returns_true_for_deprecated_project() {
+        /* execute */
+        boolean isDeprecated = clientToTest.isProjectIdDeprecated("this-project-does-not-exist");
+
+        /* test */
+        assertTrue(isDeprecated);
+    }
+
     /**
      * As of now this test is not executable due to a mismatch in jackson library dependencies between wiremock and intellij
      * plugin CE version 2023.1.1.
@@ -196,6 +261,33 @@ public class SecHubAccessClientTest {
             fail("Expected NullPointerException not thrown");
         } catch (NullPointerException e) {
             assertEquals("Parameter 'jobUUID' must not be null", e.getMessage());
+        }
+    }
+
+    @Test
+    public void getFalsePositiveProjectConfiguration_returns_false_positive_configuration() {
+        /* execute */
+        FalsePositiveProjectConfiguration config = clientToTest.getFalsePositiveProjectConfiguration("example-project");
+
+        /* test */
+        assertNotNull(config);
+        List<FalsePositiveEntry> falsePositives = config.getFalsePositives();
+        assertNotNull(falsePositives);
+        assertEquals(1, falsePositives.size());
+        FalsePositiveJobData jobData = falsePositives.get(0).getJobData();
+        assertNotNull(jobData);
+        assertEquals(Integer.valueOf(1), jobData.getFindingId());
+        assertEquals(UUID.fromString("117bbc23-309d-4ff3-b805-515b73c823fd"), jobData.getJobUUID());
+        assertEquals("A fix has already been started - ", jobData.getComment());
+    }
+
+    @Test
+    public void getFalsePositiveProjectConfiguration_throws_null_pointer_exception_on_null_project_id() {
+        try {
+            clientToTest.getFalsePositiveProjectConfiguration(null);
+            fail("Expected NullPointerException not thrown");
+        } catch (NullPointerException e) {
+            assertEquals("Parameter 'projectId' must not be null", e.getMessage());
         }
     }
 }

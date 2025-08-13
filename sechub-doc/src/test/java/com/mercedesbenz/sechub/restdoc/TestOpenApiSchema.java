@@ -68,6 +68,8 @@ enum TestOpenApiSchema {
 
     ASSETS("Assets"),
 
+    ASSISTANT("Assistant"),
+
     ;
 
     private final Schema schema;
