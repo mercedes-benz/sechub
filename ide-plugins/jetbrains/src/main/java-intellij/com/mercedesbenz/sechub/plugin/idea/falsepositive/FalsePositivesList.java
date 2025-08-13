@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.idea.falsepositive;
 
 import com.fasterxml.jackson.annotation.JsonCreator;

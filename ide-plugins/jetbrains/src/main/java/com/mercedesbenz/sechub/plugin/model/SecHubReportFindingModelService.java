@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.model;
 
 import com.intellij.openapi.diagnostic.Logger;
