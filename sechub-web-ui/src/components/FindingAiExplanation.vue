@@ -26,81 +26,175 @@
     </template>
   </v-toolbar>
 
-  <v-card>
-    <v-card-title>
-      {{ explanation.findingExplanation.title }}
-    </v-card-title>
+  <v-card
+    v-if="!explanation.findingExplanation"
+    class="background-color mt-5"
+    variant="flat"
+  >
     <v-card-text>
-      {{ explanation.findingExplanation.content }}
+      {{ $t('FINDINGS_AI_EXPLANATION_NO_DATA') }}
     </v-card-text>
   </v-card>
 
-  <v-card>
-    <v-card-title>
-      {{ explanation.potentialImpact.title }}
-    </v-card-title>
-    <v-card-text>
-      {{ explanation.potentialImpact.content }}
-    </v-card-text>
-  </v-card>
+  <div v-else>
 
-  <v-card>
-    <v-card-title>
-      Recommendations
-    </v-card-title>
-    <v-card-text>
-      <v-list>
-        <v-list-item v-for="(recommendation, index) in explanation.recommendations" :key="index">
-          <v-list-item-title>{{ recommendation.title }}</v-list-item-title>
-          <v-list-item-subtitle>{{ recommendation.content }}</v-list-item-subtitle>
-        </v-list-item>
-      </v-list>
-    </v-card-text>
-  </v-card>
+    <v-card
+      v-if="explanation.findingExplanation"
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-title>
+        {{ explanation.findingExplanation.title }}
+      </v-card-title>
+      <v-card-text>
+        {{ explanation.findingExplanation.content }}
+      </v-card-text>
+    </v-card>
+    <v-card
+      v-else
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-text>
+        {{ $t('FINDINGS_AI_EXPLANATION_NO_DATA_EXPLANATION') }}
+      </v-card-text>
+    </v-card>
 
-  <v-card>
-    <v-card-title>
-      Example Code
-    </v-card-title>
-    <v-card-text>
-      <v-card-subtitle>
-        Vulnerable Example
-      </v-card-subtitle>
-      <v-code>
-        {{ explanation.codeExample.vulnerableExample }}
-      </v-code>
-    </v-card-text>
-    <v-card-text>
-      <v-card-subtitle>
-        Fixed Example
-      </v-card-subtitle>
-      <v-code>
-        {{ explanation.codeExample.secureExample }}
-      </v-code>
-    </v-card-text>
-    <v-card-text>
-      {{ explanation.codeExample.explanation.content }}
-    </v-card-text>
-  </v-card>
+    <v-card
+      v-if="explanation.potentialImpact"
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-title>
+        {{ explanation.potentialImpact.title }}
+      </v-card-title>
+      <v-card-text>
+        {{ explanation.potentialImpact.content }}
+      </v-card-text>
+    </v-card>
+    <v-card
+      v-else
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-text>
+        {{ $t('FINDINGS_AI_EXPLANATION_NO_DATA_POTENTIAL_IMPACT') }}
+      </v-card-text>
+    </v-card>
 
-  <v-card>
-    <v-card-title>
-      References
-    </v-card-title>
-    <v-list>
-      <v-list-item v-for="(reference, index) in explanation.references" :key="index">
-        <a :href="reference.content">{{ reference.title }}</a>
-      </v-list-item>
-    </v-list>
-  </v-card>
+    <v-card
+      v-if="explanation.recommendations"
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-title>
+        Recommendations
+      </v-card-title>
+      <v-card-text>
+        <v-list>
+          <v-list-item v-for="(recommendation, index) in explanation.recommendations" :key="index">
+            <v-list-item-title>{{ recommendation.title }}</v-list-item-title>
+            <v-list-item-subtitle>{{ recommendation.content }}</v-list-item-subtitle>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+    </v-card>
+    <v-card
+      v-else
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-text>
+        {{ $t('FINDINGS_AI_EXPLANATION_NO_DATA_RECOMMENDATIONS') }}
+      </v-card-text>
+    </v-card>
+
+    <v-card
+      v-if="explanation.codeExample"
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-title>
+        Example Code
+      </v-card-title>
+      <v-card-text>
+        <v-card-subtitle>
+          Vulnerable Example
+        </v-card-subtitle>
+        <v-code>
+          {{ explanation.codeExample.vulnerableExample }}
+        </v-code>
+      </v-card-text>
+      <v-card-text>
+        <v-card-subtitle>
+          Fixed Example
+        </v-card-subtitle>
+        <v-code>
+          {{ explanation.codeExample.secureExample }}
+        </v-code>
+      </v-card-text>
+      <v-card-text v-if="explanation.codeExample.explanation">
+        {{ explanation.codeExample.explanation.title }}
+      </v-card-text>
+      <v-card-text v-if="explanation.codeExample.explanation">
+        {{ explanation.codeExample.explanation.content }}
+      </v-card-text>
+    </v-card>
+    <v-card
+      v-else
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-text>
+        {{ $t('FINDINGS_AI_EXPLANATION_NO_DATA_CODE_EXAMPLE') }}
+      </v-card-text>
+    </v-card>
+
+    <v-card
+      v-if="explanation.references"
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-title>
+        References
+      </v-card-title>
+      <v-card-text>
+        <v-list>
+          <v-list-item v-for="(reference, index) in explanation.references" :key="index">
+            <v-list-item-subtitle>
+              <a :href="reference.url" rel="noopener noreferrer" target="_blank">
+                {{ reference.title }}
+              </a>
+            </v-list-item-subtitle>
+          </v-list-item>
+        </v-list>
+      </v-card-text>
+      <v-card-text>
+        <v-text>
+          {{ $t('FINDINGS_AI_EXPLANATION_HINT') }}
+        </v-text>
+      </v-card-text>
+    </v-card>
+    <v-card
+      v-else
+      class="background-color mt-5"
+      variant="flat"
+    >
+      <v-card-text>
+        {{ $t('FINDINGS_AI_EXPLANATION_NO_DATA') }}
+      </v-card-text>
+    </v-card>
+  </div>
 
 </template>
 <script lang="ts">
-  import { SecHubFinding, SecHubReport } from 'sechub-openapi-ts-client'
+  import { SecHubExplanationResponse, SecHubFinding, SecHubReport } from 'sechub-openapi-ts-client'
   import { defineComponent } from 'vue'
   import { useRoute } from 'vue-router'
   import { useReportStore } from '@/stores/reportStore'
   import { calculateColor, calculateIcon, getTrafficLightClass } from '@/utils/projectUtils'
+  import defaultClient from '@/services/defaultClient'
+  import { handleApiError } from '@/services/apiErrorHandler'
   import '@/styles/sechub.scss'
 
   type RouteParams = {
@@ -135,52 +229,23 @@
         console.error('Report not found in store')
       }
 
-      const explanation = ref({
-        findingExplanation: {
-          title: 'Absolute Path Traversal Vulnerability',
-          content: "This finding indicates an 'Absolute Path Traversal' vulnerability in the `AsciidocGenerator.java` file. The application constructs a file path using user-supplied input (`args[0]`) without proper validation. An attacker could provide an absolute path (e.g., `/etc/passwd` on Linux or `C:\\Windows\\System32\\drivers\\etc\\hosts` on Windows) as input, allowing them to access arbitrary files on the system, potentially bypassing intended security restrictions [3, 7].",
-        },
-        potentialImpact: {
-          title: 'Potential Impact',
-          content: 'If exploited, this vulnerability could allow an attacker to read sensitive files on the server, including configuration files, source code, or even password files. This could lead to information disclosure, privilege escalation, or other malicious activities [1, 5].',
-        },
-        recommendations: [
-          {
-            title: 'Validate and Sanitize User Input',
-            content: 'Always validate and sanitize user-supplied input before using it to construct file paths. In this case, ensure that the `path` variable does not contain an absolute path. You can check if the path starts with a drive letter (e.g., `C:\\`) on Windows or a forward slash (`/`) on Unix-like systems [1].',
-          },
-          {
-            title: 'Use Relative Paths and a Base Directory',
-            content: "Instead of allowing absolute paths, restrict user input to relative paths within a designated base directory. Construct the full file path by combining the base directory with the user-provided relative path. This limits the attacker's ability to access files outside the intended directory [1].",
-          },
-          {
-            title: 'Normalize the Path',
-            content: 'Normalize the constructed file path to remove any directory traversal sequences (e.g., `../`). This can be achieved using the `java.nio.file.Path.normalize()` method. After normalization, verify that the path still resides within the allowed base directory [1, 6].',
-          },
-        ],
-        codeExample: {
-          vulnerableExample: 'public static void main(String[] args) throws Exception {\n  String path = args[0];\n  File documentsGenFolder = new File(path);\n  //Potentially dangerous operation with documentsGenFolder\n}',
-          secureExample: 'public static void main(String[] args) throws Exception {\n  String basePath = "/safe/base/directory";\n  String userPath = args[0];\n\n  // Validate that userPath is not an absolute path\n  if (new File(userPath).isAbsolute()) {\n    System.err.println("Error: Absolute paths are not allowed.");\n    return;\n  }\n\n  Path combinedPath = Paths.get(basePath, userPath).normalize();\n\n  // Ensure the combined path is still within the base directory\n  if (!combinedPath.startsWith(basePath)) {\n    System.err.println("Error: Path traversal detected.");\n    return;\n  }\n\n  File documentsGenFolder = combinedPath.toFile();\n  //Safe operation with documentsGenFolder\n}',
-          explanation: {
-            title: 'Code Example Explanation',
-            content: 'The vulnerable example directly uses user-provided input to create a `File` object, allowing an attacker to specify an arbitrary file path. The secure example first defines a base directory and combines it with the user-provided path using `Paths.get()`. It then normalizes the path and verifies that it remains within the base directory before creating the `File` object. This prevents path traversal attacks by ensuring that the application only accesses files within the intended directory [2, 6].',
-          },
-        },
-        references: [
-          {
-            title: 'OWASP Path Traversal',
-            content: 'https://owasp.org/www-community/attacks/Path_Traversal',
-          },
-          {
-            title: "CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')",
-            content: 'https://cwe.mitre.org/data  import { RouteParams } from /definitions/22.html',
-          },
-          {
-            title: 'Snyk Path Traversal',
-            content: 'https://snyk.io/learn/path-traversal/',
-          },
-        ],
-      })
+      const explanation = ref<SecHubExplanationResponse>({})
+      explainByAI()
+
+      async function explainByAI () {
+        const findingIdAsNumber = parseInt(findingId.value, 10)
+        try {
+          const response = await defaultClient.withAssistanceApi.userRequestFindingExplanation({
+            projectId: projectId.value,
+            jobUUID: jobUUID.value,
+            findingId: findingIdAsNumber,
+          })
+          explanation.value = response
+        } catch (error) {
+          handleApiError(error)
+          console.error('Error fetching AI explanation:', error)
+        }
+      }
 
       return {
         explanation,
