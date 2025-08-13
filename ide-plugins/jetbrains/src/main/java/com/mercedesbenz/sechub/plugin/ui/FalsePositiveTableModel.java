@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.plugin.ui;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.ScanType;
