@@ -48,7 +48,7 @@ export class ReportListTable {
 
 		const markFalsePositiveButton = `<button id="markAsFalsePositiveButton" class="tooltip sechubSecondaryButton" disabled style="display: none;">
         <i class="codicon codicon-sync"></i>
-        <span class="tooltiptext">Mark selected findings als False Positives.</span>
+        <span class="tooltiptext">Mark selected findings as False Positives.</span>
         </button>`;
 
 		const header = `
@@ -73,7 +73,7 @@ export class ReportListTable {
 			this.falsePositivesForReport = getFalsePositivesByIDForJobReport(falsePositiveConfig, report.jobUUID);
 		}
 
-		const checkBoxUnchecked = `<input type="checkbox"  class="item-checkbox">`;
+		const checkBoxUnchecked = `<input type="checkbox"  class="item-checkbox"><span class="tooltiptext">Check finding to mark as False Positive.</span>`;
 		const checkBoxChecked = `<input type="checkbox" checked class="item-checkbox">`;
 		const webScanFidning = `<i class="codicon codicon-globe sechubIcon"></i><span class="tooltiptext">IDE does not support marking webscan findings. <br/> Please use SecHub Web-ui.</span>`;
 		const markedFalesPositive = `<i class="codicon codicon-pass sechubIcon"></i><span class="tooltiptext">Finding is already marked as false positive.</span>`;
@@ -98,8 +98,17 @@ export class ReportListTable {
                                 <td class="tooltip">${type}</td>
                                 <td>${finding.id}</td>
                                 <td>${finding.severity}</td>
-                                <td><button id="openCWEinBrowserButton" class="sechubSecondaryButton" title="Open CWE (Common Weakness Enumeration) in Browser">${finding.cweId}</button></td>
-                                <td><button id="explainVulnerabilityByAiButton" class="sechubSecondaryButton"><i class="codicon codicon-lightbulb-sparkle" title="Get an AI-powered explanation of this vulnerability"></i></button></td>
+                                <td>
+									<button id="openCWEinBrowserButton" class="sechubSecondaryButton tooltip">${finding.cweId}
+									<span class="tooltiptext">Open CWE in browser</span>
+									</button>
+								</td>
+								<td>
+									<button id="explainVulnerabilityByAiButton" class="sechubSecondaryButton tooltip">
+									<i class="codicon codicon-lightbulb-sparkle"></i>
+									<span class="tooltiptext">Explain vulnerability by AI</span>
+									</button>
+								</td>
                                 <td>${finding.name}</td>
                             </tr>`;
 			});
