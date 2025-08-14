@@ -1,3 +1,4 @@
+<!-- SPDX-License-Identifier: MIT -->
 <template>
   <v-toolbar color="background_paper">
     <v-toolbar-title>{{ projectId }}</v-toolbar-title>
@@ -121,21 +122,21 @@
         {{ $t('FINDINGS_AI_EXPLANATION_VULNERABLE_EXAMPLE') }}
       </v-card-subtitle>
       <v-card-text>
-        <pre>
-          <v-code>
-            {{ explanation.codeExample.vulnerableExample }}
-          </v-code>
-        </pre>
+        <VCodeBlock
+          :code="explanation.codeExample.vulnerableExample"
+          prismjs
+          theme="tomorrow"
+        />
       </v-card-text>
       <v-card-subtitle>
         {{ $t('FINDINGS_AI_EXPLANATION_SECURE_EXAMPLE') }}
       </v-card-subtitle>
       <v-card-text>
-        <pre>
-          <v-code>
-            {{ explanation.codeExample.secureExample }}
-          </v-code>
-        </pre>
+        <VCodeBlock
+          :code="explanation.codeExample.secureExample"
+          prismjs
+          theme="tomorrow"
+        />
       </v-card-text>
       <v-card-title v-if="explanation.codeExample.explanation">
         {{ explanation.codeExample.explanation.title }}
