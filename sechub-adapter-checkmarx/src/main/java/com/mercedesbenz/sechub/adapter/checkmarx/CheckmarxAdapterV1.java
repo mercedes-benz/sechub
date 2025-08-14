@@ -13,6 +13,8 @@ import com.mercedesbenz.sechub.adapter.AdapterMetaData;
 import com.mercedesbenz.sechub.adapter.AdapterProfiles;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext;
 import com.mercedesbenz.sechub.adapter.AdapterRuntimeContext.ExecutionType;
+import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxCancelException;
+import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxCancelSupport;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxFullScanNecessaryException;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxOAuthSupport;
 import com.mercedesbenz.sechub.adapter.checkmarx.support.CheckmarxOnlyUnsupportedFilesException;
@@ -39,10 +41,6 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
     @Override
     public AdapterExecutionResult execute(CheckmarxAdapterConfig config, AdapterRuntimeContext runtimeContext) throws AdapterException {
 
-        if (ExecutionType.CANCEL.equals(runtimeContext.getType())) {
-            return AdapterExecutionResult.createCancelResult();
-        }
-
         try {
             assertThreadNotInterrupted();
 
@@ -51,6 +49,12 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
 
             CheckmarxOAuthSupport oauthSupport = new CheckmarxOAuthSupport();
             oauthSupport.loginAndGetOAuthToken(context);
+
+            if (ExecutionType.CANCEL.equals(runtimeContext.getType())) {
+                CheckmarxCancelSupport cancelSupport = new CheckmarxCancelSupport();
+                cancelSupport.cancelScanInQueue(oauthSupport, context);
+                return AdapterExecutionResult.createCancelResult();
+            }
 
             assertThreadNotInterrupted();
             /* ensure project and get project context */
@@ -69,10 +73,22 @@ public class CheckmarxAdapterV1 extends AbstractAdapter<CheckmarxAdapterContext,
         } catch (CheckmarxOnlyUnsupportedFilesException e) {
 
             LOG.info("Checkmarx was not able to handle the uploaded files, will mark result as canceled");
+            // The cancel operation on Checkmarx side was not possible, but on SecHub side
+            // the cancel operation is possible. So we still cancel the job on SecHub side.
+            return AdapterExecutionResult.createCancelResult();
+
+        } catch (CheckmarxCancelException e) {
+            LOG.warn("Was not possible to cancel the scan on Checkmarx side: {}", e.getCheckmarxMessage());
 
             return AdapterExecutionResult.createCancelResult();
 
         } catch (Exception e) {
+            if (ExecutionType.CANCEL.equals(runtimeContext.getType())) {
+                LOG.warn("Was not able to prepare cancel operation for the scan on Checkmarx side: {}", e.getMessage());
+                // The cancel operation on Checkmarx side was not possible, but on SecHub side
+                // the cancel operation is possible. So we still cancel the job on SecHub side.
+                return AdapterExecutionResult.createCancelResult();
+            }
             throw asAdapterException("Was not able to perform scan!", e, config);
         }
 
