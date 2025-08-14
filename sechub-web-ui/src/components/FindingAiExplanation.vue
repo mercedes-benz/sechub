@@ -88,7 +88,7 @@
       variant="flat"
     >
       <v-card-title>
-        Recommendations
+        {{ $t('FINDINGS_AI_EXPLANATION_RECOMMENDATIONS') }}
       </v-card-title>
       <v-card-text>
         <v-list>
@@ -115,27 +115,31 @@
       variant="flat"
     >
       <v-card-title>
-        Example Code
+        {{ $t('FINDINGS_AI_EXPLANATION_CODE_EXAMPLE') }}
       </v-card-title>
+      <v-card-subtitle>
+        {{ $t('FINDINGS_AI_EXPLANATION_VULNERABLE_EXAMPLE') }}
+      </v-card-subtitle>
       <v-card-text>
-        <v-card-subtitle>
-          Vulnerable Example
-        </v-card-subtitle>
-        <v-code>
-          {{ explanation.codeExample.vulnerableExample }}
-        </v-code>
+        <pre>
+          <v-code>
+            {{ explanation.codeExample.vulnerableExample }}
+          </v-code>
+        </pre>
       </v-card-text>
+      <v-card-subtitle>
+        {{ $t('FINDINGS_AI_EXPLANATION_SECURE_EXAMPLE') }}
+      </v-card-subtitle>
       <v-card-text>
-        <v-card-subtitle>
-          Fixed Example
-        </v-card-subtitle>
-        <v-code>
-          {{ explanation.codeExample.secureExample }}
-        </v-code>
+        <pre>
+          <v-code>
+            {{ explanation.codeExample.secureExample }}
+          </v-code>
+        </pre>
       </v-card-text>
-      <v-card-text v-if="explanation.codeExample.explanation">
+      <v-card-title v-if="explanation.codeExample.explanation">
         {{ explanation.codeExample.explanation.title }}
-      </v-card-text>
+      </v-card-title>
       <v-card-text v-if="explanation.codeExample.explanation">
         {{ explanation.codeExample.explanation.content }}
       </v-card-text>
@@ -156,7 +160,7 @@
       variant="flat"
     >
       <v-card-title>
-        References
+        {{ $t('FINDINGS_AI_EXPLANATION_REFERENCES') }}
       </v-card-title>
       <v-card-text>
         <v-list>

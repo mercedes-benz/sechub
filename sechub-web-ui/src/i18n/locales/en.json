@@ -172,6 +172,10 @@
     "FINDINGS_AI_EXPLANATION_NO_DATA_EXPLANATION": "This finding does not have an AI-generated explanation available.",
     "FINDINGS_AI_EXPLANATION_NO_DATA_POTENTIAL_IMPACT": "This finding does not have an AI-generated potential impact explanation available.",
     "FINDINGS_AI_EXPLANATION_NO_DATA_RECOMMENDATIONS": "This finding does not have AI-generated recommendations available.",
-    "FINDINGS_AI_EXPLANATION_NO_DATA_CODE_EXAMPLE": "This finding does not have an AI-generated code example available."
-
+    "FINDINGS_AI_EXPLANATION_NO_DATA_CODE_EXAMPLE": "This finding does not have an AI-generated code example available.",
+    "FINDINGS_AI_EXPLANATION_RECOMMENDATIONS": "Recommendations",
+    "FINDINGS_AI_EXPLANATION_CODE_EXAMPLE": "Code Example",
+    "FINDINGS_AI_EXPLANATION_VULNERABLE_EXAMPLE": "Vulnerable Example",
+    "FINDINGS_AI_EXPLANATION_SECURE_EXAMPLE": "Secure Example",
+    "FINDINGS_AI_EXPLANATION_REFERENCES": "References"
 }
