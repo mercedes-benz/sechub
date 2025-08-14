@@ -23,6 +23,7 @@ NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extens
 - **Connect to SecHub Server**: Connect to a SecHub server to view jobs and load reports directly from the server.
 - **Fetch Remote Reports**: Fetch SecHub reports directly from the server.
 - **Resolve Issues**: Resolve issues by marking them as false positives directly in the report.
+- **Explain Vulnerablity by AI**: Use the AI-powered explanation feature to get detailed explanations of vulnerabilities.
 
 ## Usage
 
