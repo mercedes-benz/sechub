@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
-import { Configuration,
+import {
+    Configuration,
     OtherApi,
     SystemApi,
     EncryptionApi,
@@ -10,8 +11,8 @@ import { Configuration,
     SignUpApi,
     UserAdministrationApi,
     UserSelfServiceApi,
-    ConfigurationApi
- } from "../gen";
+    ConfigurationApi, AssistantApi
+} from "../gen";
 import { SecHubExecutionApiWorkaround } from "./executionService/executionService";
 
 export class DefaultApiClient {
@@ -28,6 +29,7 @@ export class DefaultApiClient {
     private userSelfServiceApi: UserSelfServiceApi;
     private configurationApi: ConfigurationApi;
     private executionApi: SecHubExecutionApiWorkaround;
+    private assistantApi: AssistantApi;
 
     constructor(protected apiConfig: Configuration) {
         this.otherApi = new OtherApi(apiConfig);
@@ -42,6 +44,7 @@ export class DefaultApiClient {
         this.userSelfServiceApi = new UserSelfServiceApi(apiConfig);
         this.configurationApi = new ConfigurationApi(apiConfig);
         this.executionApi = new SecHubExecutionApiWorkaround(apiConfig);
+        this.assistantApi = new AssistantApi(apiConfig);
     }
 
     public withOtherApi(): OtherApi {
@@ -90,5 +93,9 @@ export class DefaultApiClient {
 
     public withExecutionApi(): SecHubExecutionApiWorkaround {
         return this.executionApi;
+    }
+
+    public withAssistantApi(): AssistantApi {
+        return this.assistantApi;
     }
 }

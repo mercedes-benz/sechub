@@ -57,3 +57,25 @@ export const getIconColorFromScanStatus = (text: string): string => {
       return 'grey'
   }
 }
+
+export function calculateIcon (severity: string) {
+  const iconMap: Record<string, string> = {
+    CRITICAL: 'mdi-alert-circle-outline',
+    HIGH: 'mdi-alert-circle-outline',
+    MEDIUM: 'mdi-alert-circle-outline',
+    LOW: 'mdi-information-outline',
+    INFO: 'mdi-information-outline',
+  }
+  return iconMap[severity] || ''
+}
+
+export function calculateColor (severity: string) {
+  const colorMap: Record<string, string> = {
+    CRITICAL: 'error',
+    HIGH: 'error',
+    MEDIUM: 'warning',
+    LOW: 'success',
+    INFO: 'primary',
+  }
+  return colorMap[severity] || 'layer_01'
+}

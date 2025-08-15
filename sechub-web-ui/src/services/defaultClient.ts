@@ -2,6 +2,7 @@
 import apiConfig from './configuration'
 import scanService from './scanService'
 import {
+  AssistantApi,
   ConfigurationApi,
   JobManagementApi,
   OtherApi,
@@ -22,6 +23,7 @@ const systemApi = new SystemApi(apiConfig)
 const signUpApi = new SignUpApi(apiConfig)
 const projectApi = new ProjectAdministrationApi(apiConfig)
 const executionApi = new SecHubExecutionApiWorkaround(apiConfig)
+const assistanceApi = new AssistantApi(apiConfig)
 
 const defaultClient = {
   withProjectApi: projectApi,
@@ -34,6 +36,7 @@ const defaultClient = {
   withSechubExecutionApi: sechubExecutionApi,
   withScanService: scanService,
   withJobManagementApi: jobManagementApi,
+  withAssistanceApi: assistanceApi,
 }
 
 export default defaultClient
