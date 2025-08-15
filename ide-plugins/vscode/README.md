@@ -15,15 +15,13 @@ VSCodium and Eclipse Theia:
 
 VSCode: download the [SecHub Plugin](https://open-vsx.org/extension/mercedes-benz/sechub) and install it manually.
 
-NOTE: Please use the new plugin from Mercedes-Benz: <https://open-vsx.org/extension/mercedes-benz/sechub>. The old Daimler plugin will be deprecated. The reason for the deprecation is the rebranding of Daimler to Mercedes-Benz.
-
 ## Features
 
 - **Import SecHub Reports**: Import SecHub `.json` reports from file system and navigate through them.
 - **Connect to SecHub Server**: Connect to a SecHub server to view jobs and load reports directly from the server.
 - **Fetch Remote Reports**: Fetch SecHub reports directly from the server.
 - **Resolve Issues**: Resolve issues by marking them as false positives directly in the report.
-- **Explain Vulnerablity by AI**: Use the AI-powered explanation feature to get detailed explanations of vulnerabilities.
+- **Explain Vulnerability by AI**: Use the AI-powered explanation feature to get detailed explanations of vulnerabilities.
 
 ## Usage
 
@@ -58,6 +56,15 @@ Alternatively you can use the import button in the sidebar to import a SecHub re
 
 ![VSCodium resolve issues](README/vscode-plugin-mark-false-positives-1.png)
 ![VSCodium resolve issues with comment](README/vscode-plugin-mark-false-positives-2.png)
+
+### Explain Vulnerability by AI
+
+1. Open the report in the sidebar.
+2. CLick on the `Explain Vulnerability by AI` button in the issue details.
+3. The AI will analyze the issue and provide a detailed explanation of the vulnerability.
+
+![VSCodium explain vulnerability by AI](README/vscode-plugin-ai-explain.png)
+
 
 ## Contributing
 

@@ -185,7 +185,6 @@ export class DefaultClient {
 
 		try {
 			const resposne = await this.apiClient.withAssistantApi().userRequestFindingExplanation(requestParameter);
-			console.log('AI explanation response:', resposne);
 			return resposne;
 		} catch (error) {
 			console.error('Error requesting AI explanation:', error);
