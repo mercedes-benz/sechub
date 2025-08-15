@@ -155,7 +155,7 @@ public class FalsePositivesCacheManager {
         private static final Map<UUID, FalsePositivesList> runtimeCache = new ConcurrentHashMap<>();
         private static final ObjectMapper mapper = new ObjectMapper();
 
-        /* IntelliJ Application services must not be accessed in static way */
+        /* IntelliJ Application services must not be assigned to static variable */
         private final PropertiesComponent persistentCache = PropertiesComponent.getInstance();
 
         private void persist(UUID jobUUID) {
