@@ -5,6 +5,7 @@ import { SECHUB_COMMANDS, SECHUB_VIEW_IDS } from '../utils/sechubConstants';
 import { ReportListTable } from '../webview/reportTable';
 import { openCWEIDInBrowser, getNonce } from '../utils/sechubUtils';
 import { FalsePositiveCache } from '../cache/falsePositiveCache';
+import { SecHubFinding } from 'sechub-openapi-ts-client';
 
 export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 	public static readonly viewType = SECHUB_VIEW_IDS.reportView;
@@ -42,18 +43,7 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 				case 'openFinding':
 					{
 						const findingId = Number(data.findingId);
-						const report = this._sechubContext.getReport();
-						if (!report) {
-							vscode.window.showErrorMessage('No report available to open finding.');
-							return;
-						}
-						if (!report.result || !report.result.findings) {
-							vscode.window.showErrorMessage('No findings available in the report.');
-							return;
-						}
-						const finding = report.result.findings.find(f => {
-							return f.id === findingId;
-						});
+						const finding = this.getSecHubFindingById(findingId);
 
 						if (finding) {
 							if (finding.web) {
@@ -92,6 +82,13 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 								findingIDs: findingIds,
 							});
 						}
+					}
+					break;
+				case 'explainVulnerabilityByAi':
+					{
+						const findingId = Number(data.findingId);
+						const finding = this.getSecHubFindingById(findingId);
+						vscode.commands.executeCommand(SECHUB_COMMANDS.explainVulnerabilityByAi, finding);
 					}
 					break;
 				default:
@@ -157,5 +154,22 @@ export class SecHubReportWebViewProvider implements vscode.WebviewViewProvider {
 			</body>
 			</html>
 		`;
+	}
+
+	private getSecHubFindingById(findingId: number): SecHubFinding | undefined {
+		const report = this._sechubContext.getReport();
+		if (!report) {
+			vscode.window.showErrorMessage('No report available to open finding.');
+			return;
+		}
+		if (!report.result || !report.result.findings) {
+			vscode.window.showErrorMessage('No findings available in the report.');
+			return;
+		}
+		const finding = report.result.findings.find(f => {
+			return f.id === findingId;
+		});
+
+		return finding;
 	}
 }
