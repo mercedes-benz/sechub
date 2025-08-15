@@ -3,7 +3,6 @@ package com.mercedesbenz.sechub.plugin.idea.falsepositive;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.application.CachedSingletonsRegistry;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositiveJobData;
 import com.mercedesbenz.sechub.api.internal.gen.model.FalsePositives;
@@ -15,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -156,7 +154,7 @@ public class FalsePositivesCacheManager {
 
         private static final Map<UUID, FalsePositivesList> runtimeCache = new ConcurrentHashMap<>();
         private static final ObjectMapper mapper = new ObjectMapper();
-        private static final Supplier<PropertiesComponent> persistentCacheSupplier = CachedSingletonsRegistry.lazy(PropertiesComponent::getInstance);
+        private static final PropertiesComponent persistentCache = PropertiesComponent.getInstance();
 
         private void persist(UUID jobUUID) {
             if (!runtimeCache.containsKey(jobUUID)) {
@@ -177,7 +175,7 @@ public class FalsePositivesCacheManager {
                 throw new RuntimeException(errMsg, e);
             }
 
-            persistentCacheSupplier.get().setValue(jobUUID.toString(), json);
+            persistentCache.setValue(jobUUID.toString(), json);
         }
 
         private Optional<FalsePositivesList> getEntry(UUID jobUUID) {
@@ -224,7 +222,7 @@ public class FalsePositivesCacheManager {
          * @return a {@link FalsePositivesList} object
          */
         private FalsePositivesList loadFalsePositives(UUID jobUUID) {
-            String persistentCacheEntries = persistentCacheSupplier.get().getValue(jobUUID.toString());
+            String persistentCacheEntries = persistentCache.getValue(jobUUID.toString());
 
             if (persistentCacheEntries == null || persistentCacheEntries.isEmpty()) {
                 return new FalsePositivesList(new ArrayList<>());
@@ -251,7 +249,7 @@ public class FalsePositivesCacheManager {
         private void clear(UUID jobUUID) {
             requireNonNull(jobUUID, "Parameter 'jobUUID' must not be null");
             runtimeCache.remove(jobUUID);
-            persistentCacheSupplier.get().unsetValue(jobUUID.toString());
+            persistentCache.unsetValue(jobUUID.toString());
         }
     }
 
