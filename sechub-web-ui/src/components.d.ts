@@ -7,7 +7,6 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AiExplanationDialog: typeof import('./components/AiExplanationDialog.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     AsyncButton: typeof import('./components/AsyncButton.vue')['default']
     ConfirmationDialog: typeof import('./components/ConfirmationDialog.vue')['default']
