@@ -363,7 +363,7 @@
 
           if (err instanceof ResponseError) {
             const responseError = err as ResponseError
-            if (responseError.response.status === 406) {
+            if (responseError.response.status === 404) {
               errMsg = t('PROJECT_SETTINGS_PROJECT_ASSIGN_USER_FAILED_USER_NOT_EXIST')
             }
           }
