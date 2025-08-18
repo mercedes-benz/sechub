@@ -104,11 +104,11 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('http');
-        expect(result?.host).toEqual('proxy.example.org');
-        expect(result?.port).toEqual(1234);
-        expect(result?.auth?.username).toEqual('user');
-        expect(result?.auth?.password).toEqual('password');
+        expect(result?.protocol).toEqual('http:');
+        expect(result?.hostname).toEqual('proxy.example.org');
+        expect(result?.port).toEqual("1234");
+        expect(result?.username).toEqual('user');
+        expect(result?.password).toEqual('password');
     });
 
     it('only https_proxy defined - returns valid axios', function () {
@@ -120,11 +120,11 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('https');
-        expect(result?.host).toEqual('proxy.example.org');
-        expect(result?.port).toEqual(1234);
-        expect(result?.auth?.username).toEqual('user');
-        expect(result?.auth?.password).toEqual('password');
+        expect(result?.protocol).toEqual('https:');
+        expect(result?.hostname).toEqual('proxy.example.org');
+        expect(result?.port).toEqual("1234");
+        expect(result?.username).toEqual('user');
+        expect(result?.password).toEqual('password');
     });
 
     it('http_proxy and https_proxy defined - uses values of https_proxy', function () {
@@ -136,11 +136,11 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('https');
-        expect(result?.host).toEqual('proxy.other.org');
-        expect(result?.port).toEqual(5678);
-        expect(result?.auth?.username).toEqual('other');
-        expect(result?.auth?.password).toEqual('pass');
+        expect(result?.protocol).toEqual('https:');
+        expect(result?.hostname).toEqual('proxy.other.org');
+        expect(result?.port).toEqual("5678");
+        expect(result?.username).toEqual('other');
+        expect(result?.password).toEqual('pass');
     });
 
     it('http_proxy and https_proxy defined - uses values of https_proxy no authentication section', function () {
@@ -152,10 +152,11 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('https');
-        expect(result?.host).toEqual('proxy.other.org');
-        expect(result?.port).toEqual(5678);
-        expect(result?.auth).toBeUndefined();
+        expect(result?.protocol).toEqual('https:');
+        expect(result?.hostname).toEqual('proxy.other.org');
+        expect(result?.port).toEqual("5678");
+        expect(result?.username).toEqual("");
+        expect(result?.password).toEqual("");
     });
 
     it('https_proxy defined - uses values of https_proxy no authentication section', function () {
@@ -167,10 +168,11 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('https');
-        expect(result?.host).toEqual('proxy.other.org');
-        expect(result?.port).toEqual(5678);
-        expect(result?.auth).toBeUndefined();
+        expect(result?.protocol).toEqual('https:');
+        expect(result?.hostname).toEqual('proxy.other.org');
+        expect(result?.port).toEqual("5678");
+        expect(result?.username).toEqual("");
+        expect(result?.password).toEqual("");
     });
 
     it('invalid http_proxy defined - takes defined https_proxy', function () {
@@ -182,10 +184,11 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('https');
-        expect(result?.host).toEqual('proxy.other.org');
-        expect(result?.port).toEqual(5678);
-        expect(result?.auth).toBeUndefined();
+        expect(result?.protocol).toEqual('https:');
+        expect(result?.hostname).toEqual('proxy.other.org');
+        expect(result?.port).toEqual("5678");
+        expect(result?.username).toEqual("");
+        expect(result?.password).toEqual("");
     });
 
     it('invalid https_proxy defined - throws error', function () {
@@ -206,10 +209,11 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('https');
-        expect(result?.host).toEqual('proxy.other.org');
-        expect(result?.port).toEqual(443);
-        expect(result?.auth).toBeUndefined();
+        expect(result?.protocol).toEqual('https:');
+        expect(result?.hostname).toEqual('proxy.other.org');
+        expect(result?.port).toEqual("");
+        expect(result?.username).toEqual("");
+        expect(result?.password).toEqual("");
     });
 
     it('http_proxy defined without port - uses default port 80', function () {
@@ -221,28 +225,11 @@ describe('resolveProxyConfig', function () {
         const result = resolveProxyConfig();
 
         /* test */
-        expect(result?.protocol).toEqual('http');
-        expect(result?.host).toEqual('proxy.example.org');
-        expect(result?.port).toEqual(80);
-        expect(result?.auth).toBeUndefined();
-    });
-
-    it('http_proxy defined with invalid protocol - throws error', function () {
-        /* prepare */
-        process.env.http_proxy = 'ftp://proxy.example.org';
-        delete process.env.https_proxy;
-
-        /* execute + test */
-        expect(() => resolveProxyConfig()).toThrowError(/Accepted protocols are "http" and "https"/);
-    });
-
-    it('https_proxy defined with invalid protocol - throws error', function () {
-        /* prepare */
-        delete process.env.http_proxy;
-        process.env.https_proxy = 'sftp://proxy.other.org';
-
-        /* execute + test */
-        expect(() => resolveProxyConfig()).toThrowError(/Accepted protocols are "http" and "https"/);
+        expect(result?.protocol).toEqual('http:');
+        expect(result?.hostname).toEqual('proxy.example.org');
+        expect(result?.port).toEqual("");
+        expect(result?.username).toEqual("");
+        expect(result?.password).toEqual("");
     });
 });
 

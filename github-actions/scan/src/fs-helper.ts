@@ -9,6 +9,7 @@ import * as util from 'util';
 import extract from 'extract-zip';
 import * as os from 'os';
 import { resolveProxyConfig } from './input-helper';
+import {HttpsProxyAgent} from 'https-proxy-agent';
 
 const writeFile = util.promisify(fs_extra.writeFile);
 
@@ -61,11 +62,18 @@ export function chmodSync(path: string) {
 export async function downloadFile(url: string, dest: string) {
     let proxyConfig = resolveProxyConfig();
 
-    try {
-        const response = await axios.get(url, {
-            responseType: 'arraybuffer',
-            ...(proxyConfig && { proxy: proxyConfig })
+    let axiosInstance;
+    if (proxyConfig) {
+        axiosInstance = axios.create({
+            httpsAgent: new HttpsProxyAgent(proxyConfig),
+            proxy: false, // Disable axios default proxy handling
         });
+    } else {
+        axiosInstance = axios;
+    }
+
+    try {
+        const response = await axiosInstance.get(url, { responseType: 'arraybuffer' });
         await writeFile(dest, response.data);
     } catch (err) {
         throw new Error(`Error downloading file from url: ${url} to destination: ${dest} with error: ${err}`);
