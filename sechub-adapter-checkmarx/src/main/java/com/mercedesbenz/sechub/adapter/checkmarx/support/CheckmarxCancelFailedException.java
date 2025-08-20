@@ -8,11 +8,11 @@ package com.mercedesbenz.sechub.adapter.checkmarx.support;
  * Since the SecHub job will be canceled this exception will always lead to a
  * non-failing result.
  */
-public class CheckmarxCancelException extends RuntimeException {
+public class CheckmarxCancelFailedException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 
-    public CheckmarxCancelException(String checkMarxMessage) {
+    public CheckmarxCancelFailedException(String checkMarxMessage) {
         super(checkMarxMessage);
     }
 

@@ -13,7 +13,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestOperations;
 
 import com.mercedesbenz.sechub.adapter.AdapterException;
@@ -58,10 +60,18 @@ public class CheckmarxCancelSupport {
         HttpEntity<String> request = new HttpEntity<>(jsonAsString, headers);
 
         RestOperations restTemplate = context.getRestOperations();
-        ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.PATCH, request, String.class);
+        try {
+            ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.PATCH, request, String.class);
 
-        if (!HttpStatus.OK.equals(result.getStatusCode())) {
-            throw new CheckmarxCancelException(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + "Was not able to cancel scan in Checkmarx queue.");
+            HttpStatusCode receivedStatusCode = result.getStatusCode();
+            HttpStatus httpStatus = HttpStatus.valueOf(receivedStatusCode.value());
+            if (httpStatus != HttpStatus.OK) {
+                throw new CheckmarxCancelFailedException(
+                        "%sWas not able to cancel scan in Checkmarx queue, expected HTTP status code 'OK/200', but got %s/%s instead"
+                                .formatted(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX, httpStatus, httpStatus.value()));
+            }
+        } catch (RestClientException e) {
+            throw new CheckmarxCancelFailedException(CheckmarxAdapter.CHECKMARX_MESSAGE_PREFIX + e.getMessage());
         }
     }
 
