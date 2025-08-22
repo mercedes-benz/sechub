@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MIT
+== Infralight Wrapper
+
+The wrapper is a Spring Boot Application for PDS, which is able to communicate
+with the results from Infralight launcher script.
+
+
+=== Usage
+
+==== Start wrapper
+The wrapper application is an executable jar and needs no command line arguments.
+It automatically uses all 
+https://mercedes-benz.github.io/sechub/latest/sechub-product-delegation-server.html#launcher-scripts[standard PDS environment variables] 
+and following special mandatory Checkmarx environment variables:
+
+----
+NONE
+----

@@ -93,6 +93,9 @@ include 'sechub-cli',
 // Wrapper checkmarx
 'sechub-wrapper-checkmarx',
 
+// Wrapper infralight
+'sechub-wrapper-infralight',
+
 // Wrapper prepare
 'sechub-wrapper-prepare',
 

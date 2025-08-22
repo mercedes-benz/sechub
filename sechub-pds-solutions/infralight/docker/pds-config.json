@@ -1,0 +1,54 @@
+{
+  "apiVersion": "1.0",
+  "serverId": "INFRALIGHT_CLUSTER",
+  "products": [
+    {
+      "id": "PDS_INFRALIGHT",
+      "path": "/pds/scripts/infralight.sh",
+      "scanType": "infraScan",
+      "minutesToWaitForProductResult": 600,
+      "description": "Runs Infralight",
+      "parameters": {
+        "mandatory": [
+          {
+            "key": "pds.scan.target.url",
+            "description": "The target url for the scan."
+          }
+        ],
+        "optional": [
+          {
+            "key": "pds.scan.configuration",
+            "description": "The configuration of the infra scan."
+          }
+        ]
+      },
+      "envWhitelist": [
+        "TOOL_FOLDER",
+        "ZAP_API_KEY",
+        "ZAP_HOST",
+        "ZAP_PORT"
+      ]
+    },
+    {
+      "id": "PDS_INFRALIGHT_MOCK",
+      "path": "/pds/scripts/infralight-mock.sh",
+      "envWhitelist" : [ "MOCK_FOLDER" ],
+      "scanType": "infraScan",
+      "description": "Runs Infralight mock",
+      "parameters": {
+        "mandatory": [
+          {
+            "key": "pds.scan.target.url",
+            "description": "The target url for the scan."
+          }
+        ],
+        "optional": [
+          {
+            "key": "pds.scan.configuration",
+            "description": "The configuration of the web scan."
+          }
+        ]
+      }
+    }
+  ]
+}
