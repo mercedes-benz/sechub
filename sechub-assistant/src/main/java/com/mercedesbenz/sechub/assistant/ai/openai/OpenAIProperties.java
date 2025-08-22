@@ -41,7 +41,7 @@ public class OpenAIProperties implements OpenAISetup {
         /* @formatter:on */
         this.completionsUri = completionsUri;
         this.sealedApiToken = cryptoAccess.seal(apiToken);
-        this.enabled = completionsUri != null && apiToken != null;
+        this.enabled = completionsUri != null && apiToken != null && !apiToken.isBlank();
     }
 
     @Override

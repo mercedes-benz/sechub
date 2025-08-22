@@ -30,7 +30,7 @@ public class FindingAssistantService {
         this.chats = chats;
         this.fallbackExplanationReponseFactory = fallbackExplanationReponseFactory;
 
-        logger.info("Assistent service found {} ai chats:");
+        logger.info("Assistent service found {} ai chats:", chats.size());
         for (AIChat chat : chats) {
             logger.info("- {}, enabled={}", chat.getClass().getSimpleName(), chat.isEnabled());
         }

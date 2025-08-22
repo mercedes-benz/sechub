@@ -29,6 +29,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.JobFinding;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MappingMessage;
@@ -203,6 +204,7 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
     }
 
     @IsRecevingSyncMessage(MessageID.REQUEST_DETAILS_FOR_JOB_FINDING)
+    @IsSendingSyncMessage(MessageID.RESULT_DETAILS_FOR_JOB_FINDING)
     private DomainMessageSynchronousResult handleRequestJobFindingDetails(DomainMessage request) {
         JobFinding jobFindingRequestData = request.get(MessageDataKeys.JOB_FINDING_DATA);
         try {

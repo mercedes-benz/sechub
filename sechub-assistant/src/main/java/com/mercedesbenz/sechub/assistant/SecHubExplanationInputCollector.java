@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.JobFinding;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
@@ -21,6 +23,8 @@ public class SecHubExplanationInputCollector {
         this.domainMessageService = domainMessageService;
     }
 
+    @IsSendingSyncMessage(MessageID.REQUEST_DETAILS_FOR_JOB_FINDING)
+    @IsRecevingSyncMessage(MessageID.RESULT_DETAILS_FOR_JOB_FINDING)
     public SecHubExplanationInput collectInputFor(String projectId, UUID jobUUID, int findingId) {
 
         DomainMessage domainMessage = new DomainMessage(MessageID.REQUEST_DETAILS_FOR_JOB_FINDING);
