@@ -270,6 +270,10 @@ public enum MessageID {
      */
     RESULT_ENABLED_PROFILE_IDS_FOR_PROJECTS(MessageDataKeys.PROJECT_ASSIGNED_AND_ENABLED_PROFILE_IDS),
 
+    REQUEST_DETAILS_FOR_JOB_FINDING(MessageDataKeys.JOB_FINDING_DATA),
+
+    RESULT_DETAILS_FOR_JOB_FINDING(MessageDataKeys.JOB_FINDING_DATA),
+
     ;
 
     private Set<MessageDataKey<?>> unmodifiableKeys;

@@ -1,0 +1,83 @@
+{
+  "choices" : [ {
+    "content_filter_results" : {
+      "hate" : {
+        "filtered" : false,
+        "severity" : "safe"
+      },
+      "protected_material_code" : {
+        "filtered" : false,
+        "detected" : false
+      },
+      "protected_material_text" : {
+        "filtered" : false,
+        "detected" : false
+      },
+      "self_harm" : {
+        "filtered" : false,
+        "severity" : "safe"
+      },
+      "sexual" : {
+        "filtered" : false,
+        "severity" : "safe"
+      },
+      "violence" : {
+        "filtered" : false,
+        "severity" : "safe"
+      }
+    },
+    "finish_reason" : "stop",
+    "index" : 0,
+    "message" : {
+      "annotations" : [ ],
+      "content" : "{\n  \"findingExplanation\": {\n    \"title\": \"SQL Injection Vulnerability\",\n    \"content\": \"SQL Injection vulnerability identified in TestSQLInjection.java. This occurs when user input is improperly sanitized before being included in SQL queries, allowing attackers to execute arbitrary SQL code.\"\n  },\n  \"potentialImpact\": {\n    \"title\": \"Potential Impact\",\n    \"content\": \"An attacker could use this vulnerability to execute arbitrary SQL queries, potentially accessing or modifying sensitive data, dropping tables, or exploiting the underlying database server.\"\n  },\n  \"recommendations\": [\n    {\n      \"title\": \"Use Prepared Statements\",\n      \"content\": \"Change the code to use prepared statements with parameterized queries. This ensures user inputs are properly sanitized, preventing SQL injection attacks.\"\n    },\n    {\n      \"title\": \"Validate and Sanitize Inputs\",\n      \"content\": \"Ensure all user inputs are validated and sanitized, checking for expected formats and escaping special characters to prevent malicious inputs.\"\n    },\n    {\n      \"title\": \"Use ORM Frameworks\",\n      \"content\": \"Consider using an Object-Relational Mapping (ORM) framework, which abstracts away direct SQL code, reducing the likelihood of SQL injection exploits.\"\n    },\n    {\n      \"title\": \"Regular Code Review and Testing\",\n      \"content\": \"Implement regular code reviews and security testing, including automated tools, to identify and mitigate SQL injection vulnerabilities.\"\n    }\n  ],\n  \"codeExample\": {\n    \"vulnerableExample\": \"String param1 = request.getParameter('param1');\\nString sql = 'SELECT * FROM users WHERE user_id = ' + param1;\\nStatement stmt = connection.createStatement();\\nResultSet rs = stmt.executeQuery(sql);\",\n    \"secureExample\": \"String param1 = request.getParameter('param1');\\nString sql = 'SELECT * FROM users WHERE user_id = ?';\\nPreparedStatement pstmt = connection.prepareStatement(sql);\\npstmt.setString(1, param1);\\nResultSet rs = pstmt.executeQuery();\",\n    \"explanation\": {\n      \"title\": \"Explanation\",\n      \"content\": \"The vulnerable example directly concatenates user input into the SQL query, making it susceptible to SQL injection. The secure example uses a prepared statement with parameterized queries, ensuring user input is properly handled.\"\n    }\n  },\n  \"references\": [\n    {\n      \"title\": \"OWASP SQL Injection\",\n      \"url\": \"https://owasp.org/www-community/attacks/SQL_Injection\"\n    },\n    {\n      \"title\": \"MITRE CWE-89 SQL Injection\",\n      \"url\": \"https://cwe.mitre.org/data/definitions/89.html\"\n    }\n  ]\n}",
+      "refusal" : null,
+      "role" : "assistant"
+    }
+  } ],
+  "created" : 1755785879,
+  "id" : "chatcmpl-xxxx-test-ID",
+  "model" : "gpt-4o-2024-05-13",
+  "object" : "chat.completion",
+  "prompt_filter_results" : [ {
+    "prompt_index" : 0,
+    "content_filter_results" : {
+      "hate" : {
+        "filtered" : false,
+        "severity" : "safe"
+      },
+      "jailbreak" : {
+        "filtered" : false,
+        "detected" : false
+      },
+      "self_harm" : {
+        "filtered" : false,
+        "severity" : "safe"
+      },
+      "sexual" : {
+        "filtered" : false,
+        "severity" : "safe"
+      },
+      "violence" : {
+        "filtered" : false,
+        "severity" : "safe"
+      }
+    }
+  } ],
+  "system_fingerprint" : "fp_ee1d74bde0",
+  "usage" : {
+    "completion_tokens" : 555,
+    "completion_tokens_details" : {
+      "accepted_prediction_tokens" : 0,
+      "audio_tokens" : 0,
+      "reasoning_tokens" : 0,
+      "rejected_prediction_tokens" : 0
+    },
+    "prompt_tokens" : 851,
+    "prompt_tokens_details" : {
+      "audio_tokens" : 0,
+      "cached_tokens" : 0
+    },
+    "total_tokens" : 1406
+  }
+}

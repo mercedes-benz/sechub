@@ -15,3 +15,7 @@ The {sechub} assistant API
 - starts with `/api/assistant`
 - provides and API `/api/assistant/explanation/project/{projectId}/job/{jobUUID}/finding/{findingId}`,
 which will return a JSON representation of an <<sechub-assistant-response-model, SecHubExplanationResponse>>.
+
+
+===== AI integration
+plantuml::./diagrams/diagram_concept_sechub_assistant-ai.puml[format=svg, title="SecHub assistant AI"]

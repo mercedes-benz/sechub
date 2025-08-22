@@ -30,6 +30,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousRe
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsReceivingAsyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
+import com.mercedesbenz.sechub.sharedkernel.messaging.JobFinding;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MappingMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
@@ -79,6 +80,9 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
 
     @Autowired
     ScanSecHubConfigurationRuntimeInspector configurationRuntimeInspector;
+
+    @Autowired
+    JobFindingDetailsService jobFindingDetailsService;
 
     @Override
     public void receiveAsyncMessage(DomainMessage request) {
@@ -132,6 +136,8 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
             return handleUnassignTemplateFromProjectRequest(request);
         case REQUEST_FULL_CONFIGURATION_VALIDATION:
             return handleFullConfigurationValidation(request);
+        case REQUEST_DETAILS_FOR_JOB_FINDING:
+            return handleRequestJobFindingDetails(request);
         default:
             throw new IllegalStateException("unhandled message id:" + messageId);
         }
@@ -193,6 +199,40 @@ public class ScanMessageHandler implements AsynchronMessageHandler, SynchronMess
         /* return inspection messages inside result */
         DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_FULL_CONFIGURATION_VALIDATION);
         result.set(MessageDataKeys.ERROR_MESSAGES, inspectionList);
+        return result;
+    }
+
+    @IsRecevingSyncMessage(MessageID.REQUEST_DETAILS_FOR_JOB_FINDING)
+    private DomainMessageSynchronousResult handleRequestJobFindingDetails(DomainMessage request) {
+        JobFinding jobFindingRequestData = request.get(MessageDataKeys.JOB_FINDING_DATA);
+        try {
+            JobFinding jobFindingResultData = jobFindingDetailsService.findDetails(jobFindingRequestData.getProjectId(), jobFindingRequestData.getJobUUID(),
+                    jobFindingRequestData.getFindingId());
+            return requestJobFindingDetailsSuccess(jobFindingResultData);
+        } catch (Exception e) {
+            return requestJobFindingDetailsFailed(jobFindingRequestData, e);
+        }
+
+    }
+
+    @IsSendingSyncMessageAnswer(value = MessageID.RESULT_DETAILS_FOR_JOB_FINDING, answeringTo = MessageID.REQUEST_DETAILS_FOR_JOB_FINDING, branchName = "success")
+    private DomainMessageSynchronousResult requestJobFindingDetailsSuccess(JobFinding jobFindingResultData) {
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_DETAILS_FOR_JOB_FINDING);
+        result.set(MessageDataKeys.JOB_FINDING_DATA, jobFindingResultData);
+        return result;
+    }
+
+    @IsSendingSyncMessageAnswer(value = MessageID.RESULT_DETAILS_FOR_JOB_FINDING, answeringTo = MessageID.REQUEST_DETAILS_FOR_JOB_FINDING, branchName = "failed")
+    private DomainMessageSynchronousResult requestJobFindingDetailsFailed(JobFinding jobFindingRequestData, Exception e) {
+        DomainMessageSynchronousResult result = new DomainMessageSynchronousResult(MessageID.RESULT_DETAILS_FOR_JOB_FINDING);
+
+        JobFinding notAvailableFinding = new JobFinding();
+        notAvailableFinding.setJobUUID(jobFindingRequestData.getJobUUID());
+        notAvailableFinding.setFindingId(jobFindingRequestData.getFindingId());
+        notAvailableFinding.setProjectId(jobFindingRequestData.getProjectId());
+        notAvailableFinding.setAvailable(false);
+
+        result.set(MessageDataKeys.JOB_FINDING_DATA, notAvailableFinding);
         return result;
     }
 
