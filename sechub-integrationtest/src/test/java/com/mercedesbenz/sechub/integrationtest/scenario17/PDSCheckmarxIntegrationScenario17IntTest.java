@@ -5,6 +5,7 @@ import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMod
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
 import static com.mercedesbenz.sechub.integrationtest.internal.IntegrationTestExampleConstants.*;
 import static com.mercedesbenz.sechub.integrationtest.scenario17.Scenario17.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 import java.util.List;
@@ -16,6 +17,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 
+import com.mercedesbenz.sechub.api.internal.gen.model.Reference;
+import com.mercedesbenz.sechub.api.internal.gen.model.SecHubExplanationResponse;
+import com.mercedesbenz.sechub.api.internal.gen.model.TextBlock;
 import com.mercedesbenz.sechub.commons.model.SecHubMessageType;
 import com.mercedesbenz.sechub.commons.model.TrafficLight;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
@@ -40,8 +44,8 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
     public Timeout timeOut = Timeout.seconds(600);
 
     @Test
-    public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_which_is_supported_by_checkmarx_PDS_setup_results_yellow() {
-        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_1, WITH_ANALYTICS, false);
+    public void pds_calls_checkmarx_wrapper_and_uploads_sources_only_which_is_supported_by_checkmarx_PDS_setup_results_yellow_and_explain_first_finding() {
+        testCheckmarxPDSJobWithSourceContentUploaded(PROJECT_1, WITH_ANALYTICS, false, true);
     }
 
     @Test
@@ -70,6 +74,11 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
     }
 
     private void testCheckmarxPDSJobWithSourceContentUploaded(TestProject project, boolean withAnalytics, boolean dataFileWithUmlauts) {
+        testCheckmarxPDSJobWithSourceContentUploaded(project, withAnalytics, dataFileWithUmlauts, false);
+    }
+
+    /* @formatter:off */
+    private void testCheckmarxPDSJobWithSourceContentUploaded(TestProject project, boolean withAnalytics, boolean dataFileWithUmlauts, boolean triggerExplainFirstCWEId) {
         /* @formatter:off */
         String pathToUploadZipFile = dataFileWithUmlauts ? PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS_BUT_FILENAME_WITH_UMLAUTS : PATH_TO_ZIPFILE_WITH_PDS_CODESCAN_LOW_FINDINGS;
         long expectedUploadSizeInBytes = dataFileWithUmlauts ? 212 : 198L;
@@ -92,6 +101,23 @@ public class PDSCheckmarxIntegrationScenario17IntTest {
 
         /* test */
         waitForJobDone(project, jobUUID, 30, true);
+
+        if (triggerExplainFirstCWEId) {
+            /* in integration tests we have no real AI integration and the fake ai integration does not provide information for CWE 36.
+             * Because of this, the fallback mechanism will be used and we can check here that the output from fallback is as wanted:
+             */
+            SecHubExplanationResponse explain = as(USER_1).explainFinding(project.getProjectId(), jobUUID, 1);
+            TextBlock findingExplanation = explain.getFindingExplanation();
+            assertThat(findingExplanation).isNotNull();
+            assertThat(findingExplanation.getTitle()).isNotNull().contains("Absolute Path Traversal");
+            assertThat(findingExplanation.getContent()).isNotNull().contains("No description available for CWE-36");
+
+            assertThat(explain.getReferences()).hasSize(1);
+            Reference firstReference = explain.getReferences().iterator().next();
+            assertThat(firstReference.getTitle()).isEqualTo("CWE-36 - Absolute Path Traversal");
+            assertThat(firstReference.getUrl()).isEqualTo("https://cwe.mitre.org/data/definitions/36.html");
+        }
+
         String report = as(USER_1).getJobReport(project, jobUUID);
 
         // check statistics

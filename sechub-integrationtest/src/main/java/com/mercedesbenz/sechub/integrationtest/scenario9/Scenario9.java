@@ -60,6 +60,11 @@ public class Scenario9 extends AbstractGrowingSecHubServerTestScenario implement
     public static final TestUser USER_1 = createTestUser(Scenario9.class, "user1");
 
     /**
+     * User 2 is registered on startup, but is not assigned to {@link #PROJECT_1}
+     */
+    public static final TestUser USER_2 = createTestUser(Scenario9.class, "user2");
+
+    /**
      * Project 1 is created on startup, and has {@link #USER_1} assigned
      */
     public static final TestProject PROJECT_1 = createTestProject(Scenario9.class, "project1");

@@ -4,7 +4,9 @@ package com.mercedesbenz.sechub.integrationtest.scenario9;
 import static com.mercedesbenz.sechub.commons.model.TrafficLight.*;
 import static com.mercedesbenz.sechub.integrationtest.api.IntegrationTestMockMode.*;
 import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.*;
+import static com.mercedesbenz.sechub.integrationtest.api.TestAPI.as;
 import static com.mercedesbenz.sechub.integrationtest.scenario9.Scenario9.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
@@ -13,7 +15,9 @@ import java.util.UUID;
 
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.rules.Timeout;
+import org.springframework.web.client.HttpClientErrorException;
 
 import com.mercedesbenz.sechub.api.internal.gen.model.CodeExample;
 import com.mercedesbenz.sechub.api.internal.gen.model.Reference;
@@ -149,7 +153,7 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         String storagePath = fetchStoragePathHistoryEntryoForSecHubJobUUID(jobUUID); // this is a SecHub job UUID!
         assertNotNull("Storage path not found for SecHub job UUID:"+jobUUID+" - wrong storage used!",storagePath); // storage path must be found for sechub job uuid,
         if (!storagePath.contains("jobstorage/"+project.getProjectId())){
-            fail("unexpected jobstorage path found:"+storagePath);
+            Assertions.fail("unexpected jobstorage path found:"+storagePath);
         }
 
         // test content as expected
@@ -182,13 +186,22 @@ public class PDSCodeScanSarifJobScenario9IntTest {
         /* @formatter:on */
 
         SecHubExplanationResponse expectedResponse = createExpectedSecHubExplanationResponse();
-        SecHubExplanationResponse explanationResponse = as(USER_1).explainFinding(project.getProjectId(), jobUUID, 0);
+        SecHubExplanationResponse explanationResponse = as(USER_1).explainFinding(project.getProjectId(), jobUUID, 1);
 
         assertEquals(expectedResponse, explanationResponse);
 
         String explanationResponseAsJson = JSONConverter.get().toJSON(explanationResponse);
         String expectedResponseAsJson = JSONConverter.get().toJSON(expectedResponse);
         assertEquals(expectedResponseAsJson, explanationResponseAsJson);
+
+        /* test that other user have no access */
+        assertThatThrownBy(() -> as(USER_2).explainFinding(project.getProjectId(), jobUUID, 1)).isInstanceOf(HttpClientErrorException.class)
+                .hasMessageContaining("401", "Unauthorized");
+
+        /* test error handling when finding is not existing */
+        assertThatThrownBy(() -> as(USER_1).explainFinding(project.getProjectId(), jobUUID, 10000000)).isInstanceOf(HttpClientErrorException.class)
+                .hasMessageContaining("404", "finding is not found");
+
     }
 
     private SecHubExplanationResponse createExpectedSecHubExplanationResponse() {

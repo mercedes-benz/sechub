@@ -33,6 +33,7 @@ public class MessageDataKeys {
     private static final AnalyticMessageDataProvider ANALYTIC_MESSAGE_DATA_PROVIDER = new AnalyticMessageDataProvider();
     private static final MappingMessageDataProvider MAPPING_MESSAGE_DATA_PROVIDER = new MappingMessageDataProvider();
     private static final JobMessageDataProvider JOB_MESSAGE_DATA_PROVIDER = new JobMessageDataProvider();
+    private static final JobFindingDataProvider JOB_FINDING_DATA_PROVIDER = new JobFindingDataProvider();
     private static final ProjectMessageDataProvider PROJECT_MESSAGE_DATA_PROVIDER = new ProjectMessageDataProvider();
     private static final SchedulerMessageDataProvider SCHEDULER_MESSAGE_DATA_PROVIDER = new SchedulerMessageDataProvider();
     private static final AdministrationConfigMessageDataProvider ADMIN_CONFIG_MESSAGE_DATA_PROVIDER = new AdministrationConfigMessageDataProvider();
@@ -181,6 +182,8 @@ public class MessageDataKeys {
      */
     public static final MessageDataKey<JobMessage> JOB_CANCEL_DATA = createJobMessageKey("job.cancel.data");
     public static final MessageDataKey<JobMessage> JOB_RESTART_DATA = createJobMessageKey("job.restart.data");
+
+    public static final MessageDataKey<JobFinding> JOB_FINDING_DATA = createKey("job.finding.data", JOB_FINDING_DATA_PROVIDER);
 
     public static final MessageDataKey<SchedulerMessage> SCHEDULER_STATUS_DATA = createSchedulerStatusMessageKey("scheduler.status");
 
