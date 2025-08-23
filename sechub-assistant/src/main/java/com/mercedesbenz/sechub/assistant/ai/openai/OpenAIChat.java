@@ -34,14 +34,15 @@ public class OpenAIChat implements AIChat {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenAIChat.class);
 
-    private OpenAISetup properties;
-    private AIPromptDataGeneratorProvider promptGeneratorProvider;
+    private final OpenAISetup properties;
 
-    private OpenAIChatRestTemplateFactory restTemplateFactory;
+    private final AIPromptDataGeneratorProvider promptGeneratorProvider;
 
-    private OpenAIProblemHandler problemHandler;
+    private final OpenAIChatRestTemplateFactory restTemplateFactory;
 
-    private OpenAIResultJsonToExplanationResponseTransformer beautifier;
+    private final OpenAIProblemHandler problemHandler;
+
+    private final OpenAIResultJsonToExplanationResponseTransformer beautifier;
 
     OpenAIChat(AIPromptDataGeneratorProvider promptGeneratorFactory, OpenAISetup properties, OpenAIChatRestTemplateFactory restTemplateFactory,
             OpenAIProblemHandler problemHandler, OpenAIResultJsonToExplanationResponseTransformer beautifier) {
@@ -104,7 +105,7 @@ public class OpenAIChat implements AIChat {
             String body = response.getBody();
             logger.debug("Open AI body output:\n{}", body);
 
-            SecHubExplanationResponse explainResponse = beautifier.buildEplanationResponse(body);
+            SecHubExplanationResponse explainResponse = beautifier.buildExplanationResponse(body);
             return explainResponse;
 
         } catch (RuntimeException e) {

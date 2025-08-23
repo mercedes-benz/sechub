@@ -24,7 +24,7 @@ class OpenAIResultJsonToExplanationResponseTransformerTest {
         String json = TestFileReader.readTextFromFile("src/test/resources/openai-completion-test-result1.json");
 
         /* execute */
-        SecHubExplanationResponse response = toTest.buildEplanationResponse(json);
+        SecHubExplanationResponse response = toTest.buildExplanationResponse(json);
 
         /* test */
         assertThat(response).isNotNull();

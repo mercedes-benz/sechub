@@ -166,7 +166,7 @@ public class OpenAIChatTest {
         when(entity.getBody()).thenReturn("{illegal json");
         when(restTemplate.postForEntity(any(URI.class), any(Object.class), eq(String.class))).thenReturn(entity);
 
-        doThrow(JSONConverterException.class).when(transformer).buildEplanationResponse("{illegal json");
+        doThrow(JSONConverterException.class).when(transformer).buildExplanationResponse("{illegal json");
 
         /* execute */
         SecHubExplanationResponse result = openAIChat.explain(input);
@@ -193,7 +193,7 @@ public class OpenAIChatTest {
         RestTemplate restTemplate = mock();
         ResponseEntity<String> responseEntity = ResponseEntity.ok("something");
         SecHubExplanationResponse expected = JSONConverter.get().fromJSON(SecHubExplanationResponse.class, test_json);
-        when(transformer.buildEplanationResponse("something")).thenReturn(expected);
+        when(transformer.buildExplanationResponse("something")).thenReturn(expected);
 
         when(properties.getCompletionsUri()).thenReturn(uri);
         when(restTemplateFactory.createRestTemplate()).thenReturn(restTemplate);

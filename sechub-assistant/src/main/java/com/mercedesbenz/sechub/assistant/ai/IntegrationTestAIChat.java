@@ -21,7 +21,7 @@ public class IntegrationTestAIChat implements AIChat {
     @Override
     public SecHubExplanationResponse explain(SecHubExplanationInput input) {
         Integer cweId = input.getCweId();
-        if (cweId == null || cweId.equals(Integer.valueOf(22))) {
+        if (cweId == null || cweId.equals(22)) {
             return createCWE22Response();
         }
         /*

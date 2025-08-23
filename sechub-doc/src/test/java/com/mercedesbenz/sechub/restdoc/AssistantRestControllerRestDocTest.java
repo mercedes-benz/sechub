@@ -39,7 +39,6 @@ import com.mercedesbenz.sechub.api.internal.gen.model.SecHubExplanationResponse;
 import com.mercedesbenz.sechub.api.internal.gen.model.TextBlock;
 import com.mercedesbenz.sechub.assistant.AssistantRestController;
 import com.mercedesbenz.sechub.assistant.FindingAssistantService;
-import com.mercedesbenz.sechub.commons.model.JSONConverter;
 import com.mercedesbenz.sechub.docgen.util.RestDocFactory;
 import com.mercedesbenz.sechub.sharedkernel.Profiles;
 import com.mercedesbenz.sechub.sharedkernel.assistant.UseCaseUserRequestFindingExplanation;
@@ -204,7 +203,6 @@ public class AssistantRestControllerRestDocTest implements TestIsNecessaryForDoc
 
                          )
                 ));
-        System.out.println(JSONConverter.get().toJSON(response,true));
         /* @formatter:on */
     }
 

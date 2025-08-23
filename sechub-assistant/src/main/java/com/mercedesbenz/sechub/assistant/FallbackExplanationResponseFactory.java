@@ -12,7 +12,7 @@ import com.mercedesbenz.sechub.api.internal.gen.model.SecHubExplanationResponse;
 import com.mercedesbenz.sechub.api.internal.gen.model.TextBlock;
 
 @Component
-public class FallbackExplanationReponseFactory {
+public class FallbackExplanationResponseFactory {
 
     public SecHubExplanationResponse createExplanationResponse(SecHubExplanationInput input) {
 

@@ -17,7 +17,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
 @Component
 public class SecHubExplanationInputCollector {
 
-    private DomainMessageService domainMessageService;
+    private final DomainMessageService domainMessageService;
 
     SecHubExplanationInputCollector(DomainMessageService domainMessageService) {
         this.domainMessageService = domainMessageService;
@@ -25,7 +25,7 @@ public class SecHubExplanationInputCollector {
 
     @IsSendingSyncMessage(MessageID.REQUEST_DETAILS_FOR_JOB_FINDING)
     @IsRecevingSyncMessage(MessageID.RESULT_DETAILS_FOR_JOB_FINDING)
-    public SecHubExplanationInput collectInputFor(String projectId, UUID jobUUID, int findingId) {
+    public SecHubExplanationInput collectInput(String projectId, UUID jobUUID, int findingId) {
 
         DomainMessage domainMessage = new DomainMessage(MessageID.REQUEST_DETAILS_FOR_JOB_FINDING);
         JobFinding findingData = new JobFinding();

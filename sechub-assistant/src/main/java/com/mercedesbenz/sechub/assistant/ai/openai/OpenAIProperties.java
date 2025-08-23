@@ -18,13 +18,12 @@ public class OpenAIProperties implements OpenAISetup {
 
     public static final String PREFIX = "sechub.assistant.ai.openai";
 
-    private CryptoAccess<String> cryptoAccess = CryptoAccess.CRYPTO_STRING;
-    private SealedObject sealedApiToken;
-    private boolean enabled;
+    private final CryptoAccess<String> cryptoAccess = CryptoAccess.CRYPTO_STRING;
+    private final SealedObject sealedApiToken;
+    private final boolean enabled;
+    private final URI completionsUri;
 
-    private String model;
-
-    private URI completionsUri;
+    private final String model;
 
     /* @formatter:off */
     @ConstructorBinding
@@ -39,8 +38,9 @@ public class OpenAIProperties implements OpenAISetup {
             URI completionsUri) {
 
         /* @formatter:on */
-        this.completionsUri = completionsUri;
         this.sealedApiToken = cryptoAccess.seal(apiToken);
+        this.model = model;
+        this.completionsUri = completionsUri;
         this.enabled = completionsUri != null && apiToken != null && !apiToken.isBlank();
     }
 

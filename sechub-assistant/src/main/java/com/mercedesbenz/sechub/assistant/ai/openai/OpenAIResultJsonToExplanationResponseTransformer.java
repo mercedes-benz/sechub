@@ -15,7 +15,7 @@ public class OpenAIResultJsonToExplanationResponseTransformer {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenAIResultJsonToExplanationResponseTransformer.class);
 
-    public SecHubExplanationResponse buildEplanationResponse(String json) {
+    public SecHubExplanationResponse buildExplanationResponse(String json) {
         if (json == null || json.isEmpty()) {
             logger.debug("No body defined");
             return null;
@@ -41,10 +41,9 @@ public class OpenAIResultJsonToExplanationResponseTransformer {
     }
 
     private SecHubExplanationResponse transform(String content) {
-        String toConvert = content;
-        SecHubExplanationResponse explainResponse = JSONConverter.get().fromJSON(SecHubExplanationResponse.class, toConvert);
+        SecHubExplanationResponse explainResponse = JSONConverter.get().fromJSON(SecHubExplanationResponse.class, content);
         if (logger.isTraceEnabled()) {
-            logger.trace("Transformed to content: {]", JSONConverter.get().toJSON(explainResponse, true));
+            logger.trace("Transformed to content: {}", JSONConverter.get().toJSON(explainResponse, true));
         }
         return explainResponse;
     }

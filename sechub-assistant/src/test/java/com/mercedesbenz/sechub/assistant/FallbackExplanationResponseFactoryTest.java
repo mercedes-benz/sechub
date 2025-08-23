@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -14,19 +13,14 @@ import com.mercedesbenz.sechub.api.internal.gen.model.CodeExample;
 import com.mercedesbenz.sechub.api.internal.gen.model.Reference;
 import com.mercedesbenz.sechub.api.internal.gen.model.SecHubExplanationResponse;
 
-public class FallbackExplanationReponseFactoryTest {
+public class FallbackExplanationResponseFactoryTest {
 
-    private FallbackExplanationReponseFactory factoryToTest;
+    private FallbackExplanationResponseFactory factoryToTest;
     private SecHubExplanationInput input;
-
-    @BeforeAll
-    static void beforeAll() {
-
-    }
 
     @BeforeEach
     void beforeEach() {
-        factoryToTest = new FallbackExplanationReponseFactory();
+        factoryToTest = new FallbackExplanationResponseFactory();
         input = mock(SecHubExplanationInput.class);
     }
 

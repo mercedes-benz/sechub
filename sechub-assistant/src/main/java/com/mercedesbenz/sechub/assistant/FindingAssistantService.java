@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.assistant;
 
+import static java.util.Objects.*;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -20,25 +22,27 @@ public class FindingAssistantService {
 
     final List<AIChat> chats;
 
-    private FallbackExplanationReponseFactory fallbackExplanationReponseFactory;
+    private final FallbackExplanationResponseFactory fallbackExplanationResponseFactory;
 
-    private SecHubExplanationInputCollector inputCollector;
+    private final SecHubExplanationInputCollector inputCollector;
 
     public FindingAssistantService(SecHubExplanationInputCollector inputCollector, List<AIChat> chats,
-            FallbackExplanationReponseFactory fallbackExplanationReponseFactory) {
+            FallbackExplanationResponseFactory fallbackExplanationResponseFactory) {
         this.inputCollector = inputCollector;
         this.chats = chats;
-        this.fallbackExplanationReponseFactory = fallbackExplanationReponseFactory;
+        this.fallbackExplanationResponseFactory = fallbackExplanationResponseFactory;
 
-        logger.info("Assistent service found {} ai chats:", chats.size());
+        logger.info("Found {} AI chats:", chats.size());
         for (AIChat chat : chats) {
             logger.info("- {}, enabled={}", chat.getClass().getSimpleName(), chat.isEnabled());
         }
     }
 
     public SecHubExplanationResponse createSecHubExplanationResponse(String projectId, UUID jobUUID, int findingId) {
+        requireNonNull(projectId, "Project id must be not null!");
+        requireNonNull(jobUUID, "Job UUID must not be null!");
 
-        SecHubExplanationInput input = inputCollector.collectInputFor(projectId, jobUUID, findingId);
+        SecHubExplanationInput input = inputCollector.collectInput(projectId, jobUUID, findingId);
         if (!input.isAvailable()) {
             throw new NotFoundException("The finding is not found or you have no access");
         }
@@ -63,7 +67,7 @@ public class FindingAssistantService {
             if (result != null) {
                 logger.debug("Chat {} has returned explanation", chat.getClass().getSimpleName());
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Chat {} returned result:\n", chat.getClass().getName(), JSONConverter.get().toJSON(result, true));
+                    logger.trace("Chat {} returned result:\n{}", chat.getClass().getName(), JSONConverter.get().toJSON(result, true));
                 }
                 /* we use first result */
                 break;
@@ -75,8 +79,8 @@ public class FindingAssistantService {
 
         if (result == null) {
             /* no result available we need fallback data */
-            logger.debug("None of the {} available chats was able to respond, create fallback reponse", chats.size());
-            result = fallbackExplanationReponseFactory.createExplanationResponse(input);
+            logger.debug("None of the {} available chats was able to respond, create fallback response", chats.size());
+            result = fallbackExplanationResponseFactory.createExplanationResponse(input);
         }
 
         return result;
