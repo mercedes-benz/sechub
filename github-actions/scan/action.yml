@@ -93,6 +93,7 @@ runs:
       uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
       with:
         node-version: 22
+        cache: 'npm'
 
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
