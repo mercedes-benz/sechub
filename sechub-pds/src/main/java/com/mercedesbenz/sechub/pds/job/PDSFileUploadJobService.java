@@ -10,6 +10,9 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -52,6 +55,8 @@ public class PDSFileUploadJobService {
     private static final Logger LOG = LoggerFactory.getLogger(PDSFileUploadJobService.class);
 
     private static final int MAX_FILENAME_LENGTH = 40;
+
+    private static final List<String> ALLOWED_MULTIPART_KEYS = Collections.unmodifiableList(Arrays.asList(MULTIPART_CHECKSUM, MULTIPART_FILE));
 
     @Autowired
     CheckSumSupport checksumSupport;
@@ -192,7 +197,17 @@ public class PDSFileUploadJobService {
          */
         FileItemInputIterator iterStream = upload.getItemIterator(request);
 
+        int numberOfMultiPartKeys = 0;
         while (iterStream.hasNext()) {
+            /*
+             * Checking the size of the multipart upload to prevent a long running while
+             * loop since we expect only the known multipart keys
+             */
+            if (numberOfMultiPartKeys >= ALLOWED_MULTIPART_KEYS.size()) {
+                throw new PDSBadRequestException("Multipart upload must not contain more than '%s' keys. Ensure the keys are %s"
+                        .formatted(ALLOWED_MULTIPART_KEYS.size(), ALLOWED_MULTIPART_KEYS));
+            }
+
             FileItemInput item = iterStream.next();
             String fieldName = item.getFieldName();
             switch (fieldName) {
@@ -240,6 +255,7 @@ public class PDSFileUploadJobService {
             default:
                 LOG.warn("Given field '{}' is not supported while uploading job data to project {}, {}", pdsLogSanitizer.sanitize(fieldName, 30), jobUUID);
             }
+            numberOfMultiPartKeys++;
         }
 
         if (!fileDefinedByUser) {
