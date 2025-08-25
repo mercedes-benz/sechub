@@ -120,6 +120,22 @@
       </div>
     </template>
 
+    <template #item.actions="{ item }">
+      <v-row justify="end">
+        <v-col cols="auto">
+          <v-btn
+            v-tooltip="$t('REPORT_EXPLAIN_FINDING')"
+            :color="calculateColor('INFO')"
+            icon="mdi-creation-outline"
+            size="small"
+            variant="text"
+            @click="openAiExplanation(item)"
+          />
+          <!-- or @click="explainByAi(item)"-->
+        </v-col>
+      </v-row>
+    </template>
+
     <template #item.data-table-expand="{ internalItem, isExpanded, toggleExpand }">
       <v-btn
         :append-icon="isExpanded(internalItem) ? 'mdi-chevron-up' : 'mdi-chevron-down'"
@@ -154,6 +170,7 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useI18n } from 'vue-i18n'
   import { SecHubFinding, SecHubReport } from 'sechub-openapi-ts-client'
+  import { calculateColor, calculateIcon } from '@/utils/projectUtils'
   import { useReportStore } from '@/stores/reportStore'
   import { TmpFalsePositives, useTmpFalsePositivesStore } from '@/stores/tempFalsePositivesStore'
   import '@/styles/sechub.scss'
@@ -187,6 +204,7 @@
         { title: t('REPORT_DESCRIPTION_SEVERITY'), key: 'severity', sortable: false },
         { title: 'CWE', key: 'cweId' },
         { title: t('REPORT_DESCRIPTION_NAME'), key: 'name', sortable: false },
+        { text: 'Actions', value: 'actions', sortable: false }, // ADD THIS LINE
       ]
 
       const showSeverityFilter = ref(false)
@@ -240,28 +258,6 @@
         loadFalsePositivesFromStore()
       })
 
-      function calculateIcon (severity: string) {
-        const iconMap: Record<string, string> = {
-          CRITICAL: 'mdi-alert-circle-outline',
-          HIGH: 'mdi-alert-circle-outline',
-          MEDIUM: 'mdi-alert-circle-outline',
-          LOW: 'mdi-information-outline',
-          INFO: 'mdi-information-outline',
-        }
-        return iconMap[severity] || ''
-      }
-
-      function calculateColor (severity: string) {
-        const colorMap: Record<string, string> = {
-          CRITICAL: 'error',
-          HIGH: 'error',
-          MEDIUM: 'warning',
-          LOW: 'success',
-          INFO: 'primary',
-        }
-        return colorMap[severity] || 'layer_01'
-      }
-
       function filterBySeverity (filter = severityFilter.value) {
         severityFilter.value = filter
         showSeverityFilter.value = false
@@ -310,6 +306,18 @@
         }
       }
 
+      function openAiExplanation (item: SecHubFinding) {
+        const routeData = router.resolve({
+          name: '/projects/[id]/jobs/[jobId]/findings/[findingId]/',
+          params: {
+            id: projectId.value,
+            jobId: jobUUID.value,
+            findingId: item.id?.toString() || '0',
+          },
+        })
+        window.open(routeData.href, '_blank')
+      }
+
       return {
         projectId,
         jobUUID,
@@ -334,6 +342,7 @@
         openFalsePositiveDialog,
         closeFalsePositiveDialog,
         isAlreadyFalsePositive,
+        openAiExplanation,
       }
     },
   }

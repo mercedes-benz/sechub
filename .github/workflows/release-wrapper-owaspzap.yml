@@ -25,7 +25,7 @@ jobs:
           echo "OWASP-ZAP Wrapper '${{ inputs.owaspzap-wrapper-version }}' - Milestone '${{ inputs.owaspzap-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           ref: master
 
@@ -47,7 +47,7 @@ jobs:
           distribution: temurin
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@ac638b010cf58a27ee6c972d7336334ccaf61c96
+        uses: gradle/actions/setup-gradle@017a9effdb900e5b5b2fddfb590a105619dca3c3
         with:
           # To prevent a fill-up of the actions cache:
           # Only write to the cache for builds on the 'master' branch.

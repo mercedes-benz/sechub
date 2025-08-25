@@ -27,6 +27,7 @@ export const SECHUB_COMMANDS = {
 	openFindingCallStack: 'sechub-intern.openFindingCallStack',
 	openFinding: 'sechub-intern.openFinding',
 	openWebScanInInfoview: 'sechub-intern.openWebScanInInfoview',
+	explainVulnerabilityByAi: 'sechub-intern.explainVulnerabilityByAi',
 };
 
 export const SECHUB_VIEW_IDS = {

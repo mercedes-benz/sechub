@@ -8,7 +8,12 @@ sechub:
   security:
     diffiehellman:
       length: 2048 # JDK uses per default 1024, we set here to 2048 which is more secure
-
+  assistent:
+    ai:
+      openai:
+        completionsUri: https://api.openai.com/v1/chat/completions #If you have an api gateway, just change the link
+        apiToken: # Not set here - must be set to enable open ai integration (and to work...)
+  
 spring:
   profiles:
     group:
@@ -123,3 +128,5 @@ management:
     export:
       prometheus:
         enabled: true
+
+  

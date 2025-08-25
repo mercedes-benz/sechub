@@ -64,7 +64,7 @@ export function safeAcceptedScanTypes(data: string[]): string[] {
  * @returns configured AxiosProxyConfig or undefined if no proxy was
  * @throws error if the proxy URL inside the ENV variable is an invalid URL
  */
-export function resolveProxyConfig(): AxiosProxyConfig | undefined {
+export function resolveProxyConfig(): URL | undefined {
     const httpsProxy = process.env.https_proxy;
     const httpProxy = process.env.http_proxy;
 
@@ -74,38 +74,12 @@ export function resolveProxyConfig(): AxiosProxyConfig | undefined {
         return undefined;
     }
     try {
-        const proxyUrl = new URL(proxy);
-        const proxyConfig = {
-            protocol: proxyUrl.protocol.replace(':', ''), // Remove the trailing colon
-            host: proxyUrl.hostname,
-            port: proxyUrl.port ? parseInt(proxyUrl.port, 10) : getProtocolDefaultPort(proxyUrl.protocol),
-            ...(proxyUrl.username || proxyUrl.password ? {
-                auth: {
-                    username: proxyUrl.username,
-                    password: proxyUrl.password
-                }
-            } : undefined)
-        };
-        core.info(`Proxy found, using proxy host: '${proxyUrl.hostname}'`);
-        return proxyConfig;
+        return new URL(proxy);
     } catch(error: any) {
         throw new Error(`Trying to setup proxy configuration received the error: "${error.message}". Make sure to use the following syntax: http://user:password@proxy.example.org:1234 or without credentials: http://proxy.example.org:1234`);
     }
 }
 
-function getProtocolDefaultPort(protocol: string) {
-    if (!protocol){
-        throw new Error('No protocol defined!');
-    }
-    if (protocol.startsWith('https')) {
-        return 443;
-    } else if (protocol.startsWith('http')) {
-        return 80;
-    } else {
-        throw new Error('Accepted protocols are "http" and "https"');
-    }
-}
-
 function equalIgnoreCase(string1: string, string2: string): boolean {
-    return (string1 ?? '').toLowerCase() === (string2 ?? '').toLowerCase();;
+    return (string1 ?? '').toLowerCase() === (string2 ?? '').toLowerCase();
 }

@@ -203,7 +203,6 @@ public class AssistantRestControllerRestDocTest implements TestIsNecessaryForDoc
 
                          )
                 ));
-
         /* @formatter:on */
     }
 

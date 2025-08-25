@@ -22,6 +22,7 @@ declare module 'vue-router/auto-routes' {
     '/projects/': RouteRecordInfo<'/projects/', '/projects', Record<never, never>, Record<never, never>>,
     '/projects/[id]/': RouteRecordInfo<'/projects/[id]/', '/projects/:id', { id: ParamValue<true> }, { id: ParamValue<false> }>,
     '/projects/[id]/jobs/[jobId]/': RouteRecordInfo<'/projects/[id]/jobs/[jobId]/', '/projects/:id/jobs/:jobId', { id: ParamValue<true>, jobId: ParamValue<true> }, { id: ParamValue<false>, jobId: ParamValue<false> }>,
+    '/projects/[id]/jobs/[jobId]/findings/[findingId]/': RouteRecordInfo<'/projects/[id]/jobs/[jobId]/findings/[findingId]/', '/projects/:id/jobs/:jobId/findings/:findingId', { id: ParamValue<true>, jobId: ParamValue<true>, findingId: ParamValue<true> }, { id: ParamValue<false>, jobId: ParamValue<false>, findingId: ParamValue<false> }>,
     '/projects/[id]/jobs/[jobId]/scanreport': RouteRecordInfo<'/projects/[id]/jobs/[jobId]/scanreport', '/projects/:id/jobs/:jobId/scanreport', { id: ParamValue<true>, jobId: ParamValue<true> }, { id: ParamValue<false>, jobId: ParamValue<false> }>,
     '/projects/[id]/jobs/[jobId]/status': RouteRecordInfo<'/projects/[id]/jobs/[jobId]/status', '/projects/:id/jobs/:jobId/status', { id: ParamValue<true>, jobId: ParamValue<true> }, { id: ParamValue<false>, jobId: ParamValue<false> }>,
     '/projects/[id]/scan': RouteRecordInfo<'/projects/[id]/scan', '/projects/:id/scan', { id: ParamValue<true> }, { id: ParamValue<false> }>,

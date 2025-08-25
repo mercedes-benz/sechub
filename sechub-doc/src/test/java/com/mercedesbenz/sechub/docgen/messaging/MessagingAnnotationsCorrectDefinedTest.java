@@ -83,7 +83,7 @@ class MessagingAnnotationsCorrectDefinedTest {
             // A -> sends synchron message --> can be handled by ONE receiver (not more)
             // B -> receives synchron message and returns at LEAST ONE answer
             if (!context.messagesSentSynchronous.contains(sent)) {
-                context.markDiagramGenerationProblem(sent, "sent synchronous, but never received synchronous");
+                context.markDiagramGenerationProblem(sent, "received synchronous message but never sent");
             }
         }
 

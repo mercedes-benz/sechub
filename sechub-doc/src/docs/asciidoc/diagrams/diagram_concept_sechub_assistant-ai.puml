@@ -1,0 +1,58 @@
+' SPDX-License-Identifier: MIT
+@startuml
+
+'Hide empty parts:
+hide empty fields
+hide empty methods
+
+
+	class SecHubExplanationInput {
+	}
+	
+	class SecHubExplanationInputCollector{
+		SecHubExplanationResponse collectInputFor(String projectId, UUID jobUUID, int findingId)
+	}
+	
+	
+	interface FindingAssistantService{
+		SecHubExplanationResponse createSecHubExplanationResponse(String projectId, UUID jobUUID, int findingId)
+	}
+	
+	class AIFindingAssistantService implements FindingAssistantService {
+		List<AIChat> chats
+	}
+	
+	interface AIExplainPromptGenerator {
+		String createExplainPrompt(SecHubExplanationInput input)
+	}
+	
+	class DefaultAIExplanationPromptGenerator implements AIExplainPromptGenerator 
+	
+	class AIPromptGeneratorProvider {
+		AIExplainPromptGenerator createExplainPromptGenerator(AIChat targetChat)
+	}
+	
+	interface AIChat {
+		SecHubExplanationResponse explain(AIExplainPromptGenerator geno, SecHubExplanationInput input)
+		boolean isEnabled()
+	}
+	
+	class OpenAIChat implements AIChat 
+    class IntegrationTestAIChat implements AIChat 
+    
+    class FallbackExplanationReponseFactory
+
+	database "Report data\nfrom scan domain" as db {
+	}
+
+	AIPromptGeneratorProvider --> AIExplainPromptGenerator : creates
+	AIFindingAssistantService *.. AIChat
+	AIFindingAssistantService --> AIChat: calls\n(if enabled)
+	SecHubExplanationInputCollector ..->  db : requests information\n for report
+	AIFindingAssistantService --> AIPromptGeneratorProvider:  uses
+	AIFindingAssistantService -> SecHubExplanationInputCollector:  uses
+	AIFindingAssistantService --> FallbackExplanationReponseFactory:  used as fallback\nif no results from AI
+	
+	SecHubExplanationInputCollector -> SecHubExplanationInput: collects
+
+@enduml

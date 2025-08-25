@@ -12,6 +12,8 @@ import {
 	FalsePositiveProjectConfiguration,
 	FalsePositives,
 	UserMarkFalsePositivesRequest,
+	UserRequestFindingExplanationRequest,
+	SecHubExplanationResponse,
 } from 'sechub-openapi-ts-client';
 import { SECHUB_API_CLIENT_CONFIG_KEYS } from '../utils/sechubConstants';
 
@@ -166,6 +168,26 @@ export class DefaultClient {
 			await this.apiClient.withSystemApi().anonymousCheckAliveGet();
 		} catch (error) {
 			console.error('Error client is not alive!', error);
+			throw error;
+		}
+	}
+
+	public async userRequestFindingExplanation(
+		projectId: string,
+		jobUUID: string,
+		findingId: number,
+	): Promise<SecHubExplanationResponse> {
+		const requestParameter: UserRequestFindingExplanationRequest = {
+			projectId,
+			jobUUID,
+			findingId,
+		};
+
+		try {
+			const resposne = await this.apiClient.withAssistantApi().userRequestFindingExplanation(requestParameter);
+			return resposne;
+		} catch (error) {
+			console.error('Error requesting AI explanation:', error);
 			throw error;
 		}
 	}

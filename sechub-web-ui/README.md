@@ -2,6 +2,7 @@
 # SecHub Web UI
 
 This project is a web application that provides a user interface for the SecHub API. It is built with [Vite](https://vitejs.dev/), [Vue 3](https://v3.vuejs.org/), and [Vuetify](https://vuetifyjs.com/en/).
+For code rendering [VCodeBlock](https://github.com/webdevnerdstuff/vue-code-block) is used.
 
 ## Prerequisites
 
@@ -113,3 +114,9 @@ Custom user support email address
 ```bash
 npm run build
 ```
+
+## Third Party Code 
+
+- Vite - Copyright (c) 2019-present, VoidZero Inc. and Vite contributors
+- Vuetify - Copyright (c) 2016-now Vuetify, LLC
+- Vue 3 CodeBlock - Copyright (c) 2023 WebDevNerdStuff

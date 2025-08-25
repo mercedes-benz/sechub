@@ -42,8 +42,6 @@ pipeline {
             parallel {
 
                 stage('Build Server & API Java') {
-                    environment {
-                    }
                     steps {
                         script{
                             // We do NOT build sechub-integrationtest

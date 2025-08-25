@@ -1,0 +1,9 @@
+The plugin binaries have following dependencies:
+
+1. IDE parts (but just at runtime), not distributed
+2. Used SecHub Open API client and its used libaries (distributed by plugin on marketplace locations)
+
+For information about the dependencies and the used 3rd party licenses of the SecHub Open API client, please look into 
+https://github.com/mercedes-benz/sechub/blob/develop/3RD_PARTY_LICENSES.txt (contains all license information)
+
+Or checkout the repository and inspect the dependencies of the explicit client by using the build tools.
