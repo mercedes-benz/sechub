@@ -2,23 +2,32 @@
 package com.mercedesbenz.sechub.pds.job;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.fileupload2.core.FileItemInput;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.jakarta.JakartaServletFileUpload;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.DelegatingServletInputStream;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.mercedesbenz.sechub.commons.archive.ArchiveSupport;
 import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport;
+import com.mercedesbenz.sechub.commons.core.security.CheckSumSupport.CheckSumValidationResult;
 import com.mercedesbenz.sechub.commons.pds.data.PDSJobStatusState;
 import com.mercedesbenz.sechub.pds.PDSBadRequestException;
 import com.mercedesbenz.sechub.pds.PDSNotAcceptableException;
@@ -30,6 +39,7 @@ import com.mercedesbenz.sechub.storage.core.JobStorage;
 import com.mercedesbenz.sechub.test.TestUtil;
 
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class PDSFileUploadJobServiceTest {
@@ -54,6 +64,7 @@ public class PDSFileUploadJobServiceTest {
     private UploadSizeConfiguration configuration;
     private CheckSumSupport checkSumSupport;
     private PDSServletFileUploadFactory pdsServletFileUploadFactory;
+    private HttpServletRequest httpRequest;
 
     @BeforeEach
     void beforeEach() throws Exception {
@@ -64,6 +75,7 @@ public class PDSFileUploadJobServiceTest {
         configuration = mock(UploadSizeConfiguration.class);
         checkSumSupport = mock(CheckSumSupport.class);
         pdsServletFileUploadFactory = mock(PDSServletFileUploadFactory.class);
+        httpRequest = mock();
 
         when(configuration.getMaxUploadSizeInBytes()).thenReturn(2048L);
 
@@ -273,5 +285,51 @@ public class PDSFileUploadJobServiceTest {
 
         /* test */
         assertEquals("The file size in header field %s exceeds the allowed upload size of 2648".formatted(FILE_SIZE_HEADER_FIELD_NAME), exception.getMessage());
+    }
+
+    @Test
+    public void multipart_to_many_keys_will_throw_bad_request_execption() throws Exception {
+        /* prepare */
+        String fileName = "binaries.tar";
+        String checksumFromUser = "12345";
+        InputStream input = new ByteArrayInputStream("AAA".getBytes());
+        ServletInputStream inputStream = new DelegatingServletInputStream(input);
+
+        when(httpRequest.getInputStream()).thenReturn(inputStream);
+        when(httpRequest.getMethod()).thenReturn("POST");
+        when(httpRequest.getContentType()).thenReturn("multipart/form-data; boundary=------a-boundary---");
+
+        when(httpRequest.getHeader(FILE_SIZE_HEADER_FIELD_NAME)).thenReturn("612"); // Add 600 bytes for headers.
+
+        JakartaServletFileUpload<?, ?> upload = mock(JakartaServletFileUpload.class);
+        when(pdsServletFileUploadFactory.create()).thenReturn(upload);
+
+        FileItemInputIterator itemIterator = mock(FileItemInputIterator.class);
+        FileItemInput checksumItemStream = mock(FileItemInput.class);
+        FileItemInput fileItemStream = mock(FileItemInput.class);
+        FileItemInput additionalItemStream = mock(FileItemInput.class);
+
+        when(itemIterator.hasNext()).thenReturn(true).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(itemIterator.next()).thenReturn(fileItemStream).thenReturn(checksumItemStream).thenReturn(additionalItemStream);
+
+        when(fileItemStream.getInputStream()).thenReturn(input);
+        when(fileItemStream.getFieldName()).thenReturn("file");
+
+        when(checksumItemStream.getFieldName()).thenReturn("checkSum");
+        when(checksumItemStream.getInputStream()).thenReturn(new ByteArrayInputStream(checksumFromUser.getBytes()));
+
+        when(additionalItemStream.getFieldName()).thenReturn("additional");
+        when(additionalItemStream.getInputStream()).thenReturn(new ByteArrayInputStream("additional".getBytes()));
+
+        when(upload.getItemIterator(httpRequest)).thenReturn(itemIterator);
+
+        when(checkSumSupport.convertMessageDigestToHex(any())).thenReturn(checksumFromUser);
+        when(checkSumSupport.createSha256MessageDigest()).thenReturn(MessageDigest.getInstance("SHA-256"));
+        CheckSumValidationResult validationResult = mock();
+        when(validationResult.isValid()).thenReturn(true);
+        when(checkSumSupport.validateSha256Checksum(checksumFromUser)).thenReturn(validationResult);
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.upload(jobUUID, fileName, httpRequest)).hasMessageContaining("Multipart upload must not contain more than");
     }
 }

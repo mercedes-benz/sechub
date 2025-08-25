@@ -12,6 +12,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -59,6 +62,8 @@ public class SchedulerBinariesUploadService {
     private static final String PARAMETER_FILE = "file";
     private static final String PARAMETER_CHECKSUM = "checkSum";
     private static final Logger LOG = LoggerFactory.getLogger(SchedulerBinariesUploadService.class);
+
+    private static final List<String> ALLOWED_MULTIPART_KEYS = Collections.unmodifiableList(Arrays.asList(PARAMETER_FILE, PARAMETER_CHECKSUM));
 
     @Autowired
     SchedulerBinariesUploadConfiguration configuration;
@@ -195,7 +200,17 @@ public class SchedulerBinariesUploadService {
          */
         FileItemInputIterator iterStream = upload.getItemIterator(request);
 
+        int numberOfMultiPartKeys = 0;
         while (iterStream.hasNext()) {
+            /*
+             * Checking the size of the multipart upload to prevent a long running while
+             * loop since we expect only the known multipart keys
+             */
+            if (numberOfMultiPartKeys >= ALLOWED_MULTIPART_KEYS.size()) {
+                throw new BadRequestException("Multipart upload must not contain more than '%s' keys. Ensure the keys are %s"
+                        .formatted(ALLOWED_MULTIPART_KEYS.size(), ALLOWED_MULTIPART_KEYS));
+            }
+
             FileItemInput item = iterStream.next();
             String fieldName = item.getFieldName();
             switch (fieldName) {
@@ -248,6 +263,7 @@ public class SchedulerBinariesUploadService {
                 LOG.warn("Given field '{}' is not supported while uploading binaries to project {}, {}", logSanitizer.sanitize(fieldName, 30),
                         logSanitizer.sanitize(projectId, 30), jobUUID);
             }
+            numberOfMultiPartKeys++;
         }
 
         if (!fileDefinedByUser) {

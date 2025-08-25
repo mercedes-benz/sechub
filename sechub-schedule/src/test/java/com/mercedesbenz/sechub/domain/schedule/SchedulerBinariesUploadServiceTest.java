@@ -3,6 +3,7 @@ package com.mercedesbenz.sechub.domain.schedule;
 
 import static com.mercedesbenz.sechub.commons.core.CommonConstants.*;
 import static com.mercedesbenz.sechub.test.JUnitAssertionAddon.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -229,6 +230,49 @@ public class SchedulerBinariesUploadServiceTest {
         verify(storage).store(eq("binaries.tar"), any(InputStream.class), any(Long.class)); // file was stored
         assertUploadEvent();
 
+    }
+
+    @Test
+    public void multipart_to_many_keys_will_throw_bad_request_execption() throws Exception {
+        /* prepare */
+        InputStream input = new ByteArrayInputStream("AAA".getBytes());
+        ServletInputStream inputStream = new DelegatingServletInputStream(input);
+
+        when(httpRequest.getInputStream()).thenReturn(inputStream);
+        when(httpRequest.getMethod()).thenReturn("POST");
+        when(httpRequest.getContentType()).thenReturn("multipart/form-data; boundary=------a-boundary---");
+
+        when(httpRequest.getHeader(FILE_SIZE_HEADER_FIELD_NAME)).thenReturn("0"); // Add 600 bytes for headers.
+
+        when(configuration.getMaxUploadSizeInBytes()).thenReturn((long) 612);
+
+        JakartaServletFileUpload<?, ?> upload = mock(JakartaServletFileUpload.class);
+        when(servletFileUploadFactory.create()).thenReturn(upload);
+
+        FileItemInputIterator itemIterator = mock(FileItemInputIterator.class);
+        FileItemInput checksumItemStream = mock(FileItemInput.class);
+        FileItemInput fileItemStream = mock(FileItemInput.class);
+        FileItemInput additionalItemStream = mock(FileItemInput.class);
+
+        when(itemIterator.hasNext()).thenReturn(true).thenReturn(true).thenReturn(true).thenReturn(false);
+        when(itemIterator.next()).thenReturn(fileItemStream).thenReturn(checksumItemStream).thenReturn(additionalItemStream);
+
+        when(fileItemStream.getInputStream()).thenReturn(input);
+        when(fileItemStream.getFieldName()).thenReturn("file");
+
+        when(checksumItemStream.getFieldName()).thenReturn("checkSum");
+        when(checksumItemStream.getInputStream()).thenReturn(new ByteArrayInputStream("12345".getBytes()));
+
+        when(additionalItemStream.getFieldName()).thenReturn("additional");
+        when(additionalItemStream.getInputStream()).thenReturn(new ByteArrayInputStream("additional".getBytes()));
+
+        when(upload.getItemIterator(httpRequest)).thenReturn(itemIterator);
+        when(checkSumSupport.convertMessageDigestToHex(any())).thenReturn("12345");
+        when(checkSumSupport.createSha256MessageDigest()).thenReturn(MessageDigest.getInstance("SHA-256"));
+
+        /* execute + test */
+        assertThatThrownBy(() -> serviceToTest.uploadBinaries(PROJECT1, randomUuid, httpRequest))
+                .hasMessageContaining("Multipart upload must not contain more than");
     }
 
     private void assertNoUploadEvent() {
