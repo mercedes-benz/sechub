@@ -100,6 +100,16 @@ class SecHubAccessClient implements SecHubAccess {
         }
     }
 
+    @Override
+    public SecHubExplanationResponse userRequestFindingExplanation(String projectId, UUID jobUUID, Integer findingId) {
+        try {
+            return client.withAssistantApi().userRequestFindingExplanation(projectId, jobUUID, findingId);
+        } catch (ApiException e) {
+            LOG.error("Failed to retrieve explanation for finding: {} in job: {} for project: {}", findingId, jobUUID, projectId, e);
+            throw new RuntimeException(e);
+        }
+    }
+
     private void initSecHubClient(String secHubServerUrl, String userId, String apiToken, boolean trustAllCertificates) {
 
         requireNonNull(secHubServerUrl, "Parameter 'secHubServerUrl' must not be null");

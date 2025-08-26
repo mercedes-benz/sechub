@@ -23,4 +23,6 @@ public interface SecHubAccess {
     FalsePositiveProjectConfiguration getFalsePositiveProjectConfiguration(String projectId);
 
     void markFalsePositive(String projectId, FalsePositives falsePositives);
+
+    SecHubExplanationResponse userRequestFindingExplanation(String projectId, UUID jobUUID, Integer findingId);
 }

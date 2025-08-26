@@ -3,6 +3,8 @@ package com.mercedesbenz.sechub.plugin.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.*;
 import java.util.List;
@@ -11,15 +13,19 @@ import javax.swing.*;
 import javax.swing.table.*;
 
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressIndicatorProvider;
 import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.testFramework.LightVirtualFile;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextArea;
-import com.mercedesbenz.sechub.api.internal.gen.model.ProjectData;
+import com.mercedesbenz.sechub.api.internal.gen.model.*;
 import com.mercedesbenz.sechub.plugin.idea.SecHubReportViewUpdater;
 import com.mercedesbenz.sechub.plugin.idea.falsepositive.FalsePositiveSyncStatus;
 import com.mercedesbenz.sechub.plugin.idea.falsepositive.FalsePositivesCacheManager;
@@ -28,8 +34,6 @@ import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccessFactory;
 import com.mercedesbenz.sechub.plugin.model.SecHubReportFindingModelService;
 import org.jetbrains.annotations.NotNull;
 
-import com.mercedesbenz.sechub.api.internal.gen.model.ScanType;
-import com.mercedesbenz.sechub.api.internal.gen.model.Severity;
 import com.mercedesbenz.sechub.plugin.model.FindingModel;
 import com.mercedesbenz.sechub.plugin.model.FindingNode;
 import com.mercedesbenz.sechub.plugin.model.SecHubFindingoWebScanDataProvider;
@@ -180,6 +184,7 @@ public class SecHubToolWindowUISupport {
 
     public void initialize() {
         initCweIdLink();
+        initExplanationButton();
         initReportTable();
         initCallHierarchyTree();
         initCallStepDetailTable();
@@ -209,6 +214,11 @@ public class SecHubToolWindowUISupport {
                 }
             }
         });
+    }
+
+    private void initExplanationButton() {
+        context.explanationButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        context.explanationButton.setVisible(false);
     }
 
     @NotNull
@@ -485,9 +495,40 @@ public class SecHubToolWindowUISupport {
         cweIdLabel.setVisible(true);
     }
 
+    private void handleExplanation(FindingNode findingNode) {
+        if (findingNode == null) {
+            context.explanationButton.setVisible(false);
+            return;
+        }
+
+        context.explanationButton.setVisible(true);
+
+        MouseListener[] mouseListeners = context.explanationButton.getMouseListeners();
+        for (MouseListener mouseListener : mouseListeners) {
+            context.explanationButton.removeMouseListener(mouseListener);
+        }
+        context.explanationButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Integer findingId = findingNode.getSecHubFinding().getId();
+                String projectId = findingModel.getProjectId();
+                UUID jobUUID = findingModel.getJobUUID();
+
+                ProgressManager.getInstance().executeProcessUnderProgress(() -> {
+                    SecHubExplanationResponse secHubExplanationResponse = secHubAccess().userRequestFindingExplanation(projectId, jobUUID, findingId);
+                    if (secHubExplanationResponse != null) {
+                        String markdownContent = toMarkdownContent(secHubExplanationResponse);
+                        showMarkdownContentOnRightSide(context.currentSelectedCweId, context.project, markdownContent);
+                    }
+                }, ProgressIndicatorProvider.getGlobalProgressIndicator());
+            }
+        });
+    }
+
     public void showFindingNode(FindingNode findingNode, boolean openInEditor) {
 
         handleCWEId(findingNode);
+        handleExplanation(findingNode);
         resetFindingNodeTabPane();
         resetDescriptionAndSolutionTabPane(findingNode != null);
 
@@ -622,6 +663,94 @@ public class SecHubToolWindowUISupport {
 
         this.findingModel = findingModel;
         setReportTableElements(elements);
+    }
+
+    public String toMarkdownContent(SecHubExplanationResponse secHubExplanationResponse) {
+        StringBuilder sb = new StringBuilder();
+
+        /* Finding Explanation */
+        TextBlock findingExplanation = secHubExplanationResponse.getFindingExplanation();
+        if (findingExplanation != null) {
+            sb.append("# ").append(findingExplanation.getTitle()).append("\n\n");
+            sb.append(findingExplanation.getContent()).append("\n\n");
+        }
+
+        /* Potential Impact */
+        TextBlock potentialImpact = secHubExplanationResponse.getPotentialImpact();
+        if (potentialImpact != null) {
+            sb.append("## ").append(potentialImpact.getTitle()).append("\n\n");
+            sb.append(potentialImpact.getContent()).append("\n\n");
+        }
+
+        /* Recommendations */
+        List<TextBlock> recommendations = secHubExplanationResponse.getRecommendations();
+        if (recommendations != null && !recommendations.isEmpty()) {
+            sb.append("## Recommendations\n\n");
+            for (TextBlock rec : recommendations) {
+                sb.append("- **").append(rec.getTitle()).append("**: ")
+                        .append(rec.getContent()).append("\n");
+            }
+            sb.append("\n");
+        }
+
+        /* Code Examples */
+        CodeExample codeExample = secHubExplanationResponse.getCodeExample();
+        if (codeExample != null) {
+            sb.append("## Code Examples\n\n");
+            if (codeExample.getVulnerableExample() != null) {
+                sb.append("### Vulnerable Example\n");
+                sb.append("```java\n").append(codeExample.getVulnerableExample()).append("\n```\n\n");
+            }
+            if (codeExample.getSecureExample() != null) {
+                sb.append("### Secure Example\n");
+                sb.append("```java\n").append(codeExample.getSecureExample()).append("\n```\n\n");
+            }
+            if (codeExample.getExplanation() != null) {
+                sb.append(codeExample.getExplanation().getContent()).append("\n\n");
+            }
+        }
+
+        /* References */
+        List<Reference> references = secHubExplanationResponse.getReferences();
+        if (references != null && !references.isEmpty()) {
+            sb.append("## References\n\n");
+            for (Reference ref : references) {
+                sb.append("- [").append(ref.getTitle()).append("](")
+                        .append(ref.getUrl()).append(")\n");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    private static void showMarkdownContentOnRightSide(Integer currentSelectedCweId, Project project, String mdContent) {
+        VirtualFile virtualFile = new LightVirtualFile("✨️CWE-ID %s.md".formatted(currentSelectedCweId), mdContent);
+        try {
+            virtualFile.setWritable(false);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to set virtual file read-only", e);
+        }
+
+        FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
+        /* open file in editor and return all opened file editors */
+        FileEditor[] fileEditors = fileEditorManager.openFile(virtualFile, false);
+
+        for (FileEditor fileEditor : fileEditors) {
+            /* only target editors that contain the virtual file from above */
+            if (virtualFile.equals(fileEditor.getFile())) {
+                try {
+                    /* we want to show the preview directly - so we need to call setLayout via reflection */
+                    Method method = TextEditorWithPreview.class.getDeclaredMethod(
+                            "setLayout",
+                            TextEditorWithPreview.Layout.class
+                    );
+                    method.setAccessible(true);
+                    method.invoke(fileEditor, TextEditorWithPreview.Layout.SHOW_PREVIEW);
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed to call 'setLayout' via reflection", e);
+                }
+            }
+        }
     }
 
     private static @NotNull SecHubAccess secHubAccess() {

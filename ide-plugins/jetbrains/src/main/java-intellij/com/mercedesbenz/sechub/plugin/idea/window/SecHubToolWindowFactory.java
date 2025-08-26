@@ -26,7 +26,7 @@ public class SecHubToolWindowFactory implements ToolWindowFactory, DumbAware {
 
         SecHubSettingsDialogListener settingsDialogListener = new SecHubSettingsDialogListener(project, "SecHub");
 
-        SecHubReportPanel reportPanel = new SecHubReportPanel(toolWindow);
+        SecHubReportPanel reportPanel = new SecHubReportPanel(project, toolWindow);
         SecHubReportPanel.registerInstance(reportPanel);
 
         SecHubReportTabSwitcher reportTabSwitcher = new SecHubReportTabSwitcher(toolWindow.getContentManager(), "Report");

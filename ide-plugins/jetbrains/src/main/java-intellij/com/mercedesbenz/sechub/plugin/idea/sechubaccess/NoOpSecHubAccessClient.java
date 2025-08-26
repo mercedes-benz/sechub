@@ -42,4 +42,9 @@ class NoOpSecHubAccessClient implements SecHubAccess {
     public void markFalsePositive(String projectId, FalsePositives falsePositives) {
         // do nothing
     }
+
+    @Override
+    public SecHubExplanationResponse userRequestFindingExplanation(String projectId, UUID jobUUID, Integer findingId) {
+        return null;
+    }
 }

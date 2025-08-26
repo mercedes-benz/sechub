@@ -97,4 +97,6 @@ public interface SecHubClient {
 
     UserSelfServiceApi withUserSelfServiceApi();
 
+    AssistantApi withAssistantApi();
+
 }

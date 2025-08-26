@@ -42,6 +42,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     private final TestingApi testingApi;
     private final UserAdministrationApi userAdministrationApi;
     private final UserSelfServiceApi userSelfServiceApi;
+    private final AssistantApi assistantApi;
     private final SecHubExecutionWorkaroundApi secHubExecutionWorkaroundApi;
 
     public static DefaultSecHubClientBuilder builder() {
@@ -62,6 +63,7 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
         testingApi = new TestingApi(apiClient);
         userAdministrationApi = new UserAdministrationApi(apiClient);
         userSelfServiceApi = new UserSelfServiceApi(apiClient);
+        assistantApi = new AssistantApi(apiClient);
         secHubExecutionWorkaroundApi = new SecHubExecutionWorkaroundApi(apiClient);
     }
 
@@ -193,6 +195,11 @@ public class DefaultSecHubClient extends AbstractSecHubClient {
     @Override
     public UserSelfServiceApi withUserSelfServiceApi() {
         return userSelfServiceApi;
+    }
+
+    @Override
+    public AssistantApi withAssistantApi() {
+        return assistantApi;
     }
 
     private void userUploadsBinaries(String projectId, UUID jobUUID, ArchiveSupport.ArchivesCreationResult createArchiveResult) throws ApiException {

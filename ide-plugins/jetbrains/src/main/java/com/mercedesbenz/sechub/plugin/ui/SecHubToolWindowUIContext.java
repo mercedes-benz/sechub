@@ -3,17 +3,17 @@ package com.mercedesbenz.sechub.plugin.ui;
 
 import javax.swing.*;
 
+import com.intellij.openapi.project.Project;
 import com.mercedesbenz.sechub.plugin.util.ErrorLog;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
 public class SecHubToolWindowUIContext {
+    public Project project;
     public JTable findingTable;
     public JTree callHierarchyTree;
     public JTable callHierarchyDetailTable;
     public ErrorLog errorLog;
     public JLabel cweIdLabel;
+    public JButton explanationButton;
     public Integer currentSelectedCweId;
     public FindingRenderDataProvider findingRenderDataProvider;
     public JTabbedPane findingTypeDetailsTabbedPane;
