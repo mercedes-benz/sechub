@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: MIT
-
 name: sechub scan
 description: 'a GitHub actions wrapper for SecHub security scan.'
 inputs:
@@ -89,17 +87,20 @@ runs:
         path: ${{ github.workspace }}/.sechub-gha/client/
         key: ${{ runner.os }}-sechub-client-cache
 
-    - name: Cache Node.js
+    - name: Cache Node.js modules
       id: cache-node
       uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8
       with:
-        path: ~/.node
-        key: ${{ runner.os }}-node-22
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
     - name: Setup Node.js
+      id: setup-node
       uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
       with:
         node-version: 22
+        cache: 'npm'
+        cache-dependency-path: ${{ github.workspace }}/package-lock.json
 
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
