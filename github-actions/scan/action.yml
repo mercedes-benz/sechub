@@ -92,7 +92,7 @@ runs:
       uses: actions/cache@3624ceb22c1c5a301c8db4169662070a689d9ea8
       with:
         path: ~/.npm
-        key: ${{ runner.os }}-node-${{ steps.setup-node.outputs.node-version }}-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-22-${{ hashFiles('**/package-lock.json') }}
 
     - name: Setup Node.js
       id: setup-node
@@ -100,6 +100,7 @@ runs:
       with:
         node-version: 22
         cache: 'npm'
+        cache-dependency-path: ${{ github.workspace }}/github-actions/scan/package-lock.json
 
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
