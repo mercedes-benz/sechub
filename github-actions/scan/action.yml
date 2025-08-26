@@ -100,7 +100,6 @@ runs:
       with:
         node-version: 22
         cache: 'npm'
-        cache-dependency-path: ${{ github.workspace }}/package-lock.json
 
     - name: Set GitHub Environment Variables
       uses: actions/github-script@v7
