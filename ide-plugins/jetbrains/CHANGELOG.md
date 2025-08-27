@@ -1,6 +1,11 @@
 <!-- SPDX-License-Identifier: MIT --->
 # Changelog
 
+## [1.1.0]
+### Added
+- Added SecHub Finding explanation Button to Finding details view. The button
+  opens a page in the editor with detailed information about the finding.
+
 ## [0.5.0]
 ### Added
 - Support for marking false positives for SAST, Secret and IaC scans

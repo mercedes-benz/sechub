@@ -80,3 +80,17 @@ image::sechub-mark-false-positive.png[]
 .Mark false positives
 image::sechub-mark-false-positives.png[]
 
+=== Explain a SecHub finding
+
+You can get more details about a finding by clicking the **✨ Explain** button next to its CWE ID.
+This will open a `.md` file in a new editor tab, which contains an in-depth explanation of both the **CWE** and the related **SecHub finding**.
+
+The explanation file includes:
+
+- **Description** – What the CWE is and why it matters
+- **Potential Impact** – How the issue could affect your application or users
+- **Recommendations** – Best practices and mitigation strategies to resolve or reduce the risk
+- **Example Code** – Illustrative snippets showing insecure and secure coding approaches
+- **Reference Links** – Official CWE documentation, external resources, and further reading
+
+image::sechub-finding-explain-editor.png[]
