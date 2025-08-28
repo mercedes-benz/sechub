@@ -699,11 +699,11 @@ public class SecHubToolWindowUISupport {
             sb.append("## Code Examples\n\n");
             if (codeExample.getVulnerableExample() != null) {
                 sb.append("### Vulnerable Example\n");
-                sb.append("```java\n").append(codeExample.getVulnerableExample()).append("\n```\n\n");
+                sb.append("```\n").append(codeExample.getVulnerableExample()).append("\n```\n\n");
             }
             if (codeExample.getSecureExample() != null) {
                 sb.append("### Secure Example\n");
-                sb.append("```java\n").append(codeExample.getSecureExample()).append("\n```\n\n");
+                sb.append("```\n").append(codeExample.getSecureExample()).append("\n```\n\n");
             }
             if (codeExample.getExplanation() != null) {
                 sb.append(codeExample.getExplanation().getContent()).append("\n\n");
@@ -719,6 +719,11 @@ public class SecHubToolWindowUISupport {
                         .append(ref.getUrl()).append(")\n");
             }
         }
+
+        /* Hint */
+        sb.append("### AI Generated Content\n\n");
+        sb.append("The content provided above may have been generated or assisted by AI technologies. " +
+                "While we strive for accuracy and reliability, please verify the information independently.\n");
 
         return sb.toString();
     }

@@ -4,7 +4,7 @@
 ## [1.1.0]
 ### Added
 - Added SecHub Finding explanation Button to Finding details view. The button
-  opens a page in the editor with detailed information about the finding.
+  opens a page in the editor with detailed information about the finding explained by AI.
 
 ## [0.5.0]
 ### Added
