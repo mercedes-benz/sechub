@@ -216,7 +216,7 @@ your wanted version - e.g. `latest` or `1.10.0`
 
 ===== Start GitHub action workflow
 The worklow `github-action-scan.yml`
-will be triggered on every PR which changes the worklow or the github action.
+will be triggered on every PR which changes the workflow or the github action.
 
 It is also possible to trigger the workflow manually at
 https://github.com/mercedes-benz/sechub/actions/workflows/github-action-scan.yml

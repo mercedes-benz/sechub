@@ -1,28 +1,34 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.domain.scan.product.config;
 
+import javax.crypto.SealedObject;
+
+import com.mercedesbenz.sechub.commons.core.security.CryptoAccess;
+
 public class ProductExecutorConfigSetupCredentials {
 
     public static final String PROPERTY_USER = "user";
     public static final String PROPERTY_PASSWORD = "password";
 
-    private String user;
+    private CryptoAccess<String> cryptoAccess = CryptoAccess.CRYPTO_STRING;
 
-    private String password;
+    private SealedObject user;
+
+    private SealedObject password;
 
     public void setUser(String user) {
-        this.user = user;
+        this.user = cryptoAccess.seal(user);
     }
 
     public String getUser() {
-        return user;
+        return cryptoAccess.unseal(user);
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = cryptoAccess.seal(password);
     }
 
     public String getPassword() {
-        return password;
+        return cryptoAccess.unseal(password);
     }
 }
