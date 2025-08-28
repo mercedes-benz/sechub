@@ -22,6 +22,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.*;
 import com.mercedesbenz.sechub.plugin.idea.SecHubReportImporter;
 import com.mercedesbenz.sechub.plugin.idea.compatiblity.VirtualFileCompatibilityLayer;
+import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccess;
+import com.mercedesbenz.sechub.plugin.idea.sechubaccess.SecHubAccessFactory;
 import org.jetbrains.annotations.NotNull;
 
 import com.intellij.icons.AllIcons;
@@ -56,6 +58,7 @@ public class SecHubReportPanel implements SecHubPanel {
     private Icon callHierarchyElementIcon;
 
     private final ToolWindow toolWindow;
+    private final Project project;
     private JLabel trafficLightIconLabel;
     private JLabel amountOfFindingsLabel;
     private JBTextField scanResultForJobText;
@@ -78,8 +81,10 @@ public class SecHubReportPanel implements SecHubPanel {
     private JTextArea attackTextArea;
     private JPanel callHierarchyPanel;
     private JPanel attackPanel;
+    private JButton explanationButton;
 
-    public SecHubReportPanel(ToolWindow toolWindow) {
+    public SecHubReportPanel(Project project, ToolWindow toolWindow) {
+        this.project = project;
         this.toolWindow = toolWindow;
 
         createComponents();
@@ -224,14 +229,17 @@ public class SecHubReportPanel implements SecHubPanel {
     }
 
     private JComponent createFindingNorthComponent() {
-        JBLabel cweIdLabel = new JBLabel();
-
         JBLabel findingLabel = new JBLabel();
+        JBLabel cweIdLabel = new JBLabel();
+        JButton explanationButton = new JButton("✨Explain");
 
-        JPanel cweAndFindingPanel = new JBPanel<>();
-        cweAndFindingPanel.setLayout(new HorizontalLayout(SECHUB_REPORT_DEFAULT_GAP));
-        cweAndFindingPanel.add(findingLabel);
-        cweAndFindingPanel.add(cweIdLabel);
+        explanationButton.setToolTipText("Explain SecHub Vulnerability");
+
+        JPanel findingCweExplanationPanel = new JBPanel<>();
+        findingCweExplanationPanel.setLayout(new HorizontalLayout(SECHUB_REPORT_DEFAULT_GAP));
+        findingCweExplanationPanel.add(findingLabel);
+        findingCweExplanationPanel.add(cweIdLabel);
+        findingCweExplanationPanel.add(explanationButton);
 
         JBTextArea findingDescriptionTextArea = prepareNonEditLargeTextArea(new JBTextArea());
         JBTextArea findingSolutionTextArea = prepareNonEditLargeTextArea(new JBTextArea());
@@ -242,12 +250,13 @@ public class SecHubReportPanel implements SecHubPanel {
 
         JPanel northPanel = new JBPanel();
         northPanel.setLayout(new VerticalLayout(SECHUB_REPORT_DEFAULT_GAP));
-        northPanel.add(cweAndFindingPanel);
+        northPanel.add(findingCweExplanationPanel);
         northPanel.add(descriptionAndSolutionTabbedPane);
 
         /* setup now as fields */
         this.findingLabel = findingLabel;
         this.cweIdLabel = cweIdLabel;
+        this.explanationButton = explanationButton;
         this.findingDescriptionTextArea = findingDescriptionTextArea;
         this.findingSolutionTextArea = findingSolutionTextArea;
 
@@ -349,15 +358,12 @@ public class SecHubReportPanel implements SecHubPanel {
         });
     }
 
-    private void getJobUUD() {
-
-    }
-
     private void createAndInstallSupport() {
 
         showInEditorSupport = new IntellijShowInEditorSupport();
 
         SecHubToolWindowUIContext context = new SecHubToolWindowUIContext();
+        context.project = this.project;
         context.findingTable = reportTable;
 
         context.callHierarchyTabComponent = callHierarchyPanel;
@@ -366,6 +372,7 @@ public class SecHubReportPanel implements SecHubPanel {
 
         context.errorLog = ErrorLogger.getInstance();
         context.cweIdLabel = cweIdLabel;
+        context.explanationButton = explanationButton;
         context.findingRenderDataProvider = new IntellijRenderDataProvider();
         context.componentFactory = new IntellijComponentFactory();
         context.findingTypeDetailsTabbedPane = southTabPane;
@@ -390,6 +397,7 @@ public class SecHubReportPanel implements SecHubPanel {
                 showInEditor(callStep);
             }
         });
+
         uiSupport.addReportFindingSelectionChangeListener((finding) -> {
             findingLabel.setText("Finding " + finding.getId() + ":");
             findingDescriptionTextArea.setText(finding.getDescription() == null ? "No description available" : finding.getDescription());
@@ -403,6 +411,7 @@ public class SecHubReportPanel implements SecHubPanel {
                 findingSolutionTextArea.setText(finding.getSolution());
             }
         });
+
         uiSupport.initialize();
     }
 
