@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: MIT
 package com.mercedesbenz.sechub.adapter;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.Proxy.Type;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.HttpHost;
 import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.ResourceHttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -109,14 +109,15 @@ public abstract class AbstractSpringRestAdapterContext<C extends AdapterConfig, 
         return new BufferingClientHttpRequestFactory(factory);
     }
 
-    private SimpleClientHttpRequestFactory createStandardSpringRequestFactory(C config) {
-        /* use standard Spring way, so uses configured trusted certificates etc. etc. */
-        SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+    private HttpComponentsClientHttpRequestFactory createStandardSpringRequestFactory(C config) {
+        HttpClientBuilder builder = HttpClientBuilder.create().useSystemProperties();
         if (config.isProxyDefined()) {
-            Proxy proxy = new Proxy(Type.SOCKS, new InetSocketAddress(config.getProxyHostname(), config.getProxyPort()));
-            requestFactory.setProxy(proxy);
+            HttpHost proxy = new HttpHost(config.getProxyHostname(), config.getProxyPort());
+            builder.setProxy(proxy);
         }
-        return requestFactory;
+        HttpClient httpClient = builder.build();
+
+        return new HttpComponentsClientHttpRequestFactory(httpClient);
     }
 
     private Set<HttpMessageConverter<?>> createMessageConverters() {
