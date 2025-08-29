@@ -224,6 +224,7 @@ public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
     @Override
     public OAuth2AuthenticatedPrincipal introspect(String opaqueToken) throws OAuth2AuthenticationException {
         if (opaqueToken == null || opaqueToken.isEmpty()) {
+            logger.debug("No opaque token provided");
             throw new BadOpaqueTokenException("Token is null or empty");
         }
 
@@ -249,16 +250,19 @@ public class OAuth2OpaqueTokenIntrospector implements OpaqueTokenIntrospector {
              * remove of the oauth2 cookie at browser side and finally to a 401 unauthorized
              * response.
              */
+            logger.debug("Opaque token is expired");
             throw new BadOpaqueTokenException("Opaque token is expired");
         }
 
         if (!introspectionResponse.isActive()) {
+            logger.debug("Opaque token is inactive");
             throw new BadOpaqueTokenException("Token is not active");
         }
 
         String subject = introspectionResponse.getSubject();
 
         if (subject == null || subject.isEmpty()) {
+            logger.debug("Opaque token subject is null or empty");
             throw new BadOpaqueTokenException("Subject is null or empty");
         }
 
