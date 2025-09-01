@@ -10,6 +10,7 @@ import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageService;
 import com.mercedesbenz.sechub.sharedkernel.messaging.DomainMessageSynchronousResult;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsRecevingSyncMessage;
 import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessage;
+import com.mercedesbenz.sechub.sharedkernel.messaging.IsSendingSyncMessageAnswer;
 import com.mercedesbenz.sechub.sharedkernel.messaging.JobFinding;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageDataKeys;
 import com.mercedesbenz.sechub.sharedkernel.messaging.MessageID;
@@ -25,6 +26,7 @@ public class SecHubExplanationInputCollector {
 
     @IsSendingSyncMessage(MessageID.REQUEST_DETAILS_FOR_JOB_FINDING)
     @IsRecevingSyncMessage(MessageID.RESULT_DETAILS_FOR_JOB_FINDING)
+    @IsSendingSyncMessageAnswer(value = MessageID.REQUEST_DETAILS_FOR_JOB_FINDING, answeringTo = MessageID.RESULT_DETAILS_FOR_JOB_FINDING, branchName = "success")
     public SecHubExplanationInput collectInput(String projectId, UUID jobUUID, int findingId) {
 
         DomainMessage domainMessage = new DomainMessage(MessageID.REQUEST_DETAILS_FOR_JOB_FINDING);
