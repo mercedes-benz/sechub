@@ -352,8 +352,6 @@ jobs:
              server-release-artifacts/sechub-operations-${{ inputs.server-version }}.pdf
           cp sechub-doc/build/docs/asciidoc/sechub-restapi.pdf \
              server-release-artifacts/sechub-restapi-${{ inputs.server-version }}.pdf
-          cp sechub-doc/build/api-spec/openapi3.json \
-             server-release-artifacts/sechub-openapi3-${{ inputs.server-version }}.json          
           # Compute sha256 checksums for .jar files
           cd server-release-artifacts
           for i in *.jar ; do
