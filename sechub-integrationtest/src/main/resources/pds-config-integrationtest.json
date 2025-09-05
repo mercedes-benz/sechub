@@ -279,5 +279,10 @@
     "path" : "./../sechub-integrationtest/pds/product-scripts/pds-solutions-kics-mocked.sh",
     "scanType" : "iacScan",
     "description" : "Returns mock data, but from real product"
-  } ]
+  }, {
+    "id" : "PDS_SOLUTION_INFRALIGHT_MOCKED",
+    "path" : "./../sechub-integrationtest/pds/product-scripts/integrationtest-infralight.sh",
+    "scanType" : "infraScan",
+    "description" : "Returns mock data, but from real product"
+  }]
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.95 scan initiated Tue Jul 22 06:24:29 2025 as: /usr/lib/nmap/nmap -&#45;privileged -p- -oA nmap -iL targets.txt -->
+<nmaprun scanner="nmap" args="/usr/lib/nmap/nmap -&#45;privileged -p- -oA nmap -iL targets.txt" start="1753158269" startstr="Tue Jul 22 06:24:29 2025" version="7.95" xmloutputversion="1.05">
+<scaninfo type="syn" protocol="tcp" numservices="65535" services="1-65535"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="10.0.0.2" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<hosthint><status state="up" reason="unknown-response" reason_ttl="0"/>
+<address addr="10.0.0.1" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+</hosthint>
+<host starttime="1753158269" endtime="1753158295"><status state="up" reason="reset" reason_ttl="125"/>
+<address addr="10.0.0.1" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<ports><extraports state="closed" count="65522">
+<extrareasons reason="reset" count="65522" proto="tcp" ports="1-134,136-138,140-444,446-3388,3390-5039,5041-7679,7681-49663,49671-65535"/>
+</extraports>
+<port protocol="tcp" portid="135"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="msrpc" method="table" conf="3"/></port>
+<port protocol="tcp" portid="139"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="netbios-ssn" method="table" conf="3"/></port>
+<port protocol="tcp" portid="445"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="microsoft-ds" method="table" conf="3"/></port>
+<port protocol="tcp" portid="3389"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="ms-wbt-server" method="table" conf="3"/></port>
+<port protocol="tcp" portid="5040"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="7680"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="pando-pub" method="table" conf="3"/></port>
+<port protocol="tcp" portid="49664"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49665"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49666"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49667"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49668"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49669"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49670"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+</ports>
+<times srtt="58270" rttvar="3627" to="100000"/>
+</host>
+<host starttime="1753158269" endtime="1753158295"><status state="up" reason="reset" reason_ttl="125"/>
+<address addr="10.0.0.2" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<ports><extraports state="closed" count="65524">
+<extrareasons reason="reset" count="65524" proto="tcp" ports="1-134,136-138,140-444,446-5039,5041-7679,7681-49663,49670-65535"/>
+</extraports>
+<port protocol="tcp" portid="135"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="msrpc" method="table" conf="3"/></port>
+<port protocol="tcp" portid="139"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="netbios-ssn" method="table" conf="3"/></port>
+<port protocol="tcp" portid="445"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="microsoft-ds" method="table" conf="3"/></port>
+<port protocol="tcp" portid="5040"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="7680"><state state="open" reason="syn-ack" reason_ttl="125"/><service name="pando-pub" method="table" conf="3"/></port>
+<port protocol="tcp" portid="49664"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49665"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49666"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49667"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49668"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+<port protocol="tcp" portid="49669"><state state="open" reason="syn-ack" reason_ttl="125"/></port>
+</ports>
+<times srtt="58187" rttvar="3679" to="100000"/>
+</host>
+<runstats><finished time="1753158295" timestr="Tue Jul 22 06:24:55 2025" summary="Nmap done at Tue Jul 22 06:24:55 2025; 2 IP addresses (2 hosts up) scanned in 26.16 seconds" elapsed="26.16" exit="success"/><hosts up="2" down="0" total="2"/>
+</runstats>
+</nmaprun>

@@ -12,6 +12,7 @@ class VersionData{
     private static final String ID_WRAPPER_PREPARE= "prepare wrapper"
     private static final String ID_WRAPPER_SECRETVALIDATION= "secretvalidation wrapper"
     private static final String ID_WRAPPER_XRAY= "xray wrapper"
+    private static final String ID_WRAPPER_INFRALIGHT= "infralight wrapper"
 
     private StringBuilder debugInfo = new StringBuilder();
 
@@ -34,6 +35,7 @@ class VersionData{
         initialize(ID_WRAPPER_PREPARE,          "Prepare Wrapper")
         initialize(ID_WRAPPER_SECRETVALIDATION, "SecretValidation Wrapper")
         initialize(ID_WRAPPER_XRAY,             "Xray Wrapper")
+        initialize(ID_WRAPPER_INFRALIGHT,       "Infralight Wrapper")
     }
 
     public class VersionInfo{
@@ -113,6 +115,7 @@ class VersionData{
     public String getServerVersion(){
         return map.get(ID_SERVER).getShortVersion()
     }
+    
     public String getServerDocsVersion(){
         return map.get(ID_SERVER).getShortVersionForDocs()
     }
@@ -131,6 +134,10 @@ class VersionData{
 
     public String getSecretvalidationWrapperVersion(){
         return map.get(ID_WRAPPER_SECRETVALIDATION).getShortVersion()
+    }
+    
+    public String getInfralightWrapperVersion(){
+        return map.get(ID_WRAPPER_INFRALIGHT).getShortVersion()
     }
 
     public String getDebugInfo(){

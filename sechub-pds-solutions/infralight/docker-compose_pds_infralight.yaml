@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: MIT
+
+services:
+  pds-infralight:
+    build:
+      args:
+        - BASE_IMAGE=${BASE_IMAGE}
+        - INFRALIGHT_WRAPPER_VERSION=${INFRALIGHT_WRAPPER_VERSION}
+      context: docker/
+      dockerfile: Infralight-Debian.dockerfile
+    container_name: pds-infralight
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:8444:8444"
+      - "127.0.0.1:15024:15024"
+    networks:
+      - "sechub"
+    volumes:
+      - ./docker/scripts:/pds/scripts
+
+networks:
+  sechub:
+    name: "sechub"
