@@ -36,13 +36,13 @@ class OAuth2OpaqueTokenClusterCacheRepositoryDBTest {
         entityManager.persistAndFlush(entity);
 
         /* check precondition: can be found */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isTrue();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
 
         /* execute */
-        repositoryToTest.deleteById(opaqueToken);
+        repositoryToTest.deleteAllByOpaqueToken(opaqueToken);
 
         /* test */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isFalse();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isFalse();
 
     }
 
@@ -58,13 +58,13 @@ class OAuth2OpaqueTokenClusterCacheRepositoryDBTest {
         entityManager.persistAndFlush(entity);
 
         /* check precondition: can be found */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isTrue();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
 
         /* execute */
         repositoryToTest.removeOutdated(now.plus(Duration.ofMinutes(3)));
 
         /* test */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isFalse();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isFalse();
 
     }
 
@@ -80,13 +80,13 @@ class OAuth2OpaqueTokenClusterCacheRepositoryDBTest {
         entityManager.persistAndFlush(entity);
 
         /* check precondition: can be found */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isTrue();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
 
         /* execute */
         repositoryToTest.removeOutdated(now.plus(Duration.ofMinutes(1)));
 
         /* test */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isTrue();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
 
     }
 

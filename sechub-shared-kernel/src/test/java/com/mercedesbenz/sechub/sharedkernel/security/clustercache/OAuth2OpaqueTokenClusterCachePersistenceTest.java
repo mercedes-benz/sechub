@@ -55,7 +55,7 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> data = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(value, duration, cryptoProvider, now);
 
         /* @formatter:off*/
-        when(repository.findById(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.empty()); // not found in database
+        when(repository.findFirstByOpaqueTokenOrderByCreatedAtDesc(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.empty()); // not found in database
         when(repository.save(any())).
             thenThrow(new DuplicateKeyException("failed-attempt-1")). // first save fails
             thenThrow(new RuntimeException("failed-attempt-2")). // second save fails
@@ -87,7 +87,7 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
         Duration duration = Duration.ofSeconds(10).plusHours(1);
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> data = new CacheData<OAuth2OpaqueTokenIntrospectionResponse>(value, duration, cryptoProvider, now);
 
-        when(repository.findById(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.empty()); // not found in database
+        when(repository.findFirstByOpaqueTokenOrderByCreatedAtDesc(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.empty()); // not found in database
 
         /* execute */
         persistenceToTest.put(TEST_OPAQUE_TOKEN_ID, data);
@@ -116,7 +116,7 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
 
         OAuth2OpaqueTokenClusterCache existingCacheEntry = new OAuth2OpaqueTokenClusterCache(TEST_OPAQUE_TOKEN_ID, "old", Duration.ofSeconds(2),
                 Instant.ofEpochMilli(0));
-        when(repository.findById(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.of(existingCacheEntry));
+        when(repository.findFirstByOpaqueTokenOrderByCreatedAtDesc(TEST_OPAQUE_TOKEN_ID)).thenReturn(Optional.of(existingCacheEntry));
 
         /* execute */
         persistenceToTest.put(TEST_OPAQUE_TOKEN_ID, data);
@@ -143,7 +143,7 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
         persistenceToTest.remove(opaqueToken);
 
         /* test */
-        verify(repository).deleteById(opaqueToken);
+        verify(repository).deleteAllByOpaqueToken(opaqueToken);
     }
 
     @Test
@@ -165,7 +165,7 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> result = persistenceToTest.get(opaqueToken);
 
         /* test */
-        verify(repository).findById(opaqueToken);
+        verify(repository).findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken);
         assertThat(result).isNull();
     }
 
@@ -180,13 +180,13 @@ class OAuth2OpaqueTokenClusterCachePersistenceTest {
 
         OAuth2OpaqueTokenClusterCache cache = new OAuth2OpaqueTokenClusterCache(opaqueToken, json, Duration.ofHours(1), Instant.now());
         Optional<OAuth2OpaqueTokenClusterCache> cacheValue = Optional.of(cache);
-        when(repository.findById(opaqueToken)).thenReturn(cacheValue);
+        when(repository.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken)).thenReturn(cacheValue);
 
         /* execute */
         CacheData<OAuth2OpaqueTokenIntrospectionResponse> result = persistenceToTest.get(opaqueToken);
 
         /* test */
-        verify(repository).findById(opaqueToken);
+        verify(repository).findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken);
         assertThat(result).isNotNull();
     }
 

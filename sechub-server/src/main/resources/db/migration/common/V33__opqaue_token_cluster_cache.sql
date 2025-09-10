@@ -1,6 +1,7 @@
 -- SPDX-License-Identifier: MIT
 CREATE TABLE identity_oauth2_opaquetoken_cache
 (
+   id uuid not null,
    opaque_token varchar(4096) not null,
    introspection_response text not null,
    created_at timestamp not null,
@@ -10,9 +11,9 @@ CREATE TABLE identity_oauth2_opaquetoken_cache
    
    version integer,
    
-   PRIMARY KEY (opaque_token)
+   PRIMARY KEY (id)
 );
 
 CREATE INDEX IF NOT EXISTS i03_identity_opaque_token_cache_id
-    ON identity_oauth2_opaquetoken_cache (opaque_token);
+    ON identity_oauth2_opaquetoken_cache (id);
 
