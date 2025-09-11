@@ -5,12 +5,9 @@ import static java.util.Objects.*;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Version;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = OAuth2OpaqueTokenClusterCache.TABLE_NAME)
@@ -20,6 +17,8 @@ public class OAuth2OpaqueTokenClusterCache {
     /* +............................ SQL ......................................+ */
     /* +-----------------------------------------------------------------------+ */
     public static final String TABLE_NAME = "IDENTITY_OAUTH2_OPAQUETOKEN_CACHE";
+
+    public static final String COLUMN_ID = "id";
 
     public static final String COLUMN_OPAQUE_TOKEN = "OPAQUE_TOKEN";
 
@@ -36,12 +35,17 @@ public class OAuth2OpaqueTokenClusterCache {
     /* +-----------------------------------------------------------------------+ */
     public static final String CLASS_NAME = "OAuth2OpaqueTokenClusterCache";
 
+    public static final String PROPERTY_OPAQUE_TOKEN = "opaqueToken";
     public static final String PROPERTY_CREATED_AT = "createdAt";
     public static final String PROPERTY_DURATION = "duration";
     public static final String PROPERTY_EXPIRES_AT = "expiresAt";
 
     @Id
-    @Column(name = COLUMN_OPAQUE_TOKEN, unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = COLUMN_ID, unique = true, nullable = false)
+    private UUID id;
+
+    @Column(name = COLUMN_OPAQUE_TOKEN, nullable = false)
     String opaqueToken;
 
     @Column(name = COLUMN_INTROSPECTION_RESPONSE, nullable = false)

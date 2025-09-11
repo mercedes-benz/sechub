@@ -38,7 +38,8 @@ public class OAuth2OpaqueTokenClusterCachePersistence implements CachePersistenc
 
             OAuth2OpaqueTokenClusterCache clusterCache;
 
-            Optional<OAuth2OpaqueTokenClusterCache> fromDB = repository.findById(key);
+            // Use the newest entry for the given opaque token
+            Optional<OAuth2OpaqueTokenClusterCache> fromDB = repository.findFirstByOpaqueTokenOrderByCreatedAtDesc(key);
             if (fromDB.isPresent()) {
                 /* update existing entry */
                 clusterCache = fromDB.get();
@@ -59,7 +60,8 @@ public class OAuth2OpaqueTokenClusterCachePersistence implements CachePersistenc
     @Override
     public CacheData<OAuth2OpaqueTokenIntrospectionResponse> get(String opaqueToken) {
 
-        Optional<OAuth2OpaqueTokenClusterCache> data = repository.findById(opaqueToken);
+        // Always get the newest entry for the given opaque token
+        Optional<OAuth2OpaqueTokenClusterCache> data = repository.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken);
         if (data.isEmpty()) {
             return null;
         }
@@ -83,7 +85,7 @@ public class OAuth2OpaqueTokenClusterCachePersistence implements CachePersistenc
 
     @Override
     public void remove(String opaqueToken) {
-        handleResilient("remove opaque token from cache", () -> repository.deleteById(opaqueToken));
+        handleResilient("remove opaque token from cache", () -> repository.deleteAllByOpaqueToken(opaqueToken));
     }
 
     @Override

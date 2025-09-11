@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,13 @@ class OAuth2OpaqueTokenClusterCacheRepositoryDBTest {
         entityManager.persistAndFlush(entity);
 
         /* check precondition: can be found */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isTrue();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
 
         /* execute */
-        repositoryToTest.deleteById(opaqueToken);
+        repositoryToTest.deleteAllByOpaqueToken(opaqueToken);
 
         /* test */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isFalse();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isFalse();
 
     }
 
@@ -58,13 +59,13 @@ class OAuth2OpaqueTokenClusterCacheRepositoryDBTest {
         entityManager.persistAndFlush(entity);
 
         /* check precondition: can be found */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isTrue();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
 
         /* execute */
         repositoryToTest.removeOutdated(now.plus(Duration.ofMinutes(3)));
 
         /* test */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isFalse();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isFalse();
 
     }
 
@@ -80,14 +81,56 @@ class OAuth2OpaqueTokenClusterCacheRepositoryDBTest {
         entityManager.persistAndFlush(entity);
 
         /* check precondition: can be found */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isTrue();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
 
         /* execute */
         repositoryToTest.removeOutdated(now.plus(Duration.ofMinutes(1)));
 
         /* test */
-        assertThat(repositoryToTest.existsById(opaqueToken)).isTrue();
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
 
+    }
+
+    @Test
+    void same_token_with_different_createdAt_stores_two_entries_and_finds_newest() {
+        /* prepare */
+        Instant now = Instant.now();
+        String opaqueToken = "pseudo-token-" + System.nanoTime();
+        String introSpectionResponse1 = "something1";
+        String introSpectionResponse2 = "something2";
+        OAuth2OpaqueTokenClusterCache entity1 = new OAuth2OpaqueTokenClusterCache(opaqueToken, introSpectionResponse1, Duration.ofMinutes(2), now);
+        OAuth2OpaqueTokenClusterCache entity2 = new OAuth2OpaqueTokenClusterCache(opaqueToken, introSpectionResponse2, Duration.ofMinutes(2),
+                now.plusSeconds(10));
+        entityManager.persistAndFlush(entity1);
+        entityManager.persistAndFlush(entity2);
+
+        /* execute + test */
+        Optional<OAuth2OpaqueTokenClusterCache> found = repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken);
+        assertThat(found.isPresent()).isTrue();
+        assertThat(found.get().getIntroSpectionResponse()).isEqualTo(introSpectionResponse2);
+    }
+
+    @Test
+    void deleteAllByOpaqueToken_when_multiple_entries_exist_deletes_all() {
+        /* prepare */
+        Instant now = Instant.now();
+        String opaqueToken = "pseudo-token-" + System.nanoTime();
+        String introSpectionResponse1 = "something1";
+        String introSpectionResponse2 = "something2";
+        OAuth2OpaqueTokenClusterCache entity1 = new OAuth2OpaqueTokenClusterCache(opaqueToken, introSpectionResponse1, Duration.ofMinutes(2), now);
+        OAuth2OpaqueTokenClusterCache entity2 = new OAuth2OpaqueTokenClusterCache(opaqueToken, introSpectionResponse2, Duration.ofMinutes(2),
+                now.plusSeconds(10));
+        entityManager.persistAndFlush(entity1);
+        entityManager.persistAndFlush(entity2);
+
+        /* check precondition: can be found */
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isTrue();
+
+        /* execute */
+        repositoryToTest.deleteAllByOpaqueToken(opaqueToken);
+
+        /* test */
+        assertThat(repositoryToTest.findFirstByOpaqueTokenOrderByCreatedAtDesc(opaqueToken).isPresent()).isFalse();
     }
 
     @TestConfiguration
