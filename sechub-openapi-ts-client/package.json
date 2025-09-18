@@ -6,7 +6,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@openapitools/openapi-generator-cli": "^2.20.0",
+    "@openapitools/openapi-generator-cli": "^2.23.4",
     "typescript": "^5.8.3",
     "uuid": "^11.0.3"
   },
