@@ -359,6 +359,64 @@ public class CheckmarxAdapterV1WireMockTest {
 
     }
 
+    @Test
+    public void simulate_cancel_scan_in_checkmarx_queue_successfully() throws Exception {
+        /* prepare */
+        AdapterMetaData metadata = new AdapterMetaData();
+        metadata.setValue(CheckmarxMetaDataID.KEY_SCAN_ID, CHECKMARX_SCAN_ID);
+        when(callback.getMetaDataOrNull()).thenReturn(metadata);
+
+        login(3600);
+
+        /* simulate cancel scan in queue */
+        simulateCancelScanInCheckmarxQueueSuccessful();
+
+        /* execute */
+        boolean canceled = adapterToTest.cancel(config, callback);
+
+        /* test */
+        assertTrue(canceled);
+        history.assertAllRememberedUrlsWereRequested();
+    }
+
+    @Test
+    public void simulate_cancel_scan_in_checkmarx_queue_fails_on_checkmarx_side_still_cancels_sechub_job() throws Exception {
+        /* prepare */
+        AdapterMetaData metadata = new AdapterMetaData();
+        metadata.setValue(CheckmarxMetaDataID.KEY_SCAN_ID, CHECKMARX_SCAN_ID);
+        when(callback.getMetaDataOrNull()).thenReturn(metadata);
+
+        login(3600);
+
+        /* simulate cancel scan in queue */
+        simulateCancelScanInCheckmarxQueueFails();
+
+        /* execute */
+        boolean canceled = adapterToTest.cancel(config, callback);
+
+        /* test */
+        assertTrue(canceled);
+        history.assertAllRememberedUrlsWereRequested();
+    }
+
+    private void simulateCancelScanInCheckmarxQueueSuccessful() {
+        simulateCancelScanInQueueRespondsWith(HttpStatus.OK);
+    }
+
+    private void simulateCancelScanInCheckmarxQueueFails() {
+        simulateCancelScanInQueueRespondsWith(HttpStatus.NOT_FOUND);
+    }
+
+    private void simulateCancelScanInQueueRespondsWith(HttpStatus expectedStatus) {
+        LinkedHashMap<String, Object> cancelScanMap = new LinkedHashMap<>();
+        cancelScanMap.put("status", "canceled");
+
+        stubFor(patch(urlEqualTo(history.rememberPATCH(apiURLSupport.nextURL("/cxrestapi/sast/scansQueue/" + CHECKMARX_SCAN_ID))))
+                .withHeader("Accept", equalTo(APPLICATION_JSON + ";v=1.2")).withHeader("Content-Type", equalTo(APPLICATION_JSON + ";v=1.2"))
+                .withRequestBody(equalToJson(JSONTestUtil.toJSONContainingNullValues(cancelScanMap)))
+                .willReturn(aResponse().withStatus(expectedStatus.value()).withHeader("Content-Type", APPLICATION_JSON)));
+    }
+
     private void simulateDownloadReportSuccessful() {
         stubFor(get(urlEqualTo(history.rememberGET(apiURLSupport.nextURL("/cxrestapi/reports/sastScan/" + CHECKMARX_REPORT_ID))))
                 .willReturn(aResponse().withStatus(HttpStatus.OK.value()).withHeader("Content-Type", APPLICATION_JSON).withBody(CONTENT_FROM_CHECKMARX)));
@@ -622,4 +680,5 @@ public class CheckmarxAdapterV1WireMockTest {
             throw e;
         }
     }
+
 }

@@ -11,6 +11,7 @@ public class WiremockUrlHistory {
     private List<String> getURLs = new ArrayList<>();
     private List<String> putURLs = new ArrayList<>();
     private List<String> deleteURLs = new ArrayList<>();
+    private List<String> patchURLs = new ArrayList<>();
 
     private List<String> logged = new ArrayList<>();
 
@@ -38,6 +39,12 @@ public class WiremockUrlHistory {
         return url;
     }
 
+    public String rememberPATCH(String url) {
+        patchURLs.add(url);
+        logged.add("PATCH : " + url);
+        return url;
+    }
+
     public void assertAllRememberedUrlsWereRequested() {
         for (String postURL : postURLs) {
             verify(postRequestedFor(urlEqualTo(postURL)));
@@ -50,6 +57,9 @@ public class WiremockUrlHistory {
         }
         for (String getURL : deleteURLs) {
             verify(deleteRequestedFor(urlEqualTo(getURL)));
+        }
+        for (String patchURL : patchURLs) {
+            verify(patchRequestedFor(urlEqualTo(patchURL)));
         }
     }
 
