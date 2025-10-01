@@ -1,3 +1,0 @@
-# SPDX-License-Identifier: MIT
-
-# The loadbalancer for the SecHub web-ui is configured within the SecHub server Helm chart (loadbalancer.yaml).
