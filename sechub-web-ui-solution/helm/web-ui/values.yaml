@@ -45,6 +45,17 @@ web_ui:
 #  This way, you can force deployments e.g. when only secrets have changed.
 deploymentComment: "my deployment comment"
 
+loadbalancer:
+  # Set to true if you want a dedicated load balancer for web ui
+  enabled: false
+  # External port to listen on
+  listenport: 443
+  # optional: Add annotations (goes to metadata.annotations)
+  #           Can contain multiple lines. Example:
+  # annotations: |-
+  #   loadbalancer.openstack.org/keep-floatingip: "true"
+  #   loadbalancer.openstack.org/proxy-protocol: "true"
+
 # optional: Add annotations to template.metadata.annotations
 #           Can contain multiple lines. Example for Prometheus actuator:
 # templateMetadataAnnotations: |-

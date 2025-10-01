@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MIT
+
+{{- if .Values.loadbalancer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: sechub-web-ui
+  {{- if .Values.loadbalancer.annotations }}
+  annotations:
+    {{ .Values.loadbalancer.annotations | indent 4 | trim }}
+  {{- end }}
+  labels:
+    name: sechub-web-ui
+spec:
+  type: LoadBalancer
+  selector:
+    name: web-ui
+  ports:
+  - name: https
+    port: {{ .Values.loadbalancer.listenport }}
+    protocol: TCP
+    targetPort: 4443
+  loadBalancerSourceRanges:
+    # CIDR block(s) where we want to connect our LB from
+    - 0.0.0.0/0
+{{- end }}
