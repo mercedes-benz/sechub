@@ -38,7 +38,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.4.0",
     "eslint-plugin-vue": "^9.27.0",
-    "happy-dom": "^17.4.6",
+    "happy-dom": "^20.0.2",
     "sass": "1.77.6",
     "typescript": "^5.4.2",
     "unplugin-auto-import": "^0.17.6",
