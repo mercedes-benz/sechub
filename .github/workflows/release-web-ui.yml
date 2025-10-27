@@ -121,7 +121,7 @@ jobs:
 
       - name: Archive GIT status
         if: always()
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         with:
           name: git-status.txt
           path: build/reports/git-status.txt
@@ -129,7 +129,7 @@ jobs:
 
       - name: Archive Web-UI artifacts
         if: always()
-        uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         with:
           name: sechub-web-ui_htdocs
           path: sechub-web-ui/dist/
