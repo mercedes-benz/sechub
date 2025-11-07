@@ -7,7 +7,7 @@ on:
       publish-documentation:
         description: Insert your email address here if you want to create a PR for Github pages update (branch `master`)
         required: false
-  schedule:
+  # schedule:
     # Nightly build documentation:
     # cron runs on the default branch: `develop` in our case.
     # Cron execution deactivated due to stopped development:
