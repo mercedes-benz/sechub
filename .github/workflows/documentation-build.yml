@@ -10,7 +10,8 @@ on:
   schedule:
     # Nightly build documentation:
     # cron runs on the default branch: `develop` in our case.
-    - cron:  '32 23 * * *'
+    # Cron execution deactivated due to stopped development:
+    # - cron:  '32 23 * * *'
 
 env:
   ACTIONS_SECHUB_DOC_RELEASE_BRANCH: master
