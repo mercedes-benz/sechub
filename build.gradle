@@ -1,51 +1,40 @@
 // SPDX-License-Identifier: MIT
-buildscript{
-	apply from: "${rootProject.projectDir}/gradle/libraries.gradle"
-	apply from: "${rootProject.projectDir}/gradle/projects.gradle"
+buildscript {
+    apply from: "${rootProject.projectDir}/gradle/libraries.gradle"
+    apply from: "${rootProject.projectDir}/gradle/projects.gradle"
 
     def customMavenRepoURL4plugins = System.getenv('CUST_MVN_URL_PLUGINS')
-    if (customMavenRepoURL4plugins!=null){
+    if (customMavenRepoURL4plugins != null) {
         repositories {
             maven { url "${customMavenRepoURL4plugins}" } // e.g. a corporate nexus or artifactory...
         }
-    }else{
-    	repositories {
-    	     mavenCentral()
-    	}
+    } else {
+        repositories {
+            mavenCentral()
+        }
     }
 
-	dependencies{
-		classpath gradleApi()
-		classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
-		classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
+    dependencies {
+        classpath gradleApi()
+        classpath "org.ajoberstar.grgit:grgit-gradle:${libraryVersion.grgit}" // necessary for version calculation
+        classpath "com.epages:restdocs-api-spec-gradle-plugin:${libraryVersion.restDocsApiSpec}"
         classpath "org.owasp:dependency-check-gradle:${libraryVersion.dependency_check}"
         classpath "org.cyclonedx:cyclonedx-gradle-plugin:${libraryVersion.cyclonedx_gradle_plugin}"
-	}
+    }
 }
 
 
 plugins {
-    // asciidoc
+    id 'com.diffplug.spotless' version '8.0.0'
+    id 'com.github.ben-manes.versions' version '0.50.0' // versions plugin for checking new available library versions etc. (see https://github.com/ben-manes/gradle-versions-plugin)
     id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'org.asciidoctor.jvm.pdf' version '3.3.2'
-    
-    // open api
     id 'org.openapi.generator' version '7.8.0'
-    
-    // spring
+    id 'org.openrewrite.rewrite' version '7.20.0' apply false
     id 'org.springframework.boot' version '3.3.5' apply false
-    
-    // spotless code formatter
-    // (see https://github.com/diffplug/spotless)
-    id 'com.diffplug.spotless' version '6.23.3'
-    
-    // versions plugin for checking new available library versions etc. 
-    // (see https://github.com/ben-manes/gradle-versions-plugin)
-    id 'com.github.ben-manes.versions' version '0.50.0'
-       
-    // Details about every gradle plugin can be found at 
-    // https://plugins.gradle.org/plugin/${pluginId}
 }
+
+apply from: "$rootDir/gradle/rewrite.gradle"
 
 // old style apply necessary here - to have same version as in classpath dependency
 apply plugin: 'org.owasp.dependencycheck'
@@ -54,7 +43,7 @@ apply plugin: 'org.owasp.dependencycheck'
 apply plugin: 'org.cyclonedx.bom'
 // generate sbom only with runtime dependencies
 cyclonedxBom {
-  includeConfigs = ["runtimeClasspath"]
+    includeConfigs = ["runtimeClasspath"]
 }
 
 /* check buildsystem */
@@ -62,15 +51,15 @@ def githubActor = System.getenv('GITHUB_ACTOR')
 
 def atGitHubActions = false
 
-if (githubActor == null || githubActor.isEmpty()){
+if (githubActor == null || githubActor.isEmpty()) {
     /* not inside github actions */
     atGitHubActions = false
-}else{
+} else {
     atGitHubActions = true
 }
 
 /* define global `buildDoneByGitHubActions` - so sub projects can reuse this information*/
-ext.buildDoneByGitHubActions=atGitHubActions
+ext.buildDoneByGitHubActions = atGitHubActions
 ext.springBootMavenBomCoordinates = org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
 
 ext {
@@ -78,13 +67,13 @@ ext {
 }
 
 /* own clean task - we need this because root project has not included a module providing the task */
-task internalCleanRootBuildFolder(type: Delete){
+task internalCleanRootBuildFolder(type: Delete) {
 
     doFirst {
         def rootBuildFolder = file("${project.projectDir}/build")
-        if (! rootBuildFolder.exists()){
+        if (!rootBuildFolder.exists()) {
             rootBuildFolder.mkdirs()
-        } 
+        }
         delete rootBuildFolder.listFiles() // so we do NOT clear buildSrc/build here!
     }
 
@@ -99,19 +88,19 @@ allprojects {
     apply from: rootProject.file('gradle/spotless.gradle')
 
     def customMavenRepoURL = System.getenv('CUST_MVN_URL')
-    if (customMavenRepoURL!=null){
+    if (customMavenRepoURL != null) {
         repositories {
             maven { url "${customMavenRepoURL}" } // e.g. a corporate nexus or artifactory...
         }
-    }else{
+    } else {
         repositories {
-             mavenCentral()
+            mavenCentral()
         }
     }
 
     /* every project has got this additional task */
-    task prepareGitPush(dependsOn: spotlessApply){
-    
+    task prepareGitPush(dependsOn: spotlessApply) {
+
     }
 
     /*
@@ -126,17 +115,16 @@ allprojects {
 }
 
 
-
 spotless {
-	groovyGradle {
-		target '*.gradle', 'gradle/*.gradle'
-	}
-	format 'dotfiles', {
-		target '.gitignore', '.gitattributes', '.editorconfig'
-		indentWithSpaces(2)
-		trimTrailingWhitespace()
-		endWithNewline()
-	}
+    groovyGradle {
+        target '*.gradle', 'gradle/*.gradle'
+    }
+    format 'dotfiles', {
+        target '.gitignore', '.gitattributes', '.editorconfig'
+        indentWithSpaces(2)
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
 }
 
 apply from: "${rootProject.projectDir}/gradle/build-versioning.gradle"

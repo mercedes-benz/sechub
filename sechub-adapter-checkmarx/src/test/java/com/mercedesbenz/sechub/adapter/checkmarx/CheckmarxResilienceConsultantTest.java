@@ -120,8 +120,7 @@ class CheckmarxResilienceConsultantTest {
     @Test
     void nested_http_bad_request_400_exception_wrapped_in_runtime_and_sechubexecution_exception_returns_retry_proposal_with_badrequest_config() {
         /* prepare */
-        when(context.getCurrentError())
-                .thenReturn(new IOException("se1", new RuntimeException(new HttpClientErrorException(HttpStatus.BAD_REQUEST))));
+        when(context.getCurrentError()).thenReturn(new IOException("se1", new RuntimeException(new HttpClientErrorException(HttpStatus.BAD_REQUEST))));
 
         /* execute */
         ResilienceProposal proposal = consultantToTest.consultFor(context);
@@ -134,7 +133,7 @@ class CheckmarxResilienceConsultantTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = HttpStatus.class, names = {"INTERNAL_SERVER_ERROR", "BAD_GATEWAY", "SERVICE_UNAVAILABLE", "GATEWAY_TIMEOUT"})
+    @EnumSource(value = HttpStatus.class, names = { "INTERNAL_SERVER_ERROR", "BAD_GATEWAY", "SERVICE_UNAVAILABLE", "GATEWAY_TIMEOUT" })
     void http_server_error_5xx_exception_returns_retry_proposal_with_servererror_config(HttpStatus status) {
         /* prepare */
         when(context.getCurrentError()).thenReturn(new HttpServerErrorException(status));
@@ -150,7 +149,7 @@ class CheckmarxResilienceConsultantTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = HttpStatus.class, names = {"UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "METHOD_NOT_ALLOWED", "NOT_ACCEPTABLE"})
+    @EnumSource(value = HttpStatus.class, names = { "UNAUTHORIZED", "FORBIDDEN", "NOT_FOUND", "METHOD_NOT_ALLOWED", "NOT_ACCEPTABLE" })
     void http_client_error_4xx_exception_returns_null_when_consultant_can_not_handle(HttpStatus status) {
         /* prepare */
         when(context.getCurrentError()).thenReturn(new HttpClientErrorException(status));

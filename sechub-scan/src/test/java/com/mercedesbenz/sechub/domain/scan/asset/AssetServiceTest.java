@@ -46,14 +46,14 @@ class AssetServiceTest {
     @Test
     void fetchAllAssetIds_returns_result_from_repo() {
         /* prepare */
-        when(repository.fetchAllAssetIds()).thenReturn(List.of("asset1","asset2"));
+        when(repository.fetchAllAssetIds()).thenReturn(List.of("asset1", "asset2"));
 
         /* execute */
         List<String> result = serviceToTest.fetchAllAssetIds();
 
         /* test */
         verify(repository).fetchAllAssetIds();
-        assertThat(result).contains("asset1","asset2");
+        assertThat(result).contains("asset1", "asset2");
     }
 
     @Test

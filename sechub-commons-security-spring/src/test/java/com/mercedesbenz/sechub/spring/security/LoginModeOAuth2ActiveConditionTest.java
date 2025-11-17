@@ -29,7 +29,8 @@ class LoginModeOAuth2ActiveConditionTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "oauth2","classic,oauth2","oauth2, classic", "classic,saml,session,ssh,apiKey,oauth2", "classic,saml,oauth2,session,ssh,apiKey" })
+    @ValueSource(strings = { "oauth2", "classic,oauth2", "oauth2, classic", "classic,saml,session,ssh,apiKey,oauth2",
+            "classic,saml,oauth2,session,ssh,apiKey" })
     void returns_true_when_any_listed_mode_is_oauth2(String value) {
         /* prepare */
         when(environment.getProperty("sechub.security.login.modes")).thenReturn(value);

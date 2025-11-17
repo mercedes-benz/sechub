@@ -108,7 +108,7 @@ public class ProjectCreationServiceTest {
 
         /* test */
         var messageCaptor = ArgumentCaptor.forClass(DomainMessage.class);
-        verify(eventBus,times(2)).sendAsynchron(messageCaptor.capture());
+        verify(eventBus, times(2)).sendAsynchron(messageCaptor.capture());
 
         List<DomainMessage> messages = messageCaptor.getAllValues();
         DomainMessage firstMessage = messages.get(0);
@@ -130,8 +130,7 @@ public class ProjectCreationServiceTest {
 
         /* execute + test */
         assertThatThrownBy(() -> projectCreationService.createProject(PROJECT_ID, DESCRIPTION, OWNER, WHITELIST, META_DATA))
-            .isInstanceOf(AlreadyExistsException.class)
-            .hasMessageContaining("already exists");
+                .isInstanceOf(AlreadyExistsException.class).hasMessageContaining("already exists");
     }
 
     @Test
@@ -142,7 +141,6 @@ public class ProjectCreationServiceTest {
 
         /* execute + test */
         assertThatThrownBy(() -> projectCreationService.createProject(PROJECT_ID, DESCRIPTION, OWNER, WHITELIST, META_DATA))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("not found");
+                .isInstanceOf(NotFoundException.class).hasMessageContaining("not found");
     }
 }

@@ -134,8 +134,7 @@ public class SecHubServerMDCAsyncHandlerInterceptorTest {
     @Test
     public void when_url_is_user_removes_project_data_false_positives_from_project_no_job_uuid_is_expected() throws Exception {
         /* prepare */
-        when(request.getRequestURI())
-                .thenReturn("https://localhost/api/project/myprojectId/false-positive/project-data/unique-id");
+        when(request.getRequestURI()).thenReturn("https://localhost/api/project/myprojectId/false-positive/project-data/unique-id");
 
         /* execute */
         interceptorToTest.preHandle(request, response, handler);

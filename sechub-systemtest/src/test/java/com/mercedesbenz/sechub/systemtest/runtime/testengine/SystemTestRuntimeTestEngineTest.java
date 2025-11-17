@@ -149,7 +149,7 @@ class SystemTestRuntimeTestEngineTest {
     @Test
     void sechub_status_fails() throws Exception {
         /* prepare */
-        when(secHubExecutionApi.userCheckJobStatus(any(),any())).thenThrow(new ApiException("no status readable"));
+        when(secHubExecutionApi.userCheckJobStatus(any(), any())).thenThrow(new ApiException("no status readable"));
 
         TestDefinition test = configureSecHubLocalRunAndReturnTestDefinition();
 
@@ -172,7 +172,6 @@ class SystemTestRuntimeTestEngineTest {
         SecHubConfiguration dummySecHubConfiguration = new SecHubConfiguration();
         when(calculator.replace(any())).thenReturn(JSONConverter.get().toJSON(dummySecHubConfiguration));
 
-
         AssertSechubResultDefinition sechubResult = new AssertSechubResultDefinition();
         sechubResult.setHasTrafficLight(Optional.of(EXPECTED_TRAFFIC_LIGHT_YELLOW));
         when(assertDefinition.getSechubResult()).thenReturn(Optional.of(sechubResult));
@@ -181,7 +180,6 @@ class SystemTestRuntimeTestEngineTest {
         RunSecHubJobDefinition sechubJobDefinition = new RunSecHubJobDefinition();
         test.getExecute().setRunSecHubJob(Optional.of(sechubJobDefinition));
         test.getAssert().add(assertDefinition);
-
 
         return test;
     }

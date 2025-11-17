@@ -37,7 +37,7 @@ public class SystemPropertiesDescriptionGeneratorTest {
         when(collector.fetchMustBeDocumentParts()).thenReturn(null);
 
         /* execute */
-        String generated = generatorToTest.generate(null,registry);
+        String generated = generatorToTest.generate(null, registry);
 
         /* test */
         assertNotNull(generated);

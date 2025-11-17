@@ -1,0 +1,18 @@
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: com.mercedesbenz.sechub.openrewrite.SanityCheck
+displayName: Apply all Java & Gradle best practices
+description: Comprehensive code quality recipe combining modernization, security, and best practices.
+tags:
+  - java
+  - gradle
+  - static-analysis
+  - cleanup
+recipeList:
+  - org.openrewrite.gradle.EnableGradleBuildCache
+  - org.openrewrite.gradle.EnableGradleParallelExecution
+  # - org.openrewrite.java.RemoveUnusedImports
+  # - org.openrewrite.java.spring.boot3.SpringBoot33BestPractices
+  # - org.openrewrite.gradle.GradleBestPractices
+  # - org.openrewrite.java.migrate.UpgradeToJava17
+---

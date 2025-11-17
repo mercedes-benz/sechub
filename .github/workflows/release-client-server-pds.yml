@@ -131,7 +131,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Gradle clean + spotlessCheck
-        run: ./gradlew clean spotlessCheck
+        run: ./gradlew clean spotlessCheck rewriteDryRun -Dorg.gradle.jvmargs=-Xmx8G
 
       # ----------------------
       # Create pull request if license headers are missing

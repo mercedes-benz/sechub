@@ -744,15 +744,13 @@ class ZapScannerTest {
     @Test
     void generate_report_calls_api_support_once() throws ClientApiException {
         /* prepare */
-        when(scanContext.getReportFile())
-                .thenReturn(Paths.get("src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json"));
+        when(scanContext.getReportFile()).thenReturn(Paths.get("src/test/resources/sechub-config-examples/no-auth-with-openapi-file.json"));
 
         /* execute */
         scannerToTest.generateZapReport();
 
         /* test */
-        verify(clientApiWrapper).generateReport(any(), any(), any(), any(), any(), any(), any(), any(),
-                any(), any(), any(), any(), any());
+        verify(clientApiWrapper).generateReport(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -810,8 +808,7 @@ class ZapScannerTest {
     }
 
     @Test
-    void wait_for_ajaxSpider_scan_is_cancelled_results_in_exception_with_dedicated_exit_code()
-            throws ClientApiException {
+    void wait_for_ajaxSpider_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
         /* prepare */
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
         doCallRealMethod().when(zapPDSEventHandler).cancelScan(CONTEXT_NAME);
@@ -861,12 +858,10 @@ class ZapScannerTest {
     }
 
     @Test
-    void wait_for_passiveScan_scan_is_cancelled_results_in_exception_with_dedicated_exit_code()
-            throws ClientApiException {
+    void wait_for_passiveScan_scan_is_cancelled_results_in_exception_with_dedicated_exit_code() throws ClientApiException {
         /* prepare */
         when(zapPDSEventHandler.isScanCancelled()).thenReturn(true);
         doCallRealMethod().when(zapPDSEventHandler).cancelScan(CONTEXT_NAME);
-
 
         when(clientApiWrapper.getNumberOfPassiveScannerRecordsToScan()).thenReturn(12);
 

@@ -101,7 +101,7 @@ public class JobFactoryTest {
         when(factoryToTest.userContextService.getUserId()).thenReturn(null);
 
         /* execute */
-        assertThatThrownBy(()-> factoryToTest.createJob(configuration)).isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> factoryToTest.createJob(configuration)).isInstanceOf(IllegalStateException.class);
 
     }
 

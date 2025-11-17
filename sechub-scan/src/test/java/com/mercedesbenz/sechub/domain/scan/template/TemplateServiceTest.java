@@ -225,7 +225,7 @@ class TemplateServiceTest {
         /* prepare */
         when(resolver.resolve(TemplateType.WEBSCAN_LOGIN)).thenReturn(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN);
         ScanProjectConfig config = mock();
-        when(configService.get("project1",ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN, false)).thenReturn(config);
+        when(configService.get("project1", ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN, false)).thenReturn(config);
         when(config.getData()).thenReturn("template-id-1");
 
         /* execute */
@@ -239,7 +239,7 @@ class TemplateServiceTest {
 
         when(resolver.resolve(TemplateType.WEBSCAN_LOGIN)).thenReturn(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN);
         ScanProjectConfig config = mock();
-        when(configService.get("project1",ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN, false)).thenReturn(config);
+        when(configService.get("project1", ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN, false)).thenReturn(config);
         when(config.getData()).thenReturn("template1");
 
         Template template1Entity = mock();
@@ -261,7 +261,7 @@ class TemplateServiceTest {
 
         /* prepare */
         when(resolver.resolve(any(TemplateType.class))).thenReturn(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN);
-        when(configService.findAllData(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN)).thenReturn(List.of("t1","t2"));
+        when(configService.findAllData(ScanProjectConfigID.TEMPLATE_WEBSCAN_LOGIN)).thenReturn(List.of("t1", "t2"));
 
         /* execute */
         Set<String> result = serviceToTest.fetchAllAssignedTemplateIds();

@@ -99,7 +99,7 @@ public class CheckmarxAdapterV1WireMockTest {
 
     @Test
     public void when_checkmarx_has_only_unsupported_files_the_result_is_canceled() throws Exception {
-        when(config.getTimeOutInMilliseconds()).thenReturn(1000 * 1000* 5);
+        when(config.getTimeOutInMilliseconds()).thenReturn(1000 * 1000 * 5);
 
         /* prepare */
         LinkedHashMap<String, String> loginResponse = login(3600);
@@ -125,12 +125,12 @@ public class CheckmarxAdapterV1WireMockTest {
         simulateWaitForQueingDoneReturnsFailureWithText("source folder is empty, all source files are of an unsupported language or file format");
 
         /* execute */
-        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(()->adapterToTest.start(config, callback));
+        AdapterExecutionResult adapterResult = executeAndLogHistoryOnFailure(() -> adapterToTest.start(config, callback));
 
         /* @formatter:on */
         /* test */
         assertEquals("", adapterResult.getProductResult()); // empty result because canceled
-        assertEquals(true,adapterResult.hasBeenCanceled());
+        assertEquals(true, adapterResult.hasBeenCanceled());
         history.assertAllRememberedUrlsWereRequested();
     }
 

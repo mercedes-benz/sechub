@@ -69,7 +69,7 @@ class CurrentTestVariableCalculatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings={"${calculated.unknown}","other"})
+    @ValueSource(strings = { "${calculated.unknown}", "other" })
     @EmptySource
     @NullSource
     void calculateValue_other_unchanged(String content) throws Exception {
@@ -77,7 +77,7 @@ class CurrentTestVariableCalculatorTest {
         when(locationSupport.ensureTestWorkingDirectoryRealPath(test)).thenReturn(testFolder);
 
         /* execute */
-        String calculated  = calculatorToTest.calculateValue(content);
+        String calculated = calculatorToTest.calculateValue(content);
 
         /* test */
         assertEquals(content, calculated);
@@ -103,10 +103,10 @@ class CurrentTestVariableCalculatorTest {
         when(locationSupport.ensureTestWorkingDirectoryRealPath(test)).thenReturn(testFolder);
 
         /* execute */
-        String pathToTestFolder = calculatorToTest.calculateValue("before/"+CalculatedVariables.TEST_WORKING_DIRECTORY.asExpression()+"/somewhere");
+        String pathToTestFolder = calculatorToTest.calculateValue("before/" + CalculatedVariables.TEST_WORKING_DIRECTORY.asExpression() + "/somewhere");
 
         /* test */
-        assertEquals("before/"+testFolder.toString()+"/somewhere", pathToTestFolder);
+        assertEquals("before/" + testFolder.toString() + "/somewhere", pathToTestFolder);
 
     }
 

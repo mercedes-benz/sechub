@@ -97,8 +97,7 @@ class PrepareWrapperApplicationSpringBootTest {
     @Test
     void start_preparation_remote_data_but_cannot_handled__results_in_failed() throws IOException {
         /* prepare */
-        when(environment.getSechubConfigurationModelAsJson()).thenReturn(
-                """
+        when(environment.getSechubConfigurationModelAsJson()).thenReturn("""
                 {
                   "projectId" : "project1",
                   "data" : {
@@ -114,9 +113,7 @@ class PrepareWrapperApplicationSpringBootTest {
                     "use" : [ "remote_example_name" ]
                   }
                 }
-                """
-                );
-
+                """);
 
         /* execute */
         AdapterExecutionResult result = preparationService.startPreparation();
@@ -130,8 +127,7 @@ class PrepareWrapperApplicationSpringBootTest {
     @Test
     void start_preparation_remote_data_handled_by_git_but_location_not_correct_results_validator_exception() throws IOException {
         /* prepare */
-        when(environment.getSechubConfigurationModelAsJson()).thenReturn(
-                """
+        when(environment.getSechubConfigurationModelAsJson()).thenReturn("""
                 {
                   "projectId" : "project1",
                   "data" : {
@@ -147,20 +143,18 @@ class PrepareWrapperApplicationSpringBootTest {
                     "use" : [ "remote_example_name" ]
                   }
                 }
-                """
-                );
-
+                """);
 
         /* execute + test */
-        assertThrows(PrepareWrapperInputValidatorException.class, ()-> preparationService.startPreparation());
+        assertThrows(PrepareWrapperInputValidatorException.class, () -> preparationService.startPreparation());
 
     }
 
     @Test
-    void start_preparation_remote_data_handled_by_git_and_location_correct_results_but_failing_git_download_leads_to_illegal_state_exception() throws IOException {
+    void start_preparation_remote_data_handled_by_git_and_location_correct_results_but_failing_git_download_leads_to_illegal_state_exception()
+            throws IOException {
         /* prepare */
-        when(environment.getSechubConfigurationModelAsJson()).thenReturn(
-                """
+        when(environment.getSechubConfigurationModelAsJson()).thenReturn("""
                 {
                   "projectId" : "project1",
                   "data" : {
@@ -176,27 +170,25 @@ class PrepareWrapperApplicationSpringBootTest {
                     "use" : [ "remote_example_name" ]
                   }
                 }
-                """
-                );
-
+                """);
 
         /* execute + test */
-        IllegalStateException exception = assertThrows(IllegalStateException.class, ()-> preparationService.startPreparation());
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () -> preparationService.startPreparation());
 
         /* test */
         String message = exception.getMessage();
         String expected = "Download of git repository was not successful"; // the mocked git wrapper does not download
-        if(!message.contains(expected)) {
+        if (!message.contains(expected)) {
             assertEquals(expected, message); // we use equals here to have a better comparison in IDE (fails here always)
         }
 
     }
 
     @Test
-    void start_preparation_remote_data_handled_by_skopeo_and_location_correct_results_but_failing_skopeo_download_leads_to_io_exception_with_message() throws IOException {
+    void start_preparation_remote_data_handled_by_skopeo_and_location_correct_results_but_failing_skopeo_download_leads_to_io_exception_with_message()
+            throws IOException {
         /* prepare */
-        when(environment.getSechubConfigurationModelAsJson()).thenReturn(
-                """
+        when(environment.getSechubConfigurationModelAsJson()).thenReturn("""
                 {
                   "projectId" : "project1",
                   "data" : {
@@ -212,17 +204,15 @@ class PrepareWrapperApplicationSpringBootTest {
                     "use" : [ "remote_example_name" ]
                   }
                 }
-                """
-                );
-
+                """);
 
         /* execute + test */
-        IOException exception = assertThrows(IOException.class, ()-> preparationService.startPreparation());
+        IOException exception = assertThrows(IOException.class, () -> preparationService.startPreparation());
 
         /* test */
         String message = exception.getMessage();
         String expected = "Error while executing Skopeo download process for: https://somewhere.example.com"; // the mocked skopeo wrapper does not download
-        if(!message.contains(expected)) {
+        if (!message.contains(expected)) {
             assertEquals(expected, message); // we use equals here to have a better comparison in IDE (fails here always)
         }
 

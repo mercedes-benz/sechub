@@ -87,10 +87,10 @@ class ScheduleAutoCleanupServiceTest {
         when(jobDataRepository.deleteJobDataOlderThan(cleanTime)).thenThrow(TestCanaryException.class);
 
         /* execute */
-        assertThatThrownBy(()->serviceToTest.cleanup()).isInstanceOf(TestCanaryException.class);
+        assertThatThrownBy(() -> serviceToTest.cleanup()).isInstanceOf(TestCanaryException.class);
 
         /* test */
-        verify(encryptionPoolCleanupService,never()).cleanupCipherPoolDataIfNecessaryAndPossible();
+        verify(encryptionPoolCleanupService, never()).cleanupCipherPoolDataIfNecessaryAndPossible();
 
     }
 
@@ -104,10 +104,10 @@ class ScheduleAutoCleanupServiceTest {
         when(jobRepository.deleteJobsOlderThan(cleanTime)).thenThrow(TestCanaryException.class);
 
         /* execute */
-        assertThatThrownBy(()->serviceToTest.cleanup()).isInstanceOf(TestCanaryException.class);
+        assertThatThrownBy(() -> serviceToTest.cleanup()).isInstanceOf(TestCanaryException.class);
 
         /* test */
-        verify(encryptionPoolCleanupService,never()).cleanupCipherPoolDataIfNecessaryAndPossible();
+        verify(encryptionPoolCleanupService, never()).cleanupCipherPoolDataIfNecessaryAndPossible();
 
     }
 

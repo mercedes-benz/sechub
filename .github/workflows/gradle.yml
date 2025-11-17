@@ -73,8 +73,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
 
-      - name: Gradle clean + spotlessCheck
-        run: ./gradlew clean spotlessCheck
+      - name: Gradle SanityCheck
+        run: ./gradlew clean spotlessCheck rewriteDryRun -Dorg.gradle.jvmargs=-Xmx8G
 
       - name: Build Client
         run: ./gradlew :sechub-cli:buildGo :sechub-cli:testGo

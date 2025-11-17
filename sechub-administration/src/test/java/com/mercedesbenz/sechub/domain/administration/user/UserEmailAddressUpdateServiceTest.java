@@ -190,26 +190,24 @@ class UserEmailAddressUpdateServiceTest {
     }
 
     @Test
-    void request_update_email_address_with_same_email_throws_BadRequestException(){
+    void request_update_email_address_with_same_email_throws_BadRequestException() {
         /* prepare */
         when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(FORMER_USER_1_EXAMPLE_COM))
-                .isInstanceOf(BadRequestException.class)
+        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(FORMER_USER_1_EXAMPLE_COM)).isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("New email address is same as former email address!");
     }
 
     @ParameterizedTest
     @NullSource
     @ValueSource(strings = { "", " ", "  " })
-    void request_update_email_throws_BadRequestException_when_email_is_null(String email){
+    void request_update_email_throws_BadRequestException_when_email_is_null(String email) {
         /* prepare */
         when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(email))
-                .isInstanceOf(BadRequestException.class)
+        assertThatThrownBy(() -> serviceToTest.userRequestUpdateMailAddress(email)).isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Email must not be empty");
     }
 
@@ -217,8 +215,7 @@ class UserEmailAddressUpdateServiceTest {
     void request_update_email_address_with_different_email_sends_event() {
         /* prepare */
         when(userContextService.getUserId()).thenReturn(KNOWN_USER1);
-        when(userEmailChangeTokenService.generateToken(any()))
-                .thenReturn("token");
+        when(userEmailChangeTokenService.generateToken(any())).thenReturn("token");
         /* execute */
         serviceToTest.userRequestUpdateMailAddress(NEW_MAIL_USER1_EXAMPLE_COM);
 
@@ -231,7 +228,7 @@ class UserEmailAddressUpdateServiceTest {
         assertThat("You have requested to change your SecHub email address").isEqualTo(userMessage.getSubject());
         assertThat(KNOWN_USER1).isEqualTo(userMessage.getUserId());
         assertThat(NEW_MAIL_USER1_EXAMPLE_COM).isEqualTo(userMessage.getEmailAddress());
-        assertThat (FORMER_USER_1_EXAMPLE_COM).isEqualTo(userMessage.getFormerEmailAddress());
+        assertThat(FORMER_USER_1_EXAMPLE_COM).isEqualTo(userMessage.getFormerEmailAddress());
         assertThat(userMessage.getLinkWithOneTimeToken()).isNotNull();
     }
 
@@ -242,8 +239,7 @@ class UserEmailAddressUpdateServiceTest {
         when(userRepository.findById(KNOWN_USER1)).thenReturn(Optional.of(knownUser1));
 
         /* execute + test */
-        assertThatThrownBy(() -> serviceToTest.changeUserEmailAddressByUser("token"))
-                .isInstanceOf(BadRequestException.class)
+        assertThatThrownBy(() -> serviceToTest.changeUserEmailAddressByUser("token")).isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("Token has already been used!");
     }
 

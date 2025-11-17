@@ -72,7 +72,6 @@ class PrepareWrapperSechubConfigurationSupportTest {
 
         when(prepareContext.getSecHubConfiguration()).thenReturn(null);
 
-
         Path testPath = Path.of("path");
         when(toolContext.getUploadDirectory()).thenReturn(testPath);
         when(toolContext.getToolDownloadDirectory()).thenReturn(testPath);

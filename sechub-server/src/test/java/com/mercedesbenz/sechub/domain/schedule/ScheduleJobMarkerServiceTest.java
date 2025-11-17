@@ -82,7 +82,7 @@ public class ScheduleJobMarkerServiceTest {
         /* test */
         verify(nextJobResolver).resolveNextJobUUID();
         verifyNoInteractions(jobRepository);
-        assertEquals(null,result);
+        assertEquals(null, result);
     }
 
 }

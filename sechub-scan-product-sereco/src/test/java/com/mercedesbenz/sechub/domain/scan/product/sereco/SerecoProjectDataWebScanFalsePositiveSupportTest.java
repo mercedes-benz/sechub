@@ -165,10 +165,10 @@ class SerecoProjectDataWebScanFalsePositiveSupportTest {
         when(MOCKED_MATCHER.matches()).thenReturn(false);
 
         /* execute */
-       boolean result = supportToTest.isMatchingUrlPattern(MATCHING_URL, patternMap);
+        boolean result = supportToTest.isMatchingUrlPattern(MATCHING_URL, patternMap);
 
-       /* test */
-       assertFalse(result);
+        /* test */
+        assertFalse(result);
     }
 
     @Test
@@ -177,10 +177,10 @@ class SerecoProjectDataWebScanFalsePositiveSupportTest {
         when(MOCKED_MATCHER.matches()).thenReturn(true);
 
         /* execute */
-       boolean result = supportToTest.isMatchingUrlPattern(MATCHING_URL, patternMap);
+        boolean result = supportToTest.isMatchingUrlPattern(MATCHING_URL, patternMap);
 
-       /* test */
-       assertTrue(result);
+        /* test */
+        assertTrue(result);
     }
 
     /*-------------------------------------HELPERS----------------------------------------------*/

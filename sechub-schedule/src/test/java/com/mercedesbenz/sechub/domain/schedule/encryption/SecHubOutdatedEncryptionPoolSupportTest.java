@@ -62,8 +62,8 @@ class SecHubOutdatedEncryptionPoolSupportTest {
 
     @ParameterizedTest
     @ArgumentsSource(OutdatedEncryptionPoolOnThisClusterMemberNotAllowedArgumentProvider.class)
-    void outdated_encryption_on_cluster_member_NOT_allowed(LocalDateTime now, long outdatedAcceptedMillis,
-            LocalDateTime latestPoolIdCreationTimestamp) throws Exception {
+    void outdated_encryption_on_cluster_member_NOT_allowed(LocalDateTime now, long outdatedAcceptedMillis, LocalDateTime latestPoolIdCreationTimestamp)
+            throws Exception {
 
         /* prepare */
         when(systemtimeProvider.getNow()).thenReturn(now);
@@ -86,8 +86,8 @@ class SecHubOutdatedEncryptionPoolSupportTest {
 
     @ParameterizedTest
     @ArgumentsSource(OutdatedEncryptionPoolOnThisClusterMemberAllowedArgumentProvider.class)
-    void outdated_encryption_on_cluster_member_allowed(LocalDateTime now, long outdatedAcceptedMillis,
-            LocalDateTime latestPoolIdCreationTimestamp) throws Exception {
+    void outdated_encryption_on_cluster_member_allowed(LocalDateTime now, long outdatedAcceptedMillis, LocalDateTime latestPoolIdCreationTimestamp)
+            throws Exception {
 
         /* prepare */
         when(systemtimeProvider.getNow()).thenReturn(now);
@@ -135,8 +135,8 @@ class SecHubOutdatedEncryptionPoolSupportTest {
 
     @ParameterizedTest
     @ArgumentsSource(OutdatedEncryptionPoolInClusterNotPossibleArgumentProvider.class)
-    void outdated_encryption_pool_in_cluster__NOT_possible(LocalDateTime now, long outdatedAcceptedMillis,
-            LocalDateTime latestPoolIdCreationTimestamp, long refreshIntervalMillis, long refreshInitialDelayMillis) throws Exception {
+    void outdated_encryption_pool_in_cluster__NOT_possible(LocalDateTime now, long outdatedAcceptedMillis, LocalDateTime latestPoolIdCreationTimestamp,
+            long refreshIntervalMillis, long refreshInitialDelayMillis) throws Exception {
 
         /* prepare */
         when(systemtimeProvider.getNow()).thenReturn(now);
@@ -161,8 +161,8 @@ class SecHubOutdatedEncryptionPoolSupportTest {
 
     @ParameterizedTest
     @ArgumentsSource(OutdatedEncryptionPoolInClusterPossibleArgumentProvider.class)
-    void outdated_encryption_pool_in_cluster__possible(LocalDateTime now, long outdatedAcceptedMillis,
-            LocalDateTime latestPoolIdCreationTimestamp, long refreshIntervalMillis, long refreshInitialDelayMillis) throws Exception {
+    void outdated_encryption_pool_in_cluster__possible(LocalDateTime now, long outdatedAcceptedMillis, LocalDateTime latestPoolIdCreationTimestamp,
+            long refreshIntervalMillis, long refreshInitialDelayMillis) throws Exception {
 
         /* prepare */
         when(systemtimeProvider.getNow()).thenReturn(now);

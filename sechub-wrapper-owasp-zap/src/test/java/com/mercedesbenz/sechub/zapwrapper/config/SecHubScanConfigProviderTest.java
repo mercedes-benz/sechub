@@ -37,7 +37,7 @@ class SecHubScanConfigProviderTest {
     @ParameterizedTest
     @NullSource
     @EmptySource
-    @ValueSource(strings = {"     ", "\n", "\r"})
+    @ValueSource(strings = { "     ", "\n", "\r" })
     void fetch_sechub_web_config_when_file_and_env_variable_are_not_set_results_in_empty_sechub_config(String json) {
         /* prepare */
         when(environmentVariableReader.readAsString(EnvironmentVariableConstants.PDS_SCAN_CONFIGURATION)).thenReturn(json);
