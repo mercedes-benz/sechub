@@ -24,7 +24,7 @@ jobs:
           echo "Xray-wrapper '${{ inputs.xray-wrapper-version }}' - Milestone '${{ inputs.xray-wrapper-milestone-number }}'"
 
       - name: Checkout branch master
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
         with:
           ref: master
 
