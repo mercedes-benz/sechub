@@ -181,7 +181,7 @@ jobs:
       # ------------------------------------ Archive git status-------------------
       - name: Archive git status
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: git-status
           path: "${{ github.workspace }}/build/git-status.txt"
@@ -190,7 +190,7 @@ jobs:
       # ------------------------------------ Archive runtime logs-------------------
       - name: Archive runtime logs
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: sechub-runtime-logiles
           path: ./build/sechub-runtime/**/*.log
@@ -198,7 +198,7 @@ jobs:
       # ------------------------------------ Archive reports  -----------------------
       - name: Archive reports
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: sechub-reports
           path: |
