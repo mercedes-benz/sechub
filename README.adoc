@@ -1,11 +1,27 @@
 // SPDX-License-Identifier: MIT
-
 :toc:
 :toclevels: 4
 :toc-placement!:
 
 [link=https://github.com/mercedes-benz/sechub/actions?workflow=Java+%26+Go+CI]
 image::https://github.com/mercedes-benz/sechub/workflows/Java%20&%20Go%20CI/badge.svg[Build status]
+
+
+
+== Sundown information
+After seven years, the project has unfortunately been discontinued. Mercedes-Benz has decided to cease development and maintenance of SecHub. Therefore, the project has been archived on GitHub and the issues have been deactivated.
+
+It was a pleasure to contribute to this project, and we regret its discontinuation. We would also like to thank everyone who worked with us on this open-source solution.
+
+A potential successor project, Vufio (not from Mercedes-Benz), is currently under development but it is still in its early stages. Those interested can find more information at:
+
+- http://www.vulfio.org or 
+- https://vulfio.github.io/website/ 
+
+for more information.
+
+Best wishes +  
+Your SecHub Team
 
 toc::[]
 
